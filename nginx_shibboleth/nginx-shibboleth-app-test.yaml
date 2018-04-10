@@ -55,7 +55,7 @@ spec:
         worker2: staging
       containers:
       - name: nginx-shibboleth-test
-        image: gesiscss/nginx-shibboleth-orc:628af8d0
+        image: gesiscss/nginx-shibboleth-orc:c81f03fe
         # https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#run-a-command-in-a-shell
         command: ["/bin/sh"]
         args: ["-c", "cp /etc/shibboleth-conf/* /etc/shibboleth/ && /usr/bin/supervisord --nodaemon --configuration /etc/supervisor/supervisord.conf"]

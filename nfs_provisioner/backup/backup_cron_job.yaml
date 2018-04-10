@@ -19,7 +19,7 @@ spec:
             worker1: production  # because of hostPath PVs
           containers:
           - name: nfs-backup-container
-            image: gesiscss/nfs-backup-orc:9aa9e7e7
+            image: gesiscss/nfs-backup-orc:c81f03fe
             args:
             - /bin/sh
             - -c

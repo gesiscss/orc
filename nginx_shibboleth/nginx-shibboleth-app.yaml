@@ -44,7 +44,7 @@ spec:
         worker1: production
       containers:
       - name: nginx-shibboleth
-        image: gesiscss/nginx-shibboleth-orc:628af8d0
+        image: gesiscss/nginx-shibboleth-orc:c81f03fe
         command: ["/bin/sh"]
         args: ["-c", "cp /etc/shibboleth-conf/* /etc/shibboleth/ && /usr/bin/supervisord --nodaemon --configuration /etc/supervisor/supervisord.conf"]
         ports:

@@ -5,7 +5,7 @@ hub:
 #    worker1: production
   image:
     name: gesiscss/k8s-hub-orc
-    tag: 185f0743
+    tag: c81f03fe
   db:
     type: postgres
   extraConfig: |
@@ -59,7 +59,7 @@ singleuser:
     capacity: 15Gi
   image:
     name: gesiscss/singleuser-orc
-    tag: 3ba3d6d1
+    tag: c81f03fe
   cpu:
     guarantee: 0.2
     limit: 2
