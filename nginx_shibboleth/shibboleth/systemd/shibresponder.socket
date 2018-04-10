@@ -1,0 +1,11 @@
+[Unit]
+Description=Shibboleth FastCGI Responder socket
+
+[Socket]
+ListenStream=/var/run/shibboleth/shibresponder.sock
+SocketUser=_shibd
+SocketGroup=_shibd
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target

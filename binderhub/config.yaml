@@ -1,0 +1,104 @@
+# https://github.com/jupyterhub/binderhub/blob/master/helm-chart/binderhub/values.yaml
+# https://github.com/jupyterhub/mybinder.org-deploy/blob/master/config/prod.yaml
+jupyterhub:
+  hub:
+    baseUrl: /binder/jupyter/
+#    nodeSelector:
+#      worker1: production
+    db:
+      type: postgres
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: 1Gi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+
+  proxy:
+#    nodeSelector:
+#      worker1: production
+    https:
+      enabled: false
+    service:
+      type: NodePort
+      nodePort: 30082
+      nodePorts:
+        http: 30082
+    chp:
+      resources:
+        requests:
+          cpu: "0.2"
+          memory: 512Mi
+        limits:
+          cpu: "0.5"
+          memory: 512Mi
+    nginx:
+      resources:
+        requests:
+          cpu: "0.5"
+          memory: 1Gi
+        limits:
+          cpu: "1"
+          memory: 2Gi
+
+  singleuser:
+    cpu:
+      guarantee: 0.2
+      limit: 2
+    memory:
+      guarantee: 2G
+      limit: 2G
+#    nodeSelector:
+#      worker1: production
+
+  cull:
+    # kill user pods if idle for 30 mins - default is 1 hour
+    # sometimes this has to be run manually:
+    # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/scripts/delete-pods.py
+    timeout: 1800
+    every: 660
+
+build:
+#  nodeSelector:
+#    worker1: production
+  repo2dockerImage: jupyter/repo2docker:2dbe4c5
+
+# below is for binder
+resources:
+  requests:
+    cpu: "1"
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+#nodeSelector:
+#  worker1: production
+
+googleAnalyticsCode: 'production'
+
+registry:
+  enabled: true
+  prefix: gesiscss/orc-binder-
+  host: https://registry.hub.docker.com
+  authHost: https://index.docker.io/v1
+  authTokenUrl: https://auth.docker.io/token?service=registry.docker.io
+
+dind:
+  enabled: true
+
+service:
+  type: NodePort
+  nodePort: 30081
+  nodePorts:
+    http: 30081
+
+image:
+  name: gesiscss/k8s-binderhub-orc
+  tag: 5cae8752
+
+baseUrl: /binder/
+
+hub:
+  url: https://notebooks.gesis.org/binder/jupyter/

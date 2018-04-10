@@ -1,0 +1,277 @@
+{% macro modal(title, btn_label=None, btn_class="btn-primary") %}
+{% set key = title.replace(' ', '-').lower() %}
+{% set btn_label = btn_label or title %}
+<div class="modal fade" id="{{key}}-dialog" tabindex="-1" role="dialog" aria-labelledby="{{key}}-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="{{key}}-label">{{title}}</h4>
+      </div>
+      <div class="modal-body">
+        {{ caller() }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn {{btn_class}}" data-dismiss="modal" data-dismiss="modal">{{btn_label}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>{% block title %}JupyterHub{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JupyterHub - GESIS Notebooks (beta)">
+
+    {% block stylesheet %}
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
+    <link href="/static/notebooks.css" rel="stylesheet" />
+    {% endblock %}
+    <link id="favicon" rel="shortcut icon" type="image/png" href="/static/images/logo/logo.png" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="/static/vendor/html5shiv.min.js"></script>
+      <script src="/static/vendor/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
+    <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
+    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
+    <script>
+      require.config({
+          {% if version_hash %}
+          urlArgs: "v={{version_hash}}",
+          {% endif %}
+          baseUrl: '{{static_url("js", include_version=False)}}',
+          paths: {
+            components: '../components',
+            jquery: '../components/jquery/dist/jquery.min',
+            bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
+            moment: "../components/moment/moment",
+          },
+          shim: {
+            bootstrap: {
+              deps: ["jquery"],
+              exports: "bootstrap"
+            },
+          }
+      });
+    </script>
+
+    <script type="text/javascript">
+      window.jhdata = {
+        base_url: "{{base_url}}",
+        prefix: "{{prefix}}",
+        {% if user %}
+        user: "{{user.name}}",
+        {% endif %}
+      }
+    </script>
+
+    {#  TODO do this only in production  #}
+    {% set etracker_prefix = "NOTEBOOKS" %}
+    <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
+    <!-- This material may not be reproduced, displayed, modified or distributed -->
+    <!-- without the express prior written permission of the copyright holder. -->
+    <!-- etracker tracklet 4.0 -->
+    <script type="text/javascript">
+      var et_pagename = "{{ etracker_prefix }}%2FJupyter%3Ajupyter%2F";
+      var et_areas = "{{ etracker_prefix }}%2Fjupyterhub";
+    </script>
+    <script id="_etLoader" type="text/javascript" charset="UTF-8" data-secure-code="qPKGYV"
+          src="//static.etracker.com/code/e.js"></script>
+    <noscript>
+      <link rel="stylesheet" media="all"
+            href="//www.etracker.de/cnt_css.php?et=qPKGYV&amp;v=4.0&amp;java=n&amp;et_easy=0&amp;
+                    et_pagename={{ etracker_prefix }}%2FJupyter%3Ajupyter%2F&amp;
+                    et_areas={{ etracker_prefix }}%2Fjupyterhub&amp;
+                    et_ilevel=0&amp;et_target=,0,0,0&amp;et_lpage=0&amp;et_trig=0&amp;et_se=0&amp;et_cust=0&amp;
+                    et_basket=&amp;et_url=&amp;et_tag=&amp;et_sub=&amp;et_organisation=&amp;et_demographic="/>
+    </noscript>
+    <!-- etracker tracklet 4.0 end -->
+
+    {% block meta %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+<noscript>
+  <div id='noscript'>
+    JupyterHub requires JavaScript.<br>
+    Please enable it to proceed.
+  </div>
+</noscript>
+
+<header style="background-color: #333;">
+  <div role="navigation" class="navbar navbar-default navbar-static-top">
+      <div style="background-color: #333;">
+      <div id="header-container" class="container">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="https://www.gesis.org/en/home/">
+                  <img src="/static/images/gs_home_logo_en.svg" class="hidden-sm hidden-xs">
+                  <img src="/static/images/gs_small_logo_de.svg" class="visible-sm visible-xs">
+              </a>
+              <div class="navbar-header pull-right visible-xs hidden-sm hidden-md hidden-lg">
+                  <ul class="nav nav-pills pull-left ">
+                      <li>
+                          <a href="mailto:notebooks@gesis.org" style="display: inline; padding: 0;">
+                              <button class="navbar-toggle navbar-link">
+                                  <b aria-hidden="true" class="visible-xs glyphicon glyphicon-envelope"></b>
+                              </button>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/about/" style="display: inline; padding: 0;">
+                              <button class="navbar-toggle navbar-link">
+                                  <b aria-hidden="true" class="visible-xs glyphicon glyphicon-question-sign"></b>
+                              </button>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          <div class="navbar-header pull-right hidden-xs">
+              <ul class="nav navbar-nav pull-left">
+                  <li>
+                      <a href="mailto:notebooks@gesis.org">
+                          <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>
+                              Contact
+                          </span>
+                      </a>
+                  </li>
+              </ul>
+              <ul class="nav navbar-nav pull-left">
+                  <li>
+                      <a href="/about/">
+                          <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon-question-sign"></span>
+                              About
+                          </span>
+                      </a>
+                  </li>
+              </ul>
+          </div>
+          <div id="header_banner">
+              <a  href="/">
+                  <img src="/static/images/gs_ms_banner_default_notebooks_beta.png" class="img-responsive"
+                       alt="To GESIS Notebooks Homepage" title="To GESIS Notebooks Homepage">
+              </a>
+          </div>
+      </div>
+      </div>
+  </div>
+</header>
+
+<div id="main-container" class="container">
+    <div class="row">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid" style="color: #58748f; background-color: #cdd5dd; border: none; border-radius: 0; padding: 0;">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse" style="border-color: #e7e7e7;">
+{#                  <ul class="nav navbar-nav" style="float:none; margin: 0 auto; display: table; table-layout: fixed;">#}
+              <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                {#<li><a href="{{base_url}}token">Token</a></li>
+                {% if user.admin %}
+                <li><a href="{{base_url}}admin">Admin</a></li>
+                {% endif %}#}
+{#                    <li><a href="https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/Shibboleth.sso/Login?SAMLDS=1&target=https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/jupyter/hub/login&entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth">Your Server</a></li>#}
+                <li class="dropdown">
+                  <a href="#" id="navbar-active-a" class="dropdown-toggle gs_active_sub" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your Server <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{base_url}}home">Home</a></li>
+                    <li><a href="{{base_url}}token">Token</a></li>
+                    {% if user.admin %}<li><a href="{{base_url}}admin">Admin</a></li>{% endif %}
+                    <li><a href="{% if user %}{{logout_url}}{% else %}{{login_url}}{% endif %}">{% if user %}Logout{% else %}Login{% endif %}</a></li>
+                  </ul>
+                </li>
+                <li><a href="/binder/">Binder</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    </div>
+{#    {% block headline %}
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div id="header" class="text-center">
+                    <h3>Open Research Computing<br> for the Social Sciences</h3>
+            </div>
+        </div>
+    </div>
+    {% endblock headline %}#}
+</div>
+
+{% block main %}
+{% endblock %}
+
+{% call modal('Error', btn_label='OK') %}
+  <div class="ajax-error">
+    The error
+  </div>
+{% endcall %}
+
+{% block footer %}
+  <div class="container">
+    <div class="row form-group"></div>
+    <div class="row form-group"></div>
+  </div>
+
+    <footer class="footer">
+      <div class="container">
+          <span class="footer-span">
+              <img src="/static/images/leibniz_logo_en_white.svg" width="78" height="54" alt="Leibniz Logo"/>
+          </span>
+          <span class="footer-span">
+              <a class="footer-link" href="https://www.gesis.org/en/institute/imprint/">Imprint</a>
+          </span>
+          <span class="footer-span">
+              &copy; GESIS
+          </span>
+      </div>
+    </footer>
+{% endblock footer %}
+
+    <script>
+        $("div#navbar>ul>li>a").hover(
+            function() {
+                // in
+                $("div#navbar>ul>li>a").removeClass("gs_active_sub");
+                $(this).addClass( "gs_active_sub" );
+                },
+            function() {
+                // out
+                $(this).removeClass( "gs_active_sub" );
+                $("#navbar-active-a").addClass( "gs_active_sub" );
+                }
+            );
+    </script>
+
+{% block script %}
+{% endblock %}
+
+</body>
+
+</html>

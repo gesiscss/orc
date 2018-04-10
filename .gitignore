@@ -1,0 +1,16 @@
+.idea/
+*.pyc
+jupyterhub.sqlite
+jupyterhub_cookie_secret
+cookie_secret
+jhub/ssl
+.Rhistory
+ignore/*
+documentation
+binderhub/secret.yaml
+binderhub/secret_test.yaml
+jupyterhub/secret.yaml
+jupyterhub/secret_test.yaml
+jupyterhub/secret_local.yaml
+nginx_shibboleth/shibboleth/conf/ignore
+

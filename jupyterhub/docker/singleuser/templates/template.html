@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= require('html-loader!./partial.html') %>
+
+  <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
+  <!-- This material may not be reproduced, displayed, modified or distributed -->
+  <!-- without the express prior written permission of the copyright holder. -->
+  <!-- etracker tracklet 4.0 -->
+  <script type="text/javascript">
+      var et_pagename = "NOTEBOOKS%2FJupyterUser%3Ajupyter%2Fuser%2F%0A";
+      var et_areas = "NOTEBOOKS%2Fjupyterhub";
+  </script>
+  <script id="_etLoader" type="text/javascript" charset="UTF-8" data-secure-code="qPKGYV"
+          src="//static.etracker.com/code/e.js"></script>
+  <noscript>
+      <link rel="stylesheet" media="all"
+            href="//www.etracker.de/cnt_css.php?et=qPKGYV&amp;v=4.0&amp;java=n&amp;et_easy=0&amp;
+                    et_pagename=NOTEBOOKS%2FJupyterUser%3Ajupyter%2Fuser%2F%0A&amp;
+                    et_areas=NOTEBOOKS%2Fjupyterhub&amp;
+                    et_ilevel=0&amp;et_target=,0,0,0&amp;et_lpage=0&amp;et_trig=0&amp;et_se=0&amp;et_cust=0&amp;
+                    et_basket=&amp;et_url=&amp;et_tag=&amp;et_sub=&amp;et_organisation=&amp;et_demographic="/>
+  </noscript>
+  <!-- etracker tracklet 4.0 end -->
+
+</head>
+<body>
+
+<script type="text/javascript">
+  /* Remove token from URL. */
+  (function () {
+    var location = window.location;
+    var search = location.search;
+    // If there is no query string, bail.
+    if (search.length <= 1) {
+      return;
+    }
+    // Rebuild the query string without the `token`.
+    var query = '?' + search.slice(1).split('&')
+      .filter(function (param) { return param.split('=')[0] !== 'token'; })
+      .join('&');
+    // Rebuild the URL with the new query string.
+    var url = location.origin + location.pathname +
+      (query !== '?' ? query : '') + location.hash;
+    window.history.replaceState({ }, '', url);
+  })();
+</script>
+
+</body>
+</html>

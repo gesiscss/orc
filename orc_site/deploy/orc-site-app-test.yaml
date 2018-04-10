@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orc-site-test-service
+  labels:
+    app: orc-site-test
+spec:
+  type: NodePort
+  selector:
+    app: orc-site-test
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 30178
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orc-site-test-deployment
+  labels:
+    app: orc-site-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orc-site-test
+  strategy:
+    type: RollingUpdate  # default
+  template:
+    metadata:
+      name: orc-site-test-pod
+      labels:
+        app: orc-site-test
+    spec:
+      restartPolicy: Always  # default
+#      nodeSelector:
+#        worker1: production
+      containers:
+      - name: orc-site-test
+        image: gesiscss/orc-site:aa14c1e3
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        env:
+        - name: DEPLOYMENT_ENV
+          value:  "staging"
+        resources:
+          requests:
+            cpu: "0.2"
+            memory: "128Mi"
+          limits:
+            cpu: "0.4"
+            memory: "256Mi"

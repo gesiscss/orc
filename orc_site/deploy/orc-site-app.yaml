@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orc-site-service
+  labels:
+    app: orc-site
+spec:
+  type: NodePort
+  selector:
+    app: orc-site
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 30078
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orc-site-deployment
+  labels:
+    app: orc-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orc-site
+  strategy:
+    type: RollingUpdate  # default
+  template:
+    metadata:
+      name: orc-site-pod
+      labels:
+        app: orc-site
+    spec:
+      restartPolicy: Always  # default
+#      nodeSelector:
+#        worker1: production
+      containers:
+      - name: orc-site
+        image: gesiscss/orc-site:aa14c1e3
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        env:
+        - name: DEPLOYMENT_ENV
+          value:  "production"
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"

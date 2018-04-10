@@ -1,0 +1,325 @@
+/**
+ * The contents of this file are subject to the license and copyright
+ * detailed in the LICENSE and NOTICE files at the root of the source
+ * tree and available online at
+ *
+ * http://www.dspace.org/license/
+ */
+
+/**
+ * You can put your own style in this file.
+ * It will be included in all color schemes
+ */
+
+/**
+ * For ORC  project this is taken from GESIS SSOAR project and customized.
+ */
+
+@media (min-width:1200px) {.container{width:960px;}}
+
+@media(min-width:992px) {.container{width:960px;}}
+
+@media print {
+	a[href]:after {
+		content: none;
+		}
+	}
+
+body {
+	background-color: #333;
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+	}
+
+#header-container{
+	background-color: #fff;
+	border-top: 17px solid #58748f;
+	padding-right: 0px;
+	padding-left: 0px;
+	}
+.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px solid;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-top-color: #58748f;
+}
+
+.caret.caret-reversed {
+    border-top-width: 0;
+    border-bottom: 4px solid #000000;
+}
+
+.navbar-brand {
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    height: 70px;
+	}
+
+header .navbar-brand img.hidden-sm.hidden-xs {
+    max-width: 100%;
+    /*width: 160px;*/
+    /*height: 37px;*/
+	}
+
+header .navbar-brand img.visible-sm.visible-xs {
+    max-height: 100%;
+	}
+
+div.navbar-header {
+	padding: 0rem 2rem;
+	}
+
+header .navbar-default{
+	background-color: #333;
+	color: #58748f;
+	}
+
+.navbar-default {
+	color: #58748f;
+    background-color: #cdd5dd;
+	border: none;
+	border-radius: 0;
+	min-height:30px !important;
+}
+
+#navbar {
+    max-width: 100%;
+    margin-left: 0;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #58748f;
+    /*font-size: 1.2rem;*/
+    font-weight: bold;
+    /*line-height: 1.0rem;*/
+    /*position: relative;*/
+    /*padding: 0 0 0 2rem;*/
+    /*float: left;*/
+	padding-top:5px !important;
+	padding-bottom:0 !important;
+	height: 30px;
+}
+
+#main-container .navbar-toggle {
+	padding: 0 0;
+    /*margin-top: 7px;*/
+    /*margin-bottom: 0;*/
+}
+
+.dropdown, .dropdown>a, .dropdown-menu>li>a, .dropdown-menu, .navbar-default .navbar-nav .open .dropdown-menu>li>a {
+    color: #58748f;
+    font-weight: bold;
+    background-color: #cdd5dd;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.open>a:focus {
+    color: #58748f;
+    font-weight: bold;
+    background-color: #cdd5dd;
+}
+
+.navbar-nav>li>.dropdown-menu {
+	padding: 0;
+}
+
+@media (min-width: 768px) {
+    /*not in mobile (xs)*/
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+ }
+}
+
+.navbar-default .navbar-nav>li>a.gs_active_sub, .dropdown>a.gs_active_sub, .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
+    color: #ffffff;
+	background-color: #FF6600;
+    font-weight: bold;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .dropdown>a:hover, .dropdown-menu>li>a:hover{
+    color: #ffffff;
+	background-color: #FF6600;
+}
+
+header .navbar-default .navbar-toggle>li>a:hover,header .navbar-default .navbar-toggle>li>a:focus,header .navbar-default .navbar-nav>li>a:hover,header .navbar-default .navbar-nav>li>a:focus{
+	color: #58748f;
+	background-color:#fff;
+	}
+
+header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-toggle:focus, header .navbar-default .navbar-nav:hover, header .navbar-default .navbar-nav:focus {
+    color: #58748f;
+    background-color: #fff;
+	}
+
+header .navbar-default .navbar-toggle>li>a, header .navbar-default .navbar-nav>li>a {
+    color: #58748f;
+	font-weight: bold;
+	text-decoration: underline;
+	}
+
+header .navbar-default .navbar-toggle, header .navbar-default .navbar-nav {
+    border-color: transparent;
+    color: #58748f;
+	}
+
+header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-toggle:focus, header .navbar-default .navbar-nav:hover, header .navbar-default .navbar-nav:focus {
+	background-color:#ffffff;
+}
+
+#header-container > div.navbar-header.pull-right.hidden-xs {
+    padding-top: 10px;
+}
+
+#header-container > div.navbar-header.pull-right.hidden-xs > button {
+	background-color: #58748f;
+    margin-left: 15px;
+}
+
+#header-container > div.navbar-header.pull-right.hidden-xs > ul > button {
+    color: #fff;
+    background-color: #58748f;
+    border-color: #58748f;
+	margin-top: 8px;
+	}
+
+#header-container > div.navbar-header.pull-right.hidden-xs > ul > button:hover {
+    color: #58748f;
+    background-color: #fff;
+    border-color: #58748f;
+	margin-top: 8px;
+	}
+/*
+div.trail-wrapper.hidden-print > div.container{
+	background-color: #fff;
+	border-bottom: 1px solid #8b9eb2;
+	border-top: 1px solid #8b9eb2;
+	}
+
+div.trail-wrapper.hidden-print > div.container > div.row{
+	_background-color: #cdd5dd;
+	background-color: #fff;
+	}
+
+.trail-wrapper{
+	background-color:#333;
+	border-bottom: 0px;
+	}
+*/
+
+#main-container {
+	/*overflow: hidden;*/
+	background-color: #fff;
+	margin-top: -20px;
+	}
+
+.container {
+	background-color: #fff;
+	}
+
+footer .container {
+	background-color: #333;
+	}
+
+span.glyphicon.glyphicon-user, span.glyphicon.glyphicon-envelope, span.glyphicon.glyphicon-question-sign {
+	padding-right: 7px;
+	}
+
+.top-menu-item{
+    color: #58748f;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.top-menu-item:hover {
+	color: #ff6100;
+	}
+
+span.glyphicon.glyphicon-new-window {
+	padding-left: 7px;
+	font-size: 10px;
+	}
+
+#header_banner {
+	padding: 0;
+	}
+
+#header_banner > a > img {
+    max-width: 100%;
+}
+
+#header > h3 {
+    /*color: #ff6100;*/
+    font-size: 42px;
+    line-height: 1.3;
+}
+
+#typed, .typed-cursor {
+    font-size: 42px;
+    line-height: 1.3;
+}
+
+footer {
+    padding: 1.0rem 0;
+    color: #fff;
+    margin-bottom: 10px;
+	background-color: #333;
+}
+
+.footer-span {
+    /*padding-left: 4px;*/
+    padding-right: 30px;
+}
+
+.footer-link {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.footer-link:hover {
+    color: #ff6100;
+}
+
+.orc-button, .orc-button:hover, .orc-button:active, .orc-button:visited, .orc-button:focus, .orc-button:active:focus {
+    background-color: #ff6100;
+    border-color: #ff6100;
+}
+
+.orc-button-info, .orc-button-info:hover, .orc-button-info:active, .orc-button-info:visited, .orc-button-info:focus, .orc-button-info:active:focus {
+    background-color: #58748f;
+    border-color: #58748f;
+}
+
+/*Thumbnail - same height*/
+
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.thumbnail {
+  height: 100%;
+}
+
+/* extra positioning */
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbnail .caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/*Binder*/
+#how-it-works, #explanation {
+    font-weight: normal;
+    line-height: 1.4;
+}

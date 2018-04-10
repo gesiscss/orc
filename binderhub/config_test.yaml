@@ -1,0 +1,100 @@
+jupyterhub:
+  hub:
+    baseUrl: /binder/jupyter/
+#    nodeSelector:
+#      worker1: production
+    db:
+      type: postgres
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 512Mi
+      limits:
+        cpu: "0.5"
+        memory: 1Gi
+
+  proxy:
+#    nodeSelector:
+#      worker1: production
+    https:
+      enabled: false
+    service:
+      type: NodePort
+      nodePort: 30182
+      nodePorts:
+        http: 30182
+    chp:
+      resources:
+        requests:
+          cpu: "0.2"
+          memory: 256Mi
+        limits:
+          cpu: "0.5"
+          memory: 512Mi
+    nginx:
+      resources:
+        requests:
+          cpu: "0.2"
+          memory: 512Mi
+        limits:
+          cpu: "0.5"
+          memory: 1Gi
+
+  singleuser:
+    cpu:
+      guarantee: 0.2
+      limit: 1
+    memory:
+      guarantee: 256M
+      limit: 256M
+#    nodeSelector:
+#      worker1: production
+
+  cull:
+    # kill user pods if idle for 10 mins - default is 1 hour
+    timeout: 600
+    every: 660
+
+build:
+#  nodeSelector:
+#    worker1: production
+  repo2dockerImage: jupyter/repo2docker:2dbe4c5
+
+# below is for binder
+resources:
+  requests:
+    cpu: "0.5"
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+#nodeSelector:
+#  worker1: production
+
+googleAnalyticsCode: 'staging'
+
+registry:
+  enabled: true
+  prefix: gesiscss/orc-binder-
+  host: https://registry.hub.docker.com
+  authHost: https://index.docker.io/v1
+  authTokenUrl: https://auth.docker.io/token?service=registry.docker.io
+
+dind:
+  enabled: true
+
+service:
+  type: NodePort
+  nodePort: 30181
+  nodePorts:
+    http: 30181
+
+image:
+  name: gesiscss/k8s-binderhub-orc
+  tag: 5cae8752
+
+baseUrl: /binder/
+
+hub:
+  url: https://notebooks-test.gesis.org/binder/jupyter/

@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nfs-backup-job
+spec:
+  # At 02:00 in UTC => at 04:00.
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 30
+  failedJobsHistoryLimit: 30
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: nfs-backup-pod
+        spec:
+          restartPolicy: OnFailure
+          serviceAccount: nfs-backup
+          nodeSelector:
+            worker1: production  # because of hostPath PVs
+          containers:
+          - name: nfs-backup-container
+            image: gesiscss/nfs-backup-orc:9aa9e7e7
+            args:
+            - /bin/sh
+            - -c
+            - python3 backup.py
+            env:
+              - name: SSHPASS
+                valueFrom:
+                  secretKeyRef:
+                    name: worker-pass-secret
+                    key: password
+              - name: BACKUP_FOLDER
+                value: "/backup"
+              - name: PV_FOLDER
+                value: "/export"
+            volumeMounts:
+              - name: export-volume
+                mountPath: /export
+              - name: backup-volume
+                mountPath: /backup
+          volumes:
+            - name: export-volume
+              hostPath:
+                path: /srv/nfs-provisioner
+            - name: backup-volume
+              hostPath:
+                path: /backup/nfs-backup

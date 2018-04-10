@@ -1,0 +1,75 @@
+# https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/jupyterhub/values.yaml
+hub:
+  baseUrl: /jupyter/
+#  nodeSelector:
+#    worker1: production
+  image:
+    name: gesiscss/k8s-hub-orc
+    tag: 185f0743
+  db:
+    type: postgres
+  extraConfig: |
+    c.Authenticator.admin_users = {'kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org'}
+    c.Authenticator.shibboleth_logout_url = 'https://notebooks.gesis.org/Shibboleth.sso/Logout?return=https://notebooks.gesis.org/'
+    c.Authenticator.enable_auth_state = True
+  resources:
+    requests:
+      cpu: "0.5"
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+
+proxy:
+#  nodeSelector:
+#    worker1: production
+  https:
+    enabled: false
+  service:
+    type: NodePort
+    nodePort: 30080
+    nodePorts:
+      http: 30080
+  chp:
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 512Mi
+      limits:
+        cpu: "0.5"
+        memory: 512Mi
+  nginx:
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: 1Gi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+
+auth:
+  type: custom
+  custom:
+    className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
+
+singleuser:
+#  nodeSelector:
+#    worker1: production
+  storage:
+    capacity: 15Gi
+  image:
+    name: gesiscss/singleuser-orc
+    tag: 3ba3d6d1
+  cpu:
+    guarantee: 0.2
+    limit: 2
+  memory:
+    guarantee: 2G
+    limit: 4G
+
+cull:
+  # kill user pods if idle for 30 mins - default is 1 hour
+  # sometimes this has to be run manually:
+  # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/scripts/delete-pods.py
+  timeout: 1800
+  every: 660

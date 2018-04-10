@@ -1,0 +1,171 @@
+#image: python:3.6.3
+
+#before_script:
+#  - bundle install
+
+#after_script:
+#  - rm secrets
+
+stages:
+#  - test
+  - build
+  - deploy
+
+#test_job:
+#  stage: test
+#  script:
+#    - echo "####### TODO Running tests"
+##    - pip install /builds/orc/orc/requirements.txt
+#  only:
+#    - dev
+#  tags:
+#    - orc
+#  when: on_success
+#  allow_failure: false
+#  dependencies: []
+#  retry: 1
+
+# https://kubernetes.io/docs/concepts/configuration/overview/#container-images
+# Note: You should avoid using :latest tag when deploying containers in production,
+# because this makes it hard to track which version of the image is running and hard to roll back.
+build_job:
+  stage: build
+  script:
+    - |
+      echo "####### Running build"
+      echo "####### Building docker images on master node"
+      CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
+      echo $CI_COMMIT_SHA_8
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/singleuser/'; then
+        echo "####### gesiscss/singleuser-orc:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t singleuser-orc jupyterhub/docker/singleuser/.
+        docker tag singleuser-orc gesiscss/singleuser-orc:$CI_COMMIT_SHA_8
+        docker push gesiscss/singleuser-orc:$CI_COMMIT_SHA_8
+      fi;
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/k8s_hub/Dockerfile|jupyterhub/docker/k8s_hub/templates/'; then
+        echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t k8s-hub-orc jupyterhub/docker/k8s_hub/.
+        docker tag k8s-hub-orc gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
+        docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
+      fi;
+      if git diff HEAD~ --name-only | egrep 'binderhub/docker/Dockerfile|binderhub/docker/templates/'; then
+        echo "####### gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t k8s-binderhub-orc binderhub/docker/.
+        docker tag k8s-binderhub-orc gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8
+        docker push gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8
+      fi;
+      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/docker/Dockerfile'; then
+        echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t nginx-shibboleth-orc nginx_shibboleth/docker/.
+        docker tag nginx-shibboleth-orc gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8
+        docker push gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8
+      fi;
+      if git diff HEAD~ --name-only | egrep 'orc_site/Dockerfile|orc_site/__init__.py|orc_site/app.py|orc_site/requirements.txt|orc_site/templates/|orc_site/static/'; then
+        echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t orc-site orc_site/.
+        docker tag orc-site gesiscss/orc-site:$CI_COMMIT_SHA_8
+        docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
+      fi;
+      if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
+        echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t nfs-backup-orc nfs_provisioner/backup/docker/.
+        docker tag nfs-backup-orc gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
+        docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
+      fi;
+#      if git diff HEAD~ --name-only | egrep 'pod_scripts/Dockerfile|pod_scripts/scripts/'; then
+#        echo "####### gesiscss/scripts-orc:$CI_COMMIT_SHA_8"
+#        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+#        docker build -t scripts-orc scripts/.
+#        docker tag scripts-orc gesiscss/scripts-orc:$CI_COMMIT_SHA_8
+#        docker push gesiscss/scripts-orc:$CI_COMMIT_SHA_8
+#      fi;
+  only:
+#    - master
+    - dev
+  tags:
+    - orc
+  when: on_success
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+deploy_staging:
+  stage: deploy
+  script:
+    - |
+      echo "####### Running staging deploy"
+      mode="fetch_co"
+      pip3 install fabric3
+      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app-test.yaml'; then
+        mode+="-nginxshibbolethtestapp"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/shibboleth/conf/staging/|nginx_shibboleth/shibboleth/conf/attribute-map.xml|nginx_shibboleth/nginx/k8s_test.conf'; then
+        mode+="-nginxshibbolethtestconf"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app-test.yaml'; then
+        mode+="-orctestsite"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config_test.yaml'; then
+        mode+="-jhubtestns"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'binderhub/config_test.yaml'; then
+        mode+="-bhubtestns"
+      fi;
+      echo "####### mode: $mode"
+      fab k8s_master --password=$K8S_MASTER_PASSWORD deploy:branch=$CI_COMMIT_SHA,mode=$mode,is_staging=True
+  only:
+    - dev
+  tags:
+    - orc
+  when: on_success
+  environment:
+    name: staging
+    url: https://notebooks-test.gesis.org/
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+deploy_prod:
+  stage: deploy
+#  cache:
+#    untracked: true
+  script:
+    - |
+      echo "####### Running deploy"
+      mode="fetch_co"
+      pip3 install fabric3
+      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app.yaml'; then
+        mode+="-nginxshibbolethapp"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/shibboleth/conf/production/|nginx_shibboleth/shibboleth/conf/attribute-map.xml|nginx_shibboleth/nginx/k8s.conf'; then
+        mode+="-nginxshibbolethconf"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app.yaml'; then
+        mode+="-orcsite"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config.yaml'; then
+        mode+="-jhubns"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'binderhub/config.yaml'; then
+        mode+="-bhubns"
+      fi;
+      echo "####### mode: $mode"
+      fab k8s_master --password=$K8S_MASTER_PASSWORD deploy:branch=$CI_COMMIT_SHA,mode=$mode
+  only:
+    - master
+#    - tags
+  tags:
+    - orc
+  when: manual
+  environment:
+    name: production
+    url: https://notebooks.gesis.org/
+  allow_failure: false
+  dependencies: []
+  retry: 1

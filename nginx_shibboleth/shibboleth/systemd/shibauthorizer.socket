@@ -1,0 +1,11 @@
+[Unit]
+Description=Shibboleth FastCGI Authorizer socket
+
+[Socket]
+ListenStream=/var/run/shibboleth/shibauthorizer.sock
+SocketUser=_shibd
+SocketGroup=_shibd
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target

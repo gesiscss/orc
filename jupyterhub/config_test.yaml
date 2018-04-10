@@ -1,0 +1,72 @@
+hub:
+  baseUrl: /jupyter/
+#  nodeSelector:
+#    worker1: production
+  image:
+    name: gesiscss/k8s-hub-orc
+    tag: 185f0743
+  db:
+    type: postgres
+  extraConfig: |
+    c.Authenticator.admin_users = {'kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org'}
+    c.Authenticator.shibboleth_logout_url = 'https://notebooks-test.gesis.org/Shibboleth.sso/Logout?return=https://notebooks-test.gesis.org/'
+    c.Authenticator.enable_auth_state = True
+  resources:
+    requests:
+      cpu: "0.2"
+      memory: 512Mi
+    limits:
+      cpu: "0.5"
+      memory: 1Gi
+
+proxy:
+#  nodeSelector:
+#    worker1: production
+  https:
+    enabled: false
+  service:
+    type: NodePort
+    nodePort: 30180
+    nodePorts:
+      http: 30180
+  chp:
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 256Mi
+      limits:
+        cpu: "0.5"
+        memory: 512Mi
+  nginx:
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 512Mi
+      limits:
+        cpu: "0.5"
+        memory: 1Gi
+
+auth:
+  type: custom
+  custom:
+    className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
+
+singleuser:
+#  nodeSelector:
+#    worker2: staging
+  storage:
+    capacity: 15Gi
+  image:
+    name: gesiscss/singleuser-orc
+    tag: 3ba3d6d1
+  cpu:
+    guarantee: 0.2
+    limit: 1
+  memory:
+    guarantee: 512M
+    limit: 512M
+
+cull:
+  # kill user pods if idle for 10 mins - default is 1 hour
+  timeout: 600
+  every: 660

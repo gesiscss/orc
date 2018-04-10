@@ -1,0 +1,83 @@
+{% extends "page.html" %}
+
+{% if is_production %}
+    {% block etracker_et_pagename %}%2FHome%3Ahome%2F{% endblock etracker_et_pagename %}
+    {% block etracker_et_pagename_nojs %}%2FHome%3Ahome%2F{% endblock etracker_et_pagename_nojs %}
+    {% block etracker_et_areas %}%2Fhome{% endblock etracker_et_areas %}
+    {% block etracker_et_areas_no_js %}%2Fhome{% endblock etracker_et_areas_no_js %}
+{% endif %}
+
+{% block main %}
+<div class="row form-group"></div>
+
+<div class="row form-group text-center" style="display: flex; align-items: center;">
+{#    <div class="col-lg-1 col-md-1"></div>#}
+{#    <div class="col-lg-10 col-lg-offset-1 text-center">#}
+    <div class="col-lg-6 col-md-6 col-sm-5 hidden-xs">
+        <img alt="GESIS Notebooks" src="/static/images/notebook.png" class="img-responsive center-block">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
+        <h3>
+            <span id="typed"></span>
+        </h3>
+        <a href="{{jhub_url}}" class="btn btn-lg btn-warning orc-button" role="button">Your Server</a>
+    </div>
+</div>
+
+<div class="row form-group"></div>
+<div class="row form-group"></div>
+
+{#<div class="row form-group page-header">#}
+<div class="row form-group">
+    <div class="col-lg-12 text-center">
+{#    <div class="col-lg-10 col-lg-offset-1">#}
+{#        <div class="text-center">#}
+            <h2>Featured projects</h2>
+{#        </div>#}
+    </div>
+</div>
+
+<div class="row form-group text-center display-flex">
+  {% for example in binder_examples %}
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+    <div class="thumbnail">
+{#      <img src="..." alt="...">#}
+      <div class="caption">
+        <h3>{{ example.headline }}</h3>
+        {% if example.content %}
+        <p>{{ example.content }}</p>
+        {% endif %}
+        <div><a href="{{ example.binder_link }}" class="btn btn-warning orc-button" role="button">Launch Binder</a>
+           <a href="{{ example.repo_link }}" class="btn btn-info orc-button-info" role="button">Visit Repo</a></div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row form-group"></div>
+{% endblock main %}
+
+{% block extra_js %}
+<script src="/static/vendor/typed.js-2.0.6/lib/typed.min.js"></script>
+<script>
+    var typed = new Typed('#typed',
+        {
+            strings: ["Open Methodology", "Open Source", "Open Science",
+                      "Open Research Computing for the Social Sciences"],
+            typeSpeed: 64,
+            smartBackspace: true,
+            // startDelay: 0,
+            backDelay: 1000,
+            backSpeed: 64,
+            // loop: true,
+            // loopCount: 3,
+            contentType: null,
+            // fadeOut: true
+            // call when done callback function
+            onComplete: function() {
+                $("span.typed-cursor").hide();
+            }
+        });
+</script>
+{% endblock extra_js %}

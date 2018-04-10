@@ -1,0 +1,15 @@
+\documentclass[tikz,convert={outfile=\jobname.svg}]{standalone}
+\usepackage{xcolor}
+\definecolor{gorange}{HTML}{FF6310}
+\definecolor{gblue}{HTML}{58748F}
+\begin{document}
+\begin{tikzpicture}[scale=1]
+\draw [color=gblue,rounded corners,line width=0.8mm,line cap=round]
+  (1.12,-.12) -- (1.42,-.15) -- (1.42,0.85) -- (0,1) -- (0,.4);
+\draw [color=gorange,line width=1.7mm,line cap=round] (0.04,-0.05) -- (0.04,.2);
+\draw [color=gorange,line width=1.7mm,line cap=round] (0.31,-0.12) -- (0.32,.35);
+\draw [color=gorange,line width=1.7mm,line cap=round] (0.59,-0.17) -- (0.59,.5);
+\draw [color=gorange,line width=1.7mm,line cap=round] (0.86,-0.23) -- (0.86,.65);
+
+\end{tikzpicture}
+\end{document}
