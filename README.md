@@ -15,6 +15,8 @@ And kubernetes cluster is created with [kubeadm](https://kubernetes.io/docs/setu
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
+To monitor GESIS Notebooks: https://notebooks.gesis.org/grafana/
+
 ### [Nginx & Shibboleth](/nginx_shibboleth/)
 
 Nginx is used as reverse proxy and load balancer.
