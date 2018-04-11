@@ -40,7 +40,8 @@ spec:
         worker1: production
       containers:
       - name: pod-scripts
-        image: gesiscss/pod-scripts-orc:431ae003
+        image: gesiscss/pod-scripts-orc:0cf6086d
+        command: ["jupyter", "notebook", "--config=./jupyter_notebook_config.py", "--NotebookApp.password=$(NOTEBOOK_PASS)"]
         ports:
         - containerPort: 5000
           protocol: TCP
