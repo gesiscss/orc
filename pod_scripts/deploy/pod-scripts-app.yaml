@@ -40,7 +40,13 @@ spec:
         worker1: production
       containers:
       - name: pod-scripts
-        image: gesiscss/scripts-orc:b0e7cd94
+        image: gesiscss/pod-scripts-orc:b0e7cd94
         ports:
         - containerPort: 5000
           protocol: TCP
+        env:
+        - name: NOTEBOOK_PASS
+          valueFrom:
+            secretKeyRef:
+              name: pod-scripts-notebook-pass
+              key: pod_scripts_notebook_pass.txt

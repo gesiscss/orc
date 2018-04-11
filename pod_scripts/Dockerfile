@@ -16,4 +16,4 @@ RUN fix-permissions /home/$NB_USER/work
 USER $NB_UID
 
 EXPOSE 5000
-CMD ["jupyter", "notebook", "--config=./jupyter_notebook_config.py"]
+CMD ["jupyter", "notebook", "--config=./jupyter_notebook_config.py", "--NotebookApp.password=$NOTEBOOK_PASS"]
