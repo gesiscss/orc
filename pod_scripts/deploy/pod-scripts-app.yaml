@@ -40,7 +40,7 @@ spec:
         worker1: production
       containers:
       - name: pod-scripts
-        image: gesiscss/pod-scripts-orc:b0e7cd94
+        image: gesiscss/pod-scripts-orc:431ae003
         ports:
         - containerPort: 5000
           protocol: TCP
