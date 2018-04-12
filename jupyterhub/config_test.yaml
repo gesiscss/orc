@@ -8,9 +8,7 @@ hub:
   db:
     type: postgres
   extraConfig: |
-    c.Authenticator.admin_users = {'kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org'}
     c.Authenticator.shibboleth_logout_url = 'https://notebooks-test.gesis.org/Shibboleth.sso/Logout?return=https://notebooks-test.gesis.org/'
-    c.Authenticator.enable_auth_state = True
   resources:
     requests:
       cpu: "0.2"
@@ -50,10 +48,16 @@ auth:
   type: custom
   custom:
     className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
+  admin:
+    access: false
+    users: {'kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org'}
+  state:
+    enabled: true
 
 singleuser:
 #  nodeSelector:
 #    worker2: staging
+  schedulerStrategy: spread
   storage:
     capacity: 15Gi
   image:
@@ -65,6 +69,10 @@ singleuser:
   memory:
     guarantee: 512M
     limit: 512M
+
+prePuller:
+  continuous:
+    enabled: true
 
 cull:
   # kill user pods if idle for 10 mins - default is 1 hour
