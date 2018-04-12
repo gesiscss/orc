@@ -50,7 +50,7 @@ auth:
     className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
   admin:
     access: false
-    users: {'kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org'}
+    users: ['kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org']
   state:
     enabled: true
 
