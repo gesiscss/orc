@@ -92,7 +92,7 @@ service:
 
 image:
   name: gesiscss/k8s-binderhub-orc
-  tag: c81f03fe
+  tag: 0e62cc1f
 
 baseUrl: /binder/
 
