@@ -41,6 +41,7 @@ jupyterhub:
           memory: 1Gi
 
   singleuser:
+    schedulerStrategy: spread
     cpu:
       guarantee: 0.2
       limit: 1
@@ -51,7 +52,7 @@ jupyterhub:
 #      worker1: production
 
   cull:
-    # kill user pods if idle for 10 mins - default is 1 hour
+    # kill user pods if idle for 10 mins
     timeout: 600
     every: 660
 
@@ -59,6 +60,17 @@ build:
 #  nodeSelector:
 #    worker1: production
   repo2dockerImage: jupyter/repo2docker:2dbe4c5
+  # to give custom "Binder inaccessible" message (login.html)
+  appendix: |
+    USER root
+    ENV BINDER_URL={binder_url}
+    ENV REPO_URL={repo_url}
+    RUN cd /tmp \
+     && wget -q https://github.com/jupyterhub/binderhub/archive/4075ab804a339634d15a5d98b01bb5eab42dd394.tar.gz -O binderhub.tar.gz \
+     && tar --wildcards -xzf binderhub.tar.gz --strip 2 */examples/appendix\
+     && ./appendix/run-appendix \
+     && rm -rf binderhub.tar.gz appendix
+    USER $NB_USER
 
 # below is for binder
 resources:
