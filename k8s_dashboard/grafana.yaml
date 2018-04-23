@@ -12,6 +12,8 @@ spec:
         task: monitoring
         k8s-app: grafana
     spec:
+      nodeSelector:
+        worker1: production  # because of hostPath PVs
       containers:
       - name: grafana
         image: gcr.io/google_containers/heapster-grafana-amd64:v4.4.3
@@ -45,7 +47,8 @@ spec:
         hostPath:
           path: /etc/ssl/certs
       - name: grafana-storage
-        emptyDir: {}
+        hostPath:
+          path: /backup/grafana
 ---
 apiVersion: v1
 kind: Service
