@@ -1,5 +1,5 @@
 # https://github.com/gesiscss/jhub_shibboleth_auth/tree/89e1a4b5ec49eafd55c583ef06d8012f88393dc6/docker/k8s_hub
-FROM gesiscss/k8s-hub:v0.6-1289b9f8
+FROM gesiscss/k8s-hub:v0.6-69797588
 
 USER root
 RUN mv /home/jovyan/.local/share/jupyter/hub/templates/page.html /home/jovyan/.local/share/jupyter/hub/templates/page_base.html
