@@ -57,7 +57,7 @@ jupyterhub:
     # kill user pods if idle for 10 mins
     # sometimes this has to be run manually:
     # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/scripts/delete-pods.py
-    timeout: 600
+    timeout: 1800
     every: 660
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
