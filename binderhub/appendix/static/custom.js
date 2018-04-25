@@ -8,8 +8,9 @@ function copy_share_link() {
 
 if ($("#login_widget")) {
     $("#login_widget").prepend('<button id="copy-share-link" ' +
+        '                               title="Copy sharable server link to clipboard" ' +
         '                               class="btn btn-sm navbar-btn" ' +
         '                               style="color: #333; background-color: #fff; border-color: #ccc;" ' +
         '                               onclick="copy_share_link()">' +
-        '                       Copy share link</button>');
+        '                       Copy link</button>');
 }
