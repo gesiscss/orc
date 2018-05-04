@@ -8,6 +8,8 @@ if [ ! -d ~/.jupyter/custom ]
 then
     mkdir -p ~/.jupyter/custom
 fi
+sed -i 's|{binder_url}|'"$BINDER_URL"'|g' "${appendix_dir}/static/custom.js"
+sed -i 's|{repo_url}|'"$REPO_URL"'|g' "${appendix_dir}/static/custom.js"
 cat "${appendix_dir}/static/custom.js" >> ~/.jupyter/custom/custom.js
 # add and register custom templates and config
 cp -r "${appendix_dir}/templates" /etc/jupyter/binder_templates
