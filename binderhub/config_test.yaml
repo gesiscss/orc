@@ -104,9 +104,12 @@ service:
 
 image:
   name: gesiscss/k8s-binderhub-orc
-  tag: 0e62cc1f
+  tag: 488ec17f
 
 baseUrl: /binder/
+
+imageCleaner:
+  inodeAvailThreshold: 0
 
 hub:
   url: https://notebooks-test.gesis.org/binder/jupyter/
