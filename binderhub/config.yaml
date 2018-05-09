@@ -76,7 +76,7 @@ build:
      && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
      && ./appendix/run-appendix \
      && rm -rf orc.tar.gz appendix
-    RUN chown ${NB_USER}:${NB_USER} ${HOME}/.jupyter/custom/custom.js
+    RUN chown $NB_USER:$NB_USER $HOME/.jupyter/custom/custom.js
     USER $NB_USER
 
 # below is for binder
