@@ -95,7 +95,10 @@ registry:
   authTokenUrl: https://auth.docker.io/token?service=registry.docker.io
 
 dind:
-  enabled: true
+  enabled: false
+
+imageCleaner:
+  enabled: false
 
 service:
   type: NodePort
@@ -108,9 +111,6 @@ image:
   tag: 4a9533b0
 
 baseUrl: /binder/
-
-imageCleaner:
-  enabled: false
 
 hub:
   url: https://notebooks-test.gesis.org/binder/jupyter/
