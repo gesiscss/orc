@@ -110,7 +110,7 @@ image:
 baseUrl: /binder/
 
 imageCleaner:
-  inodeAvailThreshold: 0
+  enabled: false
 
 hub:
   url: https://notebooks-test.gesis.org/binder/jupyter/
