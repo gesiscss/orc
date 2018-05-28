@@ -67,8 +67,8 @@ singleuser:
     guarantee: 0.2
     limit: 1
   memory:
-    guarantee: 512M
-    limit: 512M
+    guarantee: 256M
+    limit: 256M
 
 prePuller:
   continuous:
