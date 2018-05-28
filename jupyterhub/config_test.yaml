@@ -4,7 +4,7 @@ hub:
 #    worker1: production
   image:
     name: gesiscss/k8s-hub-orc
-    tag: 06843a7a
+    tag: "c5b94aa2"
   db:
     type: postgres
   extraConfig: |
