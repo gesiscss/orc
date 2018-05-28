@@ -54,7 +54,7 @@ jupyterhub:
 #      worker1: production
 
   cull:
-    # kill user pods if idle for 10 mins
+    # kill user pods if idle for 30 mins
     # sometimes this has to be run manually:
     # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/scripts/delete-pods.py
     timeout: 1800

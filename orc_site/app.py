@@ -16,6 +16,7 @@ context = {
     'bhub_url': '/binder/',
     'about_url': '/about/',
     'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
+    'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
     'contact_url': 'mailto:notebooks@gesis.org',
     'gesis_url': 'https://www.gesis.org/en/home/',
     'help_url': 'https://www.gesis.org/en/help/',
