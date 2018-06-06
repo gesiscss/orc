@@ -18,5 +18,5 @@ cd "$PROJECT_PATH"
 # kubectl replace --force -> does not recreate pods if secret/configmap is updated
 kubectl delete deployment nginx-shibboleth-test-deployment --namespace=orc-test-ns
 kubectl delete deployment nginx-shibboleth-deployment --namespace=orc-ns
-kubectl apply -f orc/nginx_shibboleth/deploy/nginx-shibboleth-app-test.yaml --namespace=orc-test-ns
-kubectl apply -f orc/nginx_shibboleth/deploy/nginx-shibboleth-app.yaml --namespace=orc-ns
+kubectl apply -f orc/nginx_shibboleth/nginx-shibboleth-app-test.yaml --namespace=orc-test-ns
+kubectl apply -f orc/nginx_shibboleth/nginx-shibboleth-app.yaml --namespace=orc-ns
