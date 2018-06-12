@@ -1,6 +1,6 @@
 #https://hub.docker.com/r/jupyterhub/k8s-binderhub/tags/
 #sudo docker build -t binder-fork -f helm-chart/images/binderhub/Dockerfile .
-FROM jupyterhub/k8s-binderhub:b5000ad
+FROM jupyterhub/k8s-binderhub:856e3e6
 
 ADD templates/page.html /usr/local/lib/python3.6/site-packages/binderhub/templates/page.html
 
