@@ -65,7 +65,7 @@ jupyterhub:
 build:
 #  nodeSelector:
 #    worker1: production
-  repo2dockerImage: jupyter/repo2docker:42ad233
+  repo2dockerImage: jupyter/repo2docker:d4c9c88
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
     USER root
@@ -111,7 +111,7 @@ service:
 
 image:
   name: gesiscss/k8s-binderhub-orc
-  tag: "c5b94aa2"
+  tag: "0a6ace0f"
 
 baseUrl: /binder/
 

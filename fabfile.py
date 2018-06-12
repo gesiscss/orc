@@ -88,7 +88,7 @@ def deploy(branch='master', mode='', is_staging=False):
             print('####### helm upgrade bhub{-test} ns'.format(**format_dict))
             run('helm repo update')
             # run('helm upgrade bhub{-test} ~/ilcm/binderhub-0.1.0-e113dbb/binderhub --wait '
-            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-b5000ad --wait --force --install '
+            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-856e3e6 --wait --force --install '
                 '-f ~/ilcm/orc/binderhub/secret{_test}.yaml '
                 '-f binderhub/config{_test}.yaml --debug --timeout=360000'.
                 format(**format_dict))
