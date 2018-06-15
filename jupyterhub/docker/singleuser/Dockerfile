@@ -1,13 +1,8 @@
 # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
 # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
-FROM jupyter/datascience-notebook:92fe05d1e7e5
+FROM jupyter/datascience-notebook:03b897d05f16
 
-# conda/pip/apt install additional packages here, if desired.
-
-# pin jupyterhub to match the Hub version
-# set via --build-arg in Makefile
-ARG JUPYTERHUB_VERSION=0.8.*
-RUN pip install --no-cache jupyterhub==$JUPYTERHUB_VERSION
+RUN pip install --no-cache jupyterhub==0.9.0rc1
 
 # More R packages
 
@@ -23,6 +18,7 @@ RUN pip install --no-cache jupyterhub==$JUPYTERHUB_VERSION
 #binstar upload /opt/conda/conda-bld/linux-64/r-opennlpdata-1.5.3_4-r3.3.2_0.tar.bz2
 #binstar upload /opt/conda/conda-bld/linux-64/r-opennlp-0.2_6-r3.3.2_0.tar.bz2
 
+# FIXME r packages are actually not installed
 # https://anaconda.org/brown-data-science/repo
 RUN conda install --quiet --yes \
     -c conda-forge \
@@ -41,20 +37,19 @@ RUN conda install --quiet --yes \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# https://zero-to-jupyterhub.readthedocs.io/en/latest/user-environment.html#use-jupyterlab-by-default
-# Note: For all methods of installation, if you are using a version of Jupyter Notebook earlier than 5.3,
-# then you must also run the following command after installation to enable the JupyterLab server extension:
-RUN jupyter serverextension enable --py jupyterlab --sys-prefix
-
 # https://github.com/jupyter/notebook/blob/master/notebook/templates/page.html
 RUN mv /opt/conda/lib/python3.6/site-packages/notebook/templates/page.html /opt/conda/lib/python3.6/site-packages/notebook/templates/page_base.html
 ADD templates/page.html /opt/conda/lib/python3.6/site-packages/notebook/templates/page.html
+# FIXME extra_template_paths didnt work
+#RUN mkdir -p /etc/jupyter/custom_notebook_templates
+#COPY templates/page.html /etc/jupyter/custom_notebook_templates
+#USER root
+#RUN chown -R $NB_UID:users /etc/jupyter/custom_notebook_templates
+#USER $NB_UID
+COPY extra_notebook_config.py  /etc/jupyter/extra_notebook_config.py
+RUN cat /etc/jupyter/extra_notebook_config.py >> /etc/jupyter/jupyter_notebook_config.py
+RUN rm -f /etc/jupyter/extra_notebook_config.py
+
+# FIXME doesnt work for jlab
 # https://github.com/jupyterlab/jupyterlab/blob/master/jupyterlab/staging/templates/template.html
 ADD templates/template.html /opt/conda/lib/python3.6/site-packages/jupyterlab/staging/templates/template.html
-# redo this to apply replacement of template.html
-RUN jupyter labextension install @jupyterlab/hub-extension && \
-    npm cache clean && \
-    rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
-    rm -rf /home/$NB_USER/.cache/yarn && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER

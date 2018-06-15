@@ -1,7 +1,8 @@
 {% extends "page_base.html" %}
 
 {% block meta %}
-{#  TODO do this only in production + same for template.html #}
+  {% block etracker %}
+  {% if is_production %}
   {% set etracker_prefix = "NOTEBOOKS" %}
   <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
   <!-- This material may not be reproduced, displayed, modified or distributed -->
@@ -22,6 +23,8 @@
                     et_basket=&amp;et_url=&amp;et_tag=&amp;et_sub=&amp;et_organisation=&amp;et_demographic="/>
   </noscript>
   <!-- etracker tracklet 4.0 end -->
+  {% endif %}
+  {% endblock etracker %}
 {% endblock %}
 
 {% block header_buttons %}

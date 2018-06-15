@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= require('html-loader!./partial.html') %>
 
+  {% if is_production %}
   <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
   <!-- This material may not be reproduced, displayed, modified or distributed -->
   <!-- without the express prior written permission of the copyright holder. -->
@@ -25,6 +26,7 @@
                     et_basket=&amp;et_url=&amp;et_tag=&amp;et_sub=&amp;et_organisation=&amp;et_demographic="/>
   </noscript>
   <!-- etracker tracklet 4.0 end -->
+  {% endif %}
 
 </head>
 <body>

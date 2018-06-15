@@ -30,7 +30,7 @@
     <title>{% block title %}JupyterHub{% endblock %}</title>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="JupyterHub - GESIS Notebooks (beta)">
+    <meta name="description" content="JupyterHub - GESIS Notebooks (beta{% if is_staging %}-test{% endif %})">
 
     {% block stylesheet %}
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -77,10 +77,21 @@
         {% if user %}
         user: "{{user.name}}",
         {% endif %}
+        {% if admin_access %}
+        admin_access: true,
+        {% else %}
+        admin_access: false,
+        {% endif %}
+        {% if not no_spawner_check and user and user.spawner.options_form %}
+        options_form: true,
+        {% else %}
+        options_form: false,
+        {% endif %}
       }
     </script>
 
-    {#  TODO do this only in production  #}
+    {% block etracker %}
+    {% if is_production %}
     {% set etracker_prefix = "NOTEBOOKS" %}
     <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
     <!-- This material may not be reproduced, displayed, modified or distributed -->
@@ -101,6 +112,8 @@
                     et_basket=&amp;et_url=&amp;et_tag=&amp;et_sub=&amp;et_organisation=&amp;et_demographic="/>
     </noscript>
     <!-- etracker tracklet 4.0 end -->
+    {% endif %}
+    {% endblock etracker %}
 
     {% block meta %}
     {% endblock %}
@@ -168,7 +181,7 @@
           </div>
           <div id="header_banner">
               <a  href="/">
-                  <img src="/static/images/gs_ms_banner_default_notebooks_beta.png" class="img-responsive"
+                  <img src="/static/images/gs_ms_banner_default_notebooks{% if is_staging %}_test{% endif %}_beta.png" class="img-responsive"
                        alt="To GESIS Notebooks Homepage" title="To GESIS Notebooks Homepage">
               </a>
           </div>
@@ -179,6 +192,7 @@
 
 <div id="main-container" class="container">
     <div class="row">
+        {% block nav_bar %}
         <nav class="navbar navbar-default">
           <div class="container-fluid" style="color: #58748f; background-color: #cdd5dd; border: none; border-radius: 0; padding: 0;">
             <div class="navbar-header">
@@ -197,13 +211,12 @@
                 {% if user.admin %}
                 <li><a href="{{base_url}}admin">Admin</a></li>
                 {% endif %}#}
-{#                    <li><a href="https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/Shibboleth.sso/Login?SAMLDS=1&target=https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/jupyter/hub/login&entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth">Your Server</a></li>#}
                 <li class="dropdown">
                   <a href="#" id="navbar-active-a" class="dropdown-toggle gs_active_sub" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your Server <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="{{base_url}}home">Home</a></li>
                     <li><a href="{{base_url}}token">Token</a></li>
-                    {% if user.admin %}<li><a href="{{base_url}}admin">Admin</a></li>{% endif %}
+                    {% if user.admin %}<li><a href="{{base_url}}admin_orc">Admin</a></li>{% endif %}
                     <li><a href="{% if user %}{{logout_url}}{% else %}{{login_url}}{% endif %}">{% if user %}Logout{% else %}Login{% endif %}</a></li>
                   </ul>
                 </li>
@@ -212,17 +225,20 @@
             </div>
           </div>
         </nav>
+        {% endblock nav_bar %}
     </div>
-{#    {% block headline %}
-    <div class="row">
-        <div class="col-lg-10 col-lg-offset-1">
-            <div id="header" class="text-center">
-                    <h3>Open Research Computing<br> for the Social Sciences</h3>
-            </div>
-        </div>
-    </div>
-    {% endblock headline %}#}
+    {% block header %}
+    {% endblock %}
 </div>
+
+
+{% block announcement %}
+{% if announcement %}
+<div class="container text-center announcement">
+  {{ announcement | safe }}
+</div>
+{% endif %}
+{% endblock %}
 
 {% block main %}
 {% endblock %}
