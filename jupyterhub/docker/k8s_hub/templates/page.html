@@ -128,7 +128,8 @@
     Please enable it to proceed.
   </div>
 </noscript>
-
+{% block body %}
+{% block header %}
 <header style="background-color: #333;">
   <div role="navigation" class="navbar navbar-default navbar-static-top">
       <div style="background-color: #333;">
@@ -189,6 +190,7 @@
       </div>
   </div>
 </header>
+{% endblock header %}
 
 <div id="main-container" class="container">
     <div class="row">
@@ -227,10 +229,7 @@
         </nav>
         {% endblock nav_bar %}
     </div>
-    {% block header %}
-    {% endblock %}
 </div>
-
 
 {% block announcement %}
 {% if announcement %}
@@ -241,7 +240,7 @@
 {% endblock %}
 
 {% block main %}
-{% endblock %}
+{% endblock main %}
 
 {% call modal('Error', btn_label='OK') %}
   <div class="ajax-error">
@@ -272,6 +271,7 @@
       </div>
     </footer>
 {% endblock footer %}
+{% endblock body %}
 
     <script>
         $("div#navbar>ul>li>a").hover(
