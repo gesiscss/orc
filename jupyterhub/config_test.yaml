@@ -3,8 +3,8 @@ hub:
 #  nodeSelector:
 #    worker1: production
   image:
-    name: gesiscss/k8s-hub-test
-    tag: jhub0.9.0rc1-orc-2
+    name: gesiscss/k8s-hub-orc
+    tag: "a3c011cd"
   db:
     type: postgres
   extraConfig: |
@@ -125,8 +125,8 @@ singleuser:
   storage:
     capacity: 15Gi
   image:
-    name: gesiscss/k8s-hub-test
-    tag: jhub0.9.0rc1-su-2
+    name: gesiscss/singleuser-orc
+    tag: "e406f884"
   cpu:
     guarantee: 0.2
     limit: 1
