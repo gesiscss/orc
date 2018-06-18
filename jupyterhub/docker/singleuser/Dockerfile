@@ -2,7 +2,7 @@
 # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
 FROM jupyter/datascience-notebook:03b897d05f16
 
-RUN pip install --no-cache jupyterhub==0.9.0rc1
+RUN pip install --no-cache jupyterhub==0.9.0
 
 # More R packages
 
