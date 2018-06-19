@@ -5,11 +5,83 @@ hub:
 #    worker1: production
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "c5b94aa2"
+    tag: "c4ec194e"
   db:
     type: postgres
   extraConfig: |
     c.Authenticator.shibboleth_logout_url = 'https://notebooks.gesis.org/Shibboleth.sso/Logout?return=https://notebooks.gesis.org/'
+    c.JupyterHub.redirect_to_server = False
+    c.JupyterHub.bind_url = 'https://notebooks.gesis.org/jupyter/'
+    c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
+    c.JupyterHub.template_vars = {'is_staging': False, 'is_production': True}
+
+    from jupyterhub.handlers.base import BaseHandler
+    from jupyterhub.utils import admin_only
+    from jupyterhub import orm
+    class OrcAdminHandler(BaseHandler):
+      """Render the admin page."""
+      @admin_only
+      async def get(self):
+          available = {'name', 'admin', 'running', 'last_activity'}
+          default_sort = ['last_activity']
+          mapping = {
+              'running': orm.Spawner.server_id,
+          }
+          for name in available:
+              if name not in mapping:
+                  mapping[name] = getattr(orm.User, name)
+
+          default_order = {
+              'name': 'asc',
+              'last_activity': 'desc',
+              'admin': 'desc',
+              'running': 'desc',
+          }
+
+          sorts = self.get_arguments('sort') or default_sort
+          orders = self.get_arguments('order')
+
+          for bad in set(sorts).difference(available):
+              self.log.warning("ignoring invalid sort: %r", bad)
+              sorts.remove(bad)
+          for bad in set(orders).difference({'asc', 'desc'}):
+              self.log.warning("ignoring invalid order: %r", bad)
+              orders.remove(bad)
+
+          # add default sort as secondary
+          for s in default_sort:
+              if s not in sorts:
+                  sorts.append(s)
+          if len(orders) < len(sorts):
+              for col in sorts[len(orders):]:
+                  orders.append(default_order[col])
+          else:
+              orders = orders[:len(sorts)]
+
+          # this could be one incomprehensible nested list comprehension
+          # get User columns
+          cols = [ mapping[c] for c in sorts ]
+          # get User.col.desc() order objects
+          ordered = [ getattr(c, o)() for c, o in zip(cols, orders) ]
+
+          users = self.db.query(orm.User).outerjoin(orm.Spawner).order_by(*ordered)
+          users = [ self._user_from_orm(u) for u in users ]
+          running = [ u for u in users if u.running ]
+          for user in users:
+              auth_state = await user.get_auth_state()
+              auth_state = auth_state or {}
+              setattr(user, 'gn', auth_state.get('Givenname', ''))
+              setattr(user, 'sn', auth_state.get('sn', ''))
+
+          html = self.render_template('admin.html',
+              user=self.get_current_user(),
+              admin_access=self.settings.get('admin_access', False),
+              users=users,
+              running=running,
+              sort={s:o for s,o in zip(sorts, orders)},
+          )
+          self.finish(html)
+    c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
   resources:
     requests:
       cpu: "0.5"
@@ -36,14 +108,6 @@ proxy:
       limits:
         cpu: "0.5"
         memory: 512Mi
-  nginx:
-    resources:
-      requests:
-        cpu: "0.5"
-        memory: 1Gi
-      limits:
-        cpu: "1"
-        memory: 2Gi
 
 auth:
   type: custom
@@ -63,15 +127,20 @@ singleuser:
     capacity: 15Gi
   image:
     name: gesiscss/singleuser-orc
-    tag: c81f03fe
+    tag: "e406f884"
   cpu:
     guarantee: 0.2
     limit: 2
   memory:
     guarantee: 2G
     limit: 4G
+  extraEnv:
+    IS_STAGING: false
+    IS_PRODUCTION: true
 
 prePuller:
+  hook:
+    enabled: true
   continuous:
     enabled: true
 
