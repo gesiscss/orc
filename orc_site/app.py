@@ -15,6 +15,7 @@ context = {
                        format(*['-test', '-test'] if os.environ.get('DEPLOYMENT_ENV') == 'staging' else ['', '']),
     'bhub_url': '/binder/',
     'about_url': '/about/',
+    'tou_url': '/terms_of_use/',
     'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
     'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
     'contact_url': 'mailto:notebooks@gesis.org',
@@ -67,6 +68,12 @@ def login():
 def about():
     context.update({'active': 'about'})
     return render_template('about.html', **context)
+
+
+@app.route('/terms_of_use/')
+def terms_of_use():
+    context.update({'active': 'terms_of_use'})
+    return render_template('terms_of_use.html', **context)
 
 
 if __name__ == '__main__':

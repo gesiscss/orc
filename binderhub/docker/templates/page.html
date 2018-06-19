@@ -194,11 +194,14 @@
           <span class="footer-span">
               <img src="/static/images/leibniz_logo_en_white.svg" width="78" height="54" alt="Leibniz Logo"/>
           </span>
-          <span class="footer-span">
-              <a class="footer-link" href="https://www.gesis.org/en/institute/imprint/">Imprint</a>
+          <span class="footer-span" style="padding-right: 0;">
+              <a class="footer-link" href="https://www.gesis.org/en/institute/imprint/">Imprint</a> |
+          </span>
+          <span class="footer-span" style="padding-right: 0;">
+              <a class="footer-link" href="https://www.gesis.org/en/institute/data-protection/">Data protection</a> |
           </span>
           <span class="footer-span">
-              <a class="footer-link" href="https://www.gesis.org/en/institute/data-protection/">Data protection</a>
+              <a class="footer-link" href="https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/terms_of_use/">Terms of Use</a>
           </span>
           <span class="footer-span">
               &copy; GESIS

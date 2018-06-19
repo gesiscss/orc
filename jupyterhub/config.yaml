@@ -114,7 +114,7 @@ auth:
   custom:
     className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
   admin:
-    access: false
+    access: true
     users: ['kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org']
   state:
     enabled: true
