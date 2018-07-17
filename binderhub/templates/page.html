@@ -5,9 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="GESIS Notebooks ({% if google_analytics_code == 'staging' %}test-{% endif %}beta)">
+  <meta name="description" content="GESIS Notebooks ({% if is_staging %}test-{% endif %}beta)">
   {#<meta name="author" content="">#}
-  <title>{% block title %}GESIS Notebooks ({% if google_analytics_code == 'staging' %}test-{% endif %}beta){% endblock %}</title>
+  <title>{% block title %}GESIS Notebooks ({% if is_staging %}test-{% endif %}beta){% endblock %}</title>
   {% block head %}
 {#  <link href="{{static_url("index.css")}}" rel="stylesheet"/>#}
   <link href="{{static_url("dist/styles.css")}}" rel="stylesheet"/>
@@ -27,7 +27,7 @@
     <![endif]-->
 
   {% block etracker %}
-  {% if google_analytics_code == 'production' %}
+  {% if is_production %}
   {% set etracker_prefix = "NOTEBOOKS" %}
   <!-- Copyright (c) 2000-2016 etracker GmbH. All rights reserved. -->
   <!-- This material may not be reproduced, displayed, modified or distributed -->
@@ -56,7 +56,7 @@
 </head>
 <body>
     {% block body %}
-    {% block header %}
+    {% block nav_header %}
     <header style="background-color: #333;">
       <div role="navigation" class="navbar navbar-default navbar-static-top">
           <div style="background-color: #333;">
@@ -144,7 +144,7 @@
     {#                  <div id="header_banner" class="col-xs-12 hidden-xs hidden-sm">#}
               <div id="header_banner">
                   <a  href="/">
-                      <img src="/static/images/gs_ms_banner_default_notebooks{% if google_analytics_code == 'staging' %}_test{% endif %}_beta.png" class="img-responsive"
+                      <img src="/static/images/gs_ms_banner_default_notebooks{% if is_staging %}_test{% endif %}_beta.png" class="img-responsive"
                            alt="To GESIS Notebooks Homepage" title="To GESIS Notebooks Homepage">
                   </a>
               </div>
@@ -152,7 +152,7 @@
           </div>
       </div>
     </header>
-    {% endblock header %}
+    {% endblock nav_header %}
 
     <div id="main-container" class="container">
         <div class="row">
@@ -170,7 +170,7 @@
 {#                  <ul class="nav navbar-nav" style="float:none; margin: 0 auto; display: table; table-layout: fixed;">#}
                   <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-{#                    <li><a href="https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/Shibboleth.sso/Login?SAMLDS=1&target=https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/jupyter/hub/login&entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth">Your Server</a></li>#}
+{#                    <li><a href="https://notebooks{% if is_staging %}-test{% endif %}.gesis.org/Shibboleth.sso/Login?SAMLDS=1&target=https://notebooks{% if is_staging %}-test{% endif %}.gesis.org/jupyter/hub/login&entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth">Your Server</a></li>#}
                     <li><a href="/jupyter/">Your Server</a></li>
                     <li><a href="/binder/" id="navbar-active-a" class="gs_active_sub">Binder</a></li>
                   </ul>
@@ -201,7 +201,7 @@
               <a class="footer-link" href="https://www.gesis.org/en/institute/data-protection/">Data protection</a> |
           </span>
           <span class="footer-span">
-              <a class="footer-link" href="https://notebooks{% if google_analytics_code == 'staging' %}-test{% endif %}.gesis.org/terms_of_use/">Terms of Use</a>
+              <a class="footer-link" href="https://notebooks{% if is_staging %}-test{% endif %}.gesis.org/terms_of_use/">Terms of Use</a>
           </span>
           <span class="footer-span">
               &copy; GESIS

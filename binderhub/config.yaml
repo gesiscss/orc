@@ -14,6 +14,9 @@ jupyterhub:
       limits:
         cpu: "1"
         memory: 2Gi
+    extraConfig:
+      neverRestart: |
+        c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
 
   proxy:
 #    nodeSelector:
@@ -22,7 +25,6 @@ jupyterhub:
       enabled: false
     service:
       type: NodePort
-      nodePort: 30082
       nodePorts:
         http: 30082
     chp:
@@ -33,14 +35,6 @@ jupyterhub:
         limits:
           cpu: "0.5"
           memory: 512Mi
-    nginx:
-      resources:
-        requests:
-          cpu: "0.5"
-          memory: 1Gi
-        limits:
-          cpu: "1"
-          memory: 2Gi
 
   singleuser:
     schedulerStrategy: spread
@@ -91,8 +85,6 @@ resources:
 #nodeSelector:
 #  worker1: production
 
-googleAnalyticsCode: 'production'
-
 registry:
   enabled: true
   prefix: gesiscss/orc-binder-
@@ -106,14 +98,39 @@ dind:
 service:
   type: NodePort
   nodePort: 30081
-  nodePorts:
-    http: 30081
-
-image:
-  name: gesiscss/k8s-binderhub-orc
-  tag: "62af0b10"
 
 baseUrl: /binder/
 
 hub:
   url: https://notebooks.gesis.org/binder/jupyter/
+
+template:
+  variables:
+    is_staging: False
+    is_production: True
+  path: /etc/binderhub/templates/binderhub/templates
+#  static:
+#    path: /etc/binderhub/templates/binderhub/static
+#    urlPrefix: extra_static/
+
+initContainers:
+  - name: git-clone-templates
+    image: alpine/git
+    args:
+      - clone
+      - --single-branch
+      - --branch=master
+      - --
+      - https://github.com/gesiscss/orc.git
+      - /etc/binderhub/templates
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: custom-templates
+        mountPath: /etc/binderhub/templates
+extraVolumes:
+  - name: custom-templates
+    emptyDir: {}
+extraVolumeMounts:
+  - name: custom-templates
+    mountPath: /etc/binderhub/templates

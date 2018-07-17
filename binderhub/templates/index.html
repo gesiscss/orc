@@ -1,4 +1,4 @@
-{% extends "index_base.html" %}
+{% extends "templates/index.html" %}
 
 {% block main %}
   <div class="row">
@@ -10,13 +10,16 @@
     <h4 class="text-center logo-subtext">(beta)</h4>
 {#    <div class="col-lg-10 col-lg-offset-1">#}
     <div class="col-lg-12">
+      {% block header %}
       <div id="header" class="text-center">
 {#        <h3>Turn a GitHub repo into a collection of interactive notebooks</h3>#}
         <div id="explanation">
           Have a repository full of Jupyter notebooks? With Binder, open those notebooks in an executable environment, making your code immediately reproducible by anyone, anywhere.
         </div>
       </div>
+      {% endblock header %}
 
+      {% block form %}
       <form id="build-form" class="form jumbotron">
         <h4 id="form-header" class='row'>Build and launch a repository</h4>
         <input type="hidden" id="provider_prefix" value="gh"/>
@@ -129,8 +132,10 @@
           </div>
         </div>
       </form>
+      {% endblock form %}
     </div>
   </div>
+  {% block how_it_works %}
   <div id="how-it-works">
     <h3 class="text-center">How it works</h3>
 
@@ -161,6 +166,7 @@
       </div>
     </div>
   </div>
+  {% endblock how_it_works %}
 
 <div class="row text-center">
   <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>

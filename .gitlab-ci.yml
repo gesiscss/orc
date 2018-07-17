@@ -50,13 +50,6 @@ build_job:
         docker tag k8s-hub-orc gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
         docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
       fi;
-      if git diff HEAD~ --name-only | egrep 'binderhub/docker/Dockerfile|binderhub/docker/templates/'; then
-        echo "####### gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t k8s-binderhub-orc binderhub/docker/.
-        docker tag k8s-binderhub-orc gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8
-        docker push gesiscss/k8s-binderhub-orc:$CI_COMMIT_SHA_8
-      fi;
       if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/docker/Dockerfile'; then
         echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
