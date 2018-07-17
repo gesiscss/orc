@@ -79,7 +79,7 @@ def deploy(branch='master', mode='', is_staging=False):
         if 'jhubns' in mode or 'jhubtestns' in mode:
             print('####### helm upgrade jhub{-test} ns'.format(**format_dict))
             run('helm repo update')
-            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=v0.7-6162c7b --wait --force --install '
+            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=v0.7-6162c7b --wait --force --install --namespace=jhub{-test}-ns '
                 '-f jupyterhub/config{_test}.yaml '
                 '-f ~/ilcm/orc/jupyterhub/secret{_test}.yaml --debug --timeout=360000'.
                 format(**format_dict))
@@ -88,7 +88,7 @@ def deploy(branch='master', mode='', is_staging=False):
             print('####### helm upgrade bhub{-test} ns'.format(**format_dict))
             run('helm repo update')
             # run('helm upgrade bhub{-test} ~/ilcm/binderhub-0.1.0-e113dbb/binderhub --wait '
-            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-8ebaf89 --wait --force --install '
+            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-8ebaf89 --wait --force --install --namespace=bhub{-test}-ns '
                 '-f ~/ilcm/orc/binderhub/secret{_test}.yaml '
                 '-f binderhub/config{_test}.yaml --debug --timeout=360000'.
                 format(**format_dict))
