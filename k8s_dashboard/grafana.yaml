@@ -1,4 +1,4 @@
-# NOTE taken from https://github.com/kubernetes/heapster/blob/v1.5.3/deploy/kube-config/influxdb/grafana.yaml and updated.
+# NOTE taken from https://github.com/kubernetes/heapster/blob/v1.5.2/deploy/kube-config/influxdb/grafana.yaml and updated.
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -16,7 +16,7 @@ spec:
         worker1: production  # because of hostPath PVs
       containers:
       - name: grafana
-        image: k8s.gcr.io/heapster-grafana-amd64:v5.0.4
+        image: gcr.io/google_containers/heapster-grafana-amd64:v4.4.3
         ports:
         - containerPort: 3000
           protocol: TCP
