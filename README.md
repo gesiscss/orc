@@ -45,7 +45,7 @@ authenticator in ORC instance.
 
 [Single user server image](/jupyterhub/docker/singleuser)
 
-Currently JupyterHub v0.9.0 runs under https://notebooks.gesis.org/jupyter/.
+Currently JupyterHub v0.9.1 runs under https://notebooks.gesis.org/jupyter/.
 
 ### [BinderHub](/binderhub)
 

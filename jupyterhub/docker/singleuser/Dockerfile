@@ -1,8 +1,8 @@
 # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
 # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
-FROM jupyter/datascience-notebook:03b897d05f16
+FROM jupyter/datascience-notebook:702d2f6a3eaa
 
-RUN pip install --no-cache jupyterhub==0.9.0
+RUN pip install --no-cache jupyterhub==0.9.1
 
 # More R packages
 
@@ -22,17 +22,17 @@ RUN pip install --no-cache jupyterhub==0.9.0
 # https://anaconda.org/brown-data-science/repo
 RUN conda install --quiet --yes \
     -c conda-forge \
-    'r-tm=0.7*' \
+#    'r-tm=0.7*' \
     'lxml=4.2.*' \
     'wordcloud=1.4.*' && \
-    conda install --quiet --yes \
-    -c brown-data-science \
-    'r-lda=1.4*' \
-    'r-topicmodels=0.2*' && \
-    conda install --quiet --yes \
-    -c bitnik \
-    'r-opennlpdata=1.5.*' \
-    'r-opennlp=0.2*' && \
+#    conda install --quiet --yes \
+#    -c brown-data-science \
+#    'r-lda=1.4*' \
+#    'r-topicmodels=0.2*' && \
+#    conda install --quiet --yes \
+#    -c bitnik \
+#    'r-opennlpdata=1.5.*' \
+#    'r-opennlp=0.2*' && \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
