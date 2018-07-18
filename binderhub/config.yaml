@@ -43,7 +43,7 @@ jupyterhub:
       limit: 2
     memory:
       guarantee: 2G
-      limit: 4G
+      limit: 8G
 #    nodeSelector:
 #      worker1: production
 
