@@ -6,6 +6,7 @@
 {{ th("sn", 'sn') }}
 {{ th("Admin", 'admin') }}
 {{ th("Last Seen", 'last_activity') }}
+{{ th("Created", 'created') }}
 {{ th("Running (%i)" % running|length, 'running', colspan=2) }}
 {% endblock thead %}
 
@@ -21,6 +22,7 @@
 Never
 {%- endif -%}
 </td>
+<td class="time-col col-sm-3">{{ u.created.isoformat() + 'Z' }}</td>
 <td class="server-col col-sm-2 text-center">
 <a role="button" class="stop-server btn btn-xs btn-danger {% if not u.running %}hidden{% endif %}">stop server</a>
 <a role="button" class="start-server btn btn-xs btn-primary {% if u.running %}hidden{% endif %}">start server</a>
