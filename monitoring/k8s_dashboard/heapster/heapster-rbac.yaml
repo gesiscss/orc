@@ -1,0 +1,13 @@
+# NOTE taken from https://github.com/kubernetes/heapster/blob/v1.5.3/deploy/kube-config/rbac/heapster-rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: heapster
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:heapster
+subjects:
+- kind: ServiceAccount
+  name: heapster
+  namespace: kube-system
