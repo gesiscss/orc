@@ -4,7 +4,9 @@ hub:
 #    worker1: production
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "08976300"
+    tag: "107d08ad"
+  # use default deployment strategy (rollingUpdate)
+  deploymentStrategy: {}
   db:
     type: postgres
   extraConfig: |
@@ -96,7 +98,6 @@ proxy:
     enabled: false
   service:
     type: NodePort
-    nodePort: 30180
     nodePorts:
       http: 30180
   chp:
