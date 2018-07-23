@@ -22,8 +22,7 @@
 Never
 {%- endif -%}
 </td>
-{#<td class="time-col col-sm-3">{{ u.created.isoformat() + 'Z' }}</td>#}
-<td class="time-col col-sm-3">{{ u.created.strftime('%Y.%m.%d %H:%M:%S') }}</td>
+<td class="time-col col-sm-3">{{ u.created.isoformat() + 'Z' }}</td>
 <td class="server-col col-sm-1 text-center">
 <a role="button" class="stop-server btn btn-xs btn-danger {% if not u.running %}hidden{% endif %}">stop server</a>
 <a role="button" class="start-server btn btn-xs btn-primary {% if u.running %}hidden{% endif %}">start server</a>
