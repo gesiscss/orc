@@ -83,13 +83,6 @@ hub:
           )
           self.finish(html)
     c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
-  resources:
-    requests:
-      cpu: "0.2"
-      memory: 512Mi
-    limits:
-      cpu: "0.5"
-      memory: 1Gi
 
 proxy:
 #  nodeSelector:
@@ -100,14 +93,6 @@ proxy:
     type: NodePort
     nodePorts:
       http: 30180
-  chp:
-    resources:
-      requests:
-        cpu: "0.2"
-        memory: 256Mi
-      limits:
-        cpu: "0.5"
-        memory: 512Mi
 
 auth:
   type: custom
@@ -129,8 +114,8 @@ singleuser:
     name: gesiscss/singleuser-orc
     tag: "8c52d032"
   cpu:
-    guarantee: 0.2
-    limit: 1
+    guarantee: 0.1
+    limit: 0.5
   memory:
     guarantee: 256M
     limit: 256M

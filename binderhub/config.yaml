@@ -30,7 +30,7 @@ jupyterhub:
     chp:
       resources:
         requests:
-          cpu: "0.2"
+          cpu: "0.25"
           memory: 512Mi
         limits:
           cpu: "0.5"
@@ -76,7 +76,7 @@ build:
 # below is for binder
 resources:
   requests:
-    cpu: "1"
+    cpu: "0.5"
     memory: 1Gi
   limits:
     cpu: "2"
@@ -94,6 +94,9 @@ registry:
 
 dind:
   enabled: true
+
+imageCleaner:
+  enabled: false
 
 service:
   type: NodePort
