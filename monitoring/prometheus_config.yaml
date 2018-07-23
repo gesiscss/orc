@@ -1,0 +1,26 @@
+# https://github.com/helm/charts/tree/master/stable/prometheus
+nodeExporter:
+  updateStrategy:
+    type: RollingUpdate
+alertmanager:
+  # TODO
+  enabled: false
+pushgateway:
+  enabled: false
+
+
+server:
+#  nodeSelector:
+  service:
+    servicePort: 9090
+  resources:
+    requests:
+      cpu: "2"
+      memory: 16Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi
+  persistentVolume:
+    size: 64Gi
+#    storageClass: ssd
+#  retention: 60d
