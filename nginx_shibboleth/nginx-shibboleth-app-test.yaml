@@ -69,10 +69,10 @@ spec:
           # One cpu, in Kubernetes, is equivalent to 1 Hyperthread on a bare-metal Intel processor with Hyperthreading
           requests:
             # If a pod is successfully scheduled, the container is guaranteed the amount of resources requested.
-            cpu: "0.4"
+            cpu: "0.25"
             memory: "256Mi"
           limits:
-            cpu: "0.8"
+            cpu: "0.5"
             memory: "512Mi"
         volumeMounts:
         - name: shibboleth-sp-conf
