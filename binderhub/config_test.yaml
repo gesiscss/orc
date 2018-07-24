@@ -5,6 +5,13 @@ jupyterhub:
 #      worker1: production
     db:
       type: postgres
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 512Mi
+      limits:
+        cpu: "0.5"
+        memory: 512Mi
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
@@ -18,6 +25,14 @@ jupyterhub:
       type: NodePort
       nodePorts:
         http: 30182
+    chp:
+      resources:
+        requests:
+          cpu: "0.2"
+          memory: 256Mi
+        limits:
+          cpu: "0.5"
+          memory: 256Mi
 
   singleuser:
     schedulerStrategy: spread
@@ -53,6 +68,13 @@ build:
     USER $NB_USER
 
 # below is for binder
+resources:
+  requests:
+    cpu: "0.25"
+    memory: 512Mi
+  limits:
+    cpu: "0.5"
+    memory: 512Mi
 
 #nodeSelector:
 #  worker1: production
