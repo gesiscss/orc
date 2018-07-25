@@ -6,7 +6,8 @@ hub:
     name: gesiscss/k8s-hub-orc
     tag: "12a2c99f"
   # use default deployment strategy (rollingUpdate)
-  deploymentStrategy: {}
+  deploymentStrategy:
+    type: RollingUpdate
   db:
     type: postgres
   extraConfig: |
