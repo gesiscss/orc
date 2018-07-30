@@ -5,7 +5,7 @@ hub:
 #    worker1: production
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "12a2c99f"
+    tag: "1f8ecfc9"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
