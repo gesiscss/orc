@@ -3,8 +3,8 @@ jupyterhub:
     baseUrl: /binder/jupyter/
 #    nodeSelector:
 #      worker1: production
-  annotations:
-    prometheus.io/scrape: 'false'
+    annotations:
+      prometheus.io/scrape: 'false'
     deploymentStrategy:
       type: RollingUpdate
     db:

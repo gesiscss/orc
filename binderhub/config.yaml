@@ -5,8 +5,8 @@ jupyterhub:
     baseUrl: /binder/jupyter/
 #    nodeSelector:
 #      worker1: production
-  annotations:
-    prometheus.io/path: "/binder/jupyter/hub/metrics"
+    annotations:
+      prometheus.io/path: "/binder/jupyter/hub/metrics"
     deploymentStrategy:
       type: RollingUpdate
     db:
