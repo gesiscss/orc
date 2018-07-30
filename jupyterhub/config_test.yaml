@@ -2,6 +2,8 @@ hub:
   baseUrl: /jupyter/
 #  nodeSelector:
 #    worker1: production
+  annotations:
+    prometheus.io/path: "/jupyter/hub/metrics"
   image:
     name: gesiscss/k8s-hub-orc
     tag: "87783d2d"

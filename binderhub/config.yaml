@@ -5,6 +5,10 @@ jupyterhub:
     baseUrl: /binder/jupyter/
 #    nodeSelector:
 #      worker1: production
+  annotations:
+    prometheus.io/path: "/binder/jupyter/hub/metrics"
+    deploymentStrategy:
+      type: RollingUpdate
     db:
       type: postgres
     resources:
@@ -99,6 +103,8 @@ imageCleaner:
   enabled: false
 
 service:
+  annotations:
+    prometheus.io/path: '/binder/metrics'
   type: NodePort
   nodePort: 30081
 

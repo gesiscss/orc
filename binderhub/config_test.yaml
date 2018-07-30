@@ -3,6 +3,10 @@ jupyterhub:
     baseUrl: /binder/jupyter/
 #    nodeSelector:
 #      worker1: production
+  annotations:
+    prometheus.io/scrape: 'false'
+    deploymentStrategy:
+      type: RollingUpdate
     db:
       type: postgres
     resources:
@@ -93,6 +97,8 @@ imageCleaner:
   enabled: false
 
 service:
+  annotations:
+    prometheus.io/scrape: 'false'
   type: NodePort
   nodePort: 30181
 
