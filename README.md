@@ -11,7 +11,7 @@ For more information about iLCM project and ORC environment:
 This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 16.04.
 And kubernetes cluster is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/).
 [Flannel](https://github.com/coreos/flannel/tree/v0.10.0) is used as pod network.
-Docker version 1.13.1 is installed on servers.
+Docker version 17.03.2-ce is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
@@ -36,12 +36,12 @@ to be used in ORC instance.
 
 ### [JupyterHub](/jupyterhub)
 
-Based on [Zero to JupyterHub](https://zero-to-jupyterhub.readthedocs.io/en/latest/).
+Chart version [v0.7-2ff9218](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/2ff9218360c7ae40786b36c95c1940367a4f4054).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
 in order to use [jhub_shibboleth_auth](https://github.com/gesiscss/jhub_shibboleth_auth)
-authenticator in ORC instance.
+authenticator in ORC.
 
 [Single user server image](/jupyterhub/docker/singleuser)
 
@@ -53,7 +53,7 @@ Based on [BinderHub documentation](https://binderhub.readthedocs.io/en/latest/se
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
-BinderHub [0.1.0-8ebaf89](https://github.com/jupyterhub/binderhub/tree/8ebaf8947a85860c663db96ded0f01a4027055fa)
+BinderHub [0.1.0-795801e](https://github.com/jupyterhub/binderhub/tree/795801e131769d215c632fad11580f7d15765df1)
  (with `jupyter/repo2docker:d4c9c88`) runs under
 https://notebooks.gesis.org/binder/.
 

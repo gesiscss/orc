@@ -1,4 +1,6 @@
 jupyterhub:
+  debug:
+    enabled: true
   hub:
     baseUrl: /binder/jupyter/
 #    nodeSelector:
@@ -72,6 +74,9 @@ build:
     USER $NB_USER
 
 # below is for binder
+debug:
+  enabled: true
+
 resources:
   requests:
     cpu: "0.25"

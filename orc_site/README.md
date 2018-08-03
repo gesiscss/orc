@@ -2,7 +2,7 @@ A micro app to serve ORC project templates.
 
 ## How to run locally
 
-```
+```bash
 git clone git@github.com:gesiscss/orc.git
 cd orc/orc_site
 

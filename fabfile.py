@@ -79,7 +79,7 @@ def deploy(branch='master', mode='', is_staging=False):
         if 'jhubns' in mode or 'jhubtestns' in mode:
             print('####### helm upgrade jhub{-test} ns'.format(**format_dict))
             run('helm repo update')
-            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=v0.7-578b3a2 --wait --force --install --namespace=jhub{-test}-ns '
+            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=v0.7-2ff9218 --wait --force --install --namespace=jhub{-test}-ns '
                 '-f jupyterhub/config{_test}.yaml '
                 '-f ~/ilcm/orc/jupyterhub/secret{_test}.yaml --debug --timeout=360000'.
                 format(**format_dict))
