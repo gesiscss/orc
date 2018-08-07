@@ -10,8 +10,11 @@ pushgateway:
 
 
 server:
-#  nodeSelector:
+  nodeSelector:
+    worker1: production
   service:
+    type: NodePort
+    nodePort: 30073
     servicePort: 9090
   resources:
     requests:

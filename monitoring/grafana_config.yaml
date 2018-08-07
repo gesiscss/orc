@@ -7,6 +7,9 @@ service:
   port: 80
   nodePort: 30075
 
+nodeSelector:
+  worker1: production
+
 resources:
   requests:
     cpu: "0.2"
