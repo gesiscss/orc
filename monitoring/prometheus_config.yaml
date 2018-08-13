@@ -26,4 +26,4 @@ server:
   persistentVolume:
     size: 64Gi
 #    storageClass: ssd
-#  retention: 60d
+  retention: 60d
