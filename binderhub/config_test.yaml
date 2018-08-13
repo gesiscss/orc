@@ -59,7 +59,7 @@ jupyterhub:
 build:
 #  nodeSelector:
 #    worker1: production
-  repo2dockerImage: jupyter/repo2docker:d4c9c88
+  repo2dockerImage: jupyter/repo2docker:d2f7ebd
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
     USER root
