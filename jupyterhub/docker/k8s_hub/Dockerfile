@@ -1,5 +1,5 @@
-# https://github.com/gesiscss/jhub_shibboleth_auth/tree/c8ac23392784532a2c187ed5bd99e8fd8be324cb/docker/k8s_hub
-FROM gesiscss/k8s-hub:2ff9218-v1.2.0
+# https://github.com/gesiscss/jhub_shibboleth_auth/tree/c820dbfbeb37253bf7c0068c515197a981b60fe1/docker/k8s_hub
+FROM gesiscss/k8s-hub:ac54cf1-v1.3.0
 
 USER root
 COPY templates /srv/jhub_custom_templates

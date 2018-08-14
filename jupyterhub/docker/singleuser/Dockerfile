@@ -1,9 +1,9 @@
 # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
 # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
-FROM jupyter/datascience-notebook:03b897d05f16
+FROM jupyter/datascience-notebook:177037d09156
 
 RUN pip install --upgrade pip
-RUN pip install --no-cache jupyterhub==0.9.1
+RUN pip install --no-cache jupyterhub==0.9.2
 
 # More R packages
 
