@@ -126,8 +126,8 @@ auth:
     enabled: true
 
 singleuser:
-#  nodeSelector:
-#    worker2: staging
+  nodeSelector:
+    user: workers
   schedulerStrategy: spread
   storage:
     capacity: 15Gi

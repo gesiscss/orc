@@ -48,8 +48,8 @@ jupyterhub:
     memory:
       guarantee: 2G
       limit: 8G
-    nodeSelector:
-      workers: build
+#    nodeSelector:
+#      user: workers
 
   cull:
     # kill user pods if idle for 30 mins
@@ -62,7 +62,7 @@ jupyterhub:
 
 build:
   nodeSelector:
-    workers: build
+    build: workers
   repo2dockerImage: jupyter/repo2docker:d2f7ebd
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
