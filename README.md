@@ -53,7 +53,7 @@ Based on [BinderHub documentation](https://binderhub.readthedocs.io/en/latest/se
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
-BinderHub [0.1.0-5f82a56](https://github.com/jupyterhub/binderhub/tree/5f82a56)
+BinderHub [0.1.0-6e8f9dc](https://github.com/jupyterhub/binderhub/tree/6e8f9dc)
  (with `jupyter/repo2docker:dce3042`) runs under
 https://notebooks.gesis.org/binder/.
 
