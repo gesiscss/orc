@@ -41,7 +41,6 @@ jupyterhub:
           memory: 256Mi
 
   singleuser:
-    schedulerStrategy: spread
     cpu:
       guarantee: 0.1
       limit: 0.5
@@ -59,7 +58,7 @@ jupyterhub:
 build:
   nodeSelector:
     build: workers
-  repo2dockerImage: jupyter/repo2docker:dce3042
+  repo2dockerImage: jupyter/repo2docker:ff46dbd
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
     USER root
