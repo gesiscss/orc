@@ -9,7 +9,7 @@ hub:
     prometheus.io/scrape: 'false'
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "b4cba5b9"
+    tag: "2460b498"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
@@ -128,7 +128,6 @@ auth:
 singleuser:
   nodeSelector:
     user: workers
-  schedulerStrategy: spread
   storage:
     capacity: 15Gi
   image:

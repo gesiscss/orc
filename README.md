@@ -36,7 +36,7 @@ to be used in ORC instance.
 
 ### [JupyterHub](/jupyterhub)
 
-Chart version [0.7.0-beta.2](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.7.0-beta.2).
+Chart version [0.7.0](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.7.0).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
