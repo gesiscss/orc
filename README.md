@@ -53,8 +53,8 @@ Based on [BinderHub documentation](https://binderhub.readthedocs.io/en/latest/se
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
-BinderHub [0.1.0-587536f](https://github.com/jupyterhub/binderhub/tree/587536f)
- (with `jupyter/repo2docker:ff46dbd`) runs under
+BinderHub [0.1.0-3fbbd73](https://github.com/jupyterhub/binderhub/tree/3fbbd73)
+ (with `jupyter/repo2docker:46f056a`) runs under
 https://notebooks.gesis.org/binder/.
 
 ### [NFS provisioner](/nfs_provisioner)
