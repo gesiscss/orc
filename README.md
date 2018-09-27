@@ -36,7 +36,9 @@ to be used in ORC instance.
 
 ### [JupyterHub](/jupyterhub)
 
-Chart version [0.7.0](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.7.0).
+Chart version [0.8-be7dcf7](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/be7dcf7).
+
+JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/.
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
@@ -45,17 +47,13 @@ authenticator in ORC.
 
 [Single user server image](/jupyterhub/docker/singleuser)
 
-Currently JupyterHub v0.9.2 runs under https://notebooks.gesis.org/jupyter/.
-
 ### [BinderHub](/binderhub)
 
-Based on [BinderHub documentation](https://binderhub.readthedocs.io/en/latest/setup-binderhub.html)
+Chart version [0.1.0-3fbbd73](https://github.com/jupyterhub/binderhub/tree/3fbbd73)
+
+BinderHub (with `jupyter/repo2docker:46f056a`) runs under https://notebooks.gesis.org/binder/.
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
-
-BinderHub [0.1.0-3fbbd73](https://github.com/jupyterhub/binderhub/tree/3fbbd73)
- (with `jupyter/repo2docker:46f056a`) runs under
-https://notebooks.gesis.org/binder/.
 
 ### [NFS provisioner](/nfs_provisioner)
 

@@ -7,7 +7,7 @@ hub:
     prometheus.io/path: "/jupyter/hub/metrics"
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "2460b498"
+    tag: "d969f4cc"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
@@ -130,7 +130,7 @@ singleuser:
     capacity: 15Gi
   image:
     name: gesiscss/singleuser-orc
-    tag: "da40ea79"
+    tag: "c5799e86"
   cpu:
     guarantee: 0.2
     limit: 2
