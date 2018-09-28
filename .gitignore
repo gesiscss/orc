@@ -7,10 +7,10 @@ jhub/ssl
 .Rhistory
 ignore/*
 documentation
-binderhub/secret.yaml
-binderhub/secret_test.yaml
-jupyterhub/secret.yaml
-jupyterhub/secret_test.yaml
+#binderhub/secret.yaml
+#binderhub/secret_test.yaml
+#jupyterhub/secret.yaml
+#jupyterhub/secret_test.yaml
 jupyterhub/secret_local.yaml
 nginx_shibboleth/shibboleth/conf/ignore
-monitoring/grafana_secret.yaml
+#monitoring/grafana_secret.yaml
