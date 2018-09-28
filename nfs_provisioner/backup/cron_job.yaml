@@ -25,7 +25,7 @@ spec:
               - name: SSHPASS
                 valueFrom:
                   secretKeyRef:
-                    name: worker-pass-secret
+                    name: worker-node-pass
                     key: password
               - name: BACKUP_FOLDER
                 value: "/backup"
