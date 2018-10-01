@@ -4,7 +4,7 @@ import shutil
 import logging
 
 from kubernetes import client, config
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import time
 from subprocess import run, PIPE
 
@@ -89,9 +89,9 @@ spec:
                 f.write(pvc_template.format(**d))
         # grafana and prometheus PVs
         elif pvc.metadata.namespace == 'default' and \
-            ('grafana' in pvc.spec.volume_name or 'prometheus' in pvc.spec.volume_name):
+            ('grafana' in pvc.metadata.name or 'prometheus' in pvc.metadata.name):
             pv_dict[pvc.spec.volume_name] = pvc.metadata.name
-    with open('{}/pvc_data.json'.format(day_path), 'w') as fp:
+    with open('{}/pv_dict.json'.format(day_path), 'w') as fp:
         json.dump(pv_dict, fp, indent=4)
     logger.info('Done: Save config files for all pvcs in jhub-ns')
 
@@ -125,7 +125,7 @@ spec:
             logger.info('deleting {}'.format(previous_month_path))
             shutil.rmtree(previous_month_path, ignore_errors=True)
     logger.info('Done: delete backup data older than 1 month 1 day')
-    logger.info('Backup duration: {} seconds'.format(time()-start_time))
+    logger.info('Backup duration: {}'.format(timedelta(seconds=time()-start_time)))
 
 
 if __name__ == '__main__':
