@@ -51,6 +51,7 @@ initContainers:
       - clone
       - --single-branch
       - --branch=master
+      - --depth=1
       - --
       - https://github.com/gesiscss/orc.git
       - /etc/binderhub/templates
