@@ -1,7 +1,6 @@
-# https://github.com/gesiscss/orc/tree/master/orc_site
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-LABEL maintainer="kenan.erdogan@gesis.org"
+LABEL maintainer="notebooks@gesis.org"
 
 RUN apt-get update -y && \
     apt-get install -yq \
