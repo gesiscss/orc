@@ -6,7 +6,7 @@ spec:
   # At 02:00 in UTC => at 04:00.
   schedule: "0 2 * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
-  successfulJobsHistoryLimit: 7
+  successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 7
   jobTemplate:
     spec:
