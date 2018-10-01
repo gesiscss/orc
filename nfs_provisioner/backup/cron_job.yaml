@@ -1,29 +1,26 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: nfs-backup-job
+  name: nfs-backup
 spec:
   # At 02:00 in UTC => at 04:00.
   schedule: "0 2 * * *"
-  successfulJobsHistoryLimit: 30
-  failedJobsHistoryLimit: 30
+  # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 7
   jobTemplate:
     spec:
       template:
         metadata:
-          name: nfs-backup-pod
+          name: nfs-backup
         spec:
           restartPolicy: OnFailure
           serviceAccount: nfs-backup
           nodeSelector:
             worker1: production  # because of hostPath PVs
           containers:
-          - name: nfs-backup-container
+          - name: nfs-backup
             image: gesiscss/nfs-backup-orc:c81f03fe
-            args:
-            - /bin/sh
-            - -c
-            - python3 backup.py
             env:
               - name: SSHPASS
                 valueFrom:

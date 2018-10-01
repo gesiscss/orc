@@ -1,7 +1,6 @@
-# https://github.com/gesiscss/orc/tree/master/orc_site
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-LABEL maintainer="kenan.erdogan@gesis.org"
+LABEL maintainer="notebooks@gesis.org"
 
 RUN apt-get update -y && \
     apt-get install -yq \
@@ -27,8 +26,5 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /job
 
-# tell the port number the container should expose
-#EXPOSE 5001
-
 # run the application
-#CMD ["python3", "backup.py"]
+CMD ["python3", "backup.py"]
