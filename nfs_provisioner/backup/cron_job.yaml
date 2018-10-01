@@ -1,4 +1,4 @@
-apiVersion: batch/v1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: nfs-backup
@@ -20,7 +20,7 @@ spec:
             worker1: production  # because of hostPath PVs
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:c81f03fe
+            image: gesiscss/nfs-backup-orc:7fbf6bbc
             env:
               - name: SSHPASS
                 valueFrom:
