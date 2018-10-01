@@ -20,7 +20,7 @@ spec:
             worker1: production  # because of hostPath PVs
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:7fbf6bbc
+            image: gesiscss/nfs-backup-orc:6275fb8b
             env:
               - name: SSHPASS
                 valueFrom:
