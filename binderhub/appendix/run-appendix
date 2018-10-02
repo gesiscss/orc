@@ -24,4 +24,6 @@ if [ $? -eq 0 ]; then
     # if jupyterlab-hub installed
     mkdir -p /srv/conda/share/jupyter/lab/settings
     echo '{"hub_prefix": "/binder/jupyter"}' >> /srv/conda/share/jupyter/lab/settings/page_config.json
+else
+    echo "jupyterlab-hub is not installed"
 fi
