@@ -52,3 +52,7 @@ RUN rm -f /etc/jupyter/extra_notebook_config.py
 # FIXME doesnt work for jlab
 # https://github.com/jupyterlab/jupyterlab/blob/master/jupyterlab/staging/templates/template.html
 ADD templates/template.html /opt/conda/lib/python3.6/site-packages/jupyterlab/staging/templates/template.html
+
+# for jupyterlab-hub that hub tab appears in menu
+# https://github.com/jupyterhub/jupyterlab-hub#setup-user-environment
+RUN echo '{"hub_prefix": "/jupyter"}' >> /opt/conda/share/jupyter/lab/settings/page_config.json

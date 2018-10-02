@@ -32,19 +32,19 @@
     <a href='/'
        class='btn btn-default btn-sm navbar-btn pull-right'
        style='margin-right: 4px; margin-left: 2px;'>
-        GESIS Notebooks
+        GESIS Notebooks Home
     </a>
 </span>
-
-{{ super() }}
 
 <span>
     <a href='#'
        class='btn btn-default btn-sm navbar-btn pull-right'
        style='margin-right: 4px; margin-left: 2px;'
-       onclick="window.open(window.location.href.replace(/\/tree([\?\/].*)?$/,'/lab'));"
+       onclick="window.open(window.location.href.replace(/\/tree([\?\/\#].*)?$/,'/lab'));"
     >
-        Access JupyterLab
+        Launch JupyterLab
     </a>
 </span>
+
+{{ super() }}
 {% endblock %}
