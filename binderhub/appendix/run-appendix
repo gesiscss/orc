@@ -19,11 +19,8 @@ chmod -R a+rX /etc/jupyter
 
 # for jupyterlab-hub that hub tab appears in menu
 # https://github.com/jupyterhub/jupyterlab-hub#setup-user-environment
-jupyter labextension check @jupyterlab/hub-extension --installed
-if [ $? -eq 0 ]; then
+if jupyter labextension check @jupyterlab/hub-extension --installed &> /dev/null; then
     # if jupyterlab-hub installed
     mkdir -p /srv/conda/share/jupyter/lab/settings
     echo '{"hub_prefix": "/binder/jupyter"}' >> /srv/conda/share/jupyter/lab/settings/page_config.json
-else
-    echo "jupyterlab-hub is not installed"
 fi
