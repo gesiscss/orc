@@ -6,7 +6,7 @@ function copy_link_into_clipboard(b) {
     $temp.remove();
 }
 
-function add_buttons() {
+function add_binder_buttons() {
     var copy_button = '<button id="copy-{name}-link" ' +
             '                 title="Copy {name} link to clipboard" ' +
             '                 class="btn btn-default btn-sm navbar-btn" ' +
@@ -32,4 +32,4 @@ function add_buttons() {
     s.insertAfter($("#header-container>.flex-spacer"));
 }
 
-add_buttons();
+add_binder_buttons();
