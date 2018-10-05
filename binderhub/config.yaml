@@ -142,3 +142,12 @@ extraVolumeMounts:
   - name: custom-templates
     mountPath: /etc/binderhub/templates
 
+extraConfig:
+  # Add banned repositories to the list below
+  # They should be strings that will match "^<org-name>/<repo-name>.*"
+  bans: |
+    c.GitHubRepoProvider.banned_specs = [
+      # e.g. '^org/repo.*',
+      '^ines/spacy-binder.*',
+      '^soft4voip/rak.*',
+    ]
