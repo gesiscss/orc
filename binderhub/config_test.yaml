@@ -1,77 +1,3 @@
-jupyterhub:
-  debug:
-    enabled: true
-  hub:
-    baseUrl: /binder/jupyter/
-#    nodeSelector:
-#      worker1: production
-    annotations:
-      prometheus.io/scrape: 'false'
-    deploymentStrategy:
-      type: RollingUpdate
-    db:
-      type: postgres
-    resources:
-      requests:
-        cpu: "0.2"
-        memory: 512Mi
-      limits:
-        cpu: "0.5"
-        memory: 512Mi
-    extraConfig:
-      neverRestart: |
-        c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-
-  proxy:
-#    nodeSelector:
-#      worker1: production
-    https:
-      enabled: false
-    service:
-      type: NodePort
-      nodePorts:
-        http: 30182
-    chp:
-      resources:
-        requests:
-          cpu: "0.2"
-          memory: 256Mi
-        limits:
-          cpu: "0.5"
-          memory: 256Mi
-
-  singleuser:
-    cpu:
-      guarantee: 0.1
-      limit: 0.5
-    memory:
-      guarantee: 256M
-      limit: 256M
-#    nodeSelector:
-#      user: workers
-
-  cull:
-    # kill user pods if idle for 10 mins
-    timeout: 600
-    every: 660
-
-build:
-  nodeSelector:
-    build: workers
-  repo2dockerImage: jupyter/repo2docker:32e5ef2
-  # to give custom "Binder inaccessible" message (login.html)
-  appendix: |
-    USER root
-    ENV BINDER_URL={binder_url}
-    ENV REPO_URL={repo_url}
-    RUN cd /tmp \
-     && wget -q https://github.com/gesiscss/orc/archive/dev.tar.gz -O orc.tar.gz \
-     && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
-     && ./appendix/run-appendix \
-     && rm -rf orc.tar.gz appendix
-    USER $NB_USER
-
-# below is for binder
 debug:
   enabled: true
 
@@ -140,3 +66,83 @@ extraVolumes:
 extraVolumeMounts:
   - name: custom-templates
     mountPath: /etc/binderhub/templates
+cors: &cors
+  allowOrigin: "*"
+
+build:
+  nodeSelector:
+    build: workers
+  repo2dockerImage: jupyter/repo2docker:a161b09
+  # to give custom "Binder inaccessible" message (login.html)
+  appendix: |
+    USER root
+    ENV BINDER_URL={binder_url}
+    ENV REPO_URL={repo_url}
+    RUN cd /tmp \
+     && wget -q https://github.com/gesiscss/orc/archive/dev.tar.gz -O orc.tar.gz \
+     && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
+     && ./appendix/run-appendix \
+     && rm -rf orc.tar.gz appendix
+    USER $NB_USER
+
+jupyterhub:
+  custom:
+    cors: *cors
+  debug:
+    enabled: true
+  hub:
+    baseUrl: /binder/jupyter/
+#    nodeSelector:
+#      worker1: production
+    annotations:
+      prometheus.io/scrape: 'false'
+    deploymentStrategy:
+      type: RollingUpdate
+    db:
+      type: postgres
+    resources:
+      requests:
+        cpu: "0.2"
+        memory: 512Mi
+      limits:
+        cpu: "0.5"
+        memory: 512Mi
+    extraConfig:
+      neverRestart: |
+        c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+
+  proxy:
+#    nodeSelector:
+#      worker1: production
+    https:
+      enabled: false
+    service:
+      type: NodePort
+      nodePorts:
+        http: 30182
+    chp:
+      resources:
+        requests:
+          cpu: "0.2"
+          memory: 256Mi
+        limits:
+          cpu: "0.5"
+          memory: 256Mi
+
+  singleuser:
+    cpu:
+      guarantee: 0.1
+      limit: 0.5
+    memory:
+      guarantee: 256M
+      limit: 256M
+#    nodeSelector:
+#      user: workers
+
+  cull:
+    # cull every 11 minutes so it is out of phase
+    # with the proxy check-routes interval of five minutes
+    every: 660
+    timeout: 600
+    # maxAge is 6 hours: 6 * 3600 = 21600
+    maxAge: 21600
