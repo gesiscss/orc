@@ -143,13 +143,19 @@ jupyterhub:
     memory:
       guarantee: 2G
       limit: 8G
+    extraEnv:
+      # settings for kernel culling
+      # to be used in binderhub/appendix/extra_notebook_config.py
+      CULL_CONNECTED: '1'
+      CULL_TIMEOUT: '900'
+      CULL_KERNEL_TIMEOUT: '900'
+      CULL_INTERVAL: '60'
 #    nodeSelector:
 #      user: workers
   cull:
-    # kill user pods if idle for 30 mins
-    # sometimes this has to be run manually:
-    # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/scripts/delete-pods.py
-    timeout: 1800
-    every: 660
+    # cull every 16 minutes so it is out of phase
+    # with the proxy check-routes interval of five minutes
+    timeout: 900
+    every: 960
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
