@@ -4,5 +4,3 @@ FROM gesiscss/k8s-hub:ae44b17-v1.4.0
 USER root
 COPY templates /srv/jhub_custom_templates
 USER ${NB_USER}
-
-RUN pip3 install https://github.com/jupyterhub/kubespawner/archive/481ec0926960927300c7355c48bd03230ee857f0.tar.gz
