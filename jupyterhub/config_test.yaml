@@ -9,7 +9,7 @@ hub:
     prometheus.io/scrape: 'false'
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "d969f4cc"
+    tag: "01faa17a"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
