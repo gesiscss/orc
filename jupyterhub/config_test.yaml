@@ -141,8 +141,8 @@ singleuser:
     guarantee: 256M
     limit: 256M
   extraEnv:
-    IS_STAGING: true
-    IS_PRODUCTION: false
+    IS_STAGING: 'true'
+    IS_PRODUCTION: 'false'
 
 prePuller:
   hook:
