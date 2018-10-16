@@ -36,7 +36,7 @@ to be used in ORC instance.
 
 ### [JupyterHub](/jupyterhub)
 
-Chart version [0.8-be7dcf7](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/be7dcf7).
+Chart version [0.8-627171e](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/627171e).
 
 JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/.
 
