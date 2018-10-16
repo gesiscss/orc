@@ -7,7 +7,7 @@ hub:
     prometheus.io/path: "/jupyter/hub/metrics"
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "e4a41e22"
+    tag: "2ba03594"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
