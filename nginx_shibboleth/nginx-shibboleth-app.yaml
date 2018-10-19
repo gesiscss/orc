@@ -41,7 +41,7 @@ spec:
     spec:
       restartPolicy: Always  # default
       nodeSelector:
-        worker1: production
+        production: worker
       containers:
       - name: nginx-shibboleth
         image: gesiscss/nginx-shibboleth-orc:c81f03fe
@@ -54,7 +54,7 @@ spec:
           hostPort: 443
         resources:
           requests:
-            cpu: "0.5"  #  half as much CPU as one that asks for 1 CPU
+            cpu: "0.5"
             memory: "1Gi"
           limits:
             cpu: "1"

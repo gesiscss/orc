@@ -1,32 +1,33 @@
 # https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
 
-#nodeSelector:
-
 service:
   type: NodePort
   port: 80
   nodePort: 30075
 
 nodeSelector:
-  worker1: production
+  production: worker
 
 resources:
   requests:
     cpu: "0.2"
     memory: 512Mi
   limits:
-    cpu: "0.2"
+    cpu: "0.5"
     memory: 512Mi
 
 persistence:
   enabled: true
+  # has no effect when using nfs: this is a min limit not a max
   size: 10Gi
   accessModes:
     - ReadWriteOnce
+#  existingClaim:
 
 # https://grafana.com/plugins
 # Pass the plugins you want installed as a comma separated list.
 # plugins: "digrich-bubblechart-panel,grafana-clock-panel"
+# https://grafana.com/plugins/grafana-kubernetes-app
 #plugins: "grafana-kubernetes-app"
 
 # http://docs.grafana.org/installation/configuration/

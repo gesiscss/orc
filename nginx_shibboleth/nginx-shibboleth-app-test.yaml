@@ -46,13 +46,13 @@ spec:
         # TODO when helm is used, we can checksum config and secret files
         # https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change
         # This lets us autorestart when the configmaps/secrets change!
-        #checksum/config: {{ include (print "/home/iuser/ilcm/orc/nginx/k8s_test") . | sha256sum }}
+        #checksum/config: {{ include (print "~/ilcm/orc/nginx/k8s_test") . | sha256sum }}
     spec:
       restartPolicy: Always  # default
 #      hostNetwork: true
       nodeSelector:
         # assign this pod to staging server
-        worker2: staging
+        staging: worker
       containers:
       - name: nginx-shibboleth-test
         image: gesiscss/nginx-shibboleth-orc:c81f03fe
@@ -65,12 +65,9 @@ spec:
         - containerPort: 443
           hostPort: 443
         resources:
-          # CPU is specified in units of cores, and memory is specified in units of bytes.
-          # One cpu, in Kubernetes, is equivalent to 1 Hyperthread on a bare-metal Intel processor with Hyperthreading
           requests:
-            # If a pod is successfully scheduled, the container is guaranteed the amount of resources requested.
-            cpu: "0.25"
-            memory: "256Mi"
+            cpu: "0.5"
+            memory: "512Mi"
           limits:
             cpu: "0.5"
             memory: "512Mi"

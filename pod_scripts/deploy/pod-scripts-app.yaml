@@ -37,7 +37,7 @@ spec:
       serviceAccountName: pod-scripts
       restartPolicy: Always  # default
       nodeSelector:
-        worker1: production
+        production: worker
       containers:
       - name: pod-scripts
         image: gesiscss/pod-scripts-orc:0cf6086d

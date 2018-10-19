@@ -17,7 +17,8 @@ spec:
           restartPolicy: OnFailure
           serviceAccount: nfs-backup
           nodeSelector:
-            worker1: production  # because of hostPath PVs
+            # because of hostPath PVs
+            production: worker
           containers:
           - name: nfs-backup
             image: gesiscss/nfs-backup-orc:6275fb8b

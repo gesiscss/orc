@@ -3,8 +3,8 @@ debug:
 
 hub:
   baseUrl: /jupyter/
-#  nodeSelector:
-#    worker1: production
+  nodeSelector:
+    staging: worker
   annotations:
     prometheus.io/scrape: 'false'
   image:
@@ -92,15 +92,15 @@ hub:
       c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
   resources:
     requests:
-      cpu: "0.2"
+      cpu: "0.25"
       memory: 512Mi
     limits:
       cpu: "0.5"
       memory: 512Mi
 
 proxy:
-#  nodeSelector:
-#    worker1: production
+  nodeSelector:
+    staging: worker
   https:
     enabled: false
   service:
@@ -110,11 +110,11 @@ proxy:
   chp:
     resources:
       requests:
-        cpu: "0.2"
-        memory: 256Mi
+        cpu: "0.25"
+        memory: 512Mi
       limits:
         cpu: "0.5"
-        memory: 256Mi
+        memory: 512Mi
 
 auth:
   type: custom
@@ -138,8 +138,8 @@ singleuser:
     guarantee: 0.1
     limit: 0.5
   memory:
-    guarantee: 256M
-    limit: 256M
+    guarantee: 512M
+    limit: 512M
   extraEnv:
     IS_STAGING: 'true'
     IS_PRODUCTION: 'false'

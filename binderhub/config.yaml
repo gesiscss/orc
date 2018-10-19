@@ -2,14 +2,14 @@
 # https://github.com/jupyterhub/mybinder.org-deploy/blob/master/config/prod.yaml
 resources:
   requests:
-    cpu: "0.5"
+    cpu: "0.25"
     memory: 1Gi
   limits:
     cpu: "2"
     memory: 2Gi
 
-#nodeSelector:
-#  worker1: production
+nodeSelector:
+  production: worker
 
 registry:
   enabled: true
@@ -81,7 +81,7 @@ extraConfig:
 
 build:
   nodeSelector:
-    build: workers
+    user: workers
   repo2dockerImage: jupyter/repo2docker:a161b09
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
@@ -100,8 +100,8 @@ jupyterhub:
     cors: *cors
   hub:
     baseUrl: /binder/jupyter/
-#    nodeSelector:
-#      worker1: production
+    nodeSelector:
+      production: worker
     annotations:
       prometheus.io/path: "/binder/jupyter/hub/metrics"
     deploymentStrategy:
@@ -110,18 +110,18 @@ jupyterhub:
       type: postgres
     resources:
       requests:
-        cpu: "0.5"
+        cpu: "0.25"
         memory: 1Gi
       limits:
-        cpu: "1"
+        cpu: "2"
         memory: 2Gi
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
 
   proxy:
-#    nodeSelector:
-#      worker1: production
+    nodeSelector:
+      production: worker
     https:
       enabled: false
     service:
@@ -151,8 +151,9 @@ jupyterhub:
       CULL_TIMEOUT: '900'
       CULL_KERNEL_TIMEOUT: '900'
       CULL_INTERVAL: '60'
-#    nodeSelector:
-#      user: workers
+    nodeSelector:
+      user: workers
+
   cull:
     # cull every 16 minutes so it is out of phase
     # with the proxy check-routes interval of five minutes

@@ -35,8 +35,8 @@ spec:
         app: orc-site
     spec:
       restartPolicy: Always  # default
-#      nodeSelector:
-#        worker1: production
+      nodeSelector:
+        production: worker
       containers:
       - name: orc-site
         image: gesiscss/orc-site:f0c63a86

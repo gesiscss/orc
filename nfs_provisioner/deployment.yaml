@@ -41,7 +41,8 @@ spec:
     spec:
       serviceAccount: nfs-provisioner
       nodeSelector:
-        worker1: production  # because of hostPath PVs
+        # because of hostPath PVs
+        production: worker
       containers:
         - name: nfs-provisioner
           image: quay.io/kubernetes_incubator/nfs-provisioner:v2.2.0-k8s1.12

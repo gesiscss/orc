@@ -8,10 +8,9 @@ alertmanager:
 pushgateway:
   enabled: false
 
-
 server:
   nodeSelector:
-    worker1: production
+    production: worker
   service:
     type: NodePort
     nodePort: 30073
@@ -19,11 +18,17 @@ server:
   resources:
     requests:
       cpu: "2"
-      memory: 16Gi
+      memory: 12Gi
     limits:
-      cpu: "4"
-      memory: 16Gi
+      cpu: "2"
+      memory: 12Gi
   persistentVolume:
+    # has no effect when using nfs: this is a min limit not a max
     size: 64Gi
-#    storageClass: ssd
+#    existingClaim:
   retention: 60d
+
+kubeStateMetrics:
+  nodeSelector:
+    production: worker
+#  resources:

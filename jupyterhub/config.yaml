@@ -1,8 +1,8 @@
 # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/jupyterhub/values.yaml
 hub:
   baseUrl: /jupyter/
-#  nodeSelector:
-#    worker1: production
+  nodeSelector:
+    production: worker
   annotations:
     prometheus.io/path: "/jupyter/hub/metrics"
   image:
@@ -90,15 +90,15 @@ hub:
       c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
   resources:
     requests:
-      cpu: "0.5"
+      cpu: "0.25"
       memory: 1Gi
     limits:
-      cpu: "1"
+      cpu: "2"
       memory: 2Gi
 
 proxy:
-#  nodeSelector:
-#    worker1: production
+  nodeSelector:
+    production: worker
   https:
     enabled: false
   service:
@@ -128,6 +128,7 @@ singleuser:
   nodeSelector:
     user: workers
   storage:
+    # has no effect when using nfs: this is a min limit not a max
     capacity: 15Gi
   image:
     name: gesiscss/singleuser-orc

@@ -35,8 +35,8 @@ spec:
         app: orc-site-test
     spec:
       restartPolicy: Always  # default
-#      nodeSelector:
-#        worker1: production
+      nodeSelector:
+        staging: worker
       containers:
       - name: orc-site-test
         image: gesiscss/orc-site:f0c63a86
@@ -49,7 +49,7 @@ spec:
         resources:
           requests:
             cpu: "0.2"
-            memory: "128Mi"
+            memory: "256Mi"
           limits:
             cpu: "0.4"
             memory: "256Mi"
