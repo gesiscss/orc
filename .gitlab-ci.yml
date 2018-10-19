@@ -71,13 +71,6 @@ build_job:
         docker tag nfs-backup-orc gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
         docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
       fi;
-      if git diff HEAD~ --name-only | egrep 'pod_scripts/Dockerfile|pod_scripts/scripts/'; then
-        echo "####### gesiscss/pod-scripts-orc:$CI_COMMIT_SHA_8"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t pod-scripts-orc pod_scripts/.
-        docker tag pod-scripts-orc gesiscss/pod-scripts-orc:$CI_COMMIT_SHA_8
-        docker push gesiscss/pod-scripts-orc:$CI_COMMIT_SHA_8
-      fi;
   only:
 #    - master
     - dev
