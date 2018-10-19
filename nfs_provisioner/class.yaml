@@ -1,8 +1,12 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
+  name: nfs-sc
   annotations:
      storageclass.beta.kubernetes.io/is-default-class: "true"
-  name: nfs-sc
 provisioner: orc.external/nfs
 reclaimPolicy: Delete
+mountOptions:
+  - vers=4.1
+#parameters:
+#  gid: 100  # TODO same as NB_GID, but there are prometheus and grafana volumes

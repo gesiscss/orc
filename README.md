@@ -57,7 +57,7 @@ Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built ima
 
 ### [NFS provisioner](/nfs_provisioner)
 
-NFS provisioner (v1.0.9) is currently set as the default storage provider in k8s cluster.
+NFS provisioner (v2.2.0) is currently set as the default storage provider in k8s cluster.
 
 ### [ORC Site](/orc_site)
 
