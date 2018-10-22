@@ -1,1 +1,1 @@
-_secret*.yaml filter=git-crypt diff=git-crypt
+_secret* filter=git-crypt diff=git-crypt
