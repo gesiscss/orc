@@ -79,17 +79,8 @@ spec:
           readOnly: true
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
-        - name: nginx-htpasswd
-          mountPath: "/etc/nginx/.htpasswd"
-          readOnly: true
-        - name: letsencrypt-manual
-          mountPath: "/etc/nginx/letsencrypt-manual"
-          readOnly: true
-        - name: letsencrypt
-          mountPath: "/etc/letsencrypt"
-          readOnly: true
-        - name: letsencrypt-dhparam
-          mountPath: "/etc/letsencrypt_dhparam"
+        - name: letsencrypt-volume
+          mountPath: "/etc/letsencrypt_volume"
           readOnly: true
       volumes:
       - name: shibboleth-sp-conf
@@ -101,15 +92,6 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-configmap
-      - name: nginx-htpasswd
-        secret:
-          secretName: nginx-htpasswd-secret
-      - name: letsencrypt-manual
-        secret:
-          secretName: letsencrypt-manual-secret
-      - name: letsencrypt
-        secret:
-          secretName: letsencrypt-secret
-      - name: letsencrypt-dhparam
-        secret:
-          secretName: letsencrypt-dhparam-secret
+      - name: letsencrypt-volume
+        hostPath:
+          path: /etc/letsencrypt
