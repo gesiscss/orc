@@ -39,36 +39,32 @@ build_job:
       if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/singleuser/'; then
         echo "####### gesiscss/singleuser-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t singleuser-orc jupyterhub/docker/singleuser/.
-        docker tag singleuser-orc gesiscss/singleuser-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/singleuser-orc:$CI_COMMIT_SHA_8 jupyterhub/docker/singleuser/.
         docker push gesiscss/singleuser-orc:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/k8s_hub/Dockerfile|jupyterhub/docker/k8s_hub/templates/'; then
         echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t k8s-hub-orc jupyterhub/docker/k8s_hub/.
-        docker tag k8s-hub-orc gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8 jupyterhub/docker/k8s_hub/.
         docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/docker/Dockerfile'; then
         echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t nginx-shibboleth-orc nginx_shibboleth/docker/.
-        docker tag nginx-shibboleth-orc gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8 nginx_shibboleth/docker/.
         docker push gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/Dockerfile|orc_site/__init__.py|orc_site/app.py|orc_site/requirements.txt|orc_site/templates/|orc_site/static/'; then
         echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t orc-site orc_site/.
+        docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_8 orc_site/.
         docker tag orc-site gesiscss/orc-site:$CI_COMMIT_SHA_8
         docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t nfs-backup-orc nfs_provisioner/backup/docker/.
-        docker tag nfs-backup-orc gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8 nfs_provisioner/backup/docker/.
         docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
       fi;
   only:
@@ -97,10 +93,10 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app-test.yaml'; then
         mode+="-orctestsite"
       fi;
-      if git diff HEAD~ --name-only | egrep 'jupyterhub/config_test.yaml'; then
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config_test.yaml|jupyterhub/_secret_test.yaml'; then
         mode+="-jhubtestns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'binderhub/config_test.yaml'; then
+      if git diff HEAD~ --name-only | egrep 'binderhub/config_test.yaml|binderhub/_secret_test.yaml'; then
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
@@ -135,10 +131,10 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app.yaml'; then
         mode+="-orcsite"
       fi;
-      if git diff HEAD~ --name-only | egrep 'jupyterhub/config.yaml'; then
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config.yaml|jupyterhub/_secret.yaml'; then
         mode+="-jhubns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'binderhub/config.yaml'; then
+      if git diff HEAD~ --name-only | egrep 'binderhub/config.yaml|binderhub/_secret.yaml'; then
         mode+="-bhubns"
       fi;
       echo "####### mode: $mode"

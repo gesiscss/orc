@@ -51,9 +51,7 @@ def deploy(branch='master', mode='', is_staging=False):
             run('git checkout {}'.format(branch))
         if 'nginxshibbolethapp' in mode or 'nginxshibbolethtestapp' in mode or \
            'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
-            print('####### kubectl update nginxshibboleth{-test} app'.format(**format_dict))
             if 'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
-                print('####### kubectl update nginxshibboleth{-test} conf'.format(**format_dict))
                 run('kubectl create configmap shibboleth-configmap '
                     '--from-file=nginx_shibboleth/shibboleth/conf/{env}/shibboleth2.xml '
                     '--from-file=nginx_shibboleth/shibboleth/conf/attribute-map.xml '
@@ -67,29 +65,25 @@ def deploy(branch='master', mode='', is_staging=False):
                     '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
                 run('kubectl delete deployment nginx-shibboleth{-test}-deployment '
                     '--namespace=orc{-test}-ns'.format(**format_dict))
+                # TODO wait until all pods are removed
             run('kubectl apply -f nginx_shibboleth/nginx-shibboleth-app{-test}.yaml '
                 '--namespace=orc{-test}-ns'.format(**format_dict))
-            print('####### kubectl update nginxshibboleth{-test} app - done'.format(**format_dict))
         if 'orcsite' in mode or 'orctestsite' in mode:
-            print('####### kubectl upgrade orc{-test} site'.format(**format_dict))
             run('kubectl apply -f orc_site/deploy/orc-site-app{-test}.yaml '
                 '--namespace=orc{-test}-ns'.format(**format_dict))
-            print('####### kubectl upgrade orc{-test} site - done'.format(**format_dict))
-        # take secret files from ~/ilcm/orc, because they are manually updated
         if 'jhubns' in mode or 'jhubtestns' in mode:
-            print('####### helm upgrade jhub{-test} ns'.format(**format_dict))
             run('helm repo update')
-            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-1400e35 --wait --force --install --namespace=jhub{-test}-ns '
+            run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-1400e35 '
+                '--install --namespace=jhub{-test}-ns '
                 '-f jupyterhub/config{_test}.yaml '
-                '-f ~/ilcm/orc/jupyterhub/secret{_test}.yaml --debug --timeout=360000'.
+                '-f jupyterhub/_secret{_test}.yaml '
+                '--wait --force --debug --timeout=1800'.
                 format(**format_dict))
-            print('####### helm upgrade jhub{-test} ns - done'.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
-            print('####### helm upgrade bhub{-test} ns'.format(**format_dict))
             run('helm repo update')
-            # run('helm upgrade bhub{-test} ~/ilcm/binderhub-0.1.0-e113dbb/binderhub --wait '
-            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-24ad99a --wait --force --install --namespace=bhub{-test}-ns '
-                '-f ~/ilcm/orc/binderhub/secret{_test}.yaml '
-                '-f binderhub/config{_test}.yaml --debug --timeout=360000'.
+            run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.1.0-24ad99a '
+                '--install --namespace=bhub{-test}-ns '
+                '-f binderhub/_secret{_test}.yaml '
+                '-f binderhub/config{_test}.yaml '
+                '--wait --force --debug --timeout=1800'.
                 format(**format_dict))
-            print('####### helm upgrade bhub{-test} ns - done'.format(**format_dict))
