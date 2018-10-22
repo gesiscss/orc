@@ -135,8 +135,8 @@ jupyterhub:
       guarantee: 0.1
       limit: 0.5
     memory:
-      guarantee: 512Mi
-      limit: 512Mi
+      guarantee: 512M
+      limit: 512M
     nodeSelector:
       user: workers
 
