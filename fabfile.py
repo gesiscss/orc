@@ -52,6 +52,11 @@ def deploy(branch='master', mode='', is_staging=False):
         if 'nginxshibbolethapp' in mode or 'nginxshibbolethtestapp' in mode or \
            'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
             if 'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
+                run('kubectl create secret tls shibboleth-sp-tls-secret '
+                    '--key=nginx_shibboleth/shibboleth/conf/{env}/_secret_sp_key.pem '
+                    '--cert=nginx_shibboleth/shibboleth/conf/{env}/_secret_sp_cert.pem '
+                    '--namespace=orc{-test}-ns '
+                    '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
                 run('kubectl create configmap shibboleth-configmap '
                     '--from-file=nginx_shibboleth/shibboleth/conf/{env}/shibboleth2.xml '
                     '--from-file=nginx_shibboleth/shibboleth/conf/attribute-map.xml '
