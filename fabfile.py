@@ -20,7 +20,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         '_test': '_test' if staging else '',
         '-test': '-test' if staging else ''
     }
-    remote_project_root = '~/ilcm/orc_{env}'.format(**format_dict)
+    remote_project_root = '~/ilcm/orc_staging' if staging else '~/ilcm/orc'
     with c.cd(remote_project_root):
         mode = mode.split('-')
         if 'fetch_co' in mode:
