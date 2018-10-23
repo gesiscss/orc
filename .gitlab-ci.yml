@@ -83,7 +83,7 @@ deploy_staging:
     - |
       echo "####### Running staging deploy"
       mode="fetch_co"
-      pip3 install fabric3
+      #pip3 install fabric==2.4.*
       if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app-test.yaml'; then
         mode+="-nginxshibbolethtestapp"
       fi;
@@ -100,7 +100,7 @@ deploy_staging:
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
-      fab k8s_master --password=$K8S_MASTER_PASSWORD deploy:branch=$CI_COMMIT_SHA,mode=$mode,is_staging=True
+      fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
     - dev
   tags:
@@ -121,7 +121,7 @@ deploy_prod:
     - |
       echo "####### Running deploy"
       mode="fetch_co"
-      pip3 install fabric3
+      #pip3 install fabric==2.4.*
       if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app.yaml'; then
         mode+="-nginxshibbolethapp"
       fi;
@@ -138,7 +138,7 @@ deploy_prod:
         mode+="-bhubns"
       fi;
       echo "####### mode: $mode"
-      fab k8s_master --password=$K8S_MASTER_PASSWORD deploy:branch=$CI_COMMIT_SHA,mode=$mode
+      fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
   only:
     - master
 #    - tags
