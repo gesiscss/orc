@@ -51,7 +51,7 @@ initContainers:
     args:
       - clone
       - --single-branch
-      - --branch=dev
+      - --branch=staging
       - --depth=1
       - --
       - https://github.com/gesiscss/orc.git
@@ -80,7 +80,7 @@ build:
     ENV BINDER_URL={binder_url}
     ENV REPO_URL={repo_url}
     RUN cd /tmp \
-     && wget -q https://github.com/gesiscss/orc/archive/dev.tar.gz -O orc.tar.gz \
+     && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
      && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
      && ./appendix/run-appendix \
      && rm -rf orc.tar.gz appendix
