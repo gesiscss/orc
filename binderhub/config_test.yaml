@@ -147,4 +147,3 @@ jupyterhub:
     timeout: 600
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
-
