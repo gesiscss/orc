@@ -37,6 +37,7 @@ to be used in ORC instance.
 ### [JupyterHub](/jupyterhub)
 
 JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/. 
+
 Chart version [0.8-1400e35](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/1400e35).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
@@ -49,6 +50,7 @@ authenticator in ORC.
 ### [BinderHub](/binderhub)
 
 BinderHub (with `jupyter/repo2docker:a161b09`) runs under https://notebooks.gesis.org/binder/. 
+
 Chart version [0.1.0-47ed8cd](https://github.com/jupyterhub/binderhub/tree/47ed8cd)
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
