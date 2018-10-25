@@ -44,7 +44,7 @@ def process_data(data, time_range_beginning):
     :param time_range_beginning:
     :return:
     """
-    d = {'name': [], 'org': [], 'provider': [], 'launches': [], 'repo_url': [], 'binder_url': []}
+    d = {}  # {repo_name: [org, provider, launches, repo_url, binder_url]}
     for container in data:
         repo_url = container['metric']['repo']
         provider, org, repo = repo_url.replace('https://', '').rsplit('/', 2)
@@ -66,18 +66,16 @@ def process_data(data, time_range_beginning):
             launches = max(values) - min(values)
                 
         # print(repo_url, launches, container['metric']['status'], container['metric']['retries'])
-        if repo in d['name']:
+        if repo in d:
             # same repo can have status success with different retries values
-            i = d['name'].index(repo)
-            d['launches'][i] += launches
+            d[repo][2] += launches
         else:
-            d['launches'].append(launches)
-            
-            d['name'].append(repo)
-            d['org'].append(org)
-            d['provider'].append(provider)
-            d['repo_url'].append(repo_url)
-            d['binder_url'].append(binder_url(org, repo))
+            d[repo] = []
+            d[repo].append(org)
+            d[repo].append(provider)
+            d[repo].append(launches)
+            d[repo].append(repo_url)
+            d[repo].append(binder_url(org, repo))
     return d
 
 
@@ -86,20 +84,3 @@ def get_popular_repos(time_range, time_delta):
     time_range_beginning = datetime.utcnow() - time_delta
     data = process_data(data, time_range_beginning)
     return data
-
-
-def makedf(time_range, time_delta):
-    """
-
-    :param time_range:
-    :param time_delta:
-    :return:
-    """
-    data = get_popular_repos(time_range, time_delta)
-    df = pd.DataFrame(data)
-    # df = df.drop_duplicates(['name'])
-    df = df.groupby(['name', 'org', 'provider','repo_url', 'binder_url']).sum().reset_index().sort_values('launches', ascending=False)
-    # df['log_launches'] = df['launches'].apply(np.log)
-    df = df.style.format({'repo_url':lambda x: f'<a target="_blank" href="{x}">repo url</a>',
-                 'binder_url': lambda x: f'<a target="_blank" href="{x}">binder url</a>'})
-    return df

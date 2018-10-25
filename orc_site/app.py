@@ -1,5 +1,7 @@
 import os
 from flask import Flask, render_template
+from datetime import timedelta
+from .popular_repos import get_popular_repos
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
 
@@ -74,6 +76,17 @@ def about():
 def terms_of_use():
     context.update({'active': 'terms_of_use'})
     return render_template('terms_of_use.html', **context)
+
+
+@app.route('/gallery/')
+def test():
+    hour = 1
+    time_range = f'{hour}h'
+    time_delta = timedelta(hours=hour)
+    popular_repos = get_popular_repos(time_range, time_delta)
+    context.update({'active': 'test',
+                    'popular_repos': popular_repos})
+    return render_template('gallery.html', **context)
 
 
 if __name__ == '__main__':

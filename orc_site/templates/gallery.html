@@ -1,0 +1,37 @@
+{% extends "page.html" %}
+
+{% if is_production %}
+    {% block etracker_et_pagename %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename %}
+    {% block etracker_et_pagename_nojs %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename_nojs %}
+    {% block etracker_et_areas %}%2Fabout{% endblock etracker_et_areas %}
+    {% block etracker_et_areas_no_js %}%2Fabout{% endblock etracker_et_areas_no_js %}
+{% endif %}
+
+
+
+
+{% block main %}
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Repo</th>
+      <th scope="col">Origin</th>
+      <th scope="col">Provider</th>
+      <th scope="col">Launches</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for repo_name, repo_data in popular_repos.items() %}
+    <tr>
+        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
+        <td>{{ repo_data[0] }}</td>
+        <td>{{ repo_data[1] }}</td>
+        <td>{{ repo_data[2] }}</td>
+        <td>{{ repo_data[4] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock main %}
