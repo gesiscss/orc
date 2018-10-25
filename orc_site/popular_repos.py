@@ -31,7 +31,7 @@ def query(time_range):
     query = 'binderhub_launch_time_seconds_count{}[{}]'
     query_selectors = "{status='success'}"
     query = query.format(query_selectors, time_range)
-    print(query)
+    # print(query)
     resp = requests.get('https://notebooks.gesis.org/prometheus/api/v1/query', params={'query': query})
     data = resp.json()['data']['result']
     return data

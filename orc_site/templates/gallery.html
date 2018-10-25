@@ -29,7 +29,9 @@
         <td>{{ repo_data[0] }}</td>
         <td>{{ repo_data[1] }}</td>
         <td>{{ repo_data[2] }}</td>
-        <td>{{ repo_data[4] }}</td>
+        <td><a href="{{ repo_data[4] }}" target="_blank">
+            <img src="https://notebooks.gesis.org/binder/badge.svg">
+        </a></td>
     </tr>
     {% endfor %}
   </tbody>
