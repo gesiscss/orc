@@ -14,3 +14,4 @@ jupyterhub/secret_test.yaml
 jupyterhub/secret_local.yaml
 nginx_shibboleth/shibboleth/conf/ignore
 monitoring/grafana_secret.yaml
+venv
