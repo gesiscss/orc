@@ -58,7 +58,6 @@ build_job:
         echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
         docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_8 orc_site/.
-        docker tag orc-site gesiscss/orc-site:$CI_COMMIT_SHA_8
         docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
