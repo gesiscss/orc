@@ -79,7 +79,7 @@ def terms_of_use():
 
 
 @app.route('/gallery/')
-def test():
+def gallery():
     hour = 1
     time_range = f'{hour}h'
     time_delta = timedelta(hours=hour)

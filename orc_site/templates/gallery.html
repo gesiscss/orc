@@ -23,7 +23,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for repo_name, repo_data in popular_repos.items() %}
+    {% for repo_name, repo_data in popular_repos %}
     <tr>
         <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
         <td>{{ repo_data[0] }}</td>

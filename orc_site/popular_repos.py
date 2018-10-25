@@ -76,6 +76,8 @@ def process_data(data, time_range_beginning):
             d[repo].append(launches)
             d[repo].append(repo_url)
             d[repo].append(binder_url(org, repo))
+
+    d = sorted(d.items(), key=lambda x: x[1][2], reverse=True)
     return d
 
 
