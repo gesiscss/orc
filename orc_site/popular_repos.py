@@ -82,6 +82,12 @@ def process_data(data, time_range_beginning):
 
 
 def get_popular_repos(time_range, time_delta):
+    """
+
+    :param time_range:
+    :param time_delta:
+    :return:
+    """
     data = query(f'{time_range}')
     time_range_beginning = datetime.utcnow() - time_delta
     data = process_data(data, time_range_beginning)

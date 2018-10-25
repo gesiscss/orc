@@ -80,12 +80,14 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
-    hour = 1
-    time_range = f'{hour}h'
-    time_delta = timedelta(hours=hour)
-    popular_repos = get_popular_repos(time_range, time_delta)
+    popular_repos_1d = get_popular_repos('1d', timedelta(days=1))
     context.update({'active': 'test',
-                    'popular_repos': popular_repos})
+                    'popular_repos_1h': get_popular_repos('1h', timedelta(hours=1)),
+                    'popular_repos_1d': get_popular_repos('1d', timedelta(days=1)),
+                    'popular_repos_1w': get_popular_repos('7d', timedelta(days=7)),
+                    'popular_repos_1m': get_popular_repos('30d', timedelta(days=30)),
+                    'popular_repos_all': get_popular_repos('60d', timedelta(days=60)),
+                    })
     return render_template('gallery.html', **context)
 
 
