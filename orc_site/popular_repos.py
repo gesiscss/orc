@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def binder_url(org, repo):
@@ -10,15 +10,6 @@ def binder_url(org, repo):
     :return:
     """
     return f'https://notebooks.gesis.org/binder/v2/gh/{org}/{repo}/master'
-
-
-def ts_to_dt(ts):
-    """
-
-    :param ts:
-    :return:
-    """
-    return datetime.utcfromtimestamp(ts)
 
 
 def query(time_range):
@@ -53,6 +44,7 @@ def process_data(data, time_range_beginning):
         first_value_ts = container['values'][0][0]
         first_value_dt = datetime.utcfromtimestamp(first_value_ts)
         # prometheus scrapes data each minute, so ignore seconds while comparision
+        # print(first_value_dt, time_range_beginning)
         if first_value_dt.replace(second=0, microsecond=0) > time_range_beginning.replace(second=0, microsecond=0):
             # this container is created after beginning of time range
             # NOTE first value in container can be > 1 if there are simultaneous launches
@@ -80,14 +72,20 @@ def process_data(data, time_range_beginning):
     return d
 
 
-def get_popular_repos(time_range, time_delta):
+def get_popular_repos(time_range):
     """
 
     :param time_range:
-    :param time_delta:
     :return:
     """
-    data = query(f'{time_range}')
+    if 'h' in time_range:
+        p = {'hours': int(time_range.split('h')[0])}
+    elif 'd' in time_range:
+        p = {'days': int(time_range.split('d')[0])}
+    else:
+        raise ValueError('Time range must be in hours or days.')
+    time_delta = timedelta(**p)
     time_range_beginning = datetime.utcnow() - time_delta
+    data = query(f'{time_range}')
     data = process_data(data, time_range_beginning)
     return data
