@@ -84,7 +84,9 @@ def get_popular_repos(time_range):
         p = {'days': int(time_range.split('d')[0])}
     else:
         raise ValueError('Time range must be in hours or days.')
-    time_delta = timedelta(**p)
+    # prometheus api returns values for time_range-1m
+    # so decreases time_delta 1 min too
+    time_delta = timedelta(**p) - timedelta(minutes=1)
     time_range_beginning = datetime.utcnow() - time_delta
     data = query(f'{time_range}')
     data = process_data(data, time_range_beginning)
