@@ -15,16 +15,16 @@ RUN apt-get update -y && \
 RUN pip install --no-cache-dir --upgrade pip
 
 # We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
+COPY ./requirements.txt /orc_site/requirements.txt
 
-WORKDIR /app
+#WORKDIR /orc_site
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r orc_site/requirements.txt
 
-COPY . /app
+COPY . /orc_site
 
 # tell the port number the container should expose
 EXPOSE 5000
 
 # run the application
-CMD ["python", "app.py"]
+CMD ["python3", "-m", "orc_site"]

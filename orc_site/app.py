@@ -91,5 +91,11 @@ def gallery():
     return render_template('gallery.html', **context)
 
 
-if __name__ == '__main__':
+def run_app():
     app.run(debug=False, host='0.0.0.0')
+
+
+main = run_app
+
+if __name__ == '__main__':
+    main()
