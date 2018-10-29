@@ -80,14 +80,14 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
-    popular_repos_1d = get_popular_repos('1d', timedelta(days=1))
-    context.update({'active': 'test',
-                    'popular_repos_1h': get_popular_repos('1h', timedelta(hours=1)),
-                    'popular_repos_1d': get_popular_repos('1d', timedelta(days=1)),
-                    'popular_repos_1w': get_popular_repos('7d', timedelta(days=7)),
-                    'popular_repos_1m': get_popular_repos('30d', timedelta(days=30)),
-                    'popular_repos_all': get_popular_repos('60d', timedelta(days=60)),
-                    })
+    popular_repos_all = [
+        ('Most popular repositories in last hour', get_popular_repos('1h', timedelta(hours=1))),
+        ('Most popular repositories in last day', get_popular_repos('1d', timedelta(days=1))),
+        ('Most popular repositories in last week', get_popular_repos('7d', timedelta(days=7))),
+        ('Most popular repositories in last 30 days', get_popular_repos('30d', timedelta(days=30))),
+        ('Most popular repositories in last 60 days', get_popular_repos('60d', timedelta(days=60))),
+    ]
+    context.update({'active': 'test', 'popular_repos_all': popular_repos_all})
     return render_template('gallery.html', **context)
 
 

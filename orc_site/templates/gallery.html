@@ -7,23 +7,21 @@
     {% block etracker_et_areas_no_js %}%2Fabout{% endblock etracker_et_areas_no_js %}
 {% endif %}
 
-
-
-
 {% block main %}
-<h1>Most popular repositories in last hour</h1>
+{% for title, popular_repos in popular_repos_all %}
+<h1>{{ title }}</h1>
 <table class="table table-hover">
   <thead>
     <tr>
       <th scope="col">Repo</th>
-      <th scope="col">Origin</th>
+      <th scope="col">Org./User</th>
       <th scope="col">Provider</th>
       <th scope="col">Launches</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {% for repo_name, repo_data in popular_repos_1h[:10] %}
+    {% for repo_name, repo_data in popular_repos[:10] %}
     <tr>
         <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
         <td>{{ repo_data[0] }}</td>
@@ -36,110 +34,5 @@
     {% endfor %}
   </tbody>
 </table>
-<h1>Most popular repositories in last day</h1>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Origin</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_1d[:10] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<h1>Most popular repositories in last week</h1>
-    <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Origin</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_1w[:10] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-
-<h1>Most popular repositories in last month</h1>
-    <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Origin</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_1m[:10] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-
-<h1>Most popular repositories in last 2 month</h1>
-    <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Origin</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_all[:10] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+{% endfor %}
 {% endblock main %}
