@@ -7,11 +7,13 @@
     {% block etracker_et_areas_no_js %}%2Fabout{% endblock etracker_et_areas_no_js %}
 {% endif %}
 
-{% block main %}
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% block extra_css %}
+{#<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">#}
+<link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
+{#  <link rel="stylesheet" href="/resources/demos/style.css">#}
+{#  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>#}
+{#  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>#}
+  <script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
   <script>
   $( function() {
     $( "#tabs" ).tabs({
@@ -19,128 +21,44 @@
     });
   } );
   </script>
+{% endblock extra_css %}
 
+{% block main %}
 <div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">Last 24 h</a></li>
-    <li><a href="#tabs-2">Last week</a></li>
-    <li><a href="#tabs-3">Last month</a></li>
-      <li><a href="#tabs-4">Last month</a></li>
-  </ul>
-  <div id="tabs-1">
-            <h1> Most popular repos of last 24h </h1>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Org./User</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_24h[:5] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <ul>
+        {% for i, title in tabs %}
+        <li><a href="#tabs-{{ i }}">{{ title }}</a></li>
+        {% endfor %}
+    </ul>
 
-  </div>
-  <div id="tabs-2">
-<h1> Most popular repos of last week </h1>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Org./User</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_1w[:5] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-  </div>
-  <div id="tabs-3">
-        <h1> Most popular repos of last month </h1>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Org./User</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_1m[:5] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-  </div>
-
-<div id="tabs-4">
-        <h1> Most popular repos of last 2months </h1>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Repo</th>
-      <th scope="col">Org./User</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Launches</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for repo_name, repo_data in popular_repos_all[:5] %}
-    <tr>
-        <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-        <td>{{ repo_data[0] }}</td>
-        <td>{{ repo_data[1] }}</td>
-        <td>{{ repo_data[2] }}</td>
-        <td><a href="{{ repo_data[4] }}" target="_blank">
-            <img src="https://notebooks.gesis.org/binder/badge.svg">
-        </a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-  </div>
+    {% for i, title, popular_repos in popular_repos_all %}
+    <div id="tabs-{{ i }}">
+        <h1>{{ title }}</h1>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Repo</th>
+                <th scope="col">Org./User</th>
+                <th scope="col">Provider</th>
+                <th scope="col">Launches</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for repo_name, repo_data in popular_repos[:5] %}
+                <tr>
+                    <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
+                    <td>{{ repo_data[0] }}</td>
+                    <td>{{ repo_data[1] }}</td>
+                    <td>{{ repo_data[2] }}</td>
+                    <td><a href="{{ repo_data[4] }}" target="_blank">
+                        <img src="https://notebooks.gesis.org/binder/badge.svg">
+                    </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+   {% endfor %}
 </div>
-
-
 {% endblock main %}

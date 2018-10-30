@@ -25,7 +25,8 @@ context = {
     'shibboleth_entityID': 'https://notebooks.gesis.org/shibboleth',
     'test_shibboleth_entityID': 'https://notebooks-test.gesis.org/shibboleth',
     'is_staging': os.environ.get('DEPLOYMENT_ENV') == 'staging',
-    'is_production': os.environ.get('DEPLOYMENT_ENV') == 'production'
+    'is_production': os.environ.get('DEPLOYMENT_ENV') == 'production',
+    'gallery_url': '/gallery/'
 }
 
 
@@ -79,20 +80,22 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
-    # popular_repos_all = [
-    #     ('Most popular repositories in last hour', get_popular_repos('1h')),
-    #     ('Most popular repositories in last day', get_popular_repos('24h')),
-    #     ('Most popular repositories in last week', get_popular_repos('7d')),
-    #     ('Most popular repositories in last 30 days', get_popular_repos('30d')),
-    #     ('Most popular repositories in last 60 days', get_popular_repos('60d')),
-    # ]
-    # context.update({'active': 'gallery', 'popular_repos_all': popular_repos_all})
+    tabs = [
+        (1, 'Last 24 h'),
+        (2, 'Last week'),
+        (3, 'Last 30 days'),
+        (4, 'Last 60 days')
+    ]
+    popular_repos_all = [
+        (1, 'Most popular repositories in last day', get_popular_repos('24h')),
+        (2, 'Most popular repositories in last week', get_popular_repos('7d')),
+        (3, 'Most popular repositories in last 30 days', get_popular_repos('30d')),
+        (4, 'Most popular repositories in last 60 days', get_popular_repos('60d')),
+    ]
+
     context.update({'active': 'gallery',
-                    'popular_repos_24h': get_popular_repos('1h'),
-                    'popular_repos_1w': get_popular_repos('7d'),
-                    'popular_repos_1m': get_popular_repos('30d'),
-                    'popular_repos_all': get_popular_repos('60d'),
-                    })
+                    'tabs': tabs,
+                    'popular_repos_all': popular_repos_all})
     return render_template('gallery.html', **context)
 
 
