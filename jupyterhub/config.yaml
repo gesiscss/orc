@@ -7,7 +7,7 @@ hub:
     prometheus.io/path: "/jupyter/hub/metrics"
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "2ba03594"
+    tag: "e6459c34"
   # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
@@ -153,4 +153,3 @@ cull:
   # kill user pods if idle for 30 mins - default is 1 hour
   timeout: 1800
   every: 660
-
