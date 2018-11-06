@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: orc-site-test-service
+  name: orc-site-test
   labels:
     app: orc-site-test
 spec:
@@ -18,7 +18,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orc-site-test-deployment
+  name: orc-site-test
   labels:
     app: orc-site-test
 spec:
@@ -30,7 +30,7 @@ spec:
     type: RollingUpdate  # default
   template:
     metadata:
-      name: orc-site-test-pod
+      name: orc-site-test
       labels:
         app: orc-site-test
     spec:
