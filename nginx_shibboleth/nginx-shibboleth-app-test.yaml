@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-shibboleth-test-service
+  name: nginx-shibboleth-test
   labels:
     app: nginx-shibboleth-test
 spec:
@@ -23,7 +23,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-shibboleth-test-deployment
+  name: nginx-shibboleth-test
   labels:
     app: nginx-shibboleth-test
 spec:
@@ -39,7 +39,7 @@ spec:
     type: RollingUpdate  # default
   template:
     metadata:
-      name: nginx-shibboleth-test-pod
+      name: nginx-shibboleth-test
       labels:
         app: nginx-shibboleth-test
       # annotations:
