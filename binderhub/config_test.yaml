@@ -73,7 +73,7 @@ cors: &cors
 build:
   nodeSelector:
     user: workers
-  repo2dockerImage: jupyter/repo2docker:a161b09
+  repo2dockerImage: jupyter/repo2docker:5cdd0ee
   # to give custom "Binder inaccessible" message (login.html)
   appendix: |
     USER root
