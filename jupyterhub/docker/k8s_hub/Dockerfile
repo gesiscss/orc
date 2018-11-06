@@ -1,5 +1,5 @@
-# https://github.com/gesiscss/jhub_shibboleth_auth/tree/28385b629495de7e57fee22fc2e171c8bb63af73/docker/k8s_hub
-FROM gesiscss/k8s-hub:db9569c-v1.4.0
+# https://github.com/gesiscss/jhub_shibboleth_auth/tree/df0a338dcb140fa15361921dc881f33bf05f8e73/docker/k8s_hub
+FROM gesiscss/k8s-hub:7f6781e-v1.4.0
 
 
 USER root
