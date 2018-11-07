@@ -84,26 +84,6 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
-
-
-    repo_details_ptm = ['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
-    repo_details_workshop_girls_day=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
-    repo_details_gesis_meta_analysis=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
-    repo_details_Flow=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
-
-
-    PTM= ('PTM', repo_details_ptm)
-    Workshop_girl_day=('Workshop_girl_day', repo_details_workshop_girls_day)
-    Gesis_meta_analysis=('Gesis Meta Analysis', repo_details_gesis_meta_analysis)
-    Flow=('Flow', repo_details_Flow)
-
-    created_by_GESIS = []
-    created_by_GESIS.append(PTM)
-    created_by_GESIS.append(Workshop_girl_day)
-    created_by_GESIS.append(Gesis_meta_analysis)
-    created_by_GESIS.append(Flow)
-
-
     popular_repos_all = [
         (1, 'Last 24 hours', get_popular_repos('24h'), '24h', ),
         (2, 'Last week', get_popular_repos('7d'), '7d', ),
@@ -111,11 +91,24 @@ def gallery():
         (4, 'Last 60 days', get_popular_repos('60d'), '60d', ),
     ]
 
-
+    created_by_gesis = [
+        ('ptm', 'https://github.com/gesiscss/ptm', 'gesiscss', 'GitHub',
+         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master?filepath=index.ipynb',
+         'Introduction to Natural Language Processing with a special emphasis on the analysis of Job Advertisements', ),
+        ('workshop_girls_day', 'https://github.com/gesiscss/workshop_girls_day', 'gesiscss', 'GitHub',
+         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/workshop_girls_day/master',
+         '', ),
+        ('gesis-meta-analysis-2018', 'https://github.com/berndweiss/gesis-meta-analysis-2018', 'berndweiss', 'GitHub',
+         'https://notebooks.gesis.org/binder/v2/gh/berndweiss/gesis-meta-analysis-2018/master',
+         'GESIS Summer School in Survey Methodology 2018: Meta-Analysis in Social Research and Survey Methodology', ),
+        ('flow', 'https://github.com/gesiscss/flow', 'gesiscss', 'GitHub',
+         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/flow/master',
+         'High-resolution audience research on local passenger traffic in Saxony, Germany', ),
+    ]
 
     context.update({'active': 'gallery',
                     'popular_repos_all': popular_repos_all,
-                    'created_by_GESIS': created_by_GESIS,
+                    'created_by_gesis': created_by_gesis,
                     })
     return render_template('gallery.html', **context)
 

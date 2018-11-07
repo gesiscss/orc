@@ -80,12 +80,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for repo_name, repo_data in created_by_GESIS %}
+                {% for repo_name, repo_url, org, provider, binder_url, description in created_by_gesis %}
                     <tr>
-                        <td><a href="{{ repo_data[2] }}" target="_blank">{{ repo_name }}</a></td>
-                        <td>{{ repo_data[0] }}</td>
-                        <td>{{ repo_data[1] }}</td>
-                        <td><a href="{{ repo_data[2] }}" target="_blank">
+                        <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
+                        <td>{{ org }}</td>
+                        <td>{{ provider }}</td>
+                        <td><a href="{{ binder_url }}" target="_blank">
                             <img src="https://notebooks.gesis.org/binder/badge.svg">
                         </a></td>
                     </tr>
