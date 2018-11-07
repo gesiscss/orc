@@ -21,108 +21,81 @@
 
 {% block main %}
 
-<div id="tabs">
-    <h1>Popular repositories</h1>
 
-    <ul >
-        {% for i, title, _ in popular_repos_all %}
-        <li style="width: 22%;"><a style="width:21%;"   href="#tabs-{{ i }}">{{ title }}</a></li>
-        {% endfor %}
-    </ul>
 
-    {% for i, _, popular_repos in popular_repos_all %}
-    <div id="tabs-{{ i }}">
-        <table class="table table-hover" style="width:90%;">
-            <thead>
-            <tr>
-                <th scope="col">Repo</th>
-                <th scope="col">Org./User</th>
-                <th scope="col">Provider</th>
-                <th scope="col">Launches</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for repo_name, repo_data in popular_repos[:5] %}
-                <tr>
-                    <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-                    <td>{{ repo_data[0] }}</td>
-                    <td>{{ repo_data[1] }}</td>
-                    <td>{{ repo_data[2] }}</td>
-                    <td><a href="{{ repo_data[4] }}" target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
-                </tr>
+    <div id="tabs">
+        <h1>Popular repositories</h1>
+
+        <ul>
+            {% for i, title, popular_repos, time_range in popular_repos_all %}
+                <li><a href="#tabs-{{ i }}">{{ title }}</a></li>
             {% endfor %}
-                <tr>
-                    <td colspan="5">
-                        <button class="btn input-block-level form-control" style="background-color: #bbbbbb; text-decoration: #0f0f0f;" onclick="">View all</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-   {% endfor %}
-    <div>
-        <h1> Created by GESIS</h1>
+        </ul>
+
+        {% for i, title, popular_repos, time_range in popular_repos_all %}
+            <div id="tabs-{{ i }}" class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Repo</th>
+                        <th scope="col">Org./User</th>
+                        <th scope="col">Provider</th>
+                        <th scope="col">Launches</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for repo_name, repo_data in popular_repos[:5] %}
+                        <tr>
+                            <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
+                            <td>{{ repo_data[0] }}</td>
+                            <td>{{ repo_data[1] }}</td>
+                            <td>{{ repo_data[2] }}</td>
+                            <td><a href="{{ repo_data[4] }}" target="_blank">
+                                <img src="https://notebooks.gesis.org/binder/badge.svg">
+                            </a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5">
+                            <a href="/gallery/view_all/{{ time_range }}"
+                               class="btn form-control btn-lg btn-warning orc-button">View all {{ title }}</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+
         <div>
-            <table class="table table-hover" style="width: 90%;">
+            <h1> Created by GESIS</h1>
+
+            <table class="table table-hover">
                 <thead>
                 <tr>
                     <th scope="col">Repo</th>
                     <th scope="col">Org./User</th>
                     <th scope="col">Provider</th>
-                    <th scope="col">Launches</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false"
-                    aria-controls="multiCollapseExample2">
-                    <td>PTM</td>
-                    <td>gesiscss</td>
-                    <td>github.com</td>
-                    <td><a href=" https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master?filepath=index.ipynb"
-                           target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
-                </tr>
-                <tr class="collapse multi-collapse" id="multiCollapseExample2">
-                    <td colspan="4">Practical Introduction to Text Mining developed by gesis staff <br> Practical
-                        Introduction to Text Mining developed by gesis staff <br> Practical Introduction to Text Mining
-                        developed by gesis staff
-                    </td>
-                </tr>
-                <tr>
-                    <td>workshop_girls_day</td>
-                    <td>gesiscss</td>
-                    <td>github.com</td>
-                    <td><a href="https://notebooks.gesis.org/binder/v2/gh/gesiscss/workshop_girls_day/master"
-                           target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
-                </tr>
-                <tr>
-                    <td>gesis-meta-analysis-2018</td>
-                    <td>berndweiss</td>
-                    <td>github.com</td>
-                    <td><a href="https://mybinder.org/v2/gh/berndweiss/gesis-meta-analysis-2018/master" target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
-                </tr>
-                <tr>
-                    <td>Flow</td>
-                    <td>gesiscss</td>
-                    <td>github.com</td>
-                    <td><a href="https://notebooks.gesis.org/binder/v2/gh/gesiscss/workshop_girls_day/master"
-                           target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
-                </tr>
+                {% for repo_name, repo_data in created_by_GESIS %}
+                    <tr>
+                        <td><a href="{{ repo_data[2] }}" target="_blank">{{ repo_name }}</a></td>
+                        <td>{{ repo_data[0] }}</td>
+                        <td>{{ repo_data[1] }}</td>
+                        <td><a href="{{ repo_data[2] }}" target="_blank">
+                            <img src="https://notebooks.gesis.org/binder/badge.svg">
+                        </a></td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
+
+
         </div>
 
     </div>
-</div>
 
 {% endblock main %}

@@ -1,8 +1,12 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 from .popular_repos import get_popular_repos
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
+
+
+
+
 
 
 context = {
@@ -80,25 +84,52 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
+
+
+    repo_details_ptm = ['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
+    repo_details_workshop_girls_day=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
+    repo_details_gesis_meta_analysis=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
+    repo_details_Flow=['gesiscss', 'github', 'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master']
+
+
+    PTM= ('PTM', repo_details_ptm)
+    Workshop_girl_day=('Workshop_girl_day', repo_details_workshop_girls_day)
+    Gesis_meta_analysis=('Gesis Meta Analysis', repo_details_gesis_meta_analysis)
+    Flow=('Flow', repo_details_Flow)
+
+    created_by_GESIS = []
+    created_by_GESIS.append(PTM)
+    created_by_GESIS.append(Workshop_girl_day)
+    created_by_GESIS.append(Gesis_meta_analysis)
+    created_by_GESIS.append(Flow)
+
+
     popular_repos_all = [
-        (1, 'Last 24 hours', get_popular_repos('24h')),
-        (2, 'Last week', get_popular_repos('7d')),
-        (3, 'Last 30 days', get_popular_repos('30d')),
-        (4, 'Last 60 days', get_popular_repos('60d')),
+        (1, 'Last 24 hours', get_popular_repos('24h'), '24h', ),
+        (2, 'Last week', get_popular_repos('7d'), '7d', ),
+        (3, 'Last 30 days', get_popular_repos('30d'), '30d', ),
+        (4, 'Last 60 days', get_popular_repos('60d'), '60d', ),
     ]
 
-    created_by_gesis = []
+
 
     context.update({'active': 'gallery',
                     'popular_repos_all': popular_repos_all,
-                    'created_by_gesis': created_by_gesis,
+                    'created_by_GESIS': created_by_GESIS,
                     })
     return render_template('gallery.html', **context)
 
-@app.route('/viewAll/')
-def viewAll():
-    context.update({'active': 'viewAll'})
-    return render_template('viewAll.html', **context)
+
+@app.route('/gallery/view_all/<string:time_range>')
+def view_all(time_range):
+    if time_range not in ['24h', '7d', '30d', '60d']:
+        abort(404)
+    popular_repos = get_popular_repos(time_range)
+    context.update({'active': 'view_all',
+                    'popular_repos': popular_repos})
+    return render_template('view_all.html', **context)
+
+
 def run_app():
     app.run(debug=False, host='0.0.0.0')
 

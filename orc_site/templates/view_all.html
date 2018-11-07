@@ -1,0 +1,40 @@
+{% extends "page.html" %}
+
+{% if is_production %}
+    {% block etracker_et_pagename %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename %}
+    {% block etracker_et_pagename_nojs %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename_nojs %}
+    {% block etracker_et_areas %}%2Fabout{% endblock etracker_et_areas %}
+    {% block etracker_et_areas_no_js %}%2Fabout{% endblock etracker_et_areas_no_js %}
+{% endif %}
+
+
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table-hover table-responsive">
+            <thead>
+            <tr>
+                <th scope="col">Repo</th>
+                <th scope="col">Org./User</th>
+                <th scope="col">Provider</th>
+                <th scope="col">Launches</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for repo_name, repo_data in popular_repos %}
+                <tr>
+                    <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
+                    <td>{{ repo_data[0] }}</td>
+                    <td>{{ repo_data[1] }}</td>
+                    <td>{{ repo_data[2] }}</td>
+                    <td><a href="{{ repo_data[4] }}" target="_blank">
+                        <img src="https://notebooks.gesis.org/binder/badge.svg">
+                    </a></td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock main %}
