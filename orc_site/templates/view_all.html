@@ -10,8 +10,8 @@
 
 {% block main %}
 
-    <div class="table-responsive">
-        <table class="table-hover table-responsive">
+<div class="table-responsive">
+    <table class="table table-hover" >
             <thead>
             <tr>
                 <th scope="col">Repo</th>
@@ -22,13 +22,13 @@
             </tr>
             </thead>
             <tbody>
-            {% for repo_name, repo_data in popular_repos %}
+            {% for repo_data in popular_repos %}
                 <tr>
-                    <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-                    <td>{{ repo_data[0] }}</td>
+                    <td><a href="{{ repo_data[4] }}" target="_blank">{{ repo_data[0] }}</a></td>
                     <td>{{ repo_data[1] }}</td>
                     <td>{{ repo_data[2] }}</td>
-                    <td><a href="{{ repo_data[4] }}" target="_blank">
+                    <td>{{ repo_data[3] }}</td>
+                    <td><a href="{{ repo_data[5] }}" target="_blank">
                         <img src="https://notebooks.gesis.org/binder/badge.svg">
                     </a></td>
                 </tr>
@@ -36,5 +36,5 @@
 
             </tbody>
         </table>
-    </div>
+</div>
 {% endblock main %}

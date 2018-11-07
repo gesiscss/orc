@@ -45,13 +45,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for repo_name, repo_data in popular_repos[:5] %}
+                    {% for repo_data in popular_repos[:5] %}
                         <tr>
-                            <td><a href="{{ repo_data[3] }}" target="_blank">{{ repo_name }}</a></td>
-                            <td>{{ repo_data[0] }}</td>
+                            <td><a href="{{ repo_data[4] }}" target="_blank">{{ repo_data[0] }}</a></td>
                             <td>{{ repo_data[1] }}</td>
                             <td>{{ repo_data[2] }}</td>
-                            <td><a href="{{ repo_data[4] }}" target="_blank">
+                            <td>{{ repo_data[3] }}</td>
+                            <td><a href="{{ repo_data[5] }}" target="_blank">
                                 <img src="https://notebooks.gesis.org/binder/badge.svg">
                             </a></td>
                         </tr>
