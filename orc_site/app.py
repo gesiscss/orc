@@ -80,25 +80,25 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
-    tabs = [
-        (1, 'Last 24 h'),
-        (2, 'Last week'),
-        (3, 'Last 30 days'),
-        (4, 'Last 60 days')
-    ]
     popular_repos_all = [
-        (1, 'Most popular repositories in last day', get_popular_repos('24h')),
-        (2, 'Most popular repositories in last week', get_popular_repos('7d')),
-        (3, 'Most popular repositories in last 30 days', get_popular_repos('30d')),
-        (4, 'Most popular repositories in last 60 days', get_popular_repos('60d')),
+        (1, 'Last 24 hours', get_popular_repos('24h')),
+        (2, 'Last week', get_popular_repos('7d')),
+        (3, 'Last 30 days', get_popular_repos('30d')),
+        (4, 'Last 60 days', get_popular_repos('60d')),
     ]
+
+    created_by_gesis = []
 
     context.update({'active': 'gallery',
-                    'tabs': tabs,
-                    'popular_repos_all': popular_repos_all})
+                    'popular_repos_all': popular_repos_all,
+                    'created_by_gesis': created_by_gesis,
+                    })
     return render_template('gallery.html', **context)
 
-
+@app.route('/viewAll/')
+def viewAll():
+    context.update({'active': 'viewAll'})
+    return render_template('viewAll.html', **context)
 def run_app():
     app.run(debug=False, host='0.0.0.0')
 
