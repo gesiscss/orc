@@ -24,7 +24,7 @@ It also handles [Shibboleth](https://www.shibboleth.net/) login and
 SSL offloading/termination.
 
 In this ORC instance ports 80 and 443 of `nginx-shibboleth` container are exposed to host machine.
-All services in ORC cluster in k8s has type `NodePort` and run behind `nginx-shibboleth-service`.
+All services in ORC cluster in k8s has type `NodePort` and run behind `nginx-shibboleth` service.
 
 [Dockerfile](/nginx_shibboleth/docker/Dockerfile) for `nginx-shibboleth` container
 extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/shibboleth)
