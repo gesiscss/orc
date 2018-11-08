@@ -110,17 +110,21 @@ def gallery():
                     'popular_repos_all': popular_repos_all,
                     'created_by_gesis': created_by_gesis,
                     })
-    return render_template('gallery.html', **context)
+    return render_template('gallery/gallery.html', **context)
 
 
-@app.route('/gallery/view_all/<string:time_range>')
-def view_all(time_range):
-    if time_range not in ['24h', '7d', '30d', '60d']:
+@app.route('/gallery/popular_repos/<string:time_range>')
+def popular_repos(time_range):
+    titles = {'24h': 'Popular repositories in last 24 hours',
+              '7d': 'Popular repositories in last week',
+              '30d': 'Popular repositories in last 30 days',
+              '60d': 'Popular repositories in last 60 days'}
+    if time_range not in titles:
         abort(404)
-    popular_repos = get_popular_repos(time_range)
-    context.update({'active': 'view_all',
-                    'popular_repos': popular_repos})
-    return render_template('view_all.html', **context)
+    context.update({'active': 'gallery',
+                    'title': titles[time_range],
+                    'popular_repos': get_popular_repos(time_range)})
+    return render_template('gallery/popular_repos.html', **context)
 
 
 def run_app():

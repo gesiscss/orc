@@ -9,19 +9,9 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
-  <script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
-  <script>
-  $( function() {
-    $( "#tabs" ).tabs({
-      event: "mouseover"
-    });
-  } );
-  </script>
 {% endblock extra_css %}
 
 {% block main %}
-
-
 
     <div id="tabs">
         <h1>Popular repositories</h1>
@@ -33,7 +23,7 @@
         </ul>
 
         {% for i, title, popular_repos, time_range in popular_repos_all %}
-            <div id="tabs-{{ i }}" class="table-responsive">
+            <div id="tabs-{{ i }}" class="table-responsive" style="padding: 0;">
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -47,7 +37,7 @@
                     <tbody>
                     {% for repo_data in popular_repos[:5] %}
                         <tr>
-                            <td><a href="{{ repo_data[4] }}" target="_blank">{{ repo_data[0] }}</a></td>
+                            <td><a href="{{ repo_data[4] }}" target="_blank" style="color: #337ab7;">{{ repo_data[0] }}</a></td>
                             <td>{{ repo_data[1] }}</td>
                             <td>{{ repo_data[2] }}</td>
                             <td>{{ repo_data[3] }}</td>
@@ -56,46 +46,56 @@
                             </a></td>
                         </tr>
                     {% endfor %}
-                    <tr>
+                    <tr class="success">
                         <td colspan="5">
-                            <a href="/gallery/view_all/{{ time_range }}"
-                               class="btn form-control btn-lg btn-warning orc-button">View all {{ title }}</a>
+                            <a href="/gallery/popular_repos/{{ time_range }}" style="color: #337ab7;">
+                                View all ({{ title }})
+                            </a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         {% endfor %}
-
-        <div>
-            <h1> Created by GESIS</h1>
-
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">Repo</th>
-                    <th scope="col">Org./User</th>
-                    <th scope="col">Provider</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for repo_name, repo_url, org, provider, binder_url, description in created_by_gesis %}
-                    <tr>
-                        <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
-                        <td>{{ org }}</td>
-                        <td>{{ provider }}</td>
-                        <td><a href="{{ binder_url }}" target="_blank">
-                            <img src="https://notebooks.gesis.org/binder/badge.svg">
-                        </a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-
-        </div>
-
     </div>
 
+    <div class="table-responsive">
+        <h1> Created by GESIS</h1>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Repo</th>
+                <th scope="col">Org./User</th>
+                <th scope="col">Provider</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for repo_name, repo_url, org, provider, binder_url, description in created_by_gesis %}
+                <tr>
+                    <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
+                    <td>{{ org }}</td>
+                    <td>{{ provider }}</td>
+                    <td><a href="{{ binder_url }}" target="_blank">
+                        <img src="https://notebooks.gesis.org/binder/badge.svg">
+                    </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
 {% endblock main %}
+
+{% block extra_js %}
+<script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+<script>
+$( function() {
+$( "#tabs" ).tabs({
+  event: "mouseover"
+});
+} );
+</script>
+{% endblock extra_js %}
