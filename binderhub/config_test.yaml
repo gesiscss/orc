@@ -1,5 +1,35 @@
-debug:
-  enabled: true
+nodeSelector:
+  staging: worker
+
+config:
+  BinderHub:
+    debug: true
+    base_url: /binder/
+    hub_url: https://notebooks-test.gesis.org/binder/jupyter/
+
+    use_registry: true
+    image_prefix: gesiscss/orc-binder-staging-
+    build_image: jupyter/repo2docker:5cdd0ee
+    per_repo_quota: 100
+    build_node_selector:
+      user: workers
+    appendix: |
+      USER root
+      ENV BINDER_URL={binder_url}
+      ENV REPO_URL={repo_url}
+      RUN cd /tmp \
+       && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
+       && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
+       && ./appendix/run-appendix \
+       && rm -rf orc.tar.gz appendix
+      USER $NB_USER
+
+    template_variables:
+      is_staging: True
+      is_production: False
+    template_path: /etc/binderhub/templates/binderhub/templates
+    #extra_static_path: /etc/binderhub/templates/binderhub/static
+    #extra_static_url_prefix: extra_static/
 
 resources:
   requests:
@@ -9,41 +39,17 @@ resources:
     cpu: "0.5"
     memory: 512Mi
 
-nodeSelector:
-  staging: worker
-
-registry:
-  enabled: true
-  prefix: gesiscss/orc-binder-
-  host: https://registry.hub.docker.com
-  authHost: https://index.docker.io/v1
-  authTokenUrl: https://auth.docker.io/token?service=registry.docker.io
-
-dind:
-  enabled: false
-
-imageCleaner:
-  enabled: false
-
 service:
   annotations:
     prometheus.io/scrape: 'false'
   type: NodePort
   nodePort: 30181
 
-baseUrl: /binder/
+dind:
+  enabled: false
 
-hub:
-  url: https://notebooks-test.gesis.org/binder/jupyter/
-
-template:
-  variables:
-    is_staging: True
-    is_production: False
-  path: /etc/binderhub/templates/binderhub/templates
-#  static:
-#    path: /etc/binderhub/templates/binderhub/static
-#    urlPrefix: extra_static/
+imageCleaner:
+  enabled: false
 
 initContainers:
   - name: git-clone-templates
@@ -67,24 +73,9 @@ extraVolumes:
 extraVolumeMounts:
   - name: custom-templates
     mountPath: /etc/binderhub/templates
+
 cors: &cors
   allowOrigin: "*"
-
-build:
-  nodeSelector:
-    user: workers
-  repo2dockerImage: jupyter/repo2docker:5cdd0ee
-  # to give custom "Binder inaccessible" message (login.html)
-  appendix: |
-    USER root
-    ENV BINDER_URL={binder_url}
-    ENV REPO_URL={repo_url}
-    RUN cd /tmp \
-     && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
-     && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
-     && ./appendix/run-appendix \
-     && rm -rf orc.tar.gz appendix
-    USER $NB_USER
 
 jupyterhub:
   custom:

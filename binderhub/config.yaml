@@ -1,5 +1,43 @@
-# https://github.com/jupyterhub/binderhub/blob/master/helm-chart/binderhub/values.yaml
-# https://github.com/jupyterhub/mybinder.org-deploy/blob/master/config/prod.yaml
+nodeSelector:
+  production: worker
+
+config:
+  BinderHub:
+    base_url: /binder/
+    hub_url: https://notebooks.gesis.org/binder/jupyter/
+
+    use_registry: true
+    image_prefix: gesiscss/orc-binder-
+    build_image: jupyter/repo2docker:5cdd0ee
+    per_repo_quota: 100
+    build_node_selector:
+      user: workers
+    appendix: |
+      USER root
+      ENV BINDER_URL={binder_url}
+      ENV REPO_URL={repo_url}
+      RUN cd /tmp \
+       && wget -q https://github.com/gesiscss/orc/archive/master.tar.gz -O orc.tar.gz \
+       && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
+       && ./appendix/run-appendix \
+       && rm -rf orc.tar.gz appendix
+      USER $NB_USER
+
+    template_variables:
+      is_staging: False
+      is_production: True
+    template_path: /etc/binderhub/templates/binderhub/templates
+    #extra_static_path: /etc/binderhub/templates/binderhub/static
+    #extra_static_url_prefix: extra_static/
+
+  GitHubRepoProvider:
+    # Add banned repositories to the list below
+    # They should be strings that will match "^<org-name>/<repo-name>.*"
+    banned_specs:
+      # e.g. '^org/repo.*'
+      - ^ines/spacy-binder.*
+      - ^soft4voip/rak.*
+
 resources:
   requests:
     cpu: "0.25"
@@ -8,41 +46,17 @@ resources:
     cpu: "2"
     memory: 2Gi
 
-nodeSelector:
-  production: worker
-
-registry:
-  enabled: true
-  prefix: gesiscss/orc-binder-
-  host: https://registry.hub.docker.com
-  authHost: https://index.docker.io/v1
-  authTokenUrl: https://auth.docker.io/token?service=registry.docker.io
-
-dind:
-  enabled: true
-
-imageCleaner:
-  enabled: false
-
 service:
   annotations:
     prometheus.io/path: '/binder/metrics'
   type: NodePort
   nodePort: 30081
 
-baseUrl: /binder/
+dind:
+  enabled: true
 
-hub:
-  url: https://notebooks.gesis.org/binder/jupyter/
-
-template:
-  variables:
-    is_staging: False
-    is_production: True
-  path: /etc/binderhub/templates/binderhub/templates
-#  static:
-#    path: /etc/binderhub/templates/binderhub/static
-#    urlPrefix: extra_static/
+imageCleaner:
+  enabled: false
 
 initContainers:
   - name: git-clone-templates
@@ -66,34 +80,9 @@ extraVolumes:
 extraVolumeMounts:
   - name: custom-templates
     mountPath: /etc/binderhub/templates
+
 cors: &cors
   allowOrigin: "*"
-
-extraConfig:
-  # Add banned repositories to the list below
-  # They should be strings that will match "^<org-name>/<repo-name>.*"
-  bans: |
-    c.GitHubRepoProvider.banned_specs = [
-      # e.g. '^org/repo.*',
-      '^ines/spacy-binder.*',
-      '^soft4voip/rak.*',
-    ]
-
-build:
-  nodeSelector:
-    user: workers
-  repo2dockerImage: jupyter/repo2docker:5cdd0ee
-  # to give custom "Binder inaccessible" message (login.html)
-  appendix: |
-    USER root
-    ENV BINDER_URL={binder_url}
-    ENV REPO_URL={repo_url}
-    RUN cd /tmp \
-     && wget -q https://github.com/gesiscss/orc/archive/master.tar.gz -O orc.tar.gz \
-     && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
-     && ./appendix/run-appendix \
-     && rm -rf orc.tar.gz appendix
-    USER $NB_USER
 
 jupyterhub:
   custom:
@@ -161,4 +150,3 @@ jupyterhub:
     every: 960
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
-
