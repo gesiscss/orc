@@ -51,7 +51,7 @@ authenticator in ORC.
 
 BinderHub (with `jupyter/repo2docker:5cdd0ee`) runs under https://notebooks.gesis.org/binder/. 
 
-Chart version [0.1.0-80ac52c](https://github.com/jupyterhub/binderhub/tree/80ac52c)
+Chart version [0.2.0-80ac52c](https://github.com/jupyterhub/binderhub/tree/80ac52c)
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
