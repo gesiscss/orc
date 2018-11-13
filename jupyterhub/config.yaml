@@ -153,3 +153,4 @@ cull:
   # kill user pods if idle for 30 mins - default is 1 hour
   timeout: 1800
   every: 660
+
