@@ -30,7 +30,12 @@ def process_data(data):
     for container in data:
         repo_url = container['metric']['repo']
         provider = container['metric']['provider']
-        provider_, org, repo = repo_url.replace('https://', '').rsplit('/', 2)
+        provider_org_repo = repo_url.replace('https://', '').rsplit('/', 2)
+        if len(provider_org_repo) == 2:
+            provider, repo = provider_org_repo
+            org = ''
+        else:
+            provider_, org, repo = provider_org_repo
 
         # calculate number of launches for each repo = max value in time
         launches = max([int(i[1]) for i in container['values']])
