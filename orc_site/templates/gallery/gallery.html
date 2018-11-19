@@ -8,9 +8,7 @@
 {% endif %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/vendor/bootstrap/css/tabs.css">
-{#    #}
- <link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
+    <link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
 {% endblock extra_css %}
 
 {% block main %}
@@ -18,7 +16,7 @@
     <div id="tabs">
         <h1>Popular repositories</h1>
 
-        <ul style="margin-left: 140px;">
+        <ul style="width: 70%; margin: auto;">
             {% for i, title, popular_repos, time_range in popular_repos_all %}
                 <li><a href="#tabs-{{ i }}">{{ title }}</a></li>
             {% endfor %}
@@ -39,7 +37,9 @@
                     <tbody>
                     {% for repo_data in popular_repos[:5] %}
                         <tr>
-                            <td><a href="{{ repo_data[4] }}" target="_blank" style="color: #337ab7;">{{ repo_data[0] }}</a></td>
+                            <td><a href="{{ repo_data[4] }}" target="_blank"
+                                   style="color: #58748f; font-family: Arial,Helvetica,sans-serif; font-size: 1em;">{{ repo_data[0] }} </a>
+                            </td>
                             <td>{{ repo_data[1] }}</td>
                             <td>{{ repo_data[2] }}</td>
                             <td>{{ repo_data[3] }}</td>
@@ -48,17 +48,18 @@
                             </a></td>
                         </tr>
                     {% endfor %}
+                    </tbody>
 
-
-
-                    <tr class="success">
+                    <tfoot>
+                    <tr>
                         <td colspan="5">
-                             <a  href="/gallery/popular_repos/{{ time_range }}" style=" color:#5D99C4;">
+                            <a href="/gallery/popular_repos/{{ time_range }}" style="color: #0d87e9">
                                 View all ({{ title }})
                             </a>
                         </td>
                     </tr>
-                    </tbody>
+                    </tfoot>
+
                 </table>
 
             </div>
@@ -86,123 +87,66 @@
                     <td><a href="{{ binder_url }}" target="_blank">
                         <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
                     </a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-
-    </div>
-
-
-<div class="tabs">
-
-  <ul class="tabs__list">
-      {% for i, title, popular_repos, time_range in popular_repos_all %}
-    <li class="tabs__item tabs__item--active">
-      <a href="#tab{{ i }}" class="tabs__link">{{ title }}</a>
-    </li>
-      {% endfor %}
-  </ul>
-
-  <div class="tabs__content">
-    {% for i, title, popular_repos, time_range in popular_repos_all %}
-    <div class="tabs__inner-content tabs__inner-content" id="tab{{ i }}">
- <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">Repo</th>
-                        <th scope="col">Org./User</th>
-                        <th scope="col">Provider</th>
-                        <th scope="col">Launches</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for repo_data in popular_repos[:5] %}
-                        <tr>
-                            <td><a href="{{ repo_data[4] }}" target="_blank">{{ repo_data[0] }}</a></td>
-                            <td>{{ repo_data[1] }}</td>
-                            <td>{{ repo_data[2] }}</td>
-                            <td>{{ repo_data[3] }}</td>
-                            <td><a href="{{ repo_data[5] }}" target="_blank">
-                                <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                            </a></td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="5">
-                            <a href="/gallery/view_all/{{ time_range }}"
-                               class="btn form-control btn-lg btn-warning orc-button">View all {{ title }}</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-
-    </div>
-       {% endfor %}
-  </div>
-</div>
-
-
-
-  <div class="table-responsive" style=" width: 70%; margin: 10px auto; box-sizing: border-box;">
-        <h1> Created by GESIS</h1>
-
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Repo</th>
-                <th scope="col">Org./User</th>
-                <th scope="col">Provider</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for repo_name, repo_url, org, provider, binder_url, description in created_by_gesis %}
-                <tr >
-                    <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
-                    <td>{{ org }}</td>
-                    <td>{{ provider }}</td>
-                    <td><a href="{{ binder_url }}" target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                    </a></td>
-                    <td data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false"
-                    aria-controls="multiCollapseExample2">
+                    <td data-toggle="collapse" data-target="#multiCollapseExample{{ repo_name }}" aria-expanded="false"
+                        aria-controls="multiCollapseExample2">
                         <button type="button" class="btn btn-default btn-sm">
-                             <span class="glyphicon glyphicon-th-list"></span> Description
-        </button>
+                            <span class="glyphicon glyphicon-th-list"></span> Description
+                        </button>
                     </td>
-            <tr class="collapse multi-collapse" id="multiCollapseExample2">
-                    <td colspan="4">Practical Introduction to Text Mining developed by gesis staff <br> Practical
-                        Introduction to Text Mining developed by gesis staff <br> Practical Introduction to Text Mining
-                        developed by gesis staff
+
+                <tr class="collapse multi-collapse" id="multiCollapseExample{{ repo_name }}">
+                    <td colspan="4"> {{ description }}
                     </td>
                 </tr>
+
                 </tr>
-
-
-
-
             {% endfor %}
-
-
             </tbody>
         </table>
+
+
+    </div>
+
+
 
 
 {% endblock main %}
 
 {% block extra_js %}
-<script src="/static/vendor/bootstrap/js/forTabs.js"></script>
-<script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
 
-<script>
-$( function() {
-$( "#tabs" ).tabs({
-  event: "mouseover"
- });
- } );
-</script>
+    <script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $("#tabs").tabs();
+        });
+        {##}
+        {#$(function() {#}
+        {##}
+        {#    $('.tab-panels .tabs li').on('click', function() {#}
+        {##}
+        {#        var $panel = $(this).closest('.tab-panels');#}
+        {##}
+        {#        $panel.find('.tabs li.active').removeClass('active');#}
+        {#        $(this).addClass('active');#}
+        {##}
+        {#        //figure out which panel to show#}
+        {#        var panelToShow = $(this).attr('rel');#}
+        {##}
+        {#        //hide current panel#}
+        {#        $panel.find('.panel.active').slideUp(300, showNextPanel);#}
+        {##}
+        {#        //show next panel#}
+        {#        function showNextPanel() {#}
+        {#            $(this).removeClass('active');#}
+        {##}
+        {#            $('#'+panelToShow).slideDown(300, function() {#}
+        {#                $(this).addClass('active');#}
+        {#            });#}
+        {#        }#}
+        {#    });#}
+        {##}
+        {##}
+        {#;#}
+    </script>
 {% endblock extra_js %}

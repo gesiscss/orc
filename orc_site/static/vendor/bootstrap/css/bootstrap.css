@@ -2270,6 +2270,7 @@ th {
   max-width: 100%;
   margin-bottom: 20px;
 }
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
@@ -2292,6 +2293,7 @@ th {
 .table > colgroup + thead > tr:first-child > td,
 .table > thead:first-child > tr:first-child > td {
   border-top: 0;
+
 }
 .table > tbody + tbody {
   border-top: 2px solid #ddd;
