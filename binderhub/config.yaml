@@ -11,7 +11,7 @@ config:
     build_image: jupyter/repo2docker:9f081a2
     per_repo_quota: 100
     build_node_selector:
-      user: workers
+      build: workers
     appendix: |
       USER root
       ENV BINDER_URL={binder_url}
@@ -53,7 +53,7 @@ service:
   nodePort: 30081
 
 dind:
-  enabled: true
+  enabled: false
 
 imageCleaner:
   enabled: false
