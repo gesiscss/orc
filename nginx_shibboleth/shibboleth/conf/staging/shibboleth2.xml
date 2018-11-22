@@ -1,22 +1,12 @@
-<SPConfig xmlns="urn:mace:shibboleth:2.0:native:sp:config"
-          xmlns:conf="urn:mace:shibboleth:2.0:native:sp:config"
-          xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-          xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
-          xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-          clockSkew="180">
+<SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    clockSkew="180">
+
+    <OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a" />
 
     <!--
     By default, in-memory StorageService, ReplayCache, ArtifactMap, and SessionCache
     are used. See example-shibboleth2.xml for samples of explicitly configuring them.
-    -->
-
-    <!--
-    To customize behavior for specific resources on Apache, and to link vhosts or
-    resources to ApplicationOverride settings below, use web server options/commands.
-    See https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPConfigurationElements for help.
-    
-    For examples with the RequestMap XML syntax instead, see the example-shibboleth2.xml
-    file, and the https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPRequestMapHowTo topic.
     -->
 
     <!-- https://github.com/nginx-shib/nginx-http-shibboleth/blob/master/CONFIG.rst#configuring-shibboleths-shibboleth2xml-to-recognise-secured-paths -->
@@ -34,29 +24,31 @@
     </RequestMapper>
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
-    <ApplicationDefaults entityID="https://notebooks-test.gesis.org/shibboleth" REMOTE_USER="uid persistent-id targeted-id"
-                         sessionHook="/Shibboleth.sso/AttrChecker" metadataAttributePrefix="Meta-">
+    <ApplicationDefaults entityID="https://notebooks-test.gesis.org/shibboleth"
+        REMOTE_USER="mail subject-id pairwise-id persistent-id sn givenName"
+        sessionHook="/Shibboleth.sso/AttrChecker" metadataAttributePrefix="Meta-"
+        cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
+
         <!--
         Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
-        You MUST supply an effectively unique handlerURL value for each of your applications.
-        The value defaults to /Shibboleth.sso, and should be a relative path, with the SP computing
-        a relative value based on the virtual host. Using handlerSSL="true", the default, will force
-        the protocol to be https. You should also add a cookieProps setting of "; path=/; secure"
-        in that case. Note that while we default checkAddress to "false", this has a negative
-        impact on the security of the SP. Stealing cookies/sessions is much easier with this disabled.
+        Each Application has an effectively unique handlerURL, which defaults to "/Shibboleth.sso"
+        and should be a relative path, with the SP computing the full value based on the virtual
+        host. Using handlerSSL="true" will force the protocol to be https. You should also set
+        cookieProps to "https" for SSL-only sites. Note that while we default checkAddress to
+        "false", this makes an assertion stolen in transit easier for attackers to misuse.
         -->
-        <Sessions lifetime="28800" timeout="3600" checkAddress="false" relayState="ss:mem" handlerSSL="true"  cookieProps="https">
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
+                  checkAddress="false" handlerSSL="true" cookieProps="https" redirectLimit="host">
 
             <!--
-            Configures SSO for a default IdP. To allow for >1 IdP, remove
+            Configures SSO for a default IdP. To properly allow for >1 IdP, remove
             entityID property and adjust discoveryURL to point to discovery service.
-            (Set discoveryProtocol to "WAYF" for legacy Shibboleth WAYF support.)
             You can also override entityID on /Login query string, or in RequestMap/htaccess.
             -->
             <SSO discoveryProtocol="SAMLDS"
                  discoveryURL="https://notebooks-test.gesis.org/login"
                  target="https://notebooks-test.gesis.org/jupyter/hub/login">
-                SAML2 SAML1
+              SAML2
             </SSO>
             <!-- NOTE: non-test url: https://wayf.aai.dfn.de/DFN-AAI/wayf/WAYF -->
             <!--SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.aai.dfn.de/DFN-AAI-Test/wayf">
@@ -66,14 +58,18 @@
             <!-- SAML and local-only logout. -->
             <Logout asynchronous="false">SAML2 Local</Logout>
 
+            <!-- Administrative logout. -->
+            <LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1" />
+
             <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
             <!--Handler type="MetadataGenerator" Location="/Metadata" signing="true"/-->
-            <!-- https://clarin-eric.github.io/SPF-tutorial/Shib_SP_tutorial.html#_saml_metadata_template -->
+            <!-- https://clarin-eric.github.io/SPF-tutorial/Shib_SP_tutorial.html#_saml_metadata_template
+                 https://wiki.shibboleth.net/confluence/display/SP3/Metadata+Generation+Handler -->
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false"
                      template="metadata.xml"/>
 
             <!-- Status reporting service. -->
-            <Handler type="Status" Location="/Status" acl="127.0.0.1"/>
+            <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
 
             <!-- Session diagnostic service. -->
             <Handler type="Session" Location="/Session" showAttributeValues="true"/>
@@ -82,59 +78,75 @@
             <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
 
             <!-- Attribute Checker Handler  -->
-            <!-- https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPHandler  -->
+            <!-- https://wiki.shibboleth.net/confluence/display/SP3/Attribute+Checker+Handler  -->
             <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html"
                      attributes="mail givenName sn" flushSession="true"/>
         </Sessions>
 
         <!--
         Allows overriding of error template information/filenames. You can
-        also add attributes with values that can be plugged into the templates.
+        also add your own attributes with values that can be plugged into the
+        templates, e.g., helpLocation below.
         -->
         <!-- NOTE: There are error templates under /etc/shibboleth/
-         https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPErrors
+         https://wiki.shibboleth.net/confluence/display/SP3/Errors
          -->
         <Errors supportContact="notebooks@gesis.org"
-                helpLocation="https://notebooks-test.gesis.org/about/"
+                contactEmail="notebooks@gesis.org"
                 logoLocation="/static/images/logo/logo.svg"
                 styleSheet="/static/eds/main.css"/>
 
+        <!-- Example of locally maintained metadata. -->
+        <!--
+        <MetadataProvider type="XML" validate="true" path="partner-metadata.xml"/>
+        -->
+
         <!-- Example of remotely supplied batch of signed metadata. -->
         <!--
-        <MetadataProvider type="XML" uri="http://federation.org/federation-metadata.xml"
-              backingFilePath="federation-metadata.xml" reloadInterval="7200">
+        <MetadataProvider type="XML" validate="true"
+	            url="http://federation.org/federation-metadata.xml"
+              backingFilePath="federation-metadata.xml" maxRefreshDelay="7200">
             <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
-            <MetadataFilter type="Signature" certificate="fedsigner.pem"/>
+            <MetadataFilter type="Signature" certificate="fedsigner.pem" verifyBackup="false"/>
+            <DiscoveryFilter type="Blacklist" matcher="EntityAttributes" trimTags="true"
+              attributeName="http://macedir.org/entity-category"
+              attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+              attributeValue="http://refeds.org/category/hide-from-discovery" />
         </MetadataProvider>
         -->
         <!--
         https://clarin-eric.github.io/SPF-tutorial/Shib_SP_tutorial.html#_specifying_spf_idps
         Your SP needs to know which Identity Providers (IdPs) its users may come from.
-        https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPMetadataProvider#NativeSPMetadataProvider-XMLMetadataProvider
+        https://wiki.shibboleth.net/confluence/display/SP3/MetadataProvider
         -->
-        <MetadataProvider type="Chaining">
-            <MetadataProvider type="XML" uri="https://www.aai.dfn.de/fileadmin/metadata/dfn-aai-test-metadata.xml"
-                              backingFilePath="dfn-aai-test-metadata.xml" legacyOrgNames="true" reloadInterval="3600">
-                <MetadataFilter type="RequireValidUntil" maxValidityInterval="604800"/>
-                <MetadataFilter type="Signature" certificate="/etc/shibboleth/dfn-aai.g2.pem"/>
-                <!--MetadataFilter type="Whitelist">
-                    <Include>https://idp.uni-beispiel1.de/idp/shibboleth</Include>
-                    <Include>https://idp.uni-beispiel2.de/idp/shibboleth</Include>
-                    <Include>https://idp.uni-beispiel3.de/idp/shibboleth</Include>
-                </MetadataFilter-->
-            </MetadataProvider>
+        <!-- NOTE: With V2.4 and above, this is implied by any configuration with multiple <MetadataProvider> elements,
+        so is no longer explicitly needed unless one of its optional settings is required.-->
+        <!-- dfn Metadaten: https://doku.tid.dfn.de/de:metadata -->
+        <MetadataProvider type="XML" url="https://www.aai.dfn.de/fileadmin/metadata/dfn-aai-test-metadata.xml"
+                          backingFilePath="dfn-aai-test-metadata.xml" legacyOrgNames="true" reloadInterval="7200">
+            <MetadataFilter type="RequireValidUntil" maxValidityInterval="604800"/>
+            <MetadataFilter type="Signature" certificate="/etc/shibboleth/dfn-aai.g2.pem"/>
+            <!--MetadataFilter type="Whitelist">
+                <Include>https://idp.uni-beispiel1.de/idp/shibboleth</Include>
+                <Include>https://idp.uni-beispiel2.de/idp/shibboleth</Include>
+                <Include>https://idp.uni-beispiel3.de/idp/shibboleth</Include>
+            </MetadataFilter-->
         </MetadataProvider>
 
-        <!-- Example of locally maintained metadata. -->
+        <!-- Example of remotely supplied "on-demand" signed metadata. -->
         <!--
-        <MetadataProvider type="XML" file="partner-metadata.xml"/>
+        <MetadataProvider type="MDQ" validate="true" cacheDirectory="mdq"
+	            baseUrl="http://mdq.federation.org" ignoreTransport="true">
+            <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
+            <MetadataFilter type="Signature" certificate="mdqsigner.pem" />
+        </MetadataProvider>
         -->
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
 
         <!-- Extract further attributes about Identity Providers from metadata -->
-        <!-- https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAttributeExtractor#NativeSPAttributeExtractor-MetadataAttributeExtractor(Version2.5andAbove) -->
+        <!-- https://wiki.shibboleth.net/confluence/display/SP3/MetadataAttributeExtractor -->
         <AttributeExtractor type="Metadata"
                             errorURL="errorURL"
                             DisplayName="displayName"
@@ -154,21 +166,13 @@
         <!-- Default filtering policy for recognized attributes, lets other data pass. -->
         <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
 
-        <!-- Simple file-based resolver for using a single keypair. -->
+        <!-- Simple file-based resolvers for separate signing/encryption keys. -->
         <CredentialResolver type="File" key="/etc/shibboleth/tls/tls.key" certificate="/etc/shibboleth/tls/tls.crt"/>
+        <!--CredentialResolver type="File" use="signing"
+            key="sp-signing-key.pem" certificate="sp-signing-cert.pem"/>
+        <CredentialResolver type="File" use="encryption"
+            key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/-->
 
-        <!--
-        The default settings can be overridden by creating ApplicationOverride elements (see
-        the https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPApplicationOverride topic).
-        Resource requests are mapped by web server commands, or the RequestMapper, to an
-        applicationId setting.
-        
-        Example of a second application (for a second vhost) that has a different entityID.
-        Resources on the vhost would map to an applicationId of "admin":
-        -->
-        <!--
-        <ApplicationOverride id="admin" entityID="https://admin.example.org/shibboleth"/>
-        -->
     </ApplicationDefaults>
     
     <!-- Policies that determine how to process and authenticate runtime messages. -->

@@ -45,6 +45,7 @@ spec:
       containers:
       - name: nginx-shibboleth
         image: gesiscss/nginx-shibboleth-orc:c81f03fe
+        # TODO probably no change, but maybe there is better way to mount shibboleth conf
         command: ["/bin/sh"]
         args: ["-c", "cp /etc/shibboleth-conf/* /etc/shibboleth/ && /usr/bin/supervisord --nodaemon --configuration /etc/supervisor/supervisord.conf"]
         ports:
