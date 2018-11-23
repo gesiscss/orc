@@ -8,7 +8,7 @@
 {% endif %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
+<link rel="stylesheet" href="/static/vendor/jquery-ui-1.12.1/jquery-ui.css">
 {% endblock extra_css %}
 
 {% block main %}
@@ -76,6 +76,7 @@
                 <th scope="col">Org./User</th>
                 <th scope="col">Provider</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -84,69 +85,33 @@
                     <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
                     <td>{{ org }}</td>
                     <td>{{ provider }}</td>
-                    <td><a href="{{ binder_url }}" target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                    </a></td>
-                    <td data-toggle="collapse" data-target="#multiCollapseExample{{ repo_name }}" aria-expanded="false"
-                        aria-controls="multiCollapseExample2">
-                        <button type="button" class="btn btn-default btn-sm">
-                            <span class="glyphicon glyphicon-th-list"></span> Description
-                        </button>
+                    <td data-toggle="collapse" data-target="#mc-{{ repo_name }}" aria-expanded="false" aria-controls="mc-{{ repo_name }}">
+                        {% if description %}
+                        <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list"></span> Description</button>
+                        {% endif %}
                     </td>
-
-                <tr class="collapse multi-collapse" id="multiCollapseExample{{ repo_name }}">
-                    <td colspan="4"> {{ description }}
+                    <td>
+                        <a href="{{ binder_url }}" target="_blank">
+                            <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
+                        </a>
                     </td>
                 </tr>
-
+                {% if description %}
+                <tr class="collapse multi-collapse" id="mc-{{ repo_name }}">
+                    <td colspan="5">{{ description }}</td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
-
-
     </div>
-
-
-
-
 {% endblock main %}
 
 {% block extra_js %}
-
-    <script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
-
-    <script>
-        $(function () {
-            $("#tabs").tabs();
-        });
-        {##}
-        {#$(function() {#}
-        {##}
-        {#    $('.tab-panels .tabs li').on('click', function() {#}
-        {##}
-        {#        var $panel = $(this).closest('.tab-panels');#}
-        {##}
-        {#        $panel.find('.tabs li.active').removeClass('active');#}
-        {#        $(this).addClass('active');#}
-        {##}
-        {#        //figure out which panel to show#}
-        {#        var panelToShow = $(this).attr('rel');#}
-        {##}
-        {#        //hide current panel#}
-        {#        $panel.find('.panel.active').slideUp(300, showNextPanel);#}
-        {##}
-        {#        //show next panel#}
-        {#        function showNextPanel() {#}
-        {#            $(this).removeClass('active');#}
-        {##}
-        {#            $('#'+panelToShow).slideDown(300, function() {#}
-        {#                $(this).addClass('active');#}
-        {#            });#}
-        {#        }#}
-        {#    });#}
-        {##}
-        {##}
-        {#;#}
-    </script>
+<script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        $("#tabs").tabs();
+    });
+</script>
 {% endblock extra_js %}
