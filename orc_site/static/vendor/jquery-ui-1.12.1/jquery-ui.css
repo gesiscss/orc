@@ -888,8 +888,6 @@ body .ui-tooltip {
 .ui-widget {
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 1em;
-	color: #58748f;
-
 }
 .ui-widget .ui-widget {
 	font-size: 1em;
@@ -936,7 +934,7 @@ works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
 	/*border: 1px solid #c5c5c5;*/
-	background: ##FF6600;
+	background: #ffffff;
 	font-weight: normal;
 	color: #454545;
 }
@@ -987,7 +985,7 @@ a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
 	/*border: 1px solid #003eff;*/
-	background: #FF6600;
+	background: #ffffff;
 	font-weight: normal;
 	color: #ffffff;
 }
@@ -999,7 +997,7 @@ a.ui-button:active,
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #ffffff;
+	color: #FF6600;
 	text-decoration: none;
 }
 
