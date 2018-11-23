@@ -16,7 +16,7 @@
     <div id="tabs">
         <h1>Popular repositories</h1>
 
-        <ul style="width: 70%; margin: auto;">
+        <ul>
             {% for i, title, popular_repos, time_range in popular_repos_all %}
                 <li><a href="#tabs-{{ i }}">{{ title }}</a></li>
             {% endfor %}
@@ -52,7 +52,7 @@
                     <tfoot>
                     <tr>
                         <td colspan="5">
-                            <a href="/gallery/popular_repos/{{ time_range }}" style="color: #0d87e9">
+                            <a href="/gallery/popular_repos/{{ time_range }}">
                                 View all ({{ title }})
                             </a>
                         </td>
