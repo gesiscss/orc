@@ -1,13 +1,9 @@
 import os
 from flask import Flask, render_template, abort
-from .popular_repos import get_popular_repos
+from .popular_repos import get_launch_data, process_launch_data, get_popular_repos
+from copy import deepcopy
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
-
-
-
-
-
 
 context = {
     'version': 'beta',
@@ -84,11 +80,15 @@ def terms_of_use():
 
 @app.route('/gallery/')
 def gallery():
+    # get all launch count data (in last 90 days)
+    launch_data = get_launch_data()
+    launch_data = process_launch_data(launch_data)
+
     popular_repos_all = [
-        (1, 'Last 24 hours', get_popular_repos('24h'), '24h', ),
-        (2, 'Last week', get_popular_repos('7d'), '7d', ),
-        (3, 'Last 30 days', get_popular_repos('30d'), '30d', ),
-        (4, 'Last 60 days', get_popular_repos('60d'), '60d', ),
+        (1, 'Last 24 hours', get_popular_repos(deepcopy(launch_data), '24h'), '24h', ),
+        (2, 'Last week', get_popular_repos(deepcopy(launch_data), '7d'), '7d', ),
+        (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d', ),
+        (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
     ]
 
     created_by_gesis = [
@@ -124,9 +124,12 @@ def popular_repos(time_range):
               '60d': 'Popular repositories in last 60 days'}
     if time_range not in titles:
         abort(404)
+    # get all launch count data (in last 90 days)
+    launch_data = get_launch_data()
+    launch_data = process_launch_data(launch_data)
     context.update({'active': 'gallery',
                     'title': titles[time_range],
-                    'popular_repos': get_popular_repos(time_range)})
+                    'popular_repos': get_popular_repos(launch_data, time_range)})
     return render_template('gallery/popular_repos.html', **context)
 
 
