@@ -37,24 +37,30 @@
                     <tbody>
                     {% for repo_data in popular_repos[:5] %}
                         <tr>
-                            <td><a href="{{ repo_data[4] }}" target="_blank" style="color: #337ab7;">{{ repo_data[0] }}</a></td>
+                            <td><a href="{{ repo_data[4] }}" target="_blank">{{ repo_data[0] }} </a>
+                            </td>
                             <td>{{ repo_data[1] }}</td>
                             <td>{{ repo_data[2] }}</td>
                             <td>{{ repo_data[3] }}</td>
                             <td><a href="{{ repo_data[5] }}" target="_blank">
-                                <img src="https://notebooks.gesis.org/binder/badge.svg">
+                                <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
                             </a></td>
                         </tr>
                     {% endfor %}
-                    <tr class="success">
+                    </tbody>
+
+                    <tfoot>
+                    <tr>
                         <td colspan="5">
-                            <a href="/gallery/popular_repos/{{ time_range }}" style="color: #337ab7;">
+                            <a href="/gallery/popular_repos/{{ time_range }}">
                                 View all ({{ title }})
                             </a>
                         </td>
                     </tr>
-                    </tbody>
+                    </tfoot>
+
                 </table>
+
             </div>
         {% endfor %}
     </div>
@@ -69,6 +75,7 @@
                 <th scope="col">Org./User</th>
                 <th scope="col">Provider</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -77,25 +84,33 @@
                     <td><a href="{{ repo_url }}" target="_blank">{{ repo_name }}</a></td>
                     <td>{{ org }}</td>
                     <td>{{ provider }}</td>
-                    <td><a href="{{ binder_url }}" target="_blank">
-                        <img src="https://notebooks.gesis.org/binder/badge.svg">
-                    </a></td>
+                    <td data-toggle="collapse" data-target="#mc-{{ repo_name }}" aria-expanded="false" aria-controls="mc-{{ repo_name }}">
+                        {% if description %}
+                        <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list"></span> Description</button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ binder_url }}" target="_blank">
+                            <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
+                        </a>
+                    </td>
                 </tr>
+                {% if description %}
+                <tr class="collapse multi-collapse" id="mc-{{ repo_name }}">
+                    <td colspan="5">{{ description }}</td>
+                </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
-
-
     </div>
 {% endblock main %}
 
 {% block extra_js %}
 <script src="/static/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script>
-$( function() {
-$( "#tabs" ).tabs({
-  event: "mouseover"
-});
-} );
+    $(function () {
+        $("#tabs").tabs();
+    });
 </script>
 {% endblock extra_js %}
