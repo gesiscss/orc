@@ -14,7 +14,7 @@
 {% block main %}
 
     <div id="tabs">
-        <h1>Popular repositories</h1>
+        <h2>Popular repositories</h2>
 
         <ul>
             {% for i, title, popular_repos, time_range in popular_repos_all %}
@@ -42,9 +42,13 @@
                             <td>{{ repo_data[1] }}</td>
                             <td>{{ repo_data[2] }}</td>
                             <td>{{ repo_data[3] }}</td>
-                            <td><a href="{{ repo_data[5] }}" target="_blank">
+                            <td>
+                                {% if repo_data[5] %}
+                                <a href="{{ repo_data[5] }}" target="_blank">
                                 <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                            </a></td>
+                                </a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -66,7 +70,7 @@
     </div>
 
     <div class="table-responsive">
-        <h1> Created by GESIS</h1>
+        <h2> Created by GESIS</h2>
 
         <table class="table table-hover">
             <thead>
@@ -90,9 +94,11 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% if binder_url %}
                         <a href="{{ binder_url }}" target="_blank">
                             <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
                         </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% if description %}

@@ -12,7 +12,7 @@
 {% endblock extra_css %}
 
 {% block main %}
-<h1>{{ title }}</h1>
+<h2>{{ title }}</h2>
 <div class="table-responsive">
     <table id="repos-table" class="table table-hover" >
             <thead>
@@ -31,9 +31,13 @@
                     <td>{{ repo_data[1] }}</td>
                     <td>{{ repo_data[2] }}</td>
                     <td>{{ repo_data[3] }}</td>
-                    <td><a href="{{ repo_data[5] }}" target="_blank">
+                    <td>
+                        {% if repo_data[5] %}
+                        <a href="{{ repo_data[5] }}" target="_blank">
                         <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                    </a></td>
+                        </a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
 

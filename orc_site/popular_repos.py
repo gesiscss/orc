@@ -5,9 +5,19 @@ REPOS_TO_FILTER = [
     # 'gesiscss/binder-stats'
 ]
 
+PROVIDER_PREFIXES = {
+    'Git': 'git',
+    'GitHub': 'gh',
+    'GitLab': 'gl',
+    # 'gist.github.com': 'gist',
+}
 
-def binder_url(org, repo):
-    return f'https://notebooks.gesis.org/binder/v2/gh/{org}/{repo}/master'
+
+def binder_url(provider, org, repo):
+    provider_prefix = PROVIDER_PREFIXES.get(provider, '')
+    if provider_prefix:
+        return f'https://notebooks.gesis.org/binder/v2/{provider_prefix}/{org}/{repo}/master'
+    return ''
 
 
 def ts_to_dt(ts):
@@ -52,7 +62,7 @@ def process_launch_data(data):
             launch_count_prev = launch_count
 
         if repo not in d:
-            d[repo] = [repo, org, provider, [launch_count_increases], repo_url, binder_url(org, repo)]
+            d[repo] = [repo, org, provider, [launch_count_increases], repo_url, binder_url(provider, org, repo)]
         else:
             # same repo can be launched on different instances (after a new deployment/update)
             d[repo][3].append(launch_count_increases)
