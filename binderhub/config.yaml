@@ -21,7 +21,6 @@ config:
        && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
        && ./appendix/run-appendix \
        && rm -rf orc.tar.gz appendix
-
       USER $NB_USER
 
     template_variables:
