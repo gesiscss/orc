@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, abort
 from .popular_repos import get_launch_data, process_launch_data, get_popular_repos
-from .utilities import process_gesis_data
+from .utilities import get_created_by_gesis
 from copy import deepcopy
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
@@ -91,7 +91,7 @@ def gallery():
         (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d', ),
         (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
     ]
-    created_by_gesis=process_gesis_data()
+    created_by_gesis=get_created_by_gesis()
 
 
     context.update({'active': 'gallery',

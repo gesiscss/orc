@@ -1,12 +1,10 @@
 import csv
 
 
-def process_gesis_data():
-    data = csv.reader(open('Gesis.csv'))
-    next(data,None)
-    created_by_gesis = []
-    for line in data:
-        created_by_gesis.append(tuple(line))
+def get_created_by_gesis():
+    with open('Gesis.csv', 'r') as f:
+        reader = csv.reader(f)
+        created_by_gesis = list(reader)
     return created_by_gesis
 
 
