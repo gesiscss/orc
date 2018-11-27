@@ -2,7 +2,6 @@ import os
 from flask import Flask, render_template, abort
 from .popular_repos import get_launch_data, process_launch_data, get_popular_repos
 from copy import deepcopy
-
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
 
@@ -14,7 +13,7 @@ context = {
     'gesis_login_url': 'https://notebooks{}.gesis.org/Shibboleth.sso/Login?SAMLDS=1&'
                        'target=https://notebooks{}.gesis.org/jupyter/hub/login&'
                        'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth'.
-        format(*['-test', '-test'] if os.environ.get('DEPLOYMENT_ENV') == 'staging' else ['', '']),
+                       format(*['-test', '-test'] if os.environ.get('DEPLOYMENT_ENV') == 'staging' else ['', '']),
     'bhub_url': '/binder/',
     'about_url': '/about/',
     'tou_url': '/terms_of_use/',
@@ -86,31 +85,31 @@ def gallery():
     launch_data = process_launch_data(launch_data)
 
     popular_repos_all = [
-        (1, 'Last 24 hours', get_popular_repos(deepcopy(launch_data), '24h'), '24h',),
-        (2, 'Last week', get_popular_repos(deepcopy(launch_data), '7d'), '7d',),
-        (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d',),
-        (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d',),
+        (1, 'Last 24 hours', get_popular_repos(deepcopy(launch_data), '24h'), '24h', ),
+        (2, 'Last week', get_popular_repos(deepcopy(launch_data), '7d'), '7d', ),
+        (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d', ),
+        (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
     ]
 
     created_by_gesis = [
         ('ptm', 'https://github.com/gesiscss/ptm', 'gesiscss', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master?filepath=index.ipynb',
-         'Introduction to Natural Language Processing with a special emphasis on the analysis of Job Advertisements',),
+         'Introduction to Natural Language Processing with a special emphasis on the analysis of Job Advertisements', ),
         ('RStan-Binder', 'https://github.com/arnim/RStan-Binder', 'arnim', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/arnim/RStan-Binder/master?urlpath=lab/tree/README.md',
-         'Files for running RStan on Binder during the Conflicts 2018 @ Bremen - BIGSSS Summer School',),
+         'Files for running RStan on Binder during the Conflicts 2018 @ Bremen - BIGSSS Summer School', ),
         ('stmdemo', 'https://github.com/arnim/stmdemo', 'arnim', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/arnim/stmdemo/master?urlpath=lab',
-         'Topic- and Structured Topic Modeling Tutorial during the Conflicts 2018 @ Bremen - BIGSSS Summer School',),
+         'Topic- and Structured Topic Modeling Tutorial during the Conflicts 2018 @ Bremen - BIGSSS Summer School', ),
         ('gesis-meta-analysis-2018', 'https://github.com/berndweiss/gesis-meta-analysis-2018', 'berndweiss', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/berndweiss/gesis-meta-analysis-2018/master?filepath=notebooks/0-0-index.ipynb',
-         'GESIS Summer School in Survey Methodology 2018: Meta-Analysis in Social Research and Survey Methodology',),
+         'GESIS Summer School in Survey Methodology 2018: Meta-Analysis in Social Research and Survey Methodology', ),
         ('wikiwho_tutorial', 'https://github.com/gesiscss/wikiwho_tutorial', 'gesiscss', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/gesiscss/wikiwho_tutorial/master?filepath=Tutorial%201%20-%20API%20requests%20(WikiWho%20wrapper).ipynb',
-         'A simple tutorial for WikiWho that uses the wikiwho_wrapper',),
+         'A simple tutorial for WikiWho that uses the wikiwho_wrapper', ),
         ('workshop_girls_day', 'https://github.com/gesiscss/workshop_girls_day', 'gesiscss', 'GitHub',
          'https://notebooks.gesis.org/binder/v2/gh/gesiscss/workshop_girls_day/master',
-         '',),
+         '', ),
         # ('flow', 'https://github.com/gesiscss/flow', 'gesiscss', 'GitHub',
         #  'https://notebooks.gesis.org/binder/v2/gh/gesiscss/flow/master',
         #  'High-resolution audience research on local passenger traffic in Saxony, Germany', ),
@@ -125,19 +124,16 @@ def gallery():
 
 @app.route('/gallery/popular_repos/<string:time_range>')
 def popular_repos(time_range):
-    titles = {
-        '24h': ['Popular repositories in last 24 hours', '60d', '7d'],
-        '7d': ['Popular repositories in last week', '24h', '30d'],
-        '30d': ['Popular repositories in last 30 days', '7d', '60d'],
-        '60d': ['Popular repositories in last 60 days', '30d', '24h']
-    }
+    titles = {'24h': 'Popular repositories in last 24 hours',
+              '7d': 'Popular repositories in last week',
+              '30d': 'Popular repositories in last 30 days',
+              '60d': 'Popular repositories in last 60 days'}
     if time_range not in titles:
         abort(404)
     # get all launch count data (in last 90 days)
     launch_data = get_launch_data()
     launch_data = process_launch_data(launch_data)
     context.update({'active': 'gallery',
-                    'time_range': time_range,
                     'title': titles[time_range],
                     'popular_repos': get_popular_repos(launch_data, time_range)})
     return render_template('gallery/popular_repos.html', **context)

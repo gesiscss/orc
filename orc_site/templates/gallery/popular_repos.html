@@ -6,22 +6,15 @@
     {% block etracker_et_areas %}%2Fgallery{% endblock etracker_et_areas %}
     {% block etracker_et_areas_no_js %}%2Fgallery{% endblock etracker_et_areas_no_js %}
 {% endif %}
+
 {% block extra_css %}
-    <link rel="stylesheet" href="/static/vendor/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="/static/vendor/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
 {% endblock extra_css %}
 
 {% block main %}
-    <h2>
-        <a href="/gallery/popular_repos/{{ title[1] }}">
-            <span class="glyphicon glyphicon-circle-arrow-left"></span>
-        </a>
-        {{ title[0] }}
-        <a href="/gallery/popular_repos/{{ title[2] }}">
-            <span class="glyphicon glyphicon-circle-arrow-right"></span>
-        </a>
-    </h2>
-    <div class="table-responsive">
-        <table id="repos-table" class="table table-hover">
+<h2>{{ title }}</h2>
+<div class="table-responsive">
+    <table id="repos-table" class="table table-hover" >
             <thead>
             <tr>
                 <th scope="col">Repo</th>
@@ -40,9 +33,9 @@
                     <td>{{ repo_data[3] }}</td>
                     <td>
                         {% if repo_data[5] %}
-                            <a href="{{ repo_data[5] }}" target="_blank">
-                                <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
-                            </a>
+                        <a href="{{ repo_data[5] }}" target="_blank">
+                        <img src="https://notebooks.gesis.org/binder/badge_logo.svg">
+                        </a>
                         {% endif %}
                     </td>
                 </tr>
@@ -50,24 +43,25 @@
 
             </tbody>
         </table>
-    </div>
-    {% block extra_js %}
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        {#https://datatables.net/#}
-        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+</div>
 
-        <script>
-            $(document).ready(function () {
-                if ($.fn.dataTable.isDataTable('#repos-table')) {
-                    table = $('#repos-table').DataTable();
-                }
-                else {
-                    table = $('#repos-table').DataTable({
-                        "order": [[3, "desc"]]
-                    });
-                }
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+{#https://datatables.net/#}
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        if ($.fn.dataTable.isDataTable('#repos-table')) {
+            table = $('#repos-table').DataTable();
+        }
+        else {
+            table = $('#repos-table').DataTable({
+                "order": [[3, "desc"]]
             });
-        </script>
-    {% endblock extra_js %}
+        }
+    });
+</script>
+{% endblock extra_js %}
 {% endblock main %}
