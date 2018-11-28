@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, abort
 from .popular_repos import get_launch_data, process_launch_data, get_popular_repos
+from .utilities import get_created_by_gesis
 from copy import deepcopy
 # app = Flask(__name__, template_folder='../templates/orc_site')
 app = Flask(__name__)
@@ -91,29 +92,7 @@ def gallery():
         (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
     ]
 
-    created_by_gesis = [
-        ('ptm', 'https://github.com/gesiscss/ptm', 'gesiscss', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/ptm/master?filepath=index.ipynb',
-         'Introduction to Natural Language Processing with a special emphasis on the analysis of Job Advertisements', ),
-        ('RStan-Binder', 'https://github.com/arnim/RStan-Binder', 'arnim', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/arnim/RStan-Binder/master?urlpath=lab/tree/README.md',
-         'Files for running RStan on Binder during the Conflicts 2018 @ Bremen - BIGSSS Summer School', ),
-        ('stmdemo', 'https://github.com/arnim/stmdemo', 'arnim', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/arnim/stmdemo/master?urlpath=lab',
-         'Topic- and Structured Topic Modeling Tutorial during the Conflicts 2018 @ Bremen - BIGSSS Summer School', ),
-        ('gesis-meta-analysis-2018', 'https://github.com/berndweiss/gesis-meta-analysis-2018', 'berndweiss', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/berndweiss/gesis-meta-analysis-2018/master?filepath=notebooks/0-0-index.ipynb',
-         'GESIS Summer School in Survey Methodology 2018: Meta-Analysis in Social Research and Survey Methodology', ),
-        ('wikiwho_tutorial', 'https://github.com/gesiscss/wikiwho_tutorial', 'gesiscss', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/wikiwho_tutorial/master?filepath=Tutorial%201%20-%20API%20requests%20(WikiWho%20wrapper).ipynb',
-         'A simple tutorial for WikiWho that uses the wikiwho_wrapper', ),
-        ('workshop_girls_day', 'https://github.com/gesiscss/workshop_girls_day', 'gesiscss', 'GitHub',
-         'https://notebooks.gesis.org/binder/v2/gh/gesiscss/workshop_girls_day/master',
-         '', ),
-        # ('flow', 'https://github.com/gesiscss/flow', 'gesiscss', 'GitHub',
-        #  'https://notebooks.gesis.org/binder/v2/gh/gesiscss/flow/master',
-        #  'High-resolution audience research on local passenger traffic in Saxony, Germany', ),
-    ]
+    created_by_gesis = get_created_by_gesis()
 
     context.update({'active': 'gallery',
                     'popular_repos_all': popular_repos_all,
