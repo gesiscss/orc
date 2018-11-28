@@ -57,11 +57,10 @@ build_job:
       if git diff HEAD~ --name-only | egrep 'orc_site/'; then
         if git diff HEAD~ --name-only | egrep --invert-match 'orc_site/deploy/|orc_site/README.md|orc_site/.dockerignore'; then
           echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_8"
+          docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+          docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_8 orc_site/.
+          docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
         fi;
-      fi;
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_8 orc_site/.
-        docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
       fi;
       if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8"
