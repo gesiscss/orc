@@ -91,8 +91,8 @@ def gallery():
         (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d', ),
         (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
     ]
-    created_by_gesis=get_created_by_gesis()
 
+    created_by_gesis = get_created_by_gesis()
 
     context.update({'active': 'gallery',
                     'popular_repos_all': popular_repos_all,
