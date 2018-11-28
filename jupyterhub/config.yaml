@@ -87,6 +87,7 @@ hub:
                 sort={s:o for s,o in zip(sorts, orders)},
             )
             self.finish(html)
+
       c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
   resources:
     requests:

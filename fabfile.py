@@ -55,14 +55,14 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=orc{-test}-ns'.format(**format_dict))
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-6354e34 '
+            c.run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-151be76 '
                   '--install --namespace=jhub{-test}-ns '
                   '-f jupyterhub/config{_test}.yaml '
                   '-f jupyterhub/_secret{_test}.yaml '
                   '--wait --force --debug --timeout=1800'.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.2.0-5be4d08 '
+            c.run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.2.0-2b368e4 '
                   '--install --namespace=bhub{-test}-ns '
                   '-f binderhub/_secret{_test}.yaml '
                   '-f binderhub/config{_test}.yaml '
