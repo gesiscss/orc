@@ -45,7 +45,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       '--from-file=nginx_shibboleth/nginx/k8s{_test}.conf '
                       '--namespace=orc{-test}-ns '
                       '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
-                c.run('kubectl delete deployment nginx-shibboleth{-test}-deployment '
+                c.run('kubectl delete deployment nginx-shibboleth{-test} '
                       '--namespace=orc{-test}-ns'.format(**format_dict))
                 # TODO wait until all pods are removed
             c.run('kubectl apply -f nginx_shibboleth/nginx-shibboleth-app{-test}.yaml '
