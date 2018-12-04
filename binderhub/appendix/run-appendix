@@ -13,6 +13,6 @@ chmod -R a+rX /etc/jupyter
 # it is executed when the notebook app starts and adds binder buttons next to Quit button in the UI.
 sed -i 's|{binder_url}|'"$BINDER_URL"'|g' "${appendix_dir}/static/custom.js"
 sed -i 's|{repo_url}|'"$REPO_URL"'|g' "${appendix_dir}/static/custom.js"
-mkdir -p ~/.jupyter/custom
-cat "${appendix_dir}/static/custom.js" >> ~/.jupyter/custom/custom.js
+mkdir -p $HOME/.jupyter/custom
+cat "${appendix_dir}/static/custom.js" >> $HOME/.jupyter/custom/custom.js
 chown -R $NB_USER:$NB_USER $HOME/.jupyter
