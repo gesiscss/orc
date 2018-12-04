@@ -36,12 +36,6 @@ build_job:
       echo "####### Building docker images on master node"
       CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
       echo $CI_COMMIT_SHA_8
-      if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/singleuser/'; then
-        echo "####### gesiscss/singleuser-orc:$CI_COMMIT_SHA_8"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/singleuser-orc:$CI_COMMIT_SHA_8 jupyterhub/docker/singleuser/.
-        docker push gesiscss/singleuser-orc:$CI_COMMIT_SHA_8
-      fi;
       if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/k8s_hub/Dockerfile|jupyterhub/docker/k8s_hub/templates/'; then
         echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
