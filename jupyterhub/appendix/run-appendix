@@ -8,11 +8,3 @@ mkdir -p /etc/jupyter
 cat "${appendix_dir}/extra_notebook_config.py" >> /etc/jupyter/jupyter_notebook_config.py
 # ensure /etc/jupyter has read+listdir permissions for all
 chmod -R a+rX /etc/jupyter
-
-# add custom.js.
-# it is executed when the notebook app starts and adds binder buttons next to Quit button in the UI.
-#sed -i 's|{binder_url}|'"$BINDER_URL"'|g' "${appendix_dir}/static/custom.js"
-sed -i 's|{repo_url}|'"$REPO_URL"'|g' "${appendix_dir}/static/custom.js"
-mkdir -p $HOME/.jupyter/custom
-cat "${appendix_dir}/static/custom.js" >> $HOME/.jupyter/custom/custom.js
-chown -R $NB_UID:$NB_UID $HOME/.jupyter
