@@ -1,6 +1,6 @@
 {% extends "page.html" %}
 
-{% if is_production %}
+{% if production %}
     {% block etracker_et_pagename %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename %}
     {% block etracker_et_pagename_nojs %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename_nojs %}
     {% block etracker_et_areas %}%2Fabout{% endblock etracker_et_areas %}
@@ -10,7 +10,7 @@
 {% block main %}
 {#<div class="row form-group text-center">#}
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
-    <h1>Terms of Use</h1>
+    <h3>Terms of Use</h3>
     <p>
         This is an agreement between you or the legal entity that you represent and GESIS - Leibniz-Institute for the Social Sciences. The agreement sets forth the terms and conditions on  which GESIS is willing to make the services at notebooks.gesis.org available. You are agreeing to the terms and conditions set forth hereafter, by proceeding to access and use the services. The terms and conditions extend the general legal notices of GESIS available at <a href='https://www.gesis.org/en/institute/imprint/'>https://www.gesis.org/en/institute/imprint/</a>.
     </p>
@@ -24,7 +24,7 @@
         You shall not use the services in any manner that could damage or impair any server, network or computer system of GESIS. You shall not violate any applicable local, state, national or international law. In particular, you agree not to use the services for illegal purposes or for the transmission of material that is unlawful, or is otherwise objectionable. You grant GESIS permission to access, copy, store, reformat, and do other things as required for the purpose of providing and monitoring the services. We reserve the right to terminate your access to the services in the event of any suspected unauthorized activity.
     </p>
     <p>
-        This policy was adopted June 19, 2018
+        This policy was adopted on June 19, 2018
     </p>
 </div>
 {% endblock main %}

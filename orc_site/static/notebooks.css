@@ -53,6 +53,10 @@ body {
     border-bottom: 4px solid #000000;
 }
 
+#nav-container {
+    margin-top: -20px;
+}
+
 .navbar-brand {
     float: left;
     padding: 15px 15px;
@@ -226,10 +230,6 @@ footer .container {
 	background-color: #333;
 	}
 
-span.glyphicon.glyphicon-user, span.glyphicon.glyphicon-envelope, span.glyphicon.glyphicon-question-sign {
-	padding-right: 7px;
-	}
-
 .top-menu-item{
     color: #58748f;
     font-weight: bold;
@@ -238,11 +238,6 @@ span.glyphicon.glyphicon-user, span.glyphicon.glyphicon-envelope, span.glyphicon
 
 .top-menu-item:hover {
 	color: #ff6100;
-	}
-
-span.glyphicon.glyphicon-new-window {
-	padding-left: 7px;
-	font-size: 10px;
 	}
 
 #header_banner {

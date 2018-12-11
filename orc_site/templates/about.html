@@ -1,6 +1,6 @@
 {% extends "page.html" %}
 
-{% if is_production %}
+{% if production %}
     {% block etracker_et_pagename %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename %}
     {% block etracker_et_pagename_nojs %}%2FAbout%3Aabout%2F{% endblock etracker_et_pagename_nojs %}
     {% block etracker_et_areas %}%2Fabout{% endblock etracker_et_areas %}
@@ -9,12 +9,32 @@
 
 {% block main %}
 {#<div class="row form-group text-center">#}
+{#<div class="row form-group"></div>#}
+<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
+    {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
+    <h3>iLCM - A virtual research infrastructure for large-scale qualitative data</h3>
+    The iLCM project aims to develop an integrated research environment for the analysis of structured as well as
+    unstructured data. The research environment extends the existing Leipzig Corpus Miner framework into an
+    "Open Research Computing" (ORC) "Software as a Service" platform. This ORC platform will enable researchers to
+    implement highly individualized research designs and support researchers in meeting highly individualized
+    project-specific requirements. The ORC platform’s design will be based on notebooks. Notebooks are
+    computational executable scripts along their verbal description. The role of GESIS in this project will be
+    the development of a central service for executing, publishing and archiving of notebooks.
+</div>
+
+<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6" style="padding-left: 0;">
+        <p><strong>Sponsored by</strong></p>
+        <a href="http://www.dfg.de/en/" target="_blank"><img src="/static/images/DFG_CLAIM_163X60px.gif" class="img-responsive center-block"></a>
+    </div>
+</div>
+
+{#TODO add partner leipniz#}
+
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
     <p>
-        <a href="https://github.com/gesiscss/orc">ORC GitHub Repository</a>
-    </p>
-    <p>
         <strong>Powered by </strong>
+{#        TODO add versions of jhub and bhub#}
         <a href="https://jupyterhub.readthedocs.io/en/latest/">JupyterHub</a> and
         <a href="https://binderhub.readthedocs.io/en/latest/">BinderHub</a>
     </p>
@@ -23,6 +43,25 @@
         <a href="https://www.gesis.org/en/institute/departments/computational-social-science/">
             GESIS - Leibniz Institute for the Social Sciences, CSS group
         </a>
+    </p>
+    <p>
+{#TODO team + add dhurim. maybe we make a team page?#}
+{#        <strong>Team: </strong><br>#}
+{#        <a href="https://www.gesis.org/person/arnim.bleier" target="_blank">Dr. Arnim Bleier</a>#}
+{#        <br>#}
+{#        <a href="https://github.com/bitnik" target="_blank">Kenan Erdogan</a>#}
+{#        <br>#}
+        <strong>Email: </strong>notebooks<span style="display:none">idbh</span>@gesis.org
+        <a href="#"
+           data-name="notebooks"
+           data-domain="gesis"
+           data-tld="org"
+           onclick="window.location.href='mailto:'+this.dataset.name+'@'+this.dataset.domain+'.'+this.dataset.tld; return false;">
+            <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>
+        </a>
+    </p>
+    <p>
+        <a href="https://github.com/gesiscss/orc">GitHub Repository</a>
     </p>
 </div>
 {% endblock main %}

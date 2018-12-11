@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="/static/eds/idpselect.css" />
 {% endblock head %}
 
-{% if is_production %}
+{% if production %}
     {% block etracker_et_pagename %}%2FLogin%3Alogin%2F{% endblock etracker_et_pagename %}
     {% block etracker_et_pagename_nojs %}%2FLogin%3Alogin%2F{% endblock etracker_et_pagename_nojs %}
     {% block etracker_et_areas %}%2Fjupyterhub{% endblock etracker_et_areas %}
@@ -14,14 +14,27 @@
 
 {% block main %}
 <div class="row text-center">
-    <div class="col-md-3 col-lg-3"></div>
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-1 col-lg-1 hidden-sm hidden-xs"></div>
+    <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12">
+        <div class="form-group" style="text-align: left; margin-bottom: -15px;">
+            <div style="padding-left: 40px;">
+            <h2>Shibboleth login</h2>
+{#            GESIS Notebooks is currently in <a href="https://www.aai.dfn.de/en/" target="_blank">DFN-AAI Federation</a>.#}
+            GESIS Notebooks is currently in <a href="https://www.aai.dfn.de/en/" target="_blank">DFN-AAI</a>
+            (German Research Network - Authentication and Authorization Infrastructure) Federation.
+            If your institution is part of the DFN-AAI federation, you can use the form below in order to register.
+            </div>
+        </div>
         <div id="idpSelect" class="form-group"></div>
-        <div class="form-group">
-            Alternatively you can <a href="{{ gesis_login_url }}" >create a GESIS visitor account</a>.
+        <div class="form-group" style="text-align: left;">
+            <div style="padding-left: 40px;">
+            If you don't have an account from any institution in DFN-AAI or
+            you encounter a problem due to your institution's Shibboleth IdP,
+            you can <a href="{{ gesis_login_url }}" >create a GESIS visitor account</a>.
+            </div>
         </div>
     </div>
-    <div class="col-md-3 col-lg-3"></div>
+    <div class="col-md-1 col-lg-1 hidden-sm hidden-xs"></div>
 </div>
 
 <div class="row form-group"></div>
@@ -50,11 +63,6 @@ Your Browser does not support javascript. Please use
 {% endblock main %}
 
 {% block extra_js %}
-<!--shibboleth eds-->
-{% if is_staging %}
-<script src="/static/eds/idpselect_test_config.js" type="text/javascript" language="javascript"></script>
-{% else %}
-<script src="/static/eds/idpselect_config.js" type="text/javascript" language="javascript"></script>
-{% endif %}
+<script src="/static/eds/idpselect{% if staging %}_test{% endif %}_config.js" type="text/javascript" language="javascript"></script>
 <script src="/static/eds/idpselect.js" type="text/javascript" language="javascript"></script>
 {% endblock extra_js %}
