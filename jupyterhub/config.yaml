@@ -8,19 +8,44 @@ hub:
   image:
     name: gesiscss/k8s-hub-orc
     tag: "9696a2f8"
-  # use default deployment strategy (rollingUpdate)
   deploymentStrategy:
     type: RollingUpdate
   db:
     type: postgres
   extraConfig:
-    orc.py: |
+    orc: |
       c.Authenticator.shibboleth_logout_url = 'https://notebooks.gesis.org/Shibboleth.sso/Logout?return=https://notebooks.gesis.org/'
       c.JupyterHub.redirect_to_server = False
       c.JupyterHub.bind_url = 'https://notebooks.gesis.org/jupyter/'
+    templates: |
       c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
-      c.JupyterHub.template_vars = {'is_staging': False, 'is_production': True}
+      staging = False
+      production = True
+      site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+      context = {
+          'staging': staging,
+          'production': production,
+          'version': 'beta',
+          # 'shibboleth_entityID': f'{site_url}/shibboleth',
 
+          'home_url': '/',
+          'jhub_url': '/jupyter/',
+          'binder_service_url': '/services/binder/',
+          # 'logout_url': '/jupyter/hub/logout',
+          'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
+                             f'target={site_url}/hub/login&'
+                             f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
+          'bhub_url': '/binder/',
+          'about_url': '/about/',
+          'tou_url': '/terms_of_use/',
+          'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
+          'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
+          'gesis_url': 'https://www.gesis.org/en/home/',
+          'gallery_url': '/gallery/'
+          # 'help_url': 'https://www.gesis.org/en/help/',
+      }
+      c.JupyterHub.template_vars = context
+    admin_handler: |
       from jupyterhub.handlers.base import BaseHandler
       from jupyterhub.utils import admin_only
       from jupyterhub import orm
@@ -87,7 +112,6 @@ hub:
                 sort={s:o for s,o in zip(sorts, orders)},
             )
             self.finish(html)
-
       c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
   resources:
     requests:
@@ -141,8 +165,12 @@ singleuser:
     guarantee: 2G
     limit: 4G
   extraEnv:
-    IS_STAGING: 'false'
-    IS_PRODUCTION: 'true'
+    # settings for kernel culling
+    # to be used in binderhub/appendix/extra_notebook_config.py
+    CULL_CONNECTED: '1'
+    CULL_TIMEOUT: '600'
+    CULL_KERNEL_TIMEOUT: '600'
+    CULL_INTERVAL: '60'
 
 prePuller:
   hook:
@@ -152,6 +180,7 @@ prePuller:
 
 cull:
   # kill user pods if idle for 30 mins - default is 1 hour
+  every: 960
   timeout: 1800
-  every: 660
-
+  # maxAge is 6 hours: 6 * 3600 = 21600
+  maxAge: 21600
