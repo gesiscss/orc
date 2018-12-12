@@ -1,3 +1,4 @@
+# TODO dev->staging
 nodeSelector:
   staging: worker
 
@@ -12,24 +13,47 @@ config:
     build_image: jupyter/repo2docker:9f081a2
     per_repo_quota: 100
     build_node_selector:
-      user: workers
+      build: workers
     appendix: |
       USER root
       ENV BINDER_URL={binder_url}
       ENV REPO_URL={repo_url}
       RUN cd /tmp \
-       && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
+       && wget -q https://github.com/gesiscss/orc/archive/dev.tar.gz -O orc.tar.gz \
        && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
        && ./appendix/run-appendix \
        && rm -rf orc.tar.gz appendix
       USER $NB_USER
 
-    template_variables:
-      is_staging: True
-      is_production: False
     template_path: /etc/binderhub/templates/binderhub/templates
     #extra_static_path: /etc/binderhub/templates/binderhub/static
     #extra_static_url_prefix: extra_static/
+extraConfig:
+  templates: |
+    staging = True
+    production = False
+    site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+    context = {
+        'staging': staging,
+        'production': production,
+        'version': 'beta',
+        # 'shibboleth_entityID': f'{site_url}/shibboleth',
+        'home_url': '/',
+        'jhub_url': '/jupyter/',
+        'binder_service_url': '/services/binder/',
+        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
+                           f'target={site_url}/hub/login&'
+                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
+        'bhub_url': '/binder/',
+        'about_url': '/about/',
+        'tou_url': '/terms_of_use/',
+        'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
+        'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
+        'gesis_url': 'https://www.gesis.org/en/home/',
+        'gallery_url': '/gallery/'
+        # 'help_url': 'https://www.gesis.org/en/help/',
+    }
+    c.BinderHub.template_variables = context
 
 resources:
   requests:
@@ -57,7 +81,7 @@ initContainers:
     args:
       - clone
       - --single-branch
-      - --branch=staging
+      - --branch=dev
       - --depth=1
       - --
       - https://github.com/gesiscss/orc.git
@@ -82,6 +106,7 @@ jupyterhub:
     cors: *cors
   debug:
     enabled: true
+
   hub:
     baseUrl: /binder/jupyter/
     nodeSelector:
@@ -122,18 +147,24 @@ jupyterhub:
           memory: 512Mi
 
   singleuser:
+    nodeSelector:
+      user: workers
     cpu:
       guarantee: 0.1
       limit: 0.5
     memory:
       guarantee: 512M
       limit: 512M
-    nodeSelector:
-      user: workers
+    extraEnv:
+      # settings for kernel culling
+      # to be used in binderhub/appendix/extra_notebook_config.py
+      CULL_CONNECTED: '1'
+      CULL_TIMEOUT: '600'
+      CULL_KERNEL_TIMEOUT: '600'
+      CULL_INTERVAL: '60'
 
   cull:
     # cull every 11 minutes so it is out of phase
-    # with the proxy check-routes interval of five minutes
     every: 660
     timeout: 600
     # maxAge is 6 hours: 6 * 3600 = 21600

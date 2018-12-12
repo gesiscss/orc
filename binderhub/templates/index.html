@@ -1,11 +1,34 @@
 {% extends "templates/index.html" %}
 
+{% block extra_css %}
+<style>
+{# NOTE: custom css only for binder form #}
+#build-form .caret {
+    border-top-color: black;
+}
+#build-form .dropdown-menu {
+    background-color: #DDDDDD;
+}
+#build-form .dropdown-menu>li>a {
+    background-color: #DDDDDD;
+    color: rgb(50,50,50);
+    font-weight: normal;
+}
+#build-form .dropdown-menu>li>a:hover{
+    color: rgb(50,50,50);
+    font-weight: normal;
+}
+</style>
+{% endblock extra_css %}
+
 {% block main %}
-  <div class="row">
-    <div id="logo-container">
-      <img id="logo" src="{{static_url("logo.svg")}}" width="390px"  />
+  {% block logo %}
+    <div class="row">
+      <div id="logo-container">
+        <img id="logo" src={% block logo_image %}"{{static_url("logo.svg")}}"{% endblock logo_image %} width="390px"  />
+      </div>
     </div>
-  </div>
+  {% endblock logo %}
   <div class="row">
     <h4 class="text-center logo-subtext">(beta)</h4>
 {#    <div class="col-lg-10 col-lg-offset-1">#}
