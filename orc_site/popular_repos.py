@@ -14,6 +14,7 @@ PROVIDER_PREFIXES = {
 
 
 def binder_url(provider, org, repo):
+    #  url in last column in gallery to launch repository we call in d - list
     provider_prefix = PROVIDER_PREFIXES.get(provider, '')
     if provider_prefix:
         return f'https://notebooks.gesis.org/binder/v2/{provider_prefix}/{org}/{repo}/master'
@@ -21,10 +22,12 @@ def binder_url(provider, org, repo):
 
 
 def ts_to_dt(ts):
+    # timestamp to datetime 1544621843= 12.12.2018 14:26:34
     return datetime.utcfromtimestamp(ts)
 
 
 def get_launch_data(time_range='90d', filter_="{status='success'}"):
+    # query in promotheus to take all data (90d)
     # NOTE: increase() doesn't return first +1 (0->1)
     # query = f"increase(binderhub_launch_count_total{filter_}[{time_range}])"
     query = f"binderhub_launch_count_total{filter_}[{time_range}]"
@@ -36,9 +39,10 @@ def get_launch_data(time_range='90d', filter_="{status='success'}"):
 
 
 def process_launch_data(data):
-    d = {}  # {repo: [repo, org, provider, [launches], repo_url, binder_url]}
+    d = {}  # {repo_url: [repo, org, provider, [launches], repo_url, binder_url]}
     for container in data:
         # first get meta data
+        # e.g row in data: provider="GitHub",repo="https://github.com/gesiscss/ptm" , status="success"}
         repo_url = container['metric']['repo']
         provider = container['metric']['provider']
         provider_org_repo = repo_url.replace('https://', '').rstrip('.git').rsplit('/', 2)
@@ -54,6 +58,8 @@ def process_launch_data(data):
         # get ts of each increase of launch count
         launch_count_increases = []
         launch_count_prev = 0
+
+        # e.g of container['value'] (1542986164.636, 1)
         for ts, launch_count in container['values']:
             launch_count = int(launch_count)
             if launch_count != launch_count_prev:
@@ -61,11 +67,11 @@ def process_launch_data(data):
                 launch_count_increases.append((ts, launch_count))
             launch_count_prev = launch_count
 
-        if repo not in d:
-            d[repo] = [repo, org, provider, [launch_count_increases], repo_url, binder_url(provider, org, repo)]
+        if repo_url not in d:
+            d[repo_url] = [repo, org, provider, [launch_count_increases], repo_url, binder_url(provider, org, repo)]
         else:
             # same repo can be launched on different instances (after a new deployment/update)
-            d[repo][3].append(launch_count_increases)
+            d[repo_url][3].append(launch_count_increases)
 
     # sort and flatten launch_count_increases
     for repo, data in d.items():
@@ -86,6 +92,11 @@ def process_launch_data(data):
 
 
 def get_popular_repos(launch_data, time_range):
+    """
+    :param launch_data:  - all time data taken from get_launch_data function
+    :param time_range:  - time parameter to filter
+    :return:
+    """
     if time_range.endswith('h'):
         p = {'hours': int(time_range.split('h')[0])}
     elif time_range.endswith('d'):
