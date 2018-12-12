@@ -18,7 +18,6 @@ context = {
 
     'home_url': '/',
     'jhub_url': '/jupyter/',
-    'binder_service_url': '/services/binder/',
     'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
                        f'target={site_url}/hub/login&'
                        f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',

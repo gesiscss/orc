@@ -30,7 +30,6 @@ hub:
 
           'home_url': '/',
           'jhub_url': '/jupyter/',
-          'binder_service_url': '/services/binder/',
           # 'logout_url': '/jupyter/hub/logout',
           'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
                              f'target={site_url}/hub/login&'
