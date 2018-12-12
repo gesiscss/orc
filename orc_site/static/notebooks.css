@@ -204,12 +204,10 @@ div.trail-wrapper.hidden-print > div.container{
 	border-bottom: 1px solid #8b9eb2;
 	border-top: 1px solid #8b9eb2;
 	}
-
 div.trail-wrapper.hidden-print > div.container > div.row{
 	_background-color: #cdd5dd;
 	background-color: #fff;
 	}
-
 .trail-wrapper{
 	background-color:#333;
 	border-bottom: 0px;

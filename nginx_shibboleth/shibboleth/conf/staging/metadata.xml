@@ -7,10 +7,10 @@
             protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:1.0:protocol">
         <md:Extensions>
             <mdui:UIInfo>
-                <mdui:DisplayName xml:lang="de">GESIS Notebooks test SP</mdui:DisplayName>
-                <mdui:DisplayName xml:lang="en">GESIS Notebooks test SP</mdui:DisplayName>
-                <mdui:Description xml:lang="de">GESIS Notebooks test SP</mdui:Description>
-                <mdui:Description xml:lang="en">GESIS Notebooks test SP</mdui:Description>
+                <mdui:DisplayName xml:lang="de">GESIS Notebooks staging SP</mdui:DisplayName>
+                <mdui:DisplayName xml:lang="en">GESIS Notebooks staging SP</mdui:DisplayName>
+                <mdui:Description xml:lang="de">GESIS Notebooks staging SP</mdui:Description>
+                <mdui:Description xml:lang="en">GESIS Notebooks staging SP</mdui:Description>
                 <mdui:InformationURL xml:lang="de">https://notebooks-test.gesis.org</mdui:InformationURL>
                 <mdui:InformationURL xml:lang="en">https://notebooks-test.gesis.org</mdui:InformationURL>
                 <mdui:Logo height="100" width="100">https://notebooks-test.gesis.org/static/images/logo/logo.svg</mdui:Logo>
@@ -18,11 +18,11 @@
         </md:Extensions>
 
         <md:AttributeConsumingService index="1">
-            <md:ServiceName xml:lang="en">GESIS Notebooks test SP</md:ServiceName>
-            <md:ServiceName xml:lang="de">GESIS Notebooks test SP</md:ServiceName>
-            <md:ServiceDescription xml:lang="en">GESIS Notebooks test SP - requires e-mail address, name and surname.
+            <md:ServiceName xml:lang="en">GESIS Notebooks staging SP</md:ServiceName>
+            <md:ServiceName xml:lang="de">GESIS Notebooks staging SP</md:ServiceName>
+            <md:ServiceDescription xml:lang="en">GESIS Notebooks staging SP - requires e-mail address, name and surname.
             </md:ServiceDescription>
-            <md:ServiceDescription xml:lang="de">GESIS Notebooks test SP - requires e-mail address, name and surname.
+            <md:ServiceDescription xml:lang="de">GESIS Notebooks staging SP - requires e-mail address, name and surname.
             </md:ServiceDescription>
 
             <md:RequestedAttribute FriendlyName="mail" Name="urn:mace:dir:attribute-def:mail"

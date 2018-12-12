@@ -17,6 +17,9 @@
   <link id="favicon" rel="shortcut icon" type="image/png" href="/static/images/logo/logo.png" />
   {% endblock head %}
 
+  {% block extra_css %}
+  {% endblock extra_css %}
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -48,13 +51,11 @@
   <!-- etracker tracklet 4.0 end -->
   {% endif %}
   {% endblock etracker %}
-
-  {% block extra_css %}
-  {% endblock extra_css %}
 </head>
 
 <body>
     {% block body %}
+
     {% block gesis_header %}
     {% include "gesis/header.html" %}
     {% endblock gesis_header %}
