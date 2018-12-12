@@ -92,6 +92,7 @@ initContainers:
       - --
       - https://github.com/gesiscss/orc.git
       - /etc/binderhub/templates
+
     securityContext:
       runAsUser: 0
     volumeMounts:

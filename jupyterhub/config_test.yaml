@@ -9,7 +9,7 @@ hub:
     prometheus.io/scrape: 'false'
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "9696a2f8"
+    tag: "457a86c8"
   deploymentStrategy:
     type: RollingUpdate
   db:
