@@ -51,7 +51,7 @@ def home():
         {'headline': 'Python Data Science Handbook',
          'content': '',
          'binder_link': f'{site_url}/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master',
-         'repo_link': 'https://github.com/gesiscss/PythonDataScienceHandbook'},
+         'repo_link': 'https://github.com/jakevdp/PythonDataScienceHandbook'},
         {'headline': 'LIGO Binder',
          'content': '',
          'binder_link': f'{site_url}/binder/v2/gh/minrk/ligo-binder/master',

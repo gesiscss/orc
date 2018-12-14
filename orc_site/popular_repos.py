@@ -74,7 +74,7 @@ def process_launch_data(data):
             d[repo_url][3].append(launch_count_increases)
 
     # sort and flatten launch_count_increases
-    for repo, data in d.items():
+    for _, data in d.items():
         launch_count_increases_ = []
         count_prev = 0
         launch_count_increases = data[3]
