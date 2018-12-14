@@ -39,7 +39,7 @@ spec:
         production: worker
       containers:
       - name: orc-site
-        image: gesiscss/orc-site:7c37f9cd
+        image: gesiscss/orc-site:ed697d87
         ports:
         - containerPort: 5000
           protocol: TCP
