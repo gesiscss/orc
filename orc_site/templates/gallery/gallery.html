@@ -20,7 +20,9 @@
 
         <ul>
             {% for i, title, popular_repos, time_range in popular_repos_all %}
+{#                {% if popular_repos|length >=5 %}#}
                 <li><a href="#tabs-{{ i }}">{{ title }}</a></li>
+{#                {% endif %}#}
             {% endfor %}
         </ul>
 
@@ -58,9 +60,11 @@
                     <tfoot>
                     <tr>
                         <td colspan="5">
+                            {% if popular_repos|length > 5 %}
                             <a href="/gallery/popular_repos/{{ time_range }}">
                                 View all ({{ title }})
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                     </tfoot>
