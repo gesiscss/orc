@@ -1,17 +1,13 @@
 # Open Research Computing (ORC)
 
-For more information about iLCM project and ORC environment:
-
-- https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/
-- https://notebooks.gesis.org/about/
-- http://gepris.dfg.de/gepris/projekt/324867496?language=en
+For more information about ORC project: https://notebooks.gesis.org/about/
 
 ## Technical Details
 
-This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 16.04.
+This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 18.04.
 And kubernetes cluster is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/).
 [Flannel](https://github.com/coreos/flannel/tree/v0.10.0) is used as pod network.
-Docker version 17.03.2-ce is installed on servers.
+Docker version 17.12.1-ce is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
@@ -61,4 +57,4 @@ NFS provisioner (v2.2.0) is currently set as the default storage provider in k8s
 
 ### [ORC Site](/orc_site)
 
-A micro app to serve ORC templates.
+A micro app to serve ORC templates and to host the gallery.
