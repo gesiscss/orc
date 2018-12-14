@@ -9,7 +9,7 @@ hub:
     prometheus.io/scrape: 'false'
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "457a86c8"
+    tag: "0e446098"
   deploymentStrategy:
     type: RollingUpdate
   db:
@@ -45,6 +45,7 @@ hub:
           'gallery_url': '/gallery/'
           # 'help_url': 'https://www.gesis.org/en/help/',
       }
+      context.update({'active': 'jupyterhub'})
       c.JupyterHub.template_vars = context
     admin_handler: |
       from jupyterhub.handlers.base import BaseHandler
