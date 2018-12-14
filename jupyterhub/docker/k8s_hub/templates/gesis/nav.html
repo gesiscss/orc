@@ -18,7 +18,7 @@
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
                         <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
                         <li class="dropdown">
-                            <a href="#" id="navbar-active-a" class="dropdown-toggle gs_active_sub"
+                            <a href="#" {% if active == 'jupyterhub' %}id="navbar-active-a"{% endif %} class="dropdown-toggle{% if active == 'jupyterhub' %} gs_active_sub{% endif %}"
                                data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your
                                 Server <span class="caret"></span></a>
                             <ul class="dropdown-menu">

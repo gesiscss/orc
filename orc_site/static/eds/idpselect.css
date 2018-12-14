@@ -124,7 +124,7 @@ div.IdPSelectPreferredIdPButton div.IdPSelectTextDiv
 #idpSelectSelectButton, #idpSelectListButton
 {
     margin: 0.5rem 0;
-    width: 25%;
+    width: 15%;
     /*color: #fff;*/
     /*background-color: #ff6100;*/
     /*border-color: #ff6100;*/
@@ -135,7 +135,7 @@ div.IdPSelectPreferredIdPButton div.IdPSelectTextDiv
     /*padding-right: 2px;*/
     margin: 0.5rem 0;
     margin-left: 2px;
-    width: 25%;
+    width: 15%;
 }
 
 /*

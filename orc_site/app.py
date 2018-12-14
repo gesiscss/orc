@@ -50,7 +50,7 @@ def home():
          'repo_link': 'https://github.com/gesiscss/workshop_girls_day'},
         {'headline': 'Python Data Science Handbook',
          'content': '',
-         'binder_link': f'{site_url}/binder/v2/gh/gesiscss/PythonDataScienceHandbook/master',
+         'binder_link': f'{site_url}/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master',
          'repo_link': 'https://github.com/gesiscss/PythonDataScienceHandbook'},
         {'headline': 'LIGO Binder',
          'content': '',
@@ -63,7 +63,7 @@ def home():
 
 @app.route('/login/')
 def login():
-    context.update({'active': 'login'})
+    context.update({'active': 'jupyterhub'})
     return render_template('shibboleth_login.html', **context)
 
 
