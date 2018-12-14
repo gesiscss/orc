@@ -39,7 +39,7 @@ spec:
         staging: worker
       containers:
       - name: orc-site-test
-        image: gesiscss/orc-site:1a241ac8
+        image: gesiscss/orc-site:7c37f9cd
         ports:
         - containerPort: 5000
           protocol: TCP
@@ -48,8 +48,8 @@ spec:
           value:  "staging"
         resources:
           requests:
-            cpu: "0.2"
+            cpu: "0.5"
             memory: "512Mi"
           limits:
-            cpu: "0.8"
+            cpu: "1"
             memory: "1Gi"

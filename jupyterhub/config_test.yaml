@@ -121,7 +121,7 @@ hub:
       memory: 512Mi
     limits:
       cpu: "0.5"
-      memory: 512Mi
+      memory: 1Gi
 
 proxy:
   nodeSelector:

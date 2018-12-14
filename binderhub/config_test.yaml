@@ -57,10 +57,10 @@ extraConfig:
 resources:
   requests:
     cpu: "0.25"
-    memory: 512Mi
+    memory: 1Gi
   limits:
-    cpu: "0.5"
-    memory: 512Mi
+    cpu: "1"
+    memory: 1Gi
 
 service:
   annotations:
@@ -121,8 +121,8 @@ jupyterhub:
         cpu: "0.25"
         memory: 512Mi
       limits:
-        cpu: "0.5"
-        memory: 512Mi
+        cpu: "1"
+        memory: 1Gi
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
