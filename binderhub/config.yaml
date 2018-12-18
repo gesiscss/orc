@@ -8,7 +8,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-
-    build_image: jupyter/repo2docker:9f081a2
+    build_image: jupyter/repo2docker:72d7634
     per_repo_quota: 100
     build_node_selector:
       build: workers
@@ -116,8 +116,6 @@ jupyterhub:
     baseUrl: /binder/jupyter/
     nodeSelector:
       production: worker
-    annotations:
-      prometheus.io/path: "/binder/jupyter/hub/metrics"
     deploymentStrategy:
       type: RollingUpdate
     db:
@@ -132,6 +130,9 @@ jupyterhub:
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+    service:
+      annotations:
+        prometheus.io/path: "/binder/jupyter/hub/metrics"
 
   proxy:
     nodeSelector:

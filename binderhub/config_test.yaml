@@ -9,7 +9,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-staging-
-    build_image: jupyter/repo2docker:9f081a2
+    build_image: jupyter/repo2docker:72d7634
     per_repo_quota: 100
     build_node_selector:
       build: workers
@@ -110,8 +110,6 @@ jupyterhub:
     baseUrl: /binder/jupyter/
     nodeSelector:
       staging: worker
-    annotations:
-      prometheus.io/scrape: 'false'
     deploymentStrategy:
       type: RollingUpdate
     db:
@@ -126,6 +124,9 @@ jupyterhub:
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+    service:
+      annotations:
+        prometheus.io/scrape: 'false'
 
   proxy:
     nodeSelector:

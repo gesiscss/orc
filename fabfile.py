@@ -62,7 +62,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--wait --force --debug --timeout=1800'.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.2.0-2b368e4 '
+            c.run('helm upgrade bhub{-test} jupyterhub/binderhub --version=0.2.0-275f286 '
                   '--install --namespace=bhub{-test}-ns '
                   '-f binderhub/_secret{_test}.yaml '
                   '-f binderhub/config{_test}.yaml '

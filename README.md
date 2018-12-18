@@ -23,7 +23,7 @@ In this ORC instance ports 80 and 443 of `nginx-shibboleth` container are expose
 All services in ORC cluster in k8s has type `NodePort` and run behind `nginx-shibboleth` service.
 
 [Dockerfile](/nginx_shibboleth/docker/Dockerfile) for `nginx-shibboleth` container
-extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/shibboleth)
+extends [gesiscss/nginx-shibboleth image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/shibboleth)
 to be used in ORC instance.
 
 [Nginx configuration files](/nginx_shibboleth/nginx)
@@ -37,7 +37,7 @@ JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/.
 Chart version [0.8-1591696](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/1591696).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
-extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
+extends [gesiscss/k8s-hub image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
 in order to use [jhub_shibboleth_auth](https://github.com/gesiscss/jhub_shibboleth_auth)
 authenticator in ORC.
 
@@ -45,9 +45,9 @@ authenticator in ORC.
 
 ### [BinderHub](/binderhub)
 
-BinderHub (with `jupyter/repo2docker:9f081a2`) runs under https://notebooks.gesis.org/binder/. 
+BinderHub (with `jupyter/repo2docker:72d7634`) runs under https://notebooks.gesis.org/binder/. 
 
-Chart version [0.2.0-2b368e4](https://github.com/jupyterhub/binderhub/tree/2b368e4)
+Chart version [0.2.0-275f286](https://github.com/jupyterhub/binderhub/tree/275f286)
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
