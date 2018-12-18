@@ -34,7 +34,7 @@ to be used in ORC instance.
 
 JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/. 
 
-Chart version [0.8-151be76](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/151be76).
+Chart version [0.8-1591696](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/1591696).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [this image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)

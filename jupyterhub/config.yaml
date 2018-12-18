@@ -1,13 +1,14 @@
 # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/jupyterhub/values.yaml
 hub:
+  service:
+    annotations:
+      prometheus.io/path: "/jupyter/hub/metrics"
   baseUrl: /jupyter/
   nodeSelector:
     production: worker
-  annotations:
-    prometheus.io/path: "/jupyter/hub/metrics"
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "0e446098"
+    tag: "452aba0a"
   deploymentStrategy:
     type: RollingUpdate
   db:

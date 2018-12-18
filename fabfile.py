@@ -55,7 +55,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=orc{-test}-ns'.format(**format_dict))
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-151be76 '
+            c.run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8-1591696 '
                   '--install --namespace=jhub{-test}-ns '
                   '-f jupyterhub/config{_test}.yaml '
                   '-f jupyterhub/_secret{_test}.yaml '

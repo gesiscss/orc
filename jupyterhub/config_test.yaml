@@ -2,14 +2,15 @@ debug:
   enabled: true
 
 hub:
+  service:
+    annotations:
+      prometheus.io/scrape: 'false'
   baseUrl: /jupyter/
   nodeSelector:
     staging: worker
-  annotations:
-    prometheus.io/scrape: 'false'
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "0e446098"
+    tag: "452aba0a"
   deploymentStrategy:
     type: RollingUpdate
   db:
