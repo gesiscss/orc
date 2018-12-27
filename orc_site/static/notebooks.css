@@ -80,7 +80,8 @@ div.navbar-header {
 	}
 
 header .navbar-default{
-	background-color: #333;
+	background: #333;
+	/*background-color: #333;*/
 	color: #58748f;
 	}
 
