@@ -45,7 +45,7 @@ spec:
         production: worker
       containers:
         - name: nfs-provisioner
-          image: quay.io/kubernetes_incubator/nfs-provisioner:v2.2.0-k8s1.12
+          image: quay.io/kubernetes_incubator/nfs-provisioner:v2.2.1-k8s1.12
           ports:
             - name: nfs
               containerPort: 2049
