@@ -39,7 +39,7 @@ spec:
         staging: worker
       containers:
       - name: orc-site-test
-        image: gesiscss/orc-site:49fbdf88
+        image: gesiscss/orc-site:52538ffd
         ports:
         - containerPort: 5000
           protocol: TCP
