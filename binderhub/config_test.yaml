@@ -9,7 +9,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-staging-
-    build_image: jupyter/repo2docker:36641f3
+    build_image: jupyter/repo2docker:ff894f44
     per_repo_quota: 100
     build_node_selector:
       build: workers
@@ -26,7 +26,7 @@ config:
 
     template_path: /etc/binderhub/templates/binderhub/templates
     #extra_static_path: /etc/binderhub/templates/binderhub/static
-    #extra_static_url_prefix: extra_static/
+    #extra_static_url_prefix: /extra_static/
 extraConfig:
   templates: |
     staging = True
