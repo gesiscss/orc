@@ -1,5 +1,50 @@
+service:
+  annotations:
+    prometheus.io/path: '/binder/metrics'
+  type: NodePort
+  nodePort: 30081
+
+# deployment
 nodeSelector:
   production: worker
+
+resources:
+  requests:
+    cpu: "0.25"
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+# clone custom binder templates into a volume
+initContainers:
+  - name: git-clone-templates
+    image: alpine/git
+    args:
+      - clone
+      - --single-branch
+      - --branch=master
+      - --depth=1
+      - --
+      - https://github.com/gesiscss/orc.git
+      - /etc/binderhub/custom
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: custom-templates
+        mountPath: /etc/binderhub/custom
+extraVolumes:
+  - name: custom-templates
+    emptyDir: {}
+extraVolumeMounts:
+  - name: custom-templates
+    mountPath: /etc/binderhub/custom
+
+dind:
+  enabled: false
+
+imageCleaner:
+  enabled: false
 
 config:
   BinderHub:
@@ -23,8 +68,8 @@ config:
        && rm -rf orc.tar.gz appendix
       USER $NB_USER
 
-    template_path: /etc/binderhub/templates/binderhub/templates
-    #extra_static_path: /etc/binderhub/templates/binderhub/static
+    template_path: /etc/binderhub/custom/binderhub/templates
+    #extra_static_path: /etc/binderhub/custom/binderhub/static
     #extra_static_url_prefix: /extra_static/
 
   GitHubRepoProvider:
@@ -61,49 +106,6 @@ extraConfig:
     }
     context.update({'active': 'binder'})
     c.BinderHub.template_variables = context
-
-resources:
-  requests:
-    cpu: "0.25"
-    memory: 1Gi
-  limits:
-    cpu: "2"
-    memory: 2Gi
-
-service:
-  annotations:
-    prometheus.io/path: '/binder/metrics'
-  type: NodePort
-  nodePort: 30081
-
-dind:
-  enabled: false
-
-imageCleaner:
-  enabled: false
-
-initContainers:
-  - name: git-clone-templates
-    image: alpine/git
-    args:
-      - clone
-      - --single-branch
-      - --branch=master
-      - --depth=1
-      - --
-      - https://github.com/gesiscss/orc.git
-      - /etc/binderhub/templates
-    securityContext:
-      runAsUser: 0
-    volumeMounts:
-      - name: custom-templates
-        mountPath: /etc/binderhub/templates
-extraVolumes:
-  - name: custom-templates
-    emptyDir: {}
-extraVolumeMounts:
-  - name: custom-templates
-    mountPath: /etc/binderhub/templates
 
 cors: &cors
   allowOrigin: "*"
