@@ -51,6 +51,7 @@ extraConfig:
         'gallery_url': '/gallery/'
         # 'help_url': 'https://www.gesis.org/en/help/',
     }
+
     context.update({'active': 'binder'})
     c.BinderHub.template_variables = context
 
