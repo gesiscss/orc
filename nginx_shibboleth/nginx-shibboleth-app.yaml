@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nginx-shibboleth
 spec:
-  type: NodePort
+  # type: ClusterIP
   selector:
     app: nginx-shibboleth
   ports:
@@ -13,12 +13,14 @@ spec:
     protocol: TCP
     targetPort: 80
     port: 80
-    nodePort: 30076
   - name: https
     protocol: TCP
     targetPort: 443
     port: 443
-    nodePort: 30077
+  # https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+  externalIPs:
+    - 194.95.75.9
+    #- 194.95.75.12
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -28,18 +30,16 @@ metadata:
     app: nginx-shibboleth
 spec:
   replicas: 1
+  # The selector field defines how the Deployment finds which Pods to manage.
   selector:
     matchLabels:
       app: nginx-shibboleth
-  strategy:
-    type: RollingUpdate  # default
   template:
     metadata:
       name: nginx-shibboleth
       labels:
         app: nginx-shibboleth
     spec:
-      restartPolicy: Always  # default
       nodeSelector:
         production: worker
       containers:
@@ -47,11 +47,6 @@ spec:
         image: gesiscss/nginx-shibboleth-orc:c81f03fe
         command: ["/bin/sh"]
         args: ["-c", "cp /etc/shibboleth-conf/* /etc/shibboleth/ && /usr/bin/supervisord --nodaemon --configuration /etc/supervisor/supervisord.conf"]
-        ports:
-        - containerPort: 80
-          hostPort: 80
-        - containerPort: 443
-          hostPort: 443
         resources:
           requests:
             cpu: "0.5"
