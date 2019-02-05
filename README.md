@@ -19,8 +19,8 @@ Nginx is used as reverse proxy and load balancer.
 It also handles [Shibboleth](https://www.shibboleth.net/) login and
 SSL offloading/termination.
 
-In this ORC instance ports 80 and 443 of `nginx-shibboleth` container are exposed to host machine.
-All services in ORC cluster in k8s has type `NodePort` and run behind `nginx-shibboleth` service.
+`nginx-shibboleth` service has type `ClusterIP` and all other services in ORC cluster in k8s 
+has type `NodePort` and run behind `nginx-shibboleth` service.
 
 [Dockerfile](/nginx_shibboleth/docker/Dockerfile) for `nginx-shibboleth` container
 extends [gesiscss/nginx-shibboleth image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/shibboleth)
@@ -41,7 +41,7 @@ extends [gesiscss/k8s-hub image](https://github.com/gesiscss/jhub_shibboleth_aut
 in order to use [jhub_shibboleth_auth](https://github.com/gesiscss/jhub_shibboleth_auth)
 authenticator in ORC.
 
-[Single user server image](/jupyterhub/docker/singleuser)
+[Single user server image](https://github.com/gesiscss/data_science_image)
 
 ### [BinderHub](/binderhub)
 
