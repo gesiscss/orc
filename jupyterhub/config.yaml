@@ -158,7 +158,7 @@ singleuser:
     capacity: 15Gi
   image:
     name: gesiscss/singleuser-orc
-    tag: "r2d-4f69cb6e"
+    tag: "r2d-e1b414e1"
   cpu:
     guarantee: 0.1
     limit: 2
