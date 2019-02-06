@@ -17,8 +17,8 @@ server:
     servicePort: 9090
   resources:
     requests:
-      cpu: "4"
-      memory: 16Gi
+      cpu: "2"
+      memory: 8Gi
     limits:
       cpu: "4"
       memory: 16Gi

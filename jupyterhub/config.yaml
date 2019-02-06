@@ -134,8 +134,8 @@ proxy:
   chp:
     resources:
       requests:
-        cpu: "0.25"
-        memory: 512Mi
+        cpu: "0.1"
+        memory: 256Mi
       limits:
         cpu: "0.5"
         memory: 512Mi
@@ -160,10 +160,10 @@ singleuser:
     name: gesiscss/singleuser-orc
     tag: "r2d-4f69cb6e"
   cpu:
-    guarantee: 0.2
+    guarantee: 0.1
     limit: 2
   memory:
-    guarantee: 2G
+    guarantee: 1G
     limit: 4G
   extraEnv:
     # settings for kernel culling

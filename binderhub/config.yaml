@@ -104,7 +104,6 @@ extraConfig:
         'gallery_url': '/gallery/'
         # 'help_url': 'https://www.gesis.org/en/help/',
     }
-
     context.update({'active': 'binder'})
     c.BinderHub.template_variables = context
 
@@ -148,8 +147,8 @@ jupyterhub:
     chp:
       resources:
         requests:
-          cpu: "0.25"
-          memory: 512Mi
+          cpu: "0.1"
+          memory: 256Mi
         limits:
           cpu: "0.5"
           memory: 512Mi
@@ -158,10 +157,10 @@ jupyterhub:
     nodeSelector:
       user: workers
     cpu:
-      guarantee: 0.2
+      guarantee: 0.1
       limit: 2
     memory:
-      guarantee: 2G
+      guarantee: 1G
       limit: 8G
     extraEnv:
       # settings for kernel culling
