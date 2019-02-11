@@ -53,7 +53,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-
-    build_image: jupyter/repo2docker:8597520e
+    build_image: jupyter/repo2docker:9766c954
     per_repo_quota: 100
     build_node_selector:
       build: workers
