@@ -34,33 +34,34 @@ build_job:
     - |
       echo "####### Running build"
       echo "####### Building docker images on master node"
-      CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
-      echo $CI_COMMIT_SHA_8
+      #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
+      CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
+      echo $CI_COMMIT_SHA_SHORT
       if git diff HEAD~ --name-only | egrep 'jupyterhub/docker/k8s_hub/Dockerfile|jupyterhub/docker/k8s_hub/templates/'; then
-        echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8"
+        echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8 jupyterhub/docker/k8s_hub/.
-        docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT jupyterhub/docker/k8s_hub/.
+        docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT
       fi;
       if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/docker/Dockerfile'; then
-        echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8"
+        echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8 nginx_shibboleth/docker/.
-        docker push gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT nginx_shibboleth/docker/.
+        docker push gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT
       fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/'; then
         if git diff HEAD~ --name-only | egrep --invert-match 'orc_site/deploy/|orc_site/README.md|orc_site/.dockerignore' | grep 'orc_site/'; then
-          echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_8"
+          echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_SHORT"
           docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-          docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_8 orc_site/.
-          docker push gesiscss/orc-site:$CI_COMMIT_SHA_8
+          docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_SHORT orc_site/.
+          docker push gesiscss/orc-site:$CI_COMMIT_SHA_SHORT
         fi;
       fi;
       if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
-        echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8"
+        echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8 nfs_provisioner/backup/docker/.
-        docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_8
+        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT nfs_provisioner/backup/docker/.
+        docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT
       fi;
   only:
 #    - master
