@@ -45,7 +45,7 @@ authenticator in ORC.
 
 ### [BinderHub](/binderhub)
 
-BinderHub (with `jupyter/repo2docker:b3583029`) runs under https://notebooks.gesis.org/binder/. 
+BinderHub (with `jupyter/repo2docker:f18835fd`) runs under https://notebooks.gesis.org/binder/. 
 
 Chart version [0.2.0-6bfd93b](https://github.com/jupyterhub/binderhub/tree/6bfd93b)
 
