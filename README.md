@@ -32,9 +32,9 @@ to be used in ORC instance.
 
 ### [JupyterHub](/jupyterhub)
 
-JupyterHub 0.9.4 runs under https://notebooks.gesis.org/jupyter/. 
+JupyterHub 0.9.6 runs under https://notebooks.gesis.org/jupyter/. 
 
-Chart version [0.8-1591696](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/1591696).
+Chart version [0.8.2](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.8.2).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [gesiscss/k8s-hub image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)

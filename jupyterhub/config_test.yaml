@@ -10,7 +10,7 @@ hub:
     staging: worker
   image:
     name: gesiscss/k8s-hub-orc
-    tag: "52538ffd"
+    tag: "1edbd1d"
   deploymentStrategy:
     type: RollingUpdate
   db:
