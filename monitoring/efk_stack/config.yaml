@@ -1,0 +1,75 @@
+elasticsearch:
+  enabled: true
+  # https://github.com/helm/charts/tree/master/stable/elasticsearch#enabling-elasticsearch-internal-monitoring
+  image:
+    repository: docker.elastic.co/elasticsearch/elasticsearch
+  cluster:
+    xpackEnable: true
+    env:
+      XPACK_MONITORING_ENABLED: true
+      # https://github.com/helm/charts/tree/master/stable/elasticsearch#minimum-master-nodes
+      MINIMUM_MASTER_NODES: "2"  # (number of master-eligible nodes (2) / 2) + 1
+
+
+kibana:
+
+  enabled: true
+  nodeSelector:
+    production: worker
+  # https://github.com/helm/charts/tree/master/stable/elasticsearch#enabling-elasticsearch-internal-monitoring
+  image:
+    repository: "docker.elastic.co/kibana/kibana"
+
+  service:
+    type: NodePort
+    nodePort: 30070
+
+  env:
+    # All Kibana configuration options are adjustable via env vars.
+    # To adjust a config option to an env var uppercase + replace `.` with `_`
+    # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+
+    # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services
+    ELASTICSEARCH_URL: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
+  files:
+    kibana.yml:
+      ## Default Kibana configuration from kibana-docker.
+      elasticsearch.url: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
+      ## Custom config properties below
+      ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+      server.basePath: "/kibana"
+      server.rewriteBasePath: false
+      server.host: "notebooks.gesis.org"
+      server.ssl.cert: "/etc/letsencrypt_volume/live/notebooks.gesis.org/fullchain.pem"
+      server.ssl.key: "/etc/letsencrypt_volume/live/notebooks.gesis.org/privkey.pem"
+  extraVolumeMounts:
+    - name: letsencrypt-volume
+      mountPath: "/etc/letsencrypt_volume"
+      readOnly: true
+  extraVolumes:
+    - name: letsencrypt-volume
+      hostPath:
+        path: /etc/letsencrypt
+
+  #resources: {}
+
+  # https://github.com/helm/charts/tree/master/stable/kibana#dasboard-import
+  # A dashboard is defined by a name and a string with the json payload or the download url
+  dashboardImport:
+    enabled: false
+    timeout: 60
+#    xpackauth:
+#      enabled: false
+#      username: myuser
+#      password: mypass
+    dashboards:
+      k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+
+logstash:
+  enabled: false
+
+fluentd-elasticsearch:
+  enabled: true
+  elasticsearch:
+    host: 'efk-stack-elasticsearch-client'  # elasticsearch client service name
+    logstash_prefix: 'orc-logstash'
