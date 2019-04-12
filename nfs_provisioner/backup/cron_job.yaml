@@ -43,4 +43,4 @@ spec:
                 path: /srv/nfs-provisioner
             - name: backup-volume
               hostPath:
-                path: /backup/nfs-backup
+                path: /srv/nfs-backup
