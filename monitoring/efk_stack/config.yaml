@@ -45,7 +45,7 @@ kibana:
   # https://github.com/helm/charts/tree/master/stable/kibana#dasboard-import
   # A dashboard is defined by a name and a string with the json payload or the download url
   dashboardImport:
-    enabled: false
+    enabled: true
     timeout: 60
 #    xpackauth:
 #      enabled: false
