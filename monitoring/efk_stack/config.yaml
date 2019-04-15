@@ -38,18 +38,7 @@ kibana:
       ## Custom config properties below
       ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
       server.basePath: "/kibana"
-      server.rewriteBasePath: false
-      server.host: "notebooks.gesis.org"
-      server.ssl.cert: "/etc/letsencrypt_volume/live/notebooks.gesis.org/fullchain.pem"
-      server.ssl.key: "/etc/letsencrypt_volume/live/notebooks.gesis.org/privkey.pem"
-  extraVolumeMounts:
-    - name: letsencrypt-volume
-      mountPath: "/etc/letsencrypt_volume"
-      readOnly: true
-  extraVolumes:
-    - name: letsencrypt-volume
-      hostPath:
-        path: /etc/letsencrypt
+      server.rewriteBasePath: true
 
   #resources: {}
 
@@ -63,7 +52,8 @@ kibana:
 #      username: myuser
 #      password: mypass
     dashboards:
-      k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+      #k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json  # error: Saved objects file format is invalid and cannot be imported.
+      k8s2: https://raw.githubusercontent.com/carlosedp/kubernetes-elasticsearch-cluster/master/Kibana-dashboards.json
 
 logstash:
   enabled: false
@@ -72,4 +62,6 @@ fluentd-elasticsearch:
   enabled: true
   elasticsearch:
     host: 'efk-stack-elasticsearch-client'  # elasticsearch client service name
-    logstash_prefix: 'orc-logstash'
+    # better use default prefix "logstash"
+    # Kibana-dashboards.json also uses it
+    #logstash_prefix: 'orc-logstash'
