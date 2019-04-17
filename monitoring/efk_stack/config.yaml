@@ -1,4 +1,6 @@
 elasticsearch:
+  # https://github.com/helm/charts/tree/master/stable/elasticsearch#configuration
+  # https://github.com/helm/charts/blob/master/stable/elasticsearch/values.yaml
   enabled: true
   # https://github.com/helm/charts/tree/master/stable/elasticsearch#enabling-elasticsearch-internal-monitoring
   image:
@@ -12,7 +14,7 @@ elasticsearch:
 
 
 kibana:
-
+  # https://github.com/helm/charts/tree/master/stable/kibana#configuration
   enabled: true
   nodeSelector:
     production: worker
@@ -31,6 +33,7 @@ kibana:
 
     # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services
     ELASTICSEARCH_URL: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
+    #XPACK_SECURITY_ENABLED: "true"
   files:
     kibana.yml:
       ## Default Kibana configuration from kibana-docker.
@@ -44,24 +47,30 @@ kibana:
 
   # https://github.com/helm/charts/tree/master/stable/kibana#dasboard-import
   # A dashboard is defined by a name and a string with the json payload or the download url
-  dashboardImport:
-    enabled: true
-    timeout: 60
-#    xpackauth:
-#      enabled: false
-#      username: myuser
-#      password: mypass
-    dashboards:
-      #k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json  # error: Saved objects file format is invalid and cannot be imported.
-      k8s2: https://raw.githubusercontent.com/carlosedp/kubernetes-elasticsearch-cluster/master/Kibana-dashboards.json
+#  dashboardImport:
+#    enabled: true
+#    timeout: 60
+##    xpackauth:
+##      enabled: false
+##      username: myuser
+##      password: mypass
+#    dashboards:
+#      #k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json  # error: Saved objects file format is invalid and cannot be imported.
+#      k8s2: https://raw.githubusercontent.com/carlosedp/kubernetes-elasticsearch-cluster/master/Kibana-dashboards.json
 
 logstash:
   enabled: false
 
 fluentd-elasticsearch:
+  # https://github.com/kiwigrid/helm-charts/tree/master/charts/fluentd-elasticsearch#configuration
   enabled: true
   elasticsearch:
     host: 'efk-stack-elasticsearch-client'  # elasticsearch client service name
     # better use default prefix "logstash"
     # Kibana-dashboards.json also uses it
     #logstash_prefix: 'orc-logstash'
+
+#  secret:
+#  # - name: ELASTICSEARCH_PASSWORD
+#  #   secret_name: elasticsearch
+#  #   secret_key: password
