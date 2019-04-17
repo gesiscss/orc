@@ -54,7 +54,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-staging-
-    build_image: jupyter/repo2docker:9bcc41af
+    build_image: jupyter/repo2docker:746e4d92
     per_repo_quota: 100
     build_node_selector:
       build: workers
@@ -97,6 +97,7 @@ extraConfig:
         'gallery_url': '/gallery/'
         # 'help_url': 'https://www.gesis.org/en/help/',
     }
+
     context.update({'active': 'binder'})
     c.BinderHub.template_variables = context
 
