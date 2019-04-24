@@ -5,9 +5,10 @@ For more information about ORC project: https://notebooks.gesis.org/about/
 ## Technical Details
 
 This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 18.04.
-And kubernetes cluster is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/).
-[Flannel](https://github.com/coreos/flannel/tree/v0.10.0) is used as pod network.
-Docker version 18.06.0-ce is installed on servers.
+And kubernetes cluster is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) 
+(v1.14.1).
+[Flannel](https://github.com/coreos/flannel/tree/v0.11.0) is used as pod network.
+Docker version 18.06.2-ce is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
