@@ -78,6 +78,20 @@ extraConfig:
     staging = True
     production = False
     site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+    bhub_url = '/binder/'
+
+    def up_to_date():
+      import requests
+      versions_url = site_url + bhub_url + 'versions'
+      mybinder_versions_url = 'https://mybinder.org/versions'
+      try:
+        bhub_versions = requests.get(versions_url, timeout=0.5).json()
+        mybinder_versions = requests.get(mybinder_versions_url, timeout=0.5).json()
+        up_to_date = bhub_versions == mybinder_versions
+      except Exception:
+        up_to_date = False
+      return up_to_date
+
     context = {
         'staging': staging,
         'production': production,
@@ -88,7 +102,8 @@ extraConfig:
         'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
                            f'target={site_url}/hub/login&'
                            f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-        'bhub_url': '/binder/',
+        'bhub_url': bhub_url,
+        'up_to_date': up_to_date,
         'about_url': '/about/',
         'tou_url': '/terms_of_use/',
         'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
@@ -97,7 +112,6 @@ extraConfig:
         'gallery_url': '/gallery/'
         # 'help_url': 'https://www.gesis.org/en/help/',
     }
-
     context.update({'active': 'binder'})
     c.BinderHub.template_variables = context
 

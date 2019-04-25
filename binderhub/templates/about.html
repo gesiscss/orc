@@ -10,10 +10,13 @@
         <h3>BinderHub</h3>
         <div id="explanation">
           <p>This website is powered by <a href="https://github.com/jupyterhub/binderhub">BinderHub</a> v{{ binder_version }}.
+              {% if up_to_date() %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}
           </p>
+          {% if message %}
           <p>
             {{ message | safe }}
           </p>
+          {% endif %}
         </div>
       </div>
       {% endblock header %}
