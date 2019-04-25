@@ -131,6 +131,8 @@ jupyterhub:
     extraConfig:
       neverRestart: |
         c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+      noAuthMetrics: |
+        c.JupyterHub.authenticate_prometheus = False
 
   proxy:
     nodeSelector:
