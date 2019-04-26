@@ -54,7 +54,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-staging-
-    build_image: jupyter/repo2docker:746e4d92
+    build_image: jupyter/repo2docker:bc9554e1
     per_repo_quota: 100
     build_node_selector:
       build: workers
