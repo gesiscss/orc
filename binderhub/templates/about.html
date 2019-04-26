@@ -45,14 +45,10 @@
             versions_url,
             function( data ) {
                 versions = data;
-                console.log('###', versions);
                 $.get(
                     mybinder_versions_url,
                     function( data ) {
                         mybinder_versions = data;
-                        console.log('###', mybinder_versions);
-                        console.log(1, versions !== "" && mybinder_versions !== "");
-                        console.log(2, versions["builder"] === mybinder_versions["builder"] && versions["binderhub"] === mybinder_versions["binderhub"]);
                         if (versions !== "" && mybinder_versions !== "") {
                             mybinder_versions = mybinder_versions["binderhub"] + " with " + mybinder_versions["builder"];
                             versions = versions["binderhub"] + " with " + versions["builder"];
