@@ -55,7 +55,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=orc{-test}-ns'.format(**format_dict))
         if 'galleryapp' in mode or 'gallerytestapp' in mode:
             c.run('kubectl create secret generic gallery-config '
-                  '--from-file=gallery/_secret_config{_test}.conf '
+                  '--from-file=gallery/_secret_config{_test}.py '
                   '--namespace=gallery{-test}-ns '
                   '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
             c.run('kubectl apply -f gallery/config{_test}.yaml '
