@@ -46,7 +46,7 @@ spec:
         - name: BG_BASE_URL
           value:  "/gallery/"
         - name: BG_APPLICATION_SETTINGS
-          value:  "gallery_config.Config"  # _secret_config.py
+          value:  "gallery_config.Config"
         - name: PRODUCTION_SERVER
           value: "true"
         resources:
@@ -59,7 +59,7 @@ spec:
         volumeMounts:
         - name: gallery-config
           mountPath: /binder_gallery/gallery_config.py
-          subPath: gallery_config.py
+          subPath: _secret_config_test.py
           readOnly: true
       volumes:
       - name: gallery-config
