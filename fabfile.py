@@ -53,6 +53,13 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'orcsite' in mode or 'orctestsite' in mode:
             c.run('kubectl apply -f orc_site/deploy/orc-site-app{-test}.yaml '
                   '--namespace=orc{-test}-ns'.format(**format_dict))
+        if 'galleryapp' in mode or 'gallerytestapp' in mode:
+            c.run('kubectl create secret generic gallery-config '
+                  '--from-file=gallery/_secret_config{_test}.conf '
+                  '--namespace=gallery{-test}-ns '
+                  '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
+            c.run('kubectl apply -f gallery/config{_test}.yaml '
+                  '--namespace=gallery{-test}-ns'.format(**format_dict))
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm upgrade jhub{-test} jupyterhub/jupyterhub --version=0.8.2 '
