@@ -13,8 +13,8 @@ cache.init_app(app)
 
 
 def get_default_template_context():
-    staging = app.debug
-    production = not app.debug
+    production = bool(os.getenv("PRODUCTION_SERVER", False))
+    staging = not production
     site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
     context = {
         'staging': staging,
