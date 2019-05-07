@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gallery-test
+  labels:
+    app: gallery-test
+spec:
+  type: NodePort
+  selector:
+    app: gallery
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 30179
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gallery-test
+  labels:
+    app: gallery-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gallery-test
+  template:
+    metadata:
+      name: gallery-test
+      labels:
+        app: gallery-test
+    spec:
+      containers:
+      - name: gallery-test
+        image: gesiscss/binder-gallery:075b28a
+        command: ["gunicorn"]
+        args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        env:
+        - name: FLASK_ENV
+          value:  "production"
+        - name: BG_BASE_URL
+          value:  "/gallery/"
+        - name: BG_APPLICATION_SETTINGS
+          value:  "gallery_config.Config"  # _secret_config.py
+        resources:
+          requests:
+            cpu: "0.25"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        volumeMounts:
+        - name: gallery-config
+          mountPath: /binder_gallery/gallery_config.py
+          subPath: gallery_config.py
+          readOnly: true
+      volumes:
+      - name: gallery-config
+        secret:
+          secretName: gallery-config
