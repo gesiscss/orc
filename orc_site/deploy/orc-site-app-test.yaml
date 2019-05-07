@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: orc-site-test
-        image: gesiscss/orc-site:e4ee02c
+        image: gesiscss/orc-site:6f77468
         command: ["gunicorn"]
         args: ["-b", "0.0.0.0:5000", "-w", "4", "orc_site.app:app"]
         ports:
@@ -42,7 +42,9 @@ spec:
           protocol: TCP
         env:
         - name: FLASK_ENV
-          value:  "production"
+          value:  "development"
+        - name: FLASK_SERVER_NAME
+          value:  "notebooks-test.gesis.org"
         resources:
           requests:
             cpu: "0.25"
