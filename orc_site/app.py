@@ -1,39 +1,45 @@
 import os
-from flask import Flask, render_template, abort
-from .popular_repos import get_launch_data, process_launch_data, get_popular_repos
-from .utilities import get_created_by_gesis
-from copy import deepcopy
-# app = Flask(__name__, template_folder='../templates/orc_site')
+from flask_caching import Cache
+from flask import Flask, render_template
+
+cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
+app.config['SERVER_NAME'] = os.getenv("FLASK_SERVER_NAME", "127.0.0.1:5000")
+cache.init_app(app)
 
-staging = os.environ.get('DEPLOYMENT_ENV') == 'staging'
-production = os.environ.get('DEPLOYMENT_ENV') == 'production'
-site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
 
-context = {
-    'staging': staging,
-    'production': production,
-    'version': 'beta',
-    # 'shibboleth_entityID': f'{site_url}/shibboleth',
+def get_default_template_context():
+    staging = app.debug
+    production = not app.debug
+    site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+    context = {
+        'staging': staging,
+        'production': production,
+        'site_url': site_url,
+        'version': 'beta',
+        # 'shibboleth_entityID': f'{site_url}/shibboleth',
 
-    'home_url': '/',
-    'jhub_url': '/jupyter/',
-    'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                       f'target={site_url}/hub/login&'
-                       f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-    'bhub_url': '/binder/',
-    'about_url': '/about/',
-    'tou_url': '/terms_of_use/',
-    'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
-    'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
-    'gesis_url': 'https://www.gesis.org/en/home/',
-    'gallery_url': '/gallery/'
-    # 'help_url': 'https://www.gesis.org/en/help/',
-}
+        'home_url': '/',
+        'jhub_url': '/jupyter/',
+        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
+                           f'target={site_url}/hub/login&'
+                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
+        'bhub_url': '/binder/',
+        'about_url': '/about/',
+        'tou_url': '/terms_of_use/',
+        'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
+        'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
+        'gesis_url': 'https://www.gesis.org/en/home/',
+        'gallery_url': '/gallery/'
+        # 'help_url': 'https://www.gesis.org/en/help/',
+    }
+
+    return context
 
 
 @app.errorhandler(404)
 def not_found(error):
+    context = get_default_template_context()
     context.update({'status_code': error.code,
                     'status_message': error.name,
                     'message': error.description,
@@ -42,7 +48,10 @@ def not_found(error):
 
 
 @app.route('/')
+@cache.cached(timeout=None)
 def home():
+    context = get_default_template_context()
+    site_url = context["site_url"]
     binder_examples = [
         {'headline': 'Wiki-Impact',
          'content': '',
@@ -63,67 +72,22 @@ def home():
 
 @app.route('/login/')
 def login():
+    context = get_default_template_context()
     context.update({'active': 'jupyterhub'})
     return render_template('shibboleth_login.html', **context)
 
 
 @app.route('/about/')
+@cache.cached(timeout=None)
 def about():
+    context = get_default_template_context()
     context.update({'active': 'about'})
     return render_template('about.html', **context)
 
 
 @app.route('/terms_of_use/')
+@cache.cached(timeout=None)
 def terms_of_use():
+    context = get_default_template_context()
     context.update({'active': 'terms_of_use'})
     return render_template('terms_of_use.html', **context)
-
-
-@app.route('/gallery/')
-def gallery():
-    # get all launch count data (in last 90 days)
-    launch_data = get_launch_data()
-    launch_data = process_launch_data(launch_data)
-
-    popular_repos_all = [
-        (1, 'Last 24 hours', get_popular_repos(deepcopy(launch_data), '24h'), '24h', ),
-        (2, 'Last week', get_popular_repos(deepcopy(launch_data), '7d'), '7d', ),
-        (3, 'Last 30 days', get_popular_repos(deepcopy(launch_data), '30d'), '30d', ),
-        (4, 'Last 60 days', get_popular_repos(deepcopy(launch_data), '60d'), '60d', ),
-    ]
-
-    created_by_gesis = get_created_by_gesis()
-
-    context.update({'active': 'gallery',
-                    'popular_repos_all': popular_repos_all,
-                    'created_by_gesis': created_by_gesis,
-                    })
-    return render_template('gallery/gallery.html', **context)
-
-
-@app.route('/gallery/popular_repos/<string:time_range>')
-def popular_repos(time_range):
-    titles = {'24h': 'Popular repositories in last 24 hours',
-              '7d': 'Popular repositories in last week',
-              '30d': 'Popular repositories in last 30 days',
-              '60d': 'Popular repositories in last 60 days'}
-    if time_range not in titles:
-        abort(404)
-    # get all launch count data (in last 90 days)
-    launch_data = get_launch_data()
-    launch_data = process_launch_data(launch_data)
-    context.update({'active': 'gallery',
-                    'title': titles[time_range],
-                    'popular_repos': get_popular_repos(launch_data, time_range)})
-    return render_template('gallery/popular_repos.html', **context)
-
-
-def run_app():
-    app.run(debug=False, host='0.0.0.0')
-
-
-main = run_app
-
-if __name__ == '__main__':
-    main()
-

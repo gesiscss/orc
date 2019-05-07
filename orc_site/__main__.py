@@ -1,3 +1,5 @@
+from orc_site.app import app
+
 if __name__ == '__main__':
-    from orc_site.app import main
-    main()
+    # run the application on local development server
+    app.run()

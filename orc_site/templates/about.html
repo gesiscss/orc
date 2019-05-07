@@ -14,7 +14,7 @@
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6" style="padding-left: 0;">
         <p><strong>Sponsored by</strong></p>
-        <a href="http://www.dfg.de/en/" target="_blank"><img src="/static/images/DFG_CLAIM_163X60px.gif" class="img-responsive center-block"></a>
+        <a href="http://www.dfg.de/en/" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif') }}" class="img-responsive center-block"></a>
     </div>
 </div>
 
@@ -40,7 +40,7 @@
 {#        <br>#}
 {#        <a href="https://github.com/bitnik" target="_blank">Kenan Erdogan</a>#}
 {#        <br>#}
-        <strong>Email: </strong>notebooks<span style="display:none">idbh</span>@gesis.org
+        <strong>Contact: </strong>notebooks<span style="display:none">idbh</span>@gesis.org
         <a href="#"
            data-name="notebooks"
            data-domain="gesis"
@@ -48,6 +48,7 @@
            onclick="window.location.href='mailto:'+this.dataset.name+'@'+this.dataset.domain+'.'+this.dataset.tld; return false;">
             <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>
         </a>
+        or <a href="https://github.com/gesiscss/orc/issues">create an issue</a>
     </p>
     <p>
         <a href="https://github.com/gesiscss/orc">GitHub Repository</a>

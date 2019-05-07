@@ -58,4 +58,4 @@ NFS provisioner (v2.2.1) is currently set as the default storage provider in k8s
 
 ### [ORC Site](/orc_site)
 
-A micro app to serve ORC templates and to host the gallery.
+An app to serve ORC project base pages, such as home, shibboleth login, about...

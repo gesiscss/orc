@@ -2,7 +2,7 @@
 
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" type="text/css" href="/static/eds/idpselect.css" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='eds/idpselect.css') }}" />
 {% endblock head %}
 
 {% if production %}
@@ -63,6 +63,10 @@ Your Browser does not support javascript. Please use
 {% endblock main %}
 
 {% block extra_js %}
-<script src="/static/eds/idpselect{% if staging %}_test{% endif %}_config.js" type="text/javascript" language="javascript"></script>
-<script src="/static/eds/idpselect.js" type="text/javascript" language="javascript"></script>
+{% if staging %}
+    <script src="{{ url_for('static', filename='eds/idpselect_test_config.js') }}" type="text/javascript" language="javascript"></script>
+{% else %}
+    <script src="{{ url_for('static', filename='eds/idpselect_config.js') }}" type="text/javascript" language="javascript"></script>
+{% endif %}
+<script src="{{ url_for('static', filename='eds/idpselect.js') }}" type="text/javascript" language="javascript"></script>
 {% endblock extra_js %}

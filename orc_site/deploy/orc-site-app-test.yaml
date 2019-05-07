@@ -26,26 +26,25 @@ spec:
   selector:
     matchLabels:
       app: orc-site-test
-  strategy:
-    type: RollingUpdate  # default
   template:
     metadata:
       name: orc-site-test
       labels:
         app: orc-site-test
     spec:
-      restartPolicy: Always  # default
-      nodeSelector:
-        staging: worker
       containers:
       - name: orc-site-test
-        image: gesiscss/orc-site:52538ffd
+        image: gesiscss/orc-site:
+        command: ["gunicorn"]
+        args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery.app:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
         env:
-        - name: DEPLOYMENT_ENV
-          value:  "staging"
+        - name: FLASK_ENV
+          value:  "development"
+        - name: FLASK_SERVER_NAME
+          value:  "0.0.0.0:5000"
         resources:
           requests:
             cpu: "0.25"

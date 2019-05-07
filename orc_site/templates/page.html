@@ -9,12 +9,12 @@
   {#<meta name="author" content="">#}
   <title>{% block title %}GESIS Notebooks ({{version}}){% endblock %}</title>
   {% block head %}
-  <script src="/static/vendor/jquery-3.2.1.min.js"></script>
-  <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
-  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-{#  <link href="/static/vendor/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />#}
-  <link href="/static/notebooks.css" rel="stylesheet" />
-  <link id="favicon" rel="shortcut icon" type="image/png" href="/static/images/logo/logo.png" />
+  <script src="{{ url_for('static', filename='vendor/jquery-3.2.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
+{#  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap-theme.min.css') }}" rel="stylesheet" />#}
+  <link href="{{ url_for('static', filename='notebooks.css') }}" rel="stylesheet" />
+  <link id="favicon" rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/logo/logo.png') }}" />
   {% endblock head %}
 
   {% block extra_css %}
@@ -23,8 +23,8 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="/static/vendor/html5shiv.min.js"></script>
-      <script src="/static/vendor/respond.min.js"></script>
+      <script src="{{ url_for('static', filename='vendor/html5shiv.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='vendor/respond.min.js') }}"></script>
     <![endif]-->
 
   {% block etracker %}
@@ -81,7 +81,7 @@
 
     {% endblock body %}
 
-    <script src="/static/gesis_nav.js"></script>
+    <script src="{{ url_for('static', filename='gesis_nav.js') }}"></script>
     {% block extra_js %}
     {% endblock extra_js %}
 </body>

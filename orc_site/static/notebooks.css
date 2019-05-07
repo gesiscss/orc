@@ -26,9 +26,9 @@
 	}
 
 body {
-	background-color: #333;
-    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
-	}
+    background-color: #333;
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif !important;
+    }
 
 #header-container{
 	background-color: #fff;
