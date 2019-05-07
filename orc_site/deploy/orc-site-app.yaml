@@ -34,9 +34,9 @@ spec:
     spec:
       containers:
       - name: orc-site
-        image: gesiscss/orc-site:b845b9b
+        image: gesiscss/orc-site:c0fa4fb
         command: ["gunicorn"]
-        args: ["-b", "0.0.0.0:5000", "-w", "16", "orc_site.app:app"]
+        args: ["--log-file=-", "--error-logfile=-", "--access-logfile=-", "-b", "0.0.0.0:5000", "-w", "16", "orc_site.app:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
