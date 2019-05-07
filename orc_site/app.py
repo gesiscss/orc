@@ -5,7 +5,7 @@ from flask import Flask, render_template
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
 if not app.debug:
-    from werkzeug.contrib.fixers import ProxyFix
+    from werkzeug.middleware.proxy_fix import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
 app.config['SERVER_NAME'] = os.getenv("FLASK_SERVER_NAME",
                                       "127.0.0.1:5000" if app.debug else "0.0.0.0:5000")
