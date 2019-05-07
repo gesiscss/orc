@@ -34,17 +34,15 @@ spec:
     spec:
       containers:
       - name: orc-site
-        image: gesiscss/orc-site:
+        image: gesiscss/orc-site:e4ee02c
         command: ["gunicorn"]
-        args: ["-b", "0.0.0.0:5000", "-w", "12", "binder_gallery.app:app"]
+        args: ["-b", "0.0.0.0:5000", "-w", "16", "orc_site.app:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
         env:
         - name: FLASK_ENV
           value:  "production"
-        - name: FLASK_SERVER_NAME
-          value:  "0.0.0.0:5000"
         resources:
           requests:
             cpu: "0.25"
