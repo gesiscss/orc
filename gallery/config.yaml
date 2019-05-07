@@ -59,7 +59,7 @@ spec:
         volumeMounts:
         - name: gallery-config
           mountPath: /binder_gallery/gallery_config.py
-          subPath: _secret_config_test.py
+          subPath: _secret_config.py
           readOnly: true
       volumes:
       - name: gallery-config
