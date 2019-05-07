@@ -4,7 +4,8 @@ from flask import Flask, render_template
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
-app.config['SERVER_NAME'] = os.getenv("FLASK_SERVER_NAME", "127.0.0.1:5000")
+app.config['SERVER_NAME'] = os.getenv("FLASK_SERVER_NAME",
+                                      "127.0.0.1:5000" if app.debug else "0.0.0.0:5000")
 cache.init_app(app)
 
 
