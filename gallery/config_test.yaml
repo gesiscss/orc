@@ -34,9 +34,9 @@ spec:
     spec:
       containers:
       - name: gallery-test
-        image: gesiscss/binder-gallery:6eaf5fe
+        image: gesiscss/binder-gallery:54eddea
         command: ["gunicorn"]
-        args: ["--log-file=-", "--error-logfile=-", "--access-logfile=-", "-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
+        args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
