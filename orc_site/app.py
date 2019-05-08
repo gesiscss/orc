@@ -5,6 +5,14 @@ from flask import Flask, render_template
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
 if not app.debug:
+    # configure flask.app logger
+    import logging
+    sh = logging.StreamHandler()
+    formatter = logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
+    sh.setFormatter(formatter)
+    app.logger.addHandler(sh)
+    app.logger.setLevel(logging.INFO)
+    # reverse proxy fix
     from werkzeug.middleware.proxy_fix import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
 app.config['SERVER_NAME'] = os.getenv("FLASK_SERVER_NAME",
