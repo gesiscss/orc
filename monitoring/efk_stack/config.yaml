@@ -70,12 +70,12 @@ fluentd-elasticsearch:
     # Kibana-dashboards.json also uses it
     #logstash_prefix: 'orc-logstash'
   # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
-  extraVolume:
-    - name: custom_varlibdockercontainers
+  extraVolumes:
+    - name: customvarlibdockercontainers
       hostPath:
         path: /ssd/docker/containers
   extraVolumeMounts:
-    - name: custom_varlibdockercontainers
+    - name: customvarlibdockercontainers
       mountPath: /ssd/docker/containers
       readOnly: true
 
