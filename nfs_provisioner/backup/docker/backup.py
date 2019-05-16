@@ -131,20 +131,24 @@ spec:
 
     # backup PVs
     logger.info('## Back up nfs shares separately: user folders and also grafana, prometheus and efk-stack data')
-    pvs_backup_path = join(day_path, 'pvs')
-    mkdir_p(pvs_backup_path)
-    pvs_backup_path_rest = join(day_path, 'pvs_rest')
-    mkdir_p(pvs_backup_path_rest)
+    _pvs = listdir(environ['PV_FOLDER'])
     pvs = []
     # user PVs
-    for pv_dir_name in listdir(environ['PV_FOLDER']):
+    pvs_backup_path = join(day_path, 'pvs')
+    mkdir_p(pvs_backup_path)
+    for pv_dir_name in _pvs:
         # filter out nfs files and PVs of staging
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict:
-            pvs.append((pvs_backup_path, pv_dir_name))
+            pvs.append([pvs_backup_path, pv_dir_name])
+            logger.info(f"### {pv_dir_name} -> {pvs_backup_path}")
     # grafana, prometheus, efk-stack PVs
-    for pv_dir_name in listdir(environ['PV_FOLDER']):
+    pvs_backup_path_rest = join(day_path, 'pvs_rest')
+    mkdir_p(pvs_backup_path_rest)
+    for pv_dir_name in _pvs:
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict_rest:
-            pvs.append((pvs_backup_path_rest, pv_dir_name))
+            pvs.append([pvs_backup_path_rest, pv_dir_name])
+            logger.info(f"### {pv_dir_name} -> {pvs_backup_path_rest}")
+    logger.info(f"### # pvs is {len(pvs)}")
     max_workers = int(environ.get("MAX_WORKERS", 5))
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         jobs = {}
