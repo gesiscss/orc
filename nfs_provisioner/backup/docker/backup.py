@@ -19,10 +19,9 @@ def mkdir_p(dir_path):
 def archive(backup_path, pv_dir_name, pvc_name):
     # format -> xztar: xz’ed tar-file (if the lzma module is available)
     # compress and save under the name of pvc
-    filename = join(backup_path, pvc_name)
-    # filename = shutil.make_archive(join(backup_path, pvc_name),
-    #                                'xztar',
-    #                                join(environ['PV_FOLDER'], pv_dir_name))
+    filename = shutil.make_archive(join(backup_path, pvc_name),
+                                   'xztar',
+                                   join(environ['PV_FOLDER'], pv_dir_name))
     return filename
 
 
@@ -141,14 +140,12 @@ spec:
         # filter out nfs files and PVs of staging
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict:
             pvs.append([pvs_backup_path, pv_dir_name, pv_dict[pv_dir_name]])
-            logger.info(f"### {pv_dir_name} -> {pvs_backup_path}")
     # grafana, prometheus, efk-stack PVs
     pvs_backup_path_rest = join(day_path, 'pvs_rest')
     mkdir_p(pvs_backup_path_rest)
     for pv_dir_name in _pvs:
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict_rest:
             pvs.append([pvs_backup_path_rest, pv_dir_name, pv_dict_rest[pv_dir_name]])
-            logger.info(f"### {pv_dir_name} -> {pvs_backup_path_rest}")
     logger.info(f"### # pvs is {len(pvs)}")
     max_workers = int(environ.get("MAX_WORKERS", 5))
     try:
