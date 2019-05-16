@@ -3,8 +3,8 @@ kind: CronJob
 metadata:
   name: nfs-backup
 spec:
-  # At 02:00 in UTC => at 04:00.
-  schedule: "0 2 * * *"
+  # At 01:00 in UTC
+  schedule: "0 1 * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 7
@@ -21,17 +21,17 @@ spec:
             production: worker
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:6275fb8b
+            image: gesiscss/nfs-backup-orc:2809db3
             env:
               - name: SSHPASS
                 valueFrom:
                   secretKeyRef:
                     name: worker-node-pass
                     key: password
-              - name: BACKUP_FOLDER
-                value: "/backup"
               - name: PV_FOLDER
                 value: "/export"
+              - name: BACKUP_FOLDER
+                value: "/backup"
             volumeMounts:
               - name: export-volume
                 mountPath: /export
