@@ -5,8 +5,8 @@ service:
   nodePort: 30081
 
 # deployment
-nodeSelector:
-  production: worker
+#nodeSelector:
+#  production: worker
 
 resources:
   requests:
@@ -136,8 +136,8 @@ jupyterhub:
         c.JupyterHub.authenticate_prometheus = False
 
   proxy:
-    nodeSelector:
-      production: worker
+#    nodeSelector:
+#      production: worker
     https:
       enabled: false
     service:

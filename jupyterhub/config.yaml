@@ -127,8 +127,8 @@ hub:
       memory: 2Gi
 
 proxy:
-  nodeSelector:
-    production: worker
+#  nodeSelector:
+#    production: worker
   https:
     enabled: false
   service:

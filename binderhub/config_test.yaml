@@ -5,8 +5,8 @@ service:
   nodePort: 30181
 
 # deployment
-nodeSelector:
-  staging: worker
+#nodeSelector:
+#  staging: worker
 
 resources:
   requests:
@@ -113,7 +113,7 @@ jupyterhub:
   hub:
     baseUrl: /binder/jupyter/
     nodeSelector:
-      staging: worker
+      production: worker
     deploymentStrategy:
       type: RollingUpdate
     db:
@@ -133,8 +133,8 @@ jupyterhub:
         prometheus.io/scrape: 'false'
 
   proxy:
-    nodeSelector:
-      staging: worker
+#    nodeSelector:
+#      staging: worker
     https:
       enabled: false
     service:

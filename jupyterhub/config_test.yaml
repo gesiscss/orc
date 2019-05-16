@@ -7,7 +7,7 @@ hub:
       prometheus.io/scrape: 'false'
   baseUrl: /jupyter/
   nodeSelector:
-    staging: worker
+    production: worker
   image:
     name: gesiscss/k8s-hub-orc
     tag: "1edbd1d"
@@ -129,8 +129,8 @@ hub:
       memory: 1Gi
 
 proxy:
-  nodeSelector:
-    staging: worker
+#  nodeSelector:
+#    staging: worker
   https:
     enabled: false
   service:
