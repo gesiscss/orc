@@ -19,9 +19,10 @@ def mkdir_p(dir_path):
 def archive(backup_path, pv_dir_name, pvc_name):
     # format -> xztar: xz’ed tar-file (if the lzma module is available)
     # compress and save under the name of pvc
-    filename = shutil.make_archive(join(backup_path, pvc_name),
-                                   'xztar',
-                                   join(environ['PV_FOLDER'], pv_dir_name))
+    filename = join(backup_path, pvc_name)
+    # filename = shutil.make_archive(join(backup_path, pvc_name),
+    #                                'xztar',
+    #                                join(environ['PV_FOLDER'], pv_dir_name))
     return filename
 
 
