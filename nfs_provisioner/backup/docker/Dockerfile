@@ -1,11 +1,9 @@
-FROM ubuntu:18.04
+FROM python:3.7.3-stretch
 
 LABEL maintainer="notebooks@gesis.org"
 
 RUN apt-get update -y && \
     apt-get install -yq \
-    python3-pip \
-    python3-dev \
     vim \
     htop \
     sshpass \
@@ -15,16 +13,12 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # upgrade pip
-RUN pip3 install --upgrade pip
-
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /job/requirements.txt
-
-WORKDIR /job
-
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip
 
 COPY . /job
+WORKDIR /job
 
-# run the application
-CMD ["python3", "backup.py"]
+RUN pip install --no-cache-dir -r requirements.txt
+
+# run backup process
+CMD ["python", "backup.py"]
