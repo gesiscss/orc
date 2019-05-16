@@ -16,10 +16,10 @@ def mkdir_p(dir_path):
         mkdir(dir_path)
 
 
-def archive(pvs_backup_path, pv_dir_name, pvc_name):
+def archive(backup_path, pv_dir_name, pvc_name):
     # format -> xztar: xz’ed tar-file (if the lzma module is available)
     # compress and save under the name of pvc
-    filename = shutil.make_archive(join(pvs_backup_path, pvc_name),
+    filename = shutil.make_archive(join(backup_path, pvc_name),
                                    'xztar',
                                    join(environ['PV_FOLDER'], pv_dir_name))
     return filename
@@ -93,6 +93,7 @@ spec:
       storage: {storage}"""
     # we have to map old pv names to new pv names through pvc names (pvc names stay same)
     pv_dict = {}  # {pv_name: pvc_name}
+    pv_dict_rest = {}  # {pv_name: pvc_name}
     config.load_incluster_config()
     v1 = client.CoreV1Api()
     pvcs = v1.list_persistent_volume_claim_for_all_namespaces(watch=False)
@@ -115,12 +116,14 @@ spec:
         # grafana and prometheus PVs
         elif pvc.metadata.namespace == 'default' and \
             ('grafana' in pvc.metadata.name or 'prometheus' in pvc.metadata.name):
-            pv_dict[pvc.spec.volume_name] = pvc.metadata.name
+            pv_dict_rest[pvc.spec.volume_name] = pvc.metadata.name
         # efk-stack
-        elif pvc.metadata.namespace == 'efk-stack-ns':
-            pv_dict[pvc.spec.volume_name] = pvc.metadata.name
+        # elif pvc.metadata.namespace == 'efk-stack-ns':
+        #     pv_dict_rest[pvc.spec.volume_name] = pvc.metadata.name
     with open(f'{day_path}/pv_dict.json', 'w') as fp:
         json.dump(pv_dict, fp, indent=4)
+    with open(f'{day_path}/pv_dict_rest.json', 'w') as fp:
+        json.dump(pv_dict_rest, fp, indent=4)
     done_config_files = time()
     logger.info(f'## Done: Save config files of all production PVCs: '
                 f'{timedelta(seconds=done_config_files-done_db_time)}\n\n')
@@ -129,11 +132,18 @@ spec:
     logger.info('## Back up nfs shares separately: user folders and also grafana, prometheus and efk-stack data')
     pvs_backup_path = join(day_path, 'pvs')
     mkdir_p(pvs_backup_path)
+    pvs_backup_path_rest = join(day_path, 'pvs_rest')
+    mkdir_p(pvs_backup_path_rest)
     pvs = []
+    # user PVs
     for pv_dir_name in listdir(environ['PV_FOLDER']):
         # filter out nfs files and PVs of staging
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict:
-            pvs.append(pv_dir_name)
+            pvs.append((pvs_backup_path, pv_dir_name))
+    # grafana, prometheus, efk-stack PVs
+    for pv_dir_name in listdir(environ['PV_FOLDER']):
+        if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict_rest:
+            pvs.append((pvs_backup_path_rest, pv_dir_name))
     max_workers = int(environ.get("MAX_WORKERS", 5))
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         jobs = {}
@@ -143,8 +153,8 @@ spec:
         success = 0
         fail = 0
         while pvs_left:
-            for pv_dir_name in pvs_iter:
-                job = executor.submit(archive, pvs_backup_path, pv_dir_name, pv_dict[pv_dir_name])
+            for backup_path, pv_dir_name in pvs_iter:
+                job = executor.submit(archive, backup_path, pv_dir_name, pv_dict[pv_dir_name])
                 jobs[job] = pv_dir_name
                 if len(jobs) == max_workers:  # limit # jobs with max_workers
                     break
