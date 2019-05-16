@@ -52,9 +52,9 @@ Chart version [0.2.0-10ac4d8](https://github.com/jupyterhub/binderhub/tree/10ac4
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
-### [NFS provisioner](/nfs_provisioner)
+### [Storage](/storage)
 
-NFS provisioner (v2.2.1) is currently set as the default storage provider in k8s cluster.
+`NFS Server Provisioner` is the default storage provider in ORC cluster.
 
 ### [ORC Site](/orc_site)
 

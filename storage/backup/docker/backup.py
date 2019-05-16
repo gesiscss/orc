@@ -4,6 +4,7 @@ import json
 import shutil
 import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from syslog import syslog, LOG_ERR
 
 from kubernetes import client, config
 from datetime import datetime, timedelta
@@ -38,8 +39,9 @@ def backup():
     mkdir(day_path)
 
     # setup logging
-    logger = logging.getLogger()  # root logger
-    file_handler = logging.FileHandler(join(day_path, 'backup.log'))
+    logger = logging.getLogger("backup")
+    log_file_path = join(day_path, 'backup.log')
+    file_handler = logging.FileHandler(log_file_path)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
     # file_handler.setLevel(logging.INFO)
@@ -54,7 +56,9 @@ def backup():
     cp = run(command, shell=True, stdout=PIPE, stderr=PIPE)
     logger.info(f"#### command: {cp.args} -> {cp.returncode} - stdout: {cp.stdout}")
     if cp.stderr:
-        logger.error(f"##### error for command {cp.args}: {cp.stderr}")
+        logger.error(f"##### Backup error: for command {cp.args}: {cp.stderr}")
+        syslog(LOG_ERR, f"Backup error: for command {cp.args}: {cp.stderr}. "
+                        f"Check {log_file_path} for more information.")
     for db in databases:
         dump_path = join(day_path, f'{db}.sql.gz')
         # take password from SSHPASS env variable
@@ -64,7 +68,9 @@ def backup():
         cp = run(command, shell=True, stdout=PIPE, stderr=PIPE)
         logger.info(f"#### command for {db}: {cp.args} -> {cp.returncode} - stdout: {cp.stdout}")
         if cp.stderr:
-            logger.error(f"##### error for command {cp.args}: {cp.stderr}")
+            logger.error(f"##### Backup error: for command {cp.args}: {cp.stderr}")
+            syslog(LOG_ERR, f"Backup error: for command {cp.args}: {cp.stderr}. "
+                            f"Check {log_file_path} for more information.")
     done_db_time = time()
     logger.info(f'## Done: dumping databases: {timedelta(seconds=done_db_time-start_time)}\n\n')
 
@@ -103,15 +109,14 @@ spec:
             pv_dict[pvc.spec.volume_name] = pvc.metadata.name
             d = {'username': pvc.metadata.annotations['hub.jupyter.org/username'],
                  'app': pvc.metadata.labels['app'],
-                 # TODO get() -> [] after first backup + 10Gi -> pvc.spec.resources.requests['storage']
-                 'chart': pvc.metadata.labels.get('chart', 'jupyterhub-0.8.2'),
-                 'component': pvc.metadata.labels.get('component', 'singleuser-storage'),
+                 'chart': pvc.metadata.labels['chart'],
+                 'component': pvc.metadata.labels['component'],
                  'heritage': pvc.metadata.labels['heritage'],
-                 'release': pvc.metadata.labels.get('release', 'jhub'),
+                 'release': pvc.metadata.labels['release'],
                  'name': pvc.metadata.name,
                  'namespace': pvc.metadata.namespace,
                  'access_mode': pvc.spec.access_modes[0],
-                 'storage': "25Gi"}
+                 'storage': pvc.spec.resources.requests['storage']}
             with open(join(pvcs_backup_path, f'{pvc.metadata.name}.yaml'), 'w') as f:
                 f.write(pvc_template.format(**d))
         # grafana and prometheus PVs
@@ -178,9 +183,11 @@ spec:
                     del jobs[job]
                     break  # to add a new job, if there is any
     except Exception:
-        logger.exception('Back up nfs shares error')
+        logger.exception('Backup error: nfs shares')
+        syslog(LOG_ERR, f"Backup error: nfs shares. Check {log_file_path} for more information.")
     else:
-        logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): {timedelta(seconds=time()-done_config_files)}\n\n')
+        logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): '
+                    f'{timedelta(seconds=time()-done_config_files)}\n\n')
 
         # Delete backup folder of last month
         if day == '16':
@@ -196,7 +203,8 @@ spec:
                 shutil.rmtree(previous_month_path, ignore_errors=True)
             logger.info('## Done: delete backup data of last month')
 
-    logger.info(f'Backup duration: {timedelta(seconds=time()-start_time)}')
+    logger.info(f'Backup was successful: duration: {timedelta(seconds=time()-start_time)}')
+    syslog(f"Backup was successful: duration: {timedelta(seconds=time()-start_time)}")
 
 
 if __name__ == '__main__':

@@ -57,10 +57,10 @@ build_job:
           docker push gesiscss/orc-site:$CI_COMMIT_SHA_SHORT
         fi;
       fi;
-      if git diff HEAD~ --name-only | egrep 'nfs_provisioner/backup/docker/'; then
+      if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT nfs_provisioner/backup/docker/.
+        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
         docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT
       fi;
   only:
