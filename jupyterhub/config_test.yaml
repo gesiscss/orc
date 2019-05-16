@@ -160,7 +160,7 @@ singleuser:
   nodeSelector:
     user: workers
   storage:
-    capacity: 10Gi
+    capacity: 25Gi
   image:
     name: gesiscss/singleuser-orc
     tag: "r2d-91fe4c6"

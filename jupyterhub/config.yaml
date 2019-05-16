@@ -159,7 +159,7 @@ singleuser:
     user: workers
   storage:
     # has no effect when using nfs: this is a min limit not a max
-    capacity: 10Gi
+    capacity: 25Gi
   image:
     name: gesiscss/singleuser-orc
     tag: "r2d-91fe4c6"
