@@ -151,35 +151,38 @@ spec:
             logger.info(f"### {pv_dir_name} -> {pvs_backup_path_rest}")
     logger.info(f"### # pvs is {len(pvs)}")
     max_workers = int(environ.get("MAX_WORKERS", 5))
-    with ProcessPoolExecutor(max_workers=max_workers) as executor:
-        jobs = {}
-        pvs_left = len(pvs)
-        pvs_iter = iter(pvs)
+    try:
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            jobs = {}
+            pvs_left = len(pvs)
+            pvs_iter = iter(pvs)
 
-        success = 0
-        fail = 0
-        while pvs_left:
-            for backup_path, pv_dir_name in pvs_iter:
-                logger.info(f"### job started for {pv_dict[pv_dir_name]} - {pv_dir_name} - {backup_path}")
-                job = executor.submit(archive, backup_path, pv_dir_name, pv_dict[pv_dir_name])
-                jobs[job] = pv_dir_name
-                if len(jobs) == max_workers:  # limit # jobs with max_workers
-                    break
+            success = 0
+            fail = 0
+            while pvs_left:
+                for backup_path, pv_dir_name in pvs_iter:
+                    logger.info(f"### job started for {pv_dict[pv_dir_name]} - {pv_dir_name} - {backup_path} - {pvs_left}")
+                    job = executor.submit(archive, backup_path, pv_dir_name, pv_dict[pv_dir_name])
+                    jobs[job] = pv_dir_name
+                    if len(jobs) == max_workers:  # limit # jobs with max_workers
+                        break
 
-            for job in as_completed(jobs):
-                pvs_left -= 1
-                pv_dir_name = jobs[job]
-                try:
-                    filename = job.result()
-                except Exception:
-                    fail += 1
-                    logger.exception(pv_dir_name)
-                else:
-                    success += 1
-                    logger.info(filename)
+                for job in as_completed(jobs):
+                    pvs_left -= 1
+                    pv_dir_name = jobs[job]
+                    try:
+                        filename = job.result()
+                    except Exception:
+                        fail += 1
+                        logger.exception(pv_dir_name)
+                    else:
+                        success += 1
+                        logger.info(filename)
 
-                del jobs[job]
-                break  # to add a new job, if there is any
+                    del jobs[job]
+                    break  # to add a new job, if there is any
+    except Exception:
+        logger.exception('test')
     logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): {timedelta(seconds=time()-done_config_files)}\n\n')
 
     # Delete backup folder of last month
