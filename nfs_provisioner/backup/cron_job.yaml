@@ -21,7 +21,7 @@ spec:
             production: worker
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:2809db3
+            image: gesiscss/nfs-backup-orc:725eb5a
             env:
               - name: SSHPASS
                 valueFrom:
@@ -33,7 +33,7 @@ spec:
               - name: BACKUP_FOLDER
                 value: "/backup"
               - name: MAX_WORKERS
-                value: "7"
+                value: "5"
             volumeMounts:
               - name: export-volume
                 mountPath: /export
