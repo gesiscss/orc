@@ -102,15 +102,14 @@ spec:
             pv_dict[pvc.spec.volume_name] = pvc.metadata.name
             d = {'username': pvc.metadata.annotations['hub.jupyter.org/username'],
                  'app': pvc.metadata.labels['app'],
-                 # TODO get() -> [] after first backup + 10Gi -> pvc.spec.resources.requests['storage']
-                 'chart': pvc.metadata.labels.get('chart', 'jupyterhub-0.8.2'),
-                 'component': pvc.metadata.labels.get('component', 'singleuser-storage'),
+                 'chart': pvc.metadata.labels['chart'],
+                 'component': pvc.metadata.labels['component'],
                  'heritage': pvc.metadata.labels['heritage'],
-                 'release': pvc.metadata.labels.get('release', 'jhub'),
+                 'release': pvc.metadata.labels['release'],
                  'name': pvc.metadata.name,
                  'namespace': pvc.metadata.namespace,
                  'access_mode': pvc.spec.access_modes[0],
-                 'storage': "10Gi"}
+                 'storage': pvc.spec.resources.requests['storage']}
             with open(join(pvcs_backup_path, f'{pvc.metadata.name}.yaml'), 'w') as f:
                 f.write(pvc_template.format(**d))
         # grafana and prometheus PVs
