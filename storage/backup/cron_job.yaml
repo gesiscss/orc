@@ -21,7 +21,7 @@ spec:
             production: worker
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:3c7d52f
+            image: gesiscss/nfs-backup-orc:babfcee
             env:
               - name: SSHPASS
                 valueFrom:
@@ -42,7 +42,7 @@ spec:
           volumes:
             - name: export-volume
               hostPath:
-                path: /srv/nfs-provisioner
+                path: /xfs/nfs
             - name: backup-volume
               hostPath:
-                path: /srv/nfs-backup
+                path: /xfs/backup/nfs
