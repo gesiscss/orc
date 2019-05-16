@@ -162,6 +162,7 @@ spec:
             for backup_path, pv_dir_name in pvs_iter:
                 job = executor.submit(archive, backup_path, pv_dir_name, pv_dict[pv_dir_name])
                 jobs[job] = pv_dir_name
+                logger.info(f"### job started for {pv_dict[pv_dir_name]} - {backup_path}")
                 if len(jobs) == max_workers:  # limit # jobs with max_workers
                     break
 
