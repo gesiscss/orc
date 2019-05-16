@@ -140,14 +140,14 @@ spec:
     for pv_dir_name in _pvs:
         # filter out nfs files and PVs of staging
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict:
-            pvs.append([pvs_backup_path, pv_dir_name])
+            pvs.append([pvs_backup_path, pv_dir_name, pv_dict[pv_dir_name]])
             logger.info(f"### {pv_dir_name} -> {pvs_backup_path}")
     # grafana, prometheus, efk-stack PVs
     pvs_backup_path_rest = join(day_path, 'pvs_rest')
     mkdir_p(pvs_backup_path_rest)
     for pv_dir_name in _pvs:
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict_rest:
-            pvs.append([pvs_backup_path_rest, pv_dir_name])
+            pvs.append([pvs_backup_path_rest, pv_dir_name, pv_dict_rest[pv_dir_name]])
             logger.info(f"### {pv_dir_name} -> {pvs_backup_path_rest}")
     logger.info(f"### # pvs is {len(pvs)}")
     max_workers = int(environ.get("MAX_WORKERS", 5))
@@ -160,9 +160,8 @@ spec:
             success = 0
             fail = 0
             while pvs_left:
-                for backup_path, pv_dir_name in pvs_iter:
-                    logger.info(f"### job started for {pv_dict[pv_dir_name]} - {pv_dir_name} - {backup_path} - {pvs_left}")
-                    job = executor.submit(archive, backup_path, pv_dir_name, pv_dict[pv_dir_name])
+                for backup_path, pv_dir_name, pvc_name in pvs_iter:
+                    job = executor.submit(archive, backup_path, pv_dir_name, pvc_name)
                     jobs[job] = pv_dir_name
                     if len(jobs) == max_workers:  # limit # jobs with max_workers
                         break
@@ -182,22 +181,23 @@ spec:
                     del jobs[job]
                     break  # to add a new job, if there is any
     except Exception:
-        logger.exception('test')
-    logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): {timedelta(seconds=time()-done_config_files)}\n\n')
+        logger.exception('Back up nfs shares error')
+    else:
+        logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): {timedelta(seconds=time()-done_config_files)}\n\n')
 
-    # Delete backup folder of last month
-    if day == '16':
-        logger.info('## delete backup data of last month')
-        if month == '01':
-            previous_year_path = join(environ['BACKUP_FOLDER'], str(int(year) - 1))
-            previous_month_path = join(previous_year_path, '12')
-            # previous_month_path = join(previous_year_path, '{}'.format(str(10or11 + int(month))))
-        else:
-            previous_month_path = join(year_path, '{:02}'.format(int(month) - 1))
-        if exists(previous_month_path):
-            logger.info(f'### deleting {previous_month_path}')
-            shutil.rmtree(previous_month_path, ignore_errors=True)
-        logger.info('## Done: delete backup data of last month')
+        # Delete backup folder of last month
+        if day == '16':
+            logger.info('## delete backup data of last month')
+            if month == '01':
+                previous_year_path = join(environ['BACKUP_FOLDER'], str(int(year) - 1))
+                previous_month_path = join(previous_year_path, '12')
+                # previous_month_path = join(previous_year_path, '{}'.format(str(10or11 + int(month))))
+            else:
+                previous_month_path = join(year_path, '{:02}'.format(int(month) - 1))
+            if exists(previous_month_path):
+                logger.info(f'### deleting {previous_month_path}')
+                shutil.rmtree(previous_month_path, ignore_errors=True)
+            logger.info('## Done: delete backup data of last month')
 
     logger.info(f'Backup duration: {timedelta(seconds=time()-start_time)}')
 
