@@ -47,6 +47,8 @@ spec:
           value:  "notebooks.gesis.org"
         - name: PRODUCTION_SERVER
           value: "true"
+        - name: JHUB_UNDER_MAINTENANCE
+          value: "false"
         resources:
           requests:
             cpu: "0.25"
