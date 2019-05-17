@@ -4,7 +4,6 @@ import json
 import shutil
 import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from syslog import syslog, LOG_ERR
 
 from kubernetes import client, config
 from datetime import datetime, timedelta
@@ -40,12 +39,14 @@ def backup():
 
     # setup logging
     logger = logging.getLogger("backup")
-    log_file_path = join(day_path, 'backup.log')
-    file_handler = logging.FileHandler(log_file_path)
+    file_handler = logging.FileHandler(join(day_path, 'backup.log'))
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
     # file_handler.setLevel(logging.INFO)
     logger.addHandler(file_handler)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
     logger.setLevel(logging.INFO)
 
     # dump all production databases
@@ -57,8 +58,6 @@ def backup():
     logger.info(f"#### command: {cp.args} -> {cp.returncode} - stdout: {cp.stdout}")
     if cp.stderr:
         logger.error(f"##### Backup error: for command {cp.args}: {cp.stderr}")
-        syslog(LOG_ERR, f"Backup error: for command {cp.args}: {cp.stderr}. "
-                        f"Check {log_file_path} for more information.")
     for db in databases:
         dump_path = join(day_path, f'{db}.sql.gz')
         # take password from SSHPASS env variable
@@ -69,8 +68,6 @@ def backup():
         logger.info(f"#### command for {db}: {cp.args} -> {cp.returncode} - stdout: {cp.stdout}")
         if cp.stderr:
             logger.error(f"##### Backup error: for command {cp.args}: {cp.stderr}")
-            syslog(LOG_ERR, f"Backup error: for command {cp.args}: {cp.stderr}. "
-                            f"Check {log_file_path} for more information.")
     done_db_time = time()
     logger.info(f'## Done: dumping databases: {timedelta(seconds=done_db_time-start_time)}\n\n')
 
@@ -184,7 +181,6 @@ spec:
                     break  # to add a new job, if there is any
     except Exception:
         logger.exception('Backup error: nfs shares')
-        syslog(LOG_ERR, f"Backup error: nfs shares. Check {log_file_path} for more information.")
     else:
         logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): '
                     f'{timedelta(seconds=time()-done_config_files)}\n\n')
@@ -204,7 +200,6 @@ spec:
             logger.info('## Done: delete backup data of last month')
 
     logger.info(f'Backup was successful: duration: {timedelta(seconds=time()-start_time)}')
-    syslog(f"Backup was successful: duration: {timedelta(seconds=time()-start_time)}")
 
 
 if __name__ == '__main__':
