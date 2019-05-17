@@ -48,7 +48,7 @@ spec:
         - name: PRODUCTION_SERVER
           value: "true"
         - name: JHUB_UNDER_MAINTENANCE
-          value: "false"
+          value: "true"
         resources:
           requests:
             cpu: "0.25"
