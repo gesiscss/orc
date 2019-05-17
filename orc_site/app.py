@@ -1,6 +1,6 @@
 import os
 from flask_caching import Cache
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
@@ -52,11 +52,24 @@ def get_default_template_context():
 @app.errorhandler(404)
 def not_found(error):
     context = get_default_template_context()
-    context.update({'status_code': error.code,
-                    'status_message': error.name,
-                    'message': error.description,
-                    'active': None})
-    return render_template('error.html', **context), 404
+    if os.getenv("JHUB_UNDER_MAINTENANCE", "false") == "true" and \
+       request.path in ['/jupyter/', '/jupyter']:
+        status_code = None
+        status_message = "Under maintenance"
+        message = "This service will be back soon."
+        active = "jupyterhub"
+        response_code = 503
+    else:
+        status_code = error.code
+        status_message = error.name
+        message = error.description
+        active = None
+        response_code = 404
+    context.update({'status_code': status_code,
+                    'status_message': status_message,
+                    'message': message,
+                    'active': active})
+    return render_template('error.html', **context), response_code
 
 
 @app.route('/')

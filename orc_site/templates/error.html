@@ -6,7 +6,7 @@
 {% block main %}
 <div class="text-center jumbotron" style="background-color: #ffffff;">
   <h1>
-    {{status_code}}: {{status_message}}
+    {% if status_code %}{{status_code}}: {% endif %}{{status_message}}
   </h1>
 
   <p class="lead">
