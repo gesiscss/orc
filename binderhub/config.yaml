@@ -53,7 +53,7 @@ config:
 
     use_registry: true
     image_prefix: gesiscss/orc-binder-
-    build_image: jupyter/repo2docker:25ebca04
+    build_image: jupyter/repo2docker:80b979f8
     per_repo_quota: 100
     build_node_selector:
       build: workers
@@ -79,6 +79,9 @@ config:
       # e.g. '^org/repo.*'
       - ^ines/spacy-binder.*
       - ^soft4voip/rak.*
+      - ^hmharshit/cn-ait.*
+      - ^shishirchoudharygic/mltraining.*
+      - ^hmharshit/mltraining.*
 
 extraConfig:
   templates: |
