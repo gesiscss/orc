@@ -10,6 +10,7 @@ function add_binder_buttons() {
     var copy_button = '<button id="copy-{name}-link" ' +
             '                 title="Copy {name} link to clipboard" ' +
             '                 class="btn btn-default btn-sm navbar-btn" ' +
+            '                 style="margin-left: 5px;" ' +
             '                 data-url="{url}" ' +
             '                 onclick="copy_link_into_clipboard(this);">' +
             '         Copy {name} link</button>';
@@ -17,6 +18,7 @@ function add_binder_buttons() {
     var link_button = '<a id="copy-{name}-link" ' +
         '                 href="{url}" ' +
         '                 class="btn btn-default btn-sm navbar-btn" ' +
+        '                 style="margin-left: 5px;" ' +
         '                 target="_blank">' +
         '              Go to {name}</a>';
 
