@@ -1,176 +1,95 @@
-service:
-  annotations:
-    prometheus.io/scrape: 'false'
-  type: NodePort
-  nodePort: 30181
+binderhub:
+  resources:
+    requests:
+      cpu: "0.25"
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 1Gi
 
-# deployment
-#nodeSelector:
-#  staging: worker
+  # clone custom binder templates into a volume
+  initContainers:
+    - name: git-clone-templates
+      image: alpine/git
+      args:
+        - clone
+        - --single-branch
+        - --branch=staging
+        - --depth=1
+        - --
+        - https://github.com/gesiscss/orc.git
+        - /etc/binderhub/custom
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+        - name: custom-templates
+          mountPath: /etc/binderhub/custom
+  extraVolumes:
+    - name: custom-templates
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: custom-templates
+      mountPath: /etc/binderhub/custom
 
-resources:
-  requests:
-    cpu: "0.25"
-    memory: 1Gi
-  limits:
-    cpu: "1"
-    memory: 1Gi
+  config:
+    BinderHub:
+      debug: true
+      hub_url: https://notebooks-test.gesis.org/binder/jupyter/
+      image_prefix: gesiscss/orc-binder-staging-
+      appendix: |
+        USER root
+        ENV BINDER_URL={binder_url}
+        ENV REPO_URL={repo_url}
+        RUN cd /tmp \
+         && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
+         && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
+         && ./appendix/run-appendix \
+         && rm -rf orc.tar.gz appendix
+        USER $NB_USER
 
-# clone custom binder templates into a volume
-initContainers:
-  - name: git-clone-templates
-    image: alpine/git
-    args:
-      - clone
-      - --single-branch
-      - --branch=staging
-      - --depth=1
-      - --
-      - https://github.com/gesiscss/orc.git
-      - /etc/binderhub/custom
-    securityContext:
-      runAsUser: 0
-    volumeMounts:
-      - name: custom-templates
-        mountPath: /etc/binderhub/custom
-extraVolumes:
-  - name: custom-templates
-    emptyDir: {}
-extraVolumeMounts:
-  - name: custom-templates
-    mountPath: /etc/binderhub/custom
+  extraConfig:
+    020-templates: |
+      staging = True
+      production = False
 
-dind:
-  enabled: false
+  service:
+    annotations:
+      prometheus.io/scrape: 'false'
+    nodePort: 30181
 
-imageCleaner:
-  enabled: false
+  jupyterhub:
+    debug:
+      enabled: true
 
-config:
-  BinderHub:
-    debug: true
-    base_url: /binder/
-    hub_url: https://notebooks-test.gesis.org/binder/jupyter/
-
-    use_registry: true
-    image_prefix: gesiscss/orc-binder-staging-
-    build_image: jupyter/repo2docker:80fbc639
-    per_repo_quota: 100
-    build_node_selector:
-      build: workers
-    appendix: |
-      USER root
-      ENV BINDER_URL={binder_url}
-      ENV REPO_URL={repo_url}
-      RUN cd /tmp \
-       && wget -q https://github.com/gesiscss/orc/archive/staging.tar.gz -O orc.tar.gz \
-       && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
-       && ./appendix/run-appendix \
-       && rm -rf orc.tar.gz appendix
-      USER $NB_USER
-
-    template_path: /etc/binderhub/custom/binderhub/templates
-    #extra_static_path: /etc/binderhub/custom/binderhub/static
-    #extra_static_url_prefix: /extra_static/
-
-extraConfig:
-  templates: |
-    staging = True
-    production = False
-    site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
-    context = {
-        'staging': staging,
-        'production': production,
-        'version': 'beta',
-        # 'shibboleth_entityID': f'{site_url}/shibboleth',
-        'home_url': '/',
-        'jhub_url': '/jupyter/',
-        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                           f'target={site_url}/hub/login&'
-                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-        'bhub_url': '/binder/',
-        'about_url': '/about/',
-        'tou_url': '/terms_of_use/',
-        'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
-        'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
-        'gesis_url': 'https://www.gesis.org/en/home/',
-        'gallery_url': '/gallery/'
-        # 'help_url': 'https://www.gesis.org/en/help/',
-    }
-
-    context.update({'active': 'binder'})
-    c.BinderHub.template_variables = context
-
-cors: &cors
-  allowOrigin: "*"
-
-jupyterhub:
-  custom:
-    cors: *cors
-  debug:
-    enabled: true
-
-  hub:
-    baseUrl: /binder/jupyter/
-    nodeSelector:
-      production: worker
-    deploymentStrategy:
-      type: RollingUpdate
-    db:
-      type: postgres
-    resources:
-      requests:
-        cpu: "0.25"
-        memory: 512Mi
-      limits:
-        cpu: "1"
-        memory: 1Gi
-    extraConfig:
-      neverRestart: |
-        c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-    service:
-      annotations:
-        prometheus.io/scrape: 'false'
-
-  proxy:
-#    nodeSelector:
-#      staging: worker
-    https:
-      enabled: false
-    service:
-      type: NodePort
-      nodePorts:
-        http: 30182
-    chp:
+    hub:
       resources:
         requests:
-          cpu: "0.1"
-          memory: 256Mi
-        limits:
-          cpu: "0.5"
+          cpu: "0.25"
           memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
+      service:
+        annotations:
+          prometheus.io/scrape: 'false'
 
-  singleuser:
-    nodeSelector:
-      user: workers
-    cpu:
-      guarantee: 0.1
-      limit: 0.5
-    memory:
-      guarantee: 512M
-      limit: 512M
-    extraEnv:
-      # settings for kernel culling
-      # to be used in binderhub/appendix/extra_notebook_config.py
-      CULL_CONNECTED: '1'
-      CULL_TIMEOUT: '600'
-      CULL_KERNEL_TIMEOUT: '600'
-      CULL_INTERVAL: '60'
+    proxy:
+      service:
+        nodePorts:
+          http: 30182
+      chp:
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 256Mi
+          limits:
+            cpu: "0.5"
+            memory: 512Mi
 
-  cull:
-    # cull every 11 minutes so it is out of phase
-    every: 660
-    timeout: 600
-    # maxAge is 6 hours: 6 * 3600 = 21600
-    maxAge: 21600
-
+    singleuser:
+      cpu:
+        guarantee: 0.1
+        limit: 0.5
+      memory:
+        guarantee: 512M
+        limit: 512M

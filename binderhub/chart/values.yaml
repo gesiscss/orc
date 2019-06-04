@@ -1,0 +1,177 @@
+etcJupyter:
+  jupyter_notebook_config.json:
+    NotebookApp:
+      allow_origin: '*'
+      tornado_settings:
+        trust_xheaders: true
+      # shutdown the server after no activity
+      shutdown_no_activity_timeout: 1800
+
+    # if a user leaves a notebook with a running kernel,
+    # the effective idle timeout will typically be CULL_TIMEOUT + CULL_KERNEL_TIMEOUT
+    # as culling the kernel will register activity,
+    # resetting the no_activity timer for the server as a whole
+    MappingKernelManager:
+      # shutdown kernels after no activity
+      cull_idle_timeout: 600
+      # check for idle kernels this often
+      cull_interval: 60
+      # a kernel with open connections but no activity still counts as idle
+      # this is what allows us to shutdown servers
+      # when people leave a notebook open and wander off
+      cull_connected: true
+
+binderhub:
+  config:
+    GitHubRepoProvider:
+      # Add banned repositories to the list below
+      # They should be strings that will match "^<org-name>/<repo-name>.*"
+      banned_specs:
+        # e.g. '^org/repo.*'
+        - ^ines/spacy-binder.*
+        - ^soft4voip/rak.*
+        - ^hmharshit/cn-ait.*
+        - ^shishirchoudharygic/mltraining.*
+        - ^hmharshit/mltraining.*
+    BinderHub:
+      base_url: /binder/
+      use_registry: true
+      build_image: jupyter/repo2docker:80fbc639
+      build_node_selector:
+        build: workers
+      per_repo_quota: 100
+
+      template_path: /etc/binderhub/custom/binderhub/templates
+      #extra_static_path: /etc/binderhub/custom/binderhub/static
+      #extra_static_url_prefix: /extra_static/
+
+  extraConfig:
+    01-eventlog: |
+      from datetime import datetime
+      import jsonschema
+      import requests
+      from tornado.log import app_log
+      from time import sleep
+      def emit(self, schema_name, version, event):
+          """
+          Emit event with given schema / version in a capsule.
+          """
+          # if not self.handlers_maker:
+          #     # If we don't have a handler setup, ignore everything
+          #     return
+
+          if (schema_name, version) not in self.schemas:
+              raise ValueError(f'Schema {schema_name} version {version} not registered')
+          schema = self.schemas[(schema_name, version)]
+          jsonschema.validate(event, schema)
+
+          capsule = {
+              'timestamp': datetime.utcnow().isoformat() + 'Z',
+              'schema': schema_name,
+              'version': version
+          }
+          capsule.update(event)
+          # self.log.info(capsule)
+
+          # token of binder user in gallery
+          headers = {'Authorization': f'Bearer {self.gesis_api_token}'}
+          url = f"{self.site_url}/gallery/api/v1.0/launches"
+
+          # emit function is called after .launch, so we can wait before retry
+          # this delay shouldn't effect the user
+          retries = 3
+          delay = 4
+          try:
+              for i in range(retries):
+                  r = requests.post(url, data=capsule, headers=headers)
+                  if r.status_code != 201 and i < 2:
+                      sleep(delay)
+                      delay *= 2
+                  else:
+                      break
+              if r.status_code != 201:
+                  app_log.error(f"Error: Event stream failed after {retries} retries for {capsule} with status code {r.status_code}")
+          except Exception as e:
+              app_log.error(f"Error: Event stream failed for {capsule}: {e}")
+
+      from binderhub.events import EventLog
+      EventLog.emit = emit
+    021-templates: |
+      site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+      context = {
+          'staging': staging,
+          'production': production,
+          'version': 'beta',
+          # 'shibboleth_entityID': f'{site_url}/shibboleth',
+          'home_url': '/',
+          'jhub_url': '/jupyter/',
+          'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
+                             f'target={site_url}/hub/login&'
+                             f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
+          'bhub_url': '/binder/',
+          'about_url': '/about/',
+          'tou_url': '/terms_of_use/',
+          'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
+          'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
+          'gesis_url': 'https://www.gesis.org/en/home/',
+          'gallery_url': '/gallery/'
+          # 'help_url': 'https://www.gesis.org/en/help/',
+      }
+
+      context.update({'active': 'binder'})
+      c.BinderHub.template_variables = context
+
+  service:
+    type: NodePort
+
+  cors: &cors
+    allowOrigin: '*'
+
+  dind:
+    enabled: false
+
+  imageCleaner:
+    enabled: false
+
+  jupyterhub:
+    custom:
+      cors: *cors
+    cull:
+      # cull every 11 minutes so it is out of phase
+      # with the proxy check-routes interval of five minutes
+      every: 660
+      timeout: 1800
+      # maxAge is 6 hours: 6 * 3600 = 21600
+      maxAge: 21600
+    hub:
+      baseUrl: /binder/jupyter/
+      deploymentStrategy:
+        type: RollingUpdate
+      db:
+        type: postgres
+      extraConfig:
+        neverRestart: |
+          c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+        noAuthMetrics: |
+          c.JupyterHub.authenticate_prometheus = False
+    proxy:
+      https:
+        enabled: false
+      service:
+        type: NodePort
+    singleuser:
+      nodeSelector:
+        user: workers
+      storage:
+        extraVolumes:
+          - name: etc-jupyter
+            configMap:
+              name: user-etc-jupyter
+          - name: etc-jupyter-templates
+            configMap:
+              name: user-etc-jupyter-templates
+        extraVolumeMounts:
+          - name: etc-jupyter
+            mountPath: /etc/jupyter
+          - name: etc-jupyter-templates
+            mountPath: /etc/jupyter/templates

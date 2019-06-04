@@ -1,182 +1,93 @@
-service:
-  annotations:
-    prometheus.io/path: '/binder/metrics'
-  type: NodePort
-  nodePort: 30081
+binderhub:
+  resources:
+    requests:
+      cpu: "0.25"
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
 
-# deployment
-#nodeSelector:
-#  production: worker
+  # clone custom binder templates into a volume
+  initContainers:
+    - name: git-clone-templates
+      image: alpine/git
+      args:
+        - clone
+        - --single-branch
+        - --branch=master
+        - --depth=1
+        - --
+        - https://github.com/gesiscss/orc.git
+        - /etc/binderhub/custom
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+        - name: custom-templates
+          mountPath: /etc/binderhub/custom
+  extraVolumes:
+    - name: custom-templates
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: custom-templates
+      mountPath: /etc/binderhub/custom
 
-resources:
-  requests:
-    cpu: "0.25"
-    memory: 1Gi
-  limits:
-    cpu: "2"
-    memory: 2Gi
+  config:
+    BinderHub:
+      hub_url: https://notebooks.gesis.org/binder/jupyter/
+      image_prefix: gesiscss/orc-binder-
+      appendix: |
+        USER root
+        ENV BINDER_URL={binder_url}
+        ENV REPO_URL={repo_url}
+        RUN cd /tmp \
+         && wget -q https://github.com/gesiscss/orc/archive/master.tar.gz -O orc.tar.gz \
+         && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
+         && ./appendix/run-appendix \
+         && rm -rf orc.tar.gz appendix
+        USER $NB_USER
 
-# clone custom binder templates into a volume
-initContainers:
-  - name: git-clone-templates
-    image: alpine/git
-    args:
-      - clone
-      - --single-branch
-      - --branch=master
-      - --depth=1
-      - --
-      - https://github.com/gesiscss/orc.git
-      - /etc/binderhub/custom
-    securityContext:
-      runAsUser: 0
-    volumeMounts:
-      - name: custom-templates
-        mountPath: /etc/binderhub/custom
-extraVolumes:
-  - name: custom-templates
-    emptyDir: {}
-extraVolumeMounts:
-  - name: custom-templates
-    mountPath: /etc/binderhub/custom
+  extraConfig:
+    020-templates: |
+      staging = False
+      production = True
 
-dind:
-  enabled: false
+  service:
+    annotations:
+      prometheus.io/path: '/binder/metrics'
+    nodePort: 30081
 
-imageCleaner:
-  enabled: false
-
-config:
-  BinderHub:
-    base_url: /binder/
-    hub_url: https://notebooks.gesis.org/binder/jupyter/
-
-    use_registry: true
-    image_prefix: gesiscss/orc-binder-
-    build_image: jupyter/repo2docker:80fbc639
-    per_repo_quota: 100
-    build_node_selector:
-      build: workers
-    appendix: |
-      USER root
-      ENV BINDER_URL={binder_url}
-      ENV REPO_URL={repo_url}
-      RUN cd /tmp \
-       && wget -q https://github.com/gesiscss/orc/archive/master.tar.gz -O orc.tar.gz \
-       && tar --wildcards -xzf orc.tar.gz --strip 2 */binderhub/appendix\
-       && ./appendix/run-appendix \
-       && rm -rf orc.tar.gz appendix
-      USER $NB_USER
-
-    template_path: /etc/binderhub/custom/binderhub/templates
-    #extra_static_path: /etc/binderhub/custom/binderhub/static
-    #extra_static_url_prefix: /extra_static/
-
-  GitHubRepoProvider:
-    # Add banned repositories to the list below
-    # They should be strings that will match "^<org-name>/<repo-name>.*"
-    banned_specs:
-      # e.g. '^org/repo.*'
-      - ^ines/spacy-binder.*
-      - ^soft4voip/rak.*
-      - ^hmharshit/cn-ait.*
-      - ^shishirchoudharygic/mltraining.*
-      - ^hmharshit/mltraining.*
-
-extraConfig:
-  templates: |
-    staging = False
-    production = True
-    site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
-    context = {
-        'staging': staging,
-        'production': production,
-        'version': 'beta',
-        # 'shibboleth_entityID': f'{site_url}/shibboleth',
-        'home_url': '/',
-        'jhub_url': '/jupyter/',
-        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                           f'target={site_url}/hub/login&'
-                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-        'bhub_url': '/binder/',
-        'about_url': '/about/',
-        'tou_url': '/terms_of_use/',
-        'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
-        'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
-        'gesis_url': 'https://www.gesis.org/en/home/',
-        'gallery_url': '/gallery/'
-        # 'help_url': 'https://www.gesis.org/en/help/',
-    }
-
-    context.update({'active': 'binder'})
-    c.BinderHub.template_variables = context
-
-cors: &cors
-  allowOrigin: "*"
-
-jupyterhub:
-  custom:
-    cors: *cors
-  hub:
-    baseUrl: /binder/jupyter/
-    nodeSelector:
-      production: worker
-    deploymentStrategy:
-      type: RollingUpdate
-    db:
-      type: postgres
-    resources:
-      requests:
-        cpu: "0.25"
-        memory: 1Gi
-      limits:
-        cpu: "2"
-        memory: 2Gi
-    extraConfig:
-      neverRestart: |
-        c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-      noAuthMetrics: |
-        c.JupyterHub.authenticate_prometheus = False
-
-  proxy:
-#    nodeSelector:
-#      production: worker
-    https:
-      enabled: false
-    service:
-      type: NodePort
-      nodePorts:
-        http: 30082
-    chp:
+  jupyterhub:
+    hub:
       resources:
         requests:
-          cpu: "0.1"
-          memory: 256Mi
+          cpu: "0.25"
+          memory: 1Gi
         limits:
-          cpu: "0.5"
-          memory: 512Mi
+          cpu: "2"
+          memory: 2Gi
+       # below is already default of z2jh chart
+      #service:
+      #  annotations:
+      #    prometheus.io/scrape: 'true'
+      #    prometheus.io/path: '/binder/jupyter/hub/metrics'
 
-  singleuser:
-    nodeSelector:
-      user: workers
-    cpu:
-      guarantee: 0.1
-      limit: 2
-    memory:
-      guarantee: 1G
-      limit: 8G
-    extraEnv:
-      # settings for kernel culling
-      # to be used in binderhub/appendix/extra_notebook_config.py
-      CULL_CONNECTED: '1'
-      CULL_TIMEOUT: '900'
-      CULL_KERNEL_TIMEOUT: '900'
-      CULL_INTERVAL: '60'
+    proxy:
+      service:
+        nodePorts:
+          http: 30082
+      chp:
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 256Mi
+          limits:
+            cpu: "0.5"
+            memory: 512Mi
 
-  cull:
-    # cull every 16 minutes so it is out of phase
-    timeout: 900
-    every: 960
-    # maxAge is 6 hours: 6 * 3600 = 21600
-    maxAge: 21600
-
+    singleuser:
+      cpu:
+        guarantee: 0.1
+        limit: 2
+      memory:
+        guarantee: 1G
+        limit: 8G

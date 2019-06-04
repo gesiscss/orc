@@ -1,1 +1,0 @@
-This files are based on https://github.com/jupyterhub/binderhub/tree/master/examples/appendix.
