@@ -22,11 +22,16 @@ function add_binder_buttons() {
         '                 target="_blank">' +
         '              Go to {name}</a>';
 
-    // add buttons before quit button
-    var sw = $("#shutdown_widget");
+    // add buttons before quit button or at the end of header-container
+    var shutdown_widget = $("#shutdown_widget");
+    var s = shutdown_widget;
+    if (!shutdown_widget.length) {
+        s = $("<span id='binder-buttons'></span>");
+    }
+
     // session url
     if ($("#ipython_notebook").length && $("#ipython_notebook>a").length) {
-        sw.prepend(copy_button.replace(/{name}/g, 'session').replace('{url}', window.location.origin.concat($("#ipython_notebook>a").attr('href'))));
+        s.prepend(copy_button.replace(/{name}/g, 'session').replace('{url}', window.location.origin.concat($("#ipython_notebook>a").attr('href'))));
     }
     // binder url
     var copy_binder_link  = copy_button.replace(/{name}/g, 'binder').replace('{url}', '{binder_url}');
@@ -35,9 +40,14 @@ function add_binder_buttons() {
     //     var federation_url = "https://notebooks.gesis.org/binder";
     //     copy_binder_link.replace("https://notebooks.gesis.org/binder", federation_url);
     // }
-    sw.prepend(copy_binder_link);
+    s.prepend(copy_binder_link);
     // repo url
-    sw.prepend(link_button.replace(/{name}/g, 'repo').replace('{url}', '{repo_url}'));
+    s.prepend(link_button.replace(/{name}/g, 'repo').replace('{url}', '{repo_url}'));
+
+    if (!shutdown_widget.length) {
+        // add buttons at the end of header-container
+        $("#header-container").append(s);
+    }
 }
 
 add_binder_buttons();
