@@ -166,7 +166,7 @@ jupyterhub:
           mountPath: /etc/jupyter
     image:
       name: gesiscss/singleuser-orc
-      tag: "r2d-91fe4c6"
+      tag: "r2d-394ccfb"
 
   prePuller:
     hook:

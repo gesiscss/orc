@@ -36,7 +36,7 @@ binderhub:
     BinderHub:
       base_url: /binder/
       use_registry: true
-      build_image: jupyter/repo2docker:80fbc639
+      build_image: jupyter/repo2docker:f19e159d
       build_node_selector:
         build: workers
       per_repo_quota: 100
