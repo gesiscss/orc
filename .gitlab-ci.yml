@@ -95,10 +95,10 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'jupyterhub/config_test.yaml|jupyterhub/_secret_test.yaml|jupyterhub/chart/'; then
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config_test.yaml|jupyterhub/_secret_test.yaml|jupyterhub/yourserver/'; then
         mode+="-jhubtestns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'binderhub/config_test.yaml|binderhub/_secret_test.yaml|binderhub/chart/'; then
+      if git diff HEAD~ --name-only | egrep 'binderhub/config_test.yaml|binderhub/_secret_test.yaml|binderhub/gesisbinder/'; then
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
@@ -139,10 +139,10 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'gallery/config.yaml'; then
         mode+="-galleryapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'jupyterhub/config.yaml|jupyterhub/_secret.yaml|jupyterhub/chart/'; then
+      if git diff HEAD~ --name-only | egrep 'jupyterhub/config.yaml|jupyterhub/_secret.yaml|jupyterhub/yourserver/'; then
         mode+="-jhubns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'binderhub/config.yaml|binderhub/_secret.yaml|binderhub/chart/'; then
+      if git diff HEAD~ --name-only | egrep 'binderhub/config.yaml|binderhub/_secret.yaml|binderhub/gesisbinder/'; then
         mode+="-bhubns"
       fi;
       echo "####### mode: $mode"

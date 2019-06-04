@@ -66,16 +66,18 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=gallery{-test}-ns'.format(**format_dict))
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade --install --namespace=jhub{-test}-ns jhub{-test} ./jupyterhub/chart '
+            c.run('helm dependency update jupyterhub/yourserver')
+            c.run('helm upgrade --install --namespace=jhub{-test}-ns jhub{-test} jupyterhub/yourserver '
                   '--wait --force --debug --timeout=360 '
-                  '-f jupyterhub/_secret{_test}.yaml '
-                  '-f jupyterhub/config{_test}.yaml '.format(**format_dict))
+                  '-f jupyterhub/config{_test}.yaml '
+                  '-f jupyterhub/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm upgrade --install --namespace=bhub{-test}-ns bhub{-test} ./binderhub/chart '
+            c.run('helm dependency update binderhub/gesisbinder')
+            c.run('helm upgrade --install --namespace=bhub{-test}-ns bhub{-test} binderhub/gesisbinder '
                   '--wait --force --debug --timeout=360 '
-                  '-f binderhub/_secret{_test}.yaml '
-                  '-f binderhub/config{_test}.yaml '.format(**format_dict))
+                  '-f binderhub/config{_test}.yaml '
+                  '-f binderhub/_secret{_test}.yaml '.format(**format_dict))
 
 
 @task
