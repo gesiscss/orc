@@ -41,8 +41,6 @@ jupyterhub:
         else:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
       021-templates: |
-        staging = False
-        production = True
         c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
         site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
         context = {
