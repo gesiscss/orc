@@ -117,7 +117,6 @@ binderhub:
           'gallery_url': '/gallery/'
           # 'help_url': 'https://www.gesis.org/en/help/',
       }
-
       context.update({'active': 'binder'})
       c.BinderHub.template_variables = context
 
@@ -144,6 +143,8 @@ binderhub:
       # maxAge is 6 hours: 6 * 3600 = 21600
       maxAge: 21600
     hub:
+      nodeSelector:
+        production: worker
       baseUrl: /binder/jupyter/
       deploymentStrategy:
         type: RollingUpdate
