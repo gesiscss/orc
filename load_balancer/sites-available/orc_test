@@ -1,0 +1,107 @@
+# top-level http config for websocket headers
+# If Upgrade is defined, Connection = upgrade
+# If Upgrade is empty, Connection = close
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+upstream orc-site {
+  server 194.95.75.9:30178; # private node ip
+  server 194.95.75.10:30178;
+  server 194.95.75.12:30178;
+}
+
+upstream gallery {
+  server 194.95.75.9:30179;
+  server 194.95.75.10:30179;
+  server 194.95.75.12:30179;
+}
+
+upstream jhub {
+  server 194.95.75.9:30180;
+  server 194.95.75.10:30180;
+  server 194.95.75.12:30180;
+}
+
+upstream bhub {
+  server 194.95.75.9:30181;
+  server 194.95.75.10:30181;
+  server 194.95.75.12:30181;
+}
+
+upstream bjhub {
+  server 194.95.75.9:30182;
+  server 194.95.75.10:30182;
+  server 194.95.75.12:30182;
+}
+
+
+# HTTP server to redirect notebooks-test.gesis.org 80 traffic to SSL/HTTPS
+server {
+    listen 80;
+    server_name notebooks-test.gesis.org;
+    #access_log off;  # turn off access log
+    # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS server for notebooks-test.gesis.org
+server {
+    listen 443;
+    ssl on;
+    server_name notebooks-test.gesis.org;
+    ssl_certificate /etc/letsencrypt/live/notebooks-test.gesis.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/notebooks-test.gesis.org/privkey.pem;
+    include snippets/ssl.conf;
+
+    include snippets/optimization.conf;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    # Managing literal requests to orc site app
+    location / {
+        proxy_pass http://orc-site;
+        include snippets/flask.conf;
+    }
+    # binder gallery
+    location /gallery/ {
+        proxy_pass http://gallery;
+        include snippets/flask.conf;
+    }
+
+    # Managing literal requests to the BinderHub
+    location /binder/ {
+        proxy_buffering off;
+        proxy_pass http://bhub;
+        include snippets/headers.conf;
+    }
+    # For JupyterHub of binder
+    location /binder/jupyter/ {
+        proxy_pass http://bjhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
+    # overwrite binder logo with ORC logo
+    #location = /binder/static/favicon.ico {
+    #    alias /static/images/logo/logo.png;
+    #}
+
+    #location /jupyter/services/binder/ {
+    #    proxy_buffering off;
+    #    proxy_pass http://jhub;
+    #    include snippets/headers.conf;
+    #    include snippets/websocket_headers.conf;
+    #    }
+
+    # Managing literal requests to the JupyterHub front end
+    location /jupyter/ {
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
+
+    include snippets/ignore_fonts.conf;
+}
+
+
