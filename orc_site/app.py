@@ -29,14 +29,9 @@ def get_default_template_context():
         'production': production,
         'site_url': site_url,
         'version': 'beta',
-        # 'shibboleth_entityID': f'{site_url}/shibboleth',
-
         'home_url': '/',
-        'jhub_url': '/jupyter/',
-        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                           f'target={site_url}/hub/login&'
-                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-        'bhub_url': '/binder/',
+        'gesishub_url': '/jupyter/',
+        'gesisbinder_url': '/binder/',
         'about_url': '/about/',
         'tou_url': '/terms_of_use/',
         'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
@@ -93,13 +88,6 @@ def home():
     ]
     context.update({'active': 'home', 'binder_examples': binder_examples})
     return render_template('home.html', **context)
-
-
-@app.route('/login/')
-def login():
-    context = get_default_template_context()
-    context.update({'active': 'jupyterhub'})
-    return render_template('shibboleth_login.html', **context)
 
 
 @app.route('/about/')

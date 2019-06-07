@@ -17,8 +17,8 @@
                     <ul class="nav navbar-nav">
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
                         <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
-                        <li><a href="{{ jhub_url }}" {% if active == 'jupyterhub' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Your Server</a></li>
-                        <li><a href="{{ bhub_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
+                        <li><a href="{{ gesishub_url }}" {% if active == 'jupyterhub' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Your Server</a></li>
+                        <li><a href="{{ gesisbinder_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
                         <li><a href="{{ gallery_url }}" {% if active == 'gallery' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Gallery</a></li>
                     </ul>
                 </div>

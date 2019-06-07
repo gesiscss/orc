@@ -15,9 +15,3 @@ export FLASK_ENV=development
 
 flask run
 ```
-
-## Shibboleth embedded discovery service (EDS)
-
-Shibboleth EDS documentation: https://wiki.shibboleth.net/confluence/display/EDS10/1.+Overview
-
-This files are downloaded from: https://shibboleth.net/downloads/embedded-discovery-service/latest/
