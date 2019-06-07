@@ -74,8 +74,8 @@ binderhub:
           # self.log.info(capsule)
 
           # token of binder user in gallery
-          headers = {'Authorization': f'Bearer {self.gesis_api_token}'}
-          url = f"{self.site_url}/gallery/api/v1.0/launches"
+          headers = {'Authorization': f'Bearer {os.environ["GESIS_API_TOKEN"]}'}
+          api_url = os.getenv("GESIS_API_URL", "https://notebooks.gesis.org/gallery/api/v1.0/launches")
 
           # emit function is called after .launch, so we can wait before retry
           # this delay shouldn't effect the user
@@ -83,7 +83,7 @@ binderhub:
           delay = 4
           try:
               for i in range(retries):
-                  r = requests.post(url, data=capsule, headers=headers)
+                  r = requests.post(api_url, data=capsule, headers=headers)
                   if r.status_code != 201 and i < 2:
                       sleep(delay)
                       delay *= 2
