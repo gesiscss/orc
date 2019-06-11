@@ -1,0 +1,18 @@
+keycloak:
+  replicas: 1
+  ## The path keycloak will be served from. To serve keycloak from the root path, use two quotes (e.g. "").
+  basepath: "auth"
+
+  # NOTE: because postgres db is on that node
+  nodeSelector:
+    staging: worker
+
+  service:
+    type: NodePort
+    nodePort: 30171
+
+  persistence:
+    # Disable deployment of the PostgreSQL chart
+    deployPostgres: false
+    # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
+    dbVendor: postgres
