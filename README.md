@@ -36,7 +36,7 @@ to be used in ORC instance.
 
 ### [GESIS Hub](/gesishub)
 
-JupyterHub 0.9.6 runs under https://notebooks.gesis.org/jupyter/. 
+JupyterHub 0.9.6 runs under https://notebooks.gesis.org/hub/. 
 
 Chart version [0.8.2](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.8.2).
 

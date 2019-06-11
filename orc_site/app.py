@@ -30,7 +30,7 @@ def get_default_template_context():
         'site_url': site_url,
         'version': 'beta',
         'home_url': '/',
-        'gesishub_url': '/jupyter/',
+        'gesishub_url': '/hub/',
         'gesisbinder_url': '/binder/',
         'about_url': '/about/',
         'tou_url': '/terms_of_use/',
@@ -48,11 +48,13 @@ def get_default_template_context():
 def not_found(error):
     context = get_default_template_context()
     if os.getenv("JHUB_UNDER_MAINTENANCE", "false") == "true" and \
-       request.path in ['/jupyter/', '/jupyter']:
+        (request.path.startswith('/hub') or
+         request.path.startswith('/user') or
+         request.path.startswith('/services')):
         status_code = None
         status_message = "Under maintenance"
         message = "This service will be back soon."
-        active = "jupyterhub"
+        active = "hub"
         response_code = 503
     else:
         status_code = error.code

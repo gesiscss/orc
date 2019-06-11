@@ -103,7 +103,7 @@ binderhub:
           'production': production,
           'version': 'beta',
           'home_url': '/',
-          'gesishub_url': '/jupyter/',
+          'gesishub_url': '/hub/',
           'gesisbinder_url': '/binder/',
           'about_url': '/about/',
           'tou_url': '/terms_of_use/',
