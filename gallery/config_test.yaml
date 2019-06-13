@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: gallery-test
-        image: gesiscss/binder-gallery:4cc1d4e
+        image: gesiscss/binder-gallery:a9bab07
         command: ["gunicorn"]
         args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
         ports:
