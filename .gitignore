@@ -9,9 +9,9 @@ ignore/*
 documentation
 #gesisbinder/secret.yaml
 #gesisbinder/secret_test.yaml
-#jupyterhub/secret.yaml
-#jupyterhub/secret_test.yaml
-jupyterhub/secret_local.yaml
+#gesishub/secret.yaml
+#gesishub/secret_test.yaml
+gesishub/secret_local.yaml
 nginx_shibboleth/shibboleth/conf/ignore
 #monitoring/grafana_secret.yaml
 venv

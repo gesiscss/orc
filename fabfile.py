@@ -66,11 +66,11 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=gallery{-test}-ns'.format(**format_dict))
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm dependency update jupyterhub/yourserver')
-            c.run('helm upgrade --install --namespace=jhub{-test}-ns jhub{-test} jupyterhub/yourserver '
+            c.run('helm dependency update gesishub/gesishub')
+            c.run('helm upgrade --install --namespace=jhub{-test}-ns jhub{-test} gesishub/gesishub '
                   '--wait --force --debug --timeout=360 '
-                  '-f jupyterhub/config{_test}.yaml '
-                  '-f jupyterhub/_secret{_test}.yaml '.format(**format_dict))
+                  '-f gesishub/config{_test}.yaml '
+                  '-f gesishub/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm dependency update gesisbinder/gesisbinder')

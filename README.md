@@ -31,7 +31,7 @@ to be used in ORC instance.
 
 [Shibboleth configuration files](/nginx_shibboleth/shibboleth/conf)
 
-### [JupyterHub](/jupyterhub)
+### [GESIS Hub](/gesishub)
 
 JupyterHub 0.9.6 runs under https://notebooks.gesis.org/jupyter/. 
 
