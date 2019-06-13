@@ -41,8 +41,8 @@ binderhub:
         build: workers
       per_repo_quota: 100
 
-      template_path: /etc/binderhub/custom/binderhub/templates
-      #extra_static_path: /etc/binderhub/custom/binderhub/static
+      template_path: /etc/binderhub/custom/gesisbinder/templates
+      #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
 
   extraConfig:

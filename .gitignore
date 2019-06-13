@@ -7,8 +7,8 @@ jhub/ssl
 .Rhistory
 ignore/*
 documentation
-#binderhub/secret.yaml
-#binderhub/secret_test.yaml
+#gesisbinder/secret.yaml
+#gesisbinder/secret_test.yaml
 #jupyterhub/secret.yaml
 #jupyterhub/secret_test.yaml
 jupyterhub/secret_local.yaml

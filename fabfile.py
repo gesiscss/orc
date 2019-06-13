@@ -73,11 +73,11 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '-f jupyterhub/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
-            c.run('helm dependency update binderhub/gesisbinder')
-            c.run('helm upgrade --install --namespace=bhub{-test}-ns bhub{-test} binderhub/gesisbinder '
+            c.run('helm dependency update gesisbinder/gesisbinder')
+            c.run('helm upgrade --install --namespace=bhub{-test}-ns bhub{-test} gesisbinder/gesisbinder '
                   '--wait --force --debug --timeout=360 '
-                  '-f binderhub/config{_test}.yaml '
-                  '-f binderhub/_secret{_test}.yaml '.format(**format_dict))
+                  '-f gesisbinder/config{_test}.yaml '
+                  '-f gesisbinder/_secret{_test}.yaml '.format(**format_dict))
 
 
 @task

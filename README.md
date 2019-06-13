@@ -44,7 +44,7 @@ authenticator in ORC.
 
 [Single user server image](https://github.com/gesiscss/data_science_image)
 
-### [BinderHub](/binderhub)
+### [GESIS Binder](/gesisbinder)
 
 BinderHub (with `jupyter/repo2docker:f19e159d`) runs under https://notebooks.gesis.org/binder/. 
 

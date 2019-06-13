@@ -7,7 +7,7 @@ It uses xfs quota to limit size of user directories, but by default it does not 
 that's why we have `quota.py` 
 (see https://github.com/kubernetes-incubator/external-storage/issues/855).
 
-`backup` is a daily job to backup juypterhub, binderhub and gallery databases and 
+`backup` is a daily job to backup juypterhub, gesisbinder and gallery databases and 
 user, grafana and prometheus persistent volumes.
 
 `pv.yaml` is to create a `hostPath` type PV for nfs provisioner. There nfs creates its shares.
