@@ -176,4 +176,3 @@ binderhub:
             mountPath: /etc/jupyter
           - name: etc-jupyter-templates
             mountPath: /etc/jupyter/templates
-
