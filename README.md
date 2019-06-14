@@ -12,12 +12,14 @@ Docker version 18.06.2-ce is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
-To monitor GESIS Notebooks: https://notebooks.gesis.org/grafana/
+### [Storage](/storage)
+
+`NFS Server Provisioner` is the default storage provider in ORC cluster.
 
 ### [Nginx & Shibboleth](/nginx_shibboleth/)
 
-Nginx is used as reverse proxy and load balancer.
-It also handles [Shibboleth](https://www.shibboleth.net/) login and
+Nginx is used as reverse proxy server and load balancer.
+It also handles [Shibboleth](https://www.shibboleth.net/) login for GESIS Hub and
 SSL offloading/termination.
 
 `nginx-shibboleth` service has type `ClusterIP` and all other services in ORC cluster in k8s 
@@ -52,10 +54,10 @@ Chart version [0.2.0-908c443](https://github.com/jupyterhub/binderhub/tree/908c4
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
-### [Storage](/storage)
+### [Gallery](/gallery)
 
-`NFS Server Provisioner` is the default storage provider in ORC cluster.
+API for launch events on [GESIS Binder](https://notebooks.gesis.org/binder).
 
 ### [ORC Site](/orc_site)
 
-An app to serve ORC project base pages, such as home, shibboleth login, about...
+An app to serve ORC project static files and base pages, such as home and about.

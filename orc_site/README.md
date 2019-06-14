@@ -1,4 +1,4 @@
-An app to serve ORC project base pages, such as home, shibboleth login, about...
+An app to serve ORC project static files and base pages, such as home and about.
 
 ## How to run locally
 
