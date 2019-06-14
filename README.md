@@ -19,7 +19,8 @@ All docker images of this project can be found in https://hub.docker.com/u/gesis
 ### [Nginx & Shibboleth](/nginx_shibboleth/)
 
 Nginx is used as reverse proxy server and load balancer.
-It also handles [Shibboleth](https://www.shibboleth.net/) login for GESIS Hub and
+It also handles [Shibboleth](https://www.shibboleth.net/) login for 
+[GESIS Hub](https://notebooks.gesis.org/jupyter/) and
 SSL offloading/termination.
 
 `nginx-shibboleth` service has type `ClusterIP` and all other services in ORC cluster in k8s 
@@ -44,7 +45,7 @@ extends [gesiscss/k8s-hub image](https://github.com/gesiscss/jhub_shibboleth_aut
 in order to use [jhub_shibboleth_auth](https://github.com/gesiscss/jhub_shibboleth_auth)
 authenticator in ORC.
 
-[Single user server image](https://github.com/gesiscss/data_science_image)
+Single user server image: https://github.com/gesiscss/data_science_image
 
 ### [GESIS Binder](/gesisbinder)
 
@@ -56,7 +57,9 @@ Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built ima
 
 ### [Gallery](/gallery)
 
-API for launch events on [GESIS Binder](https://notebooks.gesis.org/binder).
+Gallery of popular repos launched on [GESIS Binder](https://notebooks.gesis.org/binder/) and featured projects: 
+https://notebooks.gesis.org/gallery/
+
 
 ### [ORC Site](/orc_site)
 
