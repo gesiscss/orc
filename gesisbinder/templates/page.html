@@ -55,6 +55,12 @@
 <body>
     {% block body %}
 
+{#    {% if banner %}#}
+{#    <div id="banner-container">#}
+{#      {{ banner | safe }}#}
+{#    </div>#}
+{#    {% endif %}#}
+
     {% block gesis_header %}
     {% include "gesis/header.html" %}
     {% endblock gesis_header %}
