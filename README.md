@@ -12,15 +12,15 @@ Docker version 18.06.2-ce is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
-### [Storage](/storage)
-
-`NFS Server Provisioner` is the default storage provider in ORC cluster.
-
 ### [Load Balancer](/load_balancer)
 
 Nginx is used as reverse proxy server and load balancer. It also handles SSL offloading/termination.
 
 It is outside of ORC cluster and a public entrypoint to the cluster. All services in the cluster has type `NodePort`.
+
+### [Storage](/storage)
+
+`NFS Server Provisioner` is the default storage provider in ORC cluster.
 
 ### [GESIS Hub](/gesishub)
 
