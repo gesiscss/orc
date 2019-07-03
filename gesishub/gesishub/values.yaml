@@ -23,12 +23,12 @@ etcJupyter:
 
 jupyterhub:
   hub:
-    baseUrl: /jupyter/
+    # NOTE: because postgres db is on that node
     nodeSelector:
       production: worker
     image:
       name: gesiscss/k8s-hub-orc
-      tag: "1edbd1d"
+      tag: "8fdf096"
     deploymentStrategy:
       type: RollingUpdate
     db:
@@ -42,20 +42,15 @@ jupyterhub:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
       021-templates: |
         c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
+        # NOTE: site_url is used in 'keycloak' extra config too
         site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
         context = {
             'staging': staging,
             'production': production,
             'version': 'beta',
-            # 'shibboleth_entityID': f'{site_url}/shibboleth',
-
             'home_url': '/',
-            'jhub_url': '/jupyter/',
-            # 'logout_url': '/jupyter/hub/logout',
-            'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                               f'target={site_url}/hub/login&'
-                               f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-            'bhub_url': '/binder/',
+            'gesishub_url': '/hub/',
+            'gesisbinder_url': '/binder/',
             'about_url': '/about/',
             'tou_url': '/terms_of_use/',
             'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
@@ -64,7 +59,7 @@ jupyterhub:
             'gallery_url': '/gallery/'
             # 'help_url': 'https://www.gesis.org/en/help/',
         }
-        context.update({'active': 'jupyterhub'})
+        context.update({'active': 'hub'})
         c.JupyterHub.template_vars = context
       03-admin_handler: |
         from jupyterhub.handlers.base import BaseHandler
@@ -134,6 +129,41 @@ jupyterhub:
               )
               self.finish(html)
         c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
+      04-keycloak: |
+        from urllib.parse import urlencode
+        from jupyterhub.handlers import LogoutHandler
+        # this handler is copied from
+        # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/886#issuecomment-470869625
+        # https://github.com/InfuseAI/primehub/blob/master/helm/primehub/jupyterhub_primehub.py
+        class KeycloakLogoutHandler(LogoutHandler):
+            kc_logout_url = site_url + '/auth/realms/gesis/protocol/openid-connect/logout'
+
+            def get(self):
+                # redirect to keycloak logout url and redirect back with kc=true parameters
+                # then proceed with the original logout method.
+                logout_kc = self.get_argument('kc', '')
+                if logout_kc != 'true':
+                    logout_url = self.request.full_url() + '?kc=true'
+                    if not logout_url.startswith('https'):
+                      logout_url = logout_url.replace('http', 'https', 1)
+                    self.redirect(self.kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
+                else:
+                    #super().get()
+                    user = self.get_current_user()
+                    if user:
+                        self.log.info("User logged out: %s", user.name)
+                        self.clear_login_cookie()
+                        self.statsd.incr('logout')
+                    self.redirect(site_url, permanent=False)
+
+        from oauthenticator.generic import GenericOAuthenticator
+        GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
+        def get_handlers(self, app):
+            return [(r'/oauth_login', self.login_handler),
+                    (r'/oauth_callback', self.callback_handler),
+                    ] + [(r'/logout', self.logout_handler)]
+        GenericOAuthenticator.get_handlers = get_handlers
+        GenericOAuthenticator.auto_login = True
 
   proxy:
     https:
@@ -142,9 +172,14 @@ jupyterhub:
       type: NodePort
 
   auth:
+    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
     type: custom
     custom:
-      className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
+      className: oauthenticator.generic.GenericOAuthenticator
+      config:
+        userdata_method: GET
+        userdata_params: {'state': 'state'}
+        username_key: preferred_username
     admin:
       access: true
       users: ['kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org']

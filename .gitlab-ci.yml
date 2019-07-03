@@ -43,12 +43,6 @@ build_job:
         docker build -t gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT gesishub/docker/k8s_hub/.
         docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT
       fi;
-      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/docker/Dockerfile'; then
-        echo "####### gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT nginx_shibboleth/docker/.
-        docker push gesiscss/nginx-shibboleth-orc:$CI_COMMIT_SHA_SHORT
-      fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/'; then
         if git diff HEAD~ --name-only | egrep --invert-match 'orc_site/deploy/|orc_site/README.md|orc_site/.dockerignore' | grep 'orc_site/'; then
           echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_SHORT"
@@ -80,12 +74,6 @@ deploy_staging:
       echo "####### Running staging deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
-      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app-test.yaml'; then
-        mode+="-nginxshibbolethtestapp"
-      fi;
-      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/shibboleth/conf/staging/|nginx_shibboleth/shibboleth/conf/attribute-map.xml|nginx_shibboleth/nginx/k8s_test.conf'; then
-        mode+="-nginxshibbolethtestconf"
-      fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app-test.yaml'; then
         mode+="-orctestsite"
       fi;
@@ -124,12 +112,6 @@ deploy_prod:
       echo "####### Running deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
-      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/nginx-shibboleth-app.yaml'; then
-        mode+="-nginxshibbolethapp"
-      fi;
-      if git diff HEAD~ --name-only | egrep 'nginx_shibboleth/shibboleth/conf/production/|nginx_shibboleth/shibboleth/conf/attribute-map.xml|nginx_shibboleth/nginx/k8s.conf'; then
-        mode+="-nginxshibbolethconf"
-      fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app.yaml'; then
         mode+="-orcsite"
       fi;

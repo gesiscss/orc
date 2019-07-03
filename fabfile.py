@@ -9,7 +9,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
     :param password: k8s master node password.
     :param staging: Deploy on staging or on production
     :param ref: Branch name or commit number to checkout and deploy.
-    :param mode: Deploy mode. To update all apps, use fetch_co-jhub-bhub-nginx.
+    :param mode: Deploy mode.
     :return:
     """
     c.user = 'iuser'
@@ -26,30 +26,6 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'fetch_co' in mode:
             c.run('git fetch --all')
             c.run('git checkout {}'.format(ref))
-        if 'nginxshibbolethapp' in mode or 'nginxshibbolethtestapp' in mode or \
-           'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
-            if 'nginxshibbolethconf' in mode or 'nginxshibbolethtestconf' in mode:
-                c.run('kubectl create secret tls shibboleth-sp-tls-secret '
-                      '--key=nginx_shibboleth/shibboleth/conf/{env}/_secret_sp_key.pem '
-                      '--cert=nginx_shibboleth/shibboleth/conf/{env}/_secret_sp_cert.pem '
-                      '--namespace=orc{-test}-ns '
-                      '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
-                c.run('kubectl create configmap shibboleth-configmap '
-                      '--from-file=nginx_shibboleth/shibboleth/conf/{env}/shibboleth2.xml '
-                      '--from-file=nginx_shibboleth/shibboleth/conf/attribute-map.xml '
-                      '--from-file=nginx_shibboleth/shibboleth/conf/{env}/attrChecker.html '
-                      '--from-file=nginx_shibboleth/shibboleth/conf/{env}/metadata.xml '
-                      '--namespace=orc{-test}-ns '
-                      '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
-                c.run('kubectl create configmap nginx-configmap '
-                      '--from-file=nginx_shibboleth/nginx/k8s{_test}.conf '
-                      '--namespace=orc{-test}-ns '
-                      '-o yaml --dry-run | kubectl replace -f -'.format(**format_dict))
-                c.run('kubectl delete deployment nginx-shibboleth{-test} '
-                      '--namespace=orc{-test}-ns'.format(**format_dict))
-                # TODO wait until all pods are removed
-            c.run('kubectl apply -f nginx_shibboleth/nginx-shibboleth-app{-test}.yaml '
-                  '--namespace=orc{-test}-ns'.format(**format_dict))
         if 'orcsite' in mode or 'orctestsite' in mode:
             c.run('kubectl apply -f orc_site/deploy/orc-site-app{-test}.yaml '
                   '--namespace=orc{-test}-ns'.format(**format_dict))

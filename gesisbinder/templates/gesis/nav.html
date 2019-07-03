@@ -17,8 +17,23 @@
                     <ul class="nav navbar-nav">
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
                         <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
-                        <li><a href="{{ jhub_url }}" {% if active == 'jupyterhub' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Your Server</a></li>
-                        <li><a href="{{ bhub_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
+                        {% if active == 'hub' %}
+                        <li class="dropdown">
+                            <a href="#" id="navbar-active-a" class="dropdown-toggle gs_active_sub"
+                               data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hub <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ base_url }}home">Home</a></li>
+                                <li><a href="{{ base_url }}token">Token</a></li>
+                                {% if user.admin %}
+                                    <li><a href="{{ base_url }}admin_orc">Admin</a></li>{% endif %}
+                                {#<li><a href="{% if user %}{{logout_url}}{% else %}{{login_url}}{% endif %}">{% if user %}Logout{% else %}Login{% endif %}</a></li>#}
+                                <li><a href="{{ logout_url }}">Logout</a></li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li><a href="{{ gesishub_url }}">Hub</a></li>
+                        {% endif %}
+                        <li><a href="{{ gesisbinder_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
                         <li><a href="{{ gallery_url }}" {% if active == 'gallery' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Gallery</a></li>
                     </ul>
                 </div>
