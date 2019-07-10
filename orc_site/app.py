@@ -47,7 +47,7 @@ def get_default_template_context():
 @app.errorhandler(404)
 def not_found(error):
     context = get_default_template_context()
-    if os.getenv("JHUB_UNDER_MAINTENANCE", "false") == "true" and \
+    if os.getenv("GESISHUB_UNDER_MAINTENANCE", "false") == "true" and \
         (request.path.startswith('/hub') or
          request.path.startswith('/user') or
          request.path.startswith('/services')):

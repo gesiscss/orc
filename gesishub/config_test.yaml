@@ -20,16 +20,17 @@ jupyterhub:
         cpu: "0.5"
         memory: 1Gi
     extraEnv:
-      OAUTH2_AUTHORIZE_URL: https://notebooks-test.gesis.org/auth/realms/gesis/protocol/openid-connect/auth
-      OAUTH2_TOKEN_URL: https://notebooks-test.gesis.org/auth/realms/gesis/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
+      OAUTH2_TOKEN_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
       OAUTH_CALLBACK_URL: https://notebooks-test.gesis.org/hub/oauth_callback
 
+  # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
   auth:
     custom:
       config:
-        login_service: "Test Login"
-        token_url: https://notebooks-test.gesis.org/auth/realms/gesis/protocol/openid-connect/token
-        userdata_url: https://notebooks-test.gesis.org/auth/realms/gesis/protocol/openid-connect/userinfo
+        login_service: "GESIS Test Login"  # to customize the label on the login button
+        token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+        userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
 
   proxy:
     service:

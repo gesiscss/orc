@@ -14,9 +14,13 @@ All docker images of this project can be found in https://hub.docker.com/u/gesis
 
 ### [Load Balancer](/load_balancer)
 
-Nginx is used as reverse proxy server and load balancer. It also handles SSL offloading/termination.
+Because we setup the kubernetes cluster on baremetal, we use the deployment approach 
+["Using a self-provisioned edge"](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#using-a-self-provisioned-edge).
 
-It is outside of ORC cluster and a public entrypoint to the cluster. All services in the cluster has type `NodePort`.
+Nginx is used as reverse proxy server and load balancer. 
+It also handles SSL offloading/termination. 
+It is outside of ORC cluster and a public entrypoint to the cluster. 
+All services in the cluster has type `NodePort`.
 
 ### [Storage](/storage)
 
@@ -45,8 +49,8 @@ Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built ima
 
 ### [Gallery](/gallery)
 
-Gallery of popular repos launched on [GESIS Binder](https://notebooks.gesis.org/binder/) and featured projects: 
-https://notebooks.gesis.org/gallery/
+Gallery of popular repos launched on [GESIS Binder](https://notebooks.gesis.org/binder/) 
+and featured projects: https://notebooks.gesis.org/gallery/
 
 ### [ORC Site](/orc_site)
 
