@@ -153,7 +153,7 @@ jupyterhub:
                         self.log.info("User logged out: %s", user.name)
                         self.clear_login_cookie()
                         self.statsd.incr('logout')
-                    self.redirect(login_site_url, permanent=False)
+                    self.redirect("https://notebooks-test.gesis.org", permanent=False)
 
         from oauthenticator.generic import GenericOAuthenticator
         GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
