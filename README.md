@@ -49,7 +49,7 @@ Single user server image: https://github.com/gesiscss/data_science_image
 
 ### [GESIS Binder](/gesisbinder)
 
-BinderHub (with `jupyter/repo2docker:a251ad26`) runs under https://notebooks.gesis.org/binder/. 
+BinderHub (with `jupyter/repo2docker:b16b6101`) runs under https://notebooks.gesis.org/binder/. 
 
 Chart version [0.2.0-5ca42ec](https://github.com/jupyterhub/binderhub/tree/5ca42ec)
 
