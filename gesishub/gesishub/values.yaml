@@ -28,7 +28,7 @@ jupyterhub:
       production: worker
     image:
       name: gesiscss/k8s-hub-orc
-      tag: "08deb74"
+      tag: "a8ab5e2"
     deploymentStrategy:
       type: RollingUpdate
     db:
