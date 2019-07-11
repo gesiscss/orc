@@ -130,12 +130,12 @@ jupyterhub:
       04-keycloak: |
         from urllib.parse import urlencode
         from jupyterhub.handlers import LogoutHandler
-        login_site_url = 'https://login{}.gesis.org'.format('-test' if staging else '')
         # this handler is copied from
         # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/886#issuecomment-470869625
         # https://github.com/InfuseAI/primehub/blob/master/helm/primehub/jupyterhub_primehub.py
         class KeycloakLogoutHandler(LogoutHandler):
-            kc_logout_url = login_site_url + '/realms/gesis/protocol/openid-connect/logout'
+            kc_logout_url = 'https://login{}.gesis.org/realms/gesis/protocol/openid-connect/logout'.format('-test' if staging else '')
+            site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
 
             def get(self):
                 # redirect to keycloak logout url and redirect back with kc=true parameters
@@ -153,7 +153,7 @@ jupyterhub:
                         self.log.info("User logged out: %s", user.name)
                         self.clear_login_cookie()
                         self.statsd.incr('logout')
-                    self.redirect("https://notebooks-test.gesis.org", permanent=False)
+                    self.redirect(self.site_url, permanent=False)
 
         from oauthenticator.generic import GenericOAuthenticator
         GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
