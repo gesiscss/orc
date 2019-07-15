@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: orc-site-test
-        image: gesiscss/orc-site:a8ab5e2
+        image: gesiscss/orc-site:adadacb
         command: ["gunicorn"]
         args: ["-b", "0.0.0.0:5000", "-w", "4", "orc_site.app:app"]
         ports:
