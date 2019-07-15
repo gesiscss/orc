@@ -70,7 +70,7 @@ def not_found(error):
 
 
 @app.route('/')
-@cache.cached(timeout=None)
+# @cache.cached(timeout=None)
 def home():
     context = get_default_template_context()
     site_url = context["site_url"]
@@ -88,7 +88,10 @@ def home():
          'binder_link': f'{site_url}/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
          'repo_link': 'https://github.com/minrk/ligo-binder'},
     ]
-    context.update({'active': 'home', 'binder_examples': binder_examples})
+    # FIXME: logged_in
+    context.update({'active': 'home',
+                    'binder_examples': binder_examples,
+                    'logged_in': "jupyterhub-session-id" in request.cookies})
     return render_template('home.html', **context)
 
 
