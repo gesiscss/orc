@@ -26,22 +26,20 @@ jupyterhub:
     # NOTE: because postgres db is on that node
     nodeSelector:
       production: worker
-    image:
-      name: gesiscss/k8s-hub-orc
-      tag: "a8ab5e2"
     deploymentStrategy:
       type: RollingUpdate
     db:
       type: postgres
     extraConfig:
       011-orc: |
+        # c.JupyterHub.refresh_pre_spawn = True
         c.JupyterHub.redirect_to_server = False
         if "cookie_options" in c.JupyterHub.tornado_settings:
           c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
         else:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
       021-templates: |
-        c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
+        c.JupyterHub.template_paths = ['/etc/jupyterhub/custom/gesishub/templates']
         context = {
             'staging': staging,
             'production': production,
@@ -68,10 +66,8 @@ jupyterhub:
           @admin_only
           async def get(self):
               available = {'name', 'admin', 'running', 'last_activity'}
-              default_sort = ['last_activity']
-              mapping = {
-                  'running': orm.Spawner.server_id,
-              }
+              default_sort = ['last_activity', 'admin', 'name']
+              mapping = {'running': orm.Spawner.server_id}
               for name in available:
                   if name not in mapping:
                       mapping[name] = getattr(orm.User, name)
@@ -98,32 +94,37 @@ jupyterhub:
                   if s not in sorts:
                       sorts.append(s)
               if len(orders) < len(sorts):
-                  for col in sorts[len(orders):]:
+                  for col in sorts[len(orders) :]:
                       orders.append(default_order[col])
               else:
-                  orders = orders[:len(sorts)]
+                  orders = orders[: len(sorts)]
 
               # this could be one incomprehensible nested list comprehension
               # get User columns
-              cols = [ mapping[c] for c in sorts ]
+              cols = [mapping[c] for c in sorts]
               # get User.col.desc() order objects
-              ordered = [ getattr(c, o)() for c, o in zip(cols, orders) ]
+              ordered = [getattr(c, o)() for c, o in zip(cols, orders)]
 
               users = self.db.query(orm.User).outerjoin(orm.Spawner).order_by(*ordered)
-              users = [ self._user_from_orm(u) for u in users ]
-              running = [ u for u in users if u.running ]
-              for user in users:
-                  auth_state = await user.get_auth_state()
-                  auth_state = auth_state or {}
-                  setattr(user, 'gn', auth_state.get('Givenname', ''))
-                  setattr(user, 'sn', auth_state.get('sn', ''))
+              users = [self._user_from_orm(u) for u in users]
+              from itertools import chain
 
-              html = self.render_template('admin.html',
-                  user=self.get_current_user(),
+              running = []
+              for u in users:
+                  running.extend(s for s in u.spawners.values() if s.active)
+                  auth_state = await u.get_auth_state()
+                  auth_state = auth_state or {}
+                  setattr(u, 'dn', auth_state.get('name', ''))
+
+              html = self.render_template(
+                  'admin.html',
+                  current_user=self.current_user,
                   admin_access=self.settings.get('admin_access', False),
                   users=users,
                   running=running,
-                  sort={s:o for s,o in zip(sorts, orders)},
+                  sort={s: o for s, o in zip(sorts, orders)},
+                  allow_named_servers=self.allow_named_servers,
+                  named_server_limit_per_user=self.named_server_limit_per_user,
               )
               self.finish(html)
         c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
@@ -137,6 +138,14 @@ jupyterhub:
             kc_logout_url = 'https://login{}.gesis.org/realms/gesis/protocol/openid-connect/logout'.format('-test' if staging else '')
             site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
 
+            async def render_logout_page(self):
+                """Render the logout page, if any
+
+                Override this function to set a custom logout page.
+                """
+                # after logout, redirect user to home page
+                self.redirect(self.site_url, permanent=False)
+
             def get(self):
                 # redirect to keycloak logout url and redirect back with kc=true parameters
                 # then proceed with the original logout method.
@@ -147,22 +156,18 @@ jupyterhub:
                       logout_url = logout_url.replace('http', 'https', 1)
                     self.redirect(self.kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
                 else:
-                    #super().get()
-                    user = self.get_current_user()
-                    if user:
-                        self.log.info("User logged out: %s", user.name)
-                        self.clear_login_cookie()
-                        self.statsd.incr('logout')
-                    self.redirect(self.site_url, permanent=False)
+                    super().get()
 
         from oauthenticator.generic import GenericOAuthenticator
         GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
         def get_handlers(self, app):
-            return [(r'/oauth_login', self.login_handler),
-                    (r'/oauth_callback', self.callback_handler),
-                    ] + [(r'/logout', self.logout_handler)]
+            return [
+                (r'/oauth_login', self.login_handler),
+                (r'/oauth_callback', self.callback_handler),
+            ] + [(r'/logout', self.logout_handler)]
         GenericOAuthenticator.get_handlers = get_handlers
-        GenericOAuthenticator.auto_login = True
+      05-noAuthMetrics: |
+        c.JupyterHub.authenticate_prometheus = False
 
   proxy:
     https:
@@ -176,12 +181,14 @@ jupyterhub:
     custom:
       className: oauthenticator.generic.GenericOAuthenticator
       config:
+        auto_login: true
         userdata_method: GET
         userdata_params: {'state': 'state'}
         username_key: preferred_username
     admin:
-      access: true
-      users: ['kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org']
+      users:
+        - kenan.erdogan@gesis.org
+        - arnim.bleier@gesis.org
     state:
       enabled: true
 
@@ -198,13 +205,15 @@ jupyterhub:
           mountPath: /etc/jupyter
     image:
       name: gesiscss/singleuser-orc
-      tag: "r2d-394ccfb"
+      tag: "r2d-ce98e6e"
 
-  prePuller:
-    hook:
-      enabled: true
-    continuous:
-      enabled: true
+  scheduling:
+    userScheduler:
+      enabled: false
+    podPriority:
+      enabled: false
+    userPlaceholder:
+      enabled: false
 
   cull:
     # kill user pods if idle for 30 mins - default is 1 hour
@@ -212,4 +221,3 @@ jupyterhub:
     timeout: 1800
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
-

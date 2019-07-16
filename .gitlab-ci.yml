@@ -37,12 +37,6 @@ build_job:
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
       CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
       echo $CI_COMMIT_SHA_SHORT
-      if git diff HEAD~ --name-only | egrep 'gesishub/docker/k8s_hub/Dockerfile|gesishub/docker/k8s_hub/templates/'; then
-        echo "####### gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT gesishub/docker/k8s_hub/.
-        docker push gesiscss/k8s-hub-orc:$CI_COMMIT_SHA_SHORT
-      fi;
       if git diff HEAD~ --name-only | egrep 'orc_site/'; then
         if git diff HEAD~ --name-only | egrep --invert-match 'orc_site/deploy/|orc_site/README.md|orc_site/.dockerignore' | grep 'orc_site/'; then
           echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_SHORT"

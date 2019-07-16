@@ -18,6 +18,38 @@ jupyterhub:
         cpu: "2"
         memory: 2Gi
 
+    # clone custom JupyterHub templates into a volume
+    initContainers:
+      - name: git-clone-templates
+        image: alpine/git
+        args:
+          - clone
+          - --single-branch
+          - --branch=master
+          - --depth=1
+          - --
+          - https://github.com/gesiscss/orc.git
+          - /etc/jupyterhub/custom
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+          - name: custom-templates
+            mountPath: /etc/jupyterhub/custom
+    extraVolumes:
+      - name: custom-templates
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: custom-templates
+        mountPath: /etc/jupyterhub/custom
+
+  # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+  auth:
+    custom:
+      config:
+        login_service: "GESIS Login"  # to customize the label on the login button
+        token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+        userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+
   proxy:
     service:
       nodePorts:
