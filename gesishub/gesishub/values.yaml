@@ -114,7 +114,8 @@ jupyterhub:
                   running.extend(s for s in u.spawners.values() if s.active)
                   auth_state = await u.get_auth_state()
                   auth_state = auth_state or {}
-                  setattr(u, 'dn', auth_state.get('name', ''))
+                  oauth_user = auth_state.get('oauth_user', {})
+                  setattr(u, 'dn', oauth_user.get('name', ''))
 
               html = self.render_template(
                   'admin.html',
@@ -146,7 +147,7 @@ jupyterhub:
                 # after logout, redirect user to home page
                 self.redirect(self.site_url, permanent=False)
 
-            def get(self):
+            async def get(self):
                 # redirect to keycloak logout url and redirect back with kc=true parameters
                 # then proceed with the original logout method.
                 logout_kc = self.get_argument('kc', '')
