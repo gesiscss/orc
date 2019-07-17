@@ -90,10 +90,13 @@ server {
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub front end
-    location ~* ^/(hub|user|services)/?(.*)$ {
-        location /hub/spawn-pending/ {
-            proxy_buffering off;
-        }
+    location ~* ^/hub/?(.*)$ {
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
+    location ~* ^/(user|services)/?(.*)$ {
         proxy_pass http://jhub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
@@ -107,5 +110,3 @@ server {
 
     include snippets/ignore_fonts.conf;
 }
-
-
