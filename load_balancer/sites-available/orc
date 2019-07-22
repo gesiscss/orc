@@ -16,51 +16,66 @@ upstream orc-site {
   # http://nginx.org/en/docs/http/load_balancing.html
   # least_conn;
   # server 194.95.75.9:30080 weight=3;
-  server 194.95.75.9:30178;
-  server 194.95.75.12:30178;
+  server 194.95.75.9:30078;
+  server 194.95.75.12:30078;
 }
 
 upstream gallery {
-  server 194.95.75.9:30179;
-  server 194.95.75.12:30179;
+  server 194.95.75.9:30079;
+  server 194.95.75.12:30079;
+}
+
+upstream grafana {
+  server 194.95.75.9:30075;
+  server 194.95.75.12:30075;
+}
+
+upstream prometheus {
+  server 194.95.75.9:30073;
+  server 194.95.75.12:30073;
+}
+
+upstream kibana {
+  server 194.95.75.9:30070;
+  server 194.95.75.11:30070;
 }
 
 upstream jhub {
-  server 194.95.75.9:30180;
-  server 194.95.75.12:30180;
+  server 194.95.75.9:30080;
+  server 194.95.75.12:30080;
 }
 
 upstream bhub {
-  server 194.95.75.9:30181;
-  server 194.95.75.12:30181;
+  server 194.95.75.9:30081;
+  server 194.95.75.12:30081;
 }
 
 upstream bjhub {
-  server 194.95.75.9:30182;
-  server 194.95.75.12:30182;
+  server 194.95.75.9:30082;
+  server 194.95.75.12:30082;
 }
 
 
-# HTTP server to redirect notebooks-test.gesis.org 80 traffic to SSL/HTTPS
+# HTTP server to redirect notebooks.gesis.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
-    server_name notebooks-test.gesis.org;
-    access_log off;  # turn off access log
+    server_name notebooks.gesis.org;
+    #access_log off;  # turn off access log
     # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
     return 301 https://$host$request_uri;
 }
 
-# HTTPS server for notebooks-test.gesis.org
+# HTTPS server for notebooks.gesis.org
 server {
     listen 443;
     ssl on;
-    server_name notebooks-test.gesis.org;
-    ssl_certificate /etc/letsencrypt/live/notebooks-test.gesis.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/notebooks-test.gesis.org/privkey.pem;
+    server_name notebooks.gesis.org;
+    ssl_certificate /etc/letsencrypt/live/notebooks.gesis.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/notebooks.gesis.org/privkey.pem;
     include snippets/ssl.conf;
 
     include snippets/optimization.conf;
-    access_log off;  # turn off access log
+    #access_log off;  # turn off access log
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
@@ -74,6 +89,43 @@ server {
     location /gallery/ {
         proxy_pass http://gallery;
         include snippets/flask.conf;
+    }
+
+    # Grafana UI
+    location /grafana/ {
+        proxy_pass http://grafana/;
+        include snippets/headers.conf;
+    }
+    # Prometheus
+    location /prometheus/ {
+        # https://github.com/prometheus/prometheus/issues/2193
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://prometheus/;
+        include snippets/headers.conf;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        sub_filter_types text/html;
+        sub_filter_once off;
+        sub_filter '="/' '="/prometheus/';
+        sub_filter 'var PATH_PREFIX = "";' 'var PATH_PREFIX = "/prometheus";';
+        rewrite ^/prometheus/?$ /prometheus/graph redirect;
+        rewrite ^/prometheus/(.*)$ /$1 break;
+    }
+
+    # Kibana
+    # https://discuss.elastic.co/t/kibana-and-nginx-in-subpath/90280/5
+    location /kibana/ {
+        auth_basic "Administrator's Area";
+        auth_basic_user_file /etc/letsencrypt/.kibana_htpasswd;
+
+        # without trailing slash means nginx passes subpath (/kibana/...) to kibana
+        # and kibana will rewrite it
+        proxy_pass http://kibana;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
     }
 
     # Managing literal requests to the BinderHub
