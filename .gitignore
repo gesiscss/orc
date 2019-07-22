@@ -15,3 +15,6 @@ gesishub/secret_local.yaml
 nginx_shibboleth/shibboleth/conf/ignore
 #monitoring/grafana_secret.yaml
 venv
+monitoring/efk_stack/config_default.yaml
+load_balancer/sites-available/default_nginx
+gallery/bindergallery
