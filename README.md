@@ -28,9 +28,9 @@ All services in the cluster has type `NodePort`.
 
 ### [GESIS Hub](/gesishub)
 
-JupyterHub 0.9.6 runs under https://notebooks.gesis.org/hub/. 
+JupyterHub 1.0.0 runs under https://notebooks.gesis.org/hub/. 
 
-Chart version [0.8.2](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/0.8.2).
+Chart version [0.9-dcde99a](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/dcde99a).
 
 [Dockerfile](/jupyterhub/docker/k8s_hub) of hub
 extends [gesiscss/k8s-hub image](https://github.com/gesiscss/jhub_shibboleth_auth/tree/master/docker/k8s_hub)
