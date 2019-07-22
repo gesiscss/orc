@@ -23,9 +23,8 @@ etcJupyter:
 
 jupyterhub:
   hub:
-    # NOTE: because postgres db is on that node
     nodeSelector:
-      production: worker
+      base: worker  # where database is
     deploymentStrategy:
       type: RollingUpdate
     db:
@@ -195,7 +194,7 @@ jupyterhub:
 
   singleuser:
     nodeSelector:
-      user: workers
+      user: worker
     storage:
       extraVolumes:
         - name: etc-jupyter

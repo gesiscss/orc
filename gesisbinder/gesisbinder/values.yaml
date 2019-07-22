@@ -38,7 +38,7 @@ binderhub:
       use_registry: true
       build_image: jupyter/repo2docker:fbe35033
       build_node_selector:
-        build: workers
+        user: worker
       per_repo_quota: 100
 
       template_path: /etc/binderhub/custom/gesisbinder/templates
@@ -141,7 +141,7 @@ binderhub:
       maxAge: 21600
     hub:
       nodeSelector:
-        production: worker
+        base: worker  # where database is
       baseUrl: /binder/jupyter/
       deploymentStrategy:
         type: RollingUpdate
@@ -159,7 +159,7 @@ binderhub:
         type: NodePort
     singleuser:
       nodeSelector:
-        user: workers
+        user: worker
       storage:
         extraVolumes:
           - name: etc-jupyter

@@ -16,5 +16,4 @@ storageClass:
 
 nodeSelector:
   # because we use hostPath (see pv.yaml)
-  production: worker
-#  staging: worker
+  base: worker

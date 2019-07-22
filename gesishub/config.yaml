@@ -17,6 +17,10 @@ jupyterhub:
       limits:
         cpu: "2"
         memory: 2Gi
+    extraEnv:
+      OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
+      OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+      OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
 
     # clone custom JupyterHub templates into a volume
     initContainers:
