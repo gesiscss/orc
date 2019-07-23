@@ -33,6 +33,12 @@ binderhub:
         - ^hmharshit/cn-ait.*
         - ^shishirchoudharygic/mltraining.*
         - ^hmharshit/mltraining.*
+      high_quota_specs:
+        - ^gesiscss/.*
+      #spec_config:
+      #  - pattern: ^gesiscss/.*
+      #    config:
+      #      quota: 200
     BinderHub:
       base_url: /binder/
       use_registry: true
@@ -40,6 +46,7 @@ binderhub:
       build_node_selector:
         user: worker
       per_repo_quota: 100
+      per_repo_quota_higher: 200
 
       template_path: /etc/binderhub/custom/gesisbinder/templates
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
