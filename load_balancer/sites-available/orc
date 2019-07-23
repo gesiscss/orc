@@ -60,7 +60,7 @@ upstream bjhub {
 server {
     listen 80;
     server_name notebooks.gesis.org;
-    #access_log off;  # turn off access log
+    access_log off;  # turn off access log
     # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
     return 301 https://$host$request_uri;
 }
