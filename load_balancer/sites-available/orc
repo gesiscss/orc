@@ -151,22 +151,15 @@ server {
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub front end
     location ~* ^/hub/?(.*)$ {
-        proxy_pass http://orc-site;
-        proxy_redirect     off;
-
-        proxy_set_header   Host                 $host;
-        proxy_set_header   X-Real-IP            $remote_addr;
-        proxy_set_header   X-Forwarded-For      $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Proto    $scheme;
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
     }
     location ~* ^/(user|services)/?(.*)$ {
-        proxy_pass http://orc-site;
-        proxy_redirect     off;
-
-        proxy_set_header   Host                 $host;
-        proxy_set_header   X-Real-IP            $remote_addr;
-        proxy_set_header   X-Forwarded-For      $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Proto    $scheme;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
     }
     #location /services/binder/ {
     #    proxy_buffering off;  # NOTE this is important for binder
