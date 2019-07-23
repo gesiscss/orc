@@ -34,4 +34,3 @@ CMD ["python", "-m", "orc_site"]
 #CMD ["gunicorn", "-b", "0.0.0.0:5000", "-w", "4", "orc_site.app:app"]
 # enable access logs
 #CMD ["gunicorn", "--access-logfile=-", "-b", "0.0.0.0:5000", "orc_site.app:app"]
-
