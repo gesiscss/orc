@@ -6,7 +6,7 @@ service:
   nodePort: 30075
 
 nodeSelector:
-  production: worker
+  base: worker
 
 resources:
   requests:

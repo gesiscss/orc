@@ -3,11 +3,10 @@ jupyterhub:
     # below is already default of z2jh chart
     #service:
     #  annotations:
-    #    prometheus.io/path: "/jupyter/hub/metrics"
+    #    prometheus.io/path: "/hub/metrics"
     extraConfig:
       010-orc: |
-        c.Authenticator.shibboleth_logout_url = 'https://notebooks.gesis.org/Shibboleth.sso/Logout?return=https://notebooks.gesis.org/'
-        c.JupyterHub.bind_url = 'https://notebooks.gesis.org/jupyter/'
+        c.JupyterHub.bind_url = 'https://notebooks.gesis.org'
       020-templates: |
         staging = False
         production = True
@@ -18,6 +17,42 @@ jupyterhub:
       limits:
         cpu: "2"
         memory: 2Gi
+    extraEnv:
+      OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
+      OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+      OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
+
+    # clone custom JupyterHub templates into a volume
+    initContainers:
+      - name: git-clone-templates
+        image: alpine/git
+        args:
+          - clone
+          - --single-branch
+          - --branch=master
+          - --depth=1
+          - --
+          - https://github.com/gesiscss/orc.git
+          - /etc/jupyterhub/custom
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+          - name: custom-templates
+            mountPath: /etc/jupyterhub/custom
+    extraVolumes:
+      - name: custom-templates
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: custom-templates
+        mountPath: /etc/jupyterhub/custom
+
+  # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+  auth:
+    custom:
+      config:
+        login_service: "GESIS Login"  # to customize the label on the login button
+        token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+        userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
 
   proxy:
     service:

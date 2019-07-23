@@ -17,10 +17,10 @@
                     <ul class="nav navbar-nav">
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
                         <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
+                        {% if active == 'hub' %}
                         <li class="dropdown">
-                            <a href="#" {% if active == 'jupyterhub' %}id="navbar-active-a"{% endif %} class="dropdown-toggle{% if active == 'jupyterhub' %} gs_active_sub{% endif %}"
-                               data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your
-                                Server <span class="caret"></span></a>
+                            <a href="#" id="navbar-active-a" class="dropdown-toggle gs_active_sub"
+                               data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hub <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{{ base_url }}home">Home</a></li>
                                 <li><a href="{{ base_url }}token">Token</a></li>
@@ -30,7 +30,10 @@
                                 <li><a href="{{ logout_url }}">Logout</a></li>
                             </ul>
                         </li>
-                        <li><a href="{{ bhub_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
+                        {% else %}
+                        <li><a href="{{ gesishub_url }}">Hub</a></li>
+                        {% endif %}
+                        <li><a href="{{ gesisbinder_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
                         <li><a href="{{ gallery_url }}" {% if active == 'gallery' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Gallery</a></li>
                     </ul>
                 </div>

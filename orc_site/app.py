@@ -29,14 +29,9 @@ def get_default_template_context():
         'production': production,
         'site_url': site_url,
         'version': 'beta',
-        # 'shibboleth_entityID': f'{site_url}/shibboleth',
-
         'home_url': '/',
-        'jhub_url': '/jupyter/',
-        'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                           f'target={site_url}/hub/login&'
-                           f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-        'bhub_url': '/binder/',
+        'gesishub_url': '/hub/',
+        'gesisbinder_url': '/binder/',
         'about_url': '/about/',
         'tou_url': '/terms_of_use/',
         'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
@@ -52,12 +47,14 @@ def get_default_template_context():
 @app.errorhandler(404)
 def not_found(error):
     context = get_default_template_context()
-    if os.getenv("JHUB_UNDER_MAINTENANCE", "false") == "true" and \
-       request.path in ['/jupyter/', '/jupyter']:
+    if os.getenv("GESISHUB_UNDER_MAINTENANCE", "false") == "true" and \
+        (request.path.startswith('/hub') or
+         request.path.startswith('/user') or
+         request.path.startswith('/services')):
         status_code = None
         status_message = "Under maintenance"
         message = "This service will be back soon."
-        active = "jupyterhub"
+        active = "hub"
         response_code = 503
     else:
         status_code = error.code
@@ -73,7 +70,7 @@ def not_found(error):
 
 
 @app.route('/')
-@cache.cached(timeout=None)
+# @cache.cached(timeout=None)
 def home():
     context = get_default_template_context()
     site_url = context["site_url"]
@@ -91,15 +88,11 @@ def home():
          'binder_link': f'{site_url}/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
          'repo_link': 'https://github.com/minrk/ligo-binder'},
     ]
-    context.update({'active': 'home', 'binder_examples': binder_examples})
+    # FIXME: logged_in
+    context.update({'active': 'home',
+                    'binder_examples': binder_examples,
+                    'logged_in': "jupyterhub-session-id" in request.cookies})
     return render_template('home.html', **context)
-
-
-@app.route('/login/')
-def login():
-    context = get_default_template_context()
-    context.update({'active': 'jupyterhub'})
-    return render_template('shibboleth_login.html', **context)
 
 
 @app.route('/about/')

@@ -10,7 +10,7 @@ pushgateway:
 
 server:
   nodeSelector:
-    production: worker
+    base: worker
   service:
     type: NodePort
     nodePort: 30073
@@ -30,5 +30,5 @@ server:
 
 kubeStateMetrics:
   nodeSelector:
-    production: worker
+    base: worker
 #  resources:

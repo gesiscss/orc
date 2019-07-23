@@ -18,7 +18,7 @@ spec:
           serviceAccount: nfs-backup
           nodeSelector:
             # because of hostPath PVs
-            production: worker
+            base: worker
           containers:
           - name: nfs-backup
             image: gesiscss/nfs-backup-orc:bd306d3

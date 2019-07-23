@@ -16,8 +16,8 @@ elasticsearch:
 kibana:
   # https://github.com/helm/charts/tree/master/stable/kibana#configuration
   enabled: true
-  nodeSelector:
-    production: worker
+  #nodeSelector:
+  #  base: worker
   # https://github.com/helm/charts/tree/master/stable/elasticsearch#enabling-elasticsearch-internal-monitoring
   image:
     repository: "docker.elastic.co/kibana/kibana"

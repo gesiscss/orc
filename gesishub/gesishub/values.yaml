@@ -23,39 +23,29 @@ etcJupyter:
 
 jupyterhub:
   hub:
-    baseUrl: /jupyter/
     nodeSelector:
-      production: worker
-    image:
-      name: gesiscss/k8s-hub-orc
-      tag: "1edbd1d"
+      base: worker  # where database is
     deploymentStrategy:
       type: RollingUpdate
     db:
       type: postgres
     extraConfig:
       011-orc: |
+        # c.JupyterHub.refresh_pre_spawn = True
         c.JupyterHub.redirect_to_server = False
         if "cookie_options" in c.JupyterHub.tornado_settings:
           c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
         else:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
       021-templates: |
-        c.JupyterHub.template_paths = ['/srv/jhub_custom_templates']
-        site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+        c.JupyterHub.template_paths = ['/etc/jupyterhub/custom/gesishub/templates']
         context = {
             'staging': staging,
             'production': production,
             'version': 'beta',
-            # 'shibboleth_entityID': f'{site_url}/shibboleth',
-
             'home_url': '/',
-            'jhub_url': '/jupyter/',
-            # 'logout_url': '/jupyter/hub/logout',
-            'gesis_login_url': f'{site_url}/Shibboleth.sso/Login?SAMLDS=1&'
-                               f'target={site_url}/hub/login&'
-                               f'entityID=https%3A%2F%2Fidp.gesis.org%2Fidp%2Fshibboleth',
-            'bhub_url': '/binder/',
+            'gesishub_url': '/hub/',
+            'gesisbinder_url': '/binder/',
             'about_url': '/about/',
             'tou_url': '/terms_of_use/',
             'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
@@ -64,7 +54,7 @@ jupyterhub:
             'gallery_url': '/gallery/'
             # 'help_url': 'https://www.gesis.org/en/help/',
         }
-        context.update({'active': 'jupyterhub'})
+        context.update({'active': 'hub'})
         c.JupyterHub.template_vars = context
       03-admin_handler: |
         from jupyterhub.handlers.base import BaseHandler
@@ -76,9 +66,7 @@ jupyterhub:
           async def get(self):
               available = {'name', 'admin', 'running', 'last_activity'}
               default_sort = ['last_activity']
-              mapping = {
-                  'running': orm.Spawner.server_id,
-              }
+              mapping = {'running': orm.Spawner.server_id}
               for name in available:
                   if name not in mapping:
                       mapping[name] = getattr(orm.User, name)
@@ -105,35 +93,81 @@ jupyterhub:
                   if s not in sorts:
                       sorts.append(s)
               if len(orders) < len(sorts):
-                  for col in sorts[len(orders):]:
+                  for col in sorts[len(orders) :]:
                       orders.append(default_order[col])
               else:
-                  orders = orders[:len(sorts)]
+                  orders = orders[: len(sorts)]
 
               # this could be one incomprehensible nested list comprehension
               # get User columns
-              cols = [ mapping[c] for c in sorts ]
+              cols = [mapping[c] for c in sorts]
               # get User.col.desc() order objects
-              ordered = [ getattr(c, o)() for c, o in zip(cols, orders) ]
+              ordered = [getattr(c, o)() for c, o in zip(cols, orders)]
 
               users = self.db.query(orm.User).outerjoin(orm.Spawner).order_by(*ordered)
-              users = [ self._user_from_orm(u) for u in users ]
-              running = [ u for u in users if u.running ]
-              for user in users:
-                  auth_state = await user.get_auth_state()
-                  auth_state = auth_state or {}
-                  setattr(user, 'gn', auth_state.get('Givenname', ''))
-                  setattr(user, 'sn', auth_state.get('sn', ''))
+              users = [self._user_from_orm(u) for u in users]
+              from itertools import chain
 
-              html = self.render_template('admin.html',
-                  user=self.get_current_user(),
+              running = []
+              for u in users:
+                  running.extend(s for s in u.spawners.values() if s.active)
+                  auth_state = await u.get_auth_state()
+                  auth_state = auth_state or {}
+                  oauth_user = auth_state.get('oauth_user', {})
+                  setattr(u, 'dn', oauth_user.get('name', ''))
+
+              html = self.render_template(
+                  'admin.html',
+                  current_user=self.current_user,
                   admin_access=self.settings.get('admin_access', False),
                   users=users,
                   running=running,
-                  sort={s:o for s,o in zip(sorts, orders)},
+                  sort={s: o for s, o in zip(sorts, orders)},
+                  allow_named_servers=self.allow_named_servers,
+                  named_server_limit_per_user=self.named_server_limit_per_user,
               )
               self.finish(html)
         c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
+      04-keycloak: |
+        from urllib.parse import urlencode
+        from jupyterhub.handlers import LogoutHandler
+        # this handler is copied from
+        # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/886#issuecomment-470869625
+        # https://github.com/InfuseAI/primehub/blob/master/helm/primehub/jupyterhub_primehub.py
+        class KeycloakLogoutHandler(LogoutHandler):
+            kc_logout_url = 'https://login{}.gesis.org/realms/gesis/protocol/openid-connect/logout'.format('-test' if staging else '')
+            site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
+
+            async def render_logout_page(self):
+                """Render the logout page, if any
+
+                Override this function to set a custom logout page.
+                """
+                # after logout, redirect user to home page
+                self.redirect(self.site_url, permanent=False)
+
+            async def get(self):
+                # redirect to keycloak logout url and redirect back with kc=true parameters
+                # then proceed with the original logout method.
+                logout_kc = self.get_argument('kc', '')
+                if logout_kc != 'true':
+                    logout_url = self.request.full_url() + '?kc=true'
+                    if not logout_url.startswith('https'):
+                      logout_url = logout_url.replace('http', 'https', 1)
+                    self.redirect(self.kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
+                else:
+                    await super().get()
+
+        from oauthenticator.generic import GenericOAuthenticator
+        GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
+        def get_handlers(self, app):
+            return [
+                (r'/oauth_login', self.login_handler),
+                (r'/oauth_callback', self.callback_handler),
+            ] + [(r'/logout', self.logout_handler)]
+        GenericOAuthenticator.get_handlers = get_handlers
+      05-noAuthMetrics: |
+        c.JupyterHub.authenticate_prometheus = False
 
   proxy:
     https:
@@ -142,18 +176,25 @@ jupyterhub:
       type: NodePort
 
   auth:
+    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
     type: custom
     custom:
-      className: "jhub_shibboleth_auth.shibboleth_auth.ShibbolethAuthenticator"
+      className: oauthenticator.generic.GenericOAuthenticator
+      config:
+        auto_login: true
+        userdata_method: GET
+        userdata_params: {'state': 'state'}
+        username_key: preferred_username
     admin:
-      access: true
-      users: ['kenan.erdogan@gesis.org', 'arnim.bleier@gesis.org']
+      users:
+        - kenan.erdogan@gesis.org
+        - arnim.bleier@gesis.org
     state:
       enabled: true
 
   singleuser:
     nodeSelector:
-      user: workers
+      user: worker
     storage:
       extraVolumes:
         - name: etc-jupyter
@@ -164,13 +205,15 @@ jupyterhub:
           mountPath: /etc/jupyter
     image:
       name: gesiscss/singleuser-orc
-      tag: "r2d-394ccfb"
+      tag: "r2d-ce98e6e"
 
-  prePuller:
-    hook:
-      enabled: true
-    continuous:
-      enabled: true
+  scheduling:
+    userScheduler:
+      enabled: false
+    podPriority:
+      enabled: false
+    userPlaceholder:
+      enabled: false
 
   cull:
     # kill user pods if idle for 30 mins - default is 1 hour
@@ -178,4 +221,3 @@ jupyterhub:
     timeout: 1800
     # maxAge is 6 hours: 6 * 3600 = 21600
     maxAge: 21600
-

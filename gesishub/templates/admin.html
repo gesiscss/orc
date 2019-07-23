@@ -1,0 +1,70 @@
+{% extends "templates/admin.html" %}
+
+{% block thead %}
+{{ th("User (%i)" % users|length, 'name') }}
+{{ th("Name", 'displayname') }}
+{{ th("Admin", 'admin') }}
+{{ th("Last Activity", 'last_activity') }}
+{{ th("Created", 'created') }}
+{{ th("Running (%i)" % running|length, 'running', colspan=2) }}
+{% endblock thead %}
+
+{% block user_row scoped %}
+
+<td class="email-col col-sm-2">{{user.name}}
+{%- if spawner.name -%}
+/{{ spawner.name }}
+{%- endif -%}
+</td>
+
+<td class="name-col col-sm-1">{{user.dn}}</td>
+
+<td class="admin-col col-sm-1">
+{%- if spawner.name == '' -%}
+{% if user.admin %}admin{% endif %}
+{%- endif -%}
+</td>
+
+<td class="time-col col-sm-2">
+{%- if spawner.last_activity -%}
+{{ spawner.last_activity.isoformat() + 'Z' }}
+{%- else -%}
+Never
+{%- endif -%}
+</td>
+
+<td class="time-col col-sm-2">{{ user.created.isoformat() + 'Z' }}</td>
+
+<td class="server-col col-sm-1 text-center">
+<a role="button" class="stop-server btn btn-xs btn-danger{% if not spawner.active %} hidden{% endif %}">
+stop server
+</a>
+<a role="button" class="start-server btn btn-xs btn-primary{% if spawner.active %} hidden{% endif %}">
+start server
+</a>
+</td>
+<td class="server-col col-sm-1 text-center">
+{%- if admin_access %}
+<a role="button" class="access-server btn btn-xs btn-primary{% if not spawner.active %} hidden{% endif %}">
+access server
+</a>
+{%- endif %}
+</td>
+<td class="edit-col col-sm-1 text-center">
+{%- if spawner.name == '' -%}
+<a role="button" class="edit-user btn btn-xs btn-primary">edit user</a>
+{%- endif -%}
+</td>
+<td class="edit-col col-sm-1 text-center">
+{%- if spawner.name == '' -%}
+{#- user row -#}
+  {%- if user.name != current_user.name -%}
+  <a role="button" class="delete-user btn btn-xs btn-danger">delete user</a>
+  {%- endif -%}
+{%- else -%}
+  {#- named spawner row -#}
+  <a role="button" class="delete-server btn btn-xs btn-warning">delete server</a>
+{%- endif -%}
+</td>
+</tr>
+{% endblock user_row %}
