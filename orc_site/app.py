@@ -56,6 +56,7 @@ def not_found(error):
         message = "This service will be back soon."
         active = "hub"
         response_code = 503
+        context.update({'user': None})
     else:
         status_code = error.code
         status_message = error.name
