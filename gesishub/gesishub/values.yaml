@@ -23,6 +23,8 @@ etcJupyter:
 
 jupyterhub:
   hub:
+    pdb:
+      minAvailable: 0
     nodeSelector:
       base: worker  # where database is
     deploymentStrategy:
@@ -170,6 +172,8 @@ jupyterhub:
         c.JupyterHub.authenticate_prometheus = False
 
   proxy:
+    pdb:
+      minAvailable: 0
     https:
       enabled: false
     service:

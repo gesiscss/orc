@@ -22,6 +22,9 @@ etcJupyter:
       cull_connected: true
 
 binderhub:
+  pdb:
+    minAvailable: 1
+  replicas: 2
   config:
     GitHubRepoProvider:
       # Add banned repositories to the list below
@@ -147,6 +150,8 @@ binderhub:
       # maxAge is 6 hours: 6 * 3600 = 21600
       maxAge: 21600
     hub:
+      pdb:
+        minAvailable: 0
       nodeSelector:
         base: worker  # where database is
       baseUrl: /binder/jupyter/
@@ -160,6 +165,8 @@ binderhub:
         noAuthMetrics: |
           c.JupyterHub.authenticate_prometheus = False
     proxy:
+      pdb:
+        minAvailable: 0
       https:
         enabled: false
       service:
