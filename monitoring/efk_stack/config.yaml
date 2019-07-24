@@ -16,8 +16,8 @@ elasticsearch:
 kibana:
   # https://github.com/helm/charts/tree/master/stable/kibana#configuration
   enabled: true
-  #nodeSelector:
-  #  base: worker
+  nodeSelector:
+    base: worker  # we need this for filebeat
   # https://github.com/helm/charts/tree/master/stable/elasticsearch#enabling-elasticsearch-internal-monitoring
   image:
     repository: "docker.elastic.co/kibana/kibana"
@@ -32,12 +32,12 @@ kibana:
     # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
 
     # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services
-    ELASTICSEARCH_URL: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
+    ELASTICSEARCH_HOSTS: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
     #XPACK_SECURITY_ENABLED: "true"
   files:
     kibana.yml:
       ## Default Kibana configuration from kibana-docker.
-      elasticsearch.url: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
+      elasticsearch.hosts: http://efk-stack-elasticsearch-client.efk-stack-ns.svc.cluster.local:9200
       ## Custom config properties below
       ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
       server.basePath: "/kibana"
