@@ -209,7 +209,7 @@ jupyterhub:
           mountPath: /etc/jupyter
     image:
       name: gesiscss/singleuser-orc
-      tag: "r2d-ce98e6e"
+      tag: "r2d-09c7bce"
 
   scheduling:
     userScheduler:
