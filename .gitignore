@@ -11,8 +11,6 @@ documentation
 #gesisbinder/secret_test.yaml
 #gesishub/secret.yaml
 #gesishub/secret_test.yaml
-gesishub/secret_local.yaml
-nginx_shibboleth/shibboleth/conf/ignore
 #monitoring/grafana_secret.yaml
 venv
 monitoring/efk_stack/config_default.yaml
