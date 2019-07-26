@@ -68,6 +68,7 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available/orc_test|load_balancer/snippets'; then
         echo "####### Restarting nginx"
         fab -H $K8S_BASE_WORKER_IP restart_nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA -s
+      fi;
 
       echo "####### Running staging deploy"
       mode="fetch_co"
@@ -110,6 +111,7 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available/orc|load_balancer/sites-available/default|load_balancer/snippets'; then
         echo "####### Restarting nginx"
         fab -H $K8S_BASE_WORKER_IP restart_nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA
+      fi;
 
       echo "####### Running deploy"
       mode="fetch_co"
