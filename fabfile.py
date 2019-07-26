@@ -1,6 +1,7 @@
 from fabric import task
 
 
+@task
 def restart_nginx(c, password, staging=False, ref='master'):
     c.user = 'iuser'
     c.connect_kwargs.password = password
@@ -21,6 +22,7 @@ def restart_nginx(c, password, staging=False, ref='master'):
         c.sudo("systemctl status nginx.service")
 
 
+@task
 def deploy(c, password, staging=False, ref='master', mode=''):
     """fab -H <master_node_ip> deploy -p <master_node_password> -r <commit_number> -m <deploy_mode> -s
     http://docs.fabfile.org/en/2.4/
