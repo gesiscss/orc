@@ -65,11 +65,6 @@ deploy_staging:
   stage: deploy
   script:
     - |
-      if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available/orc_test|load_balancer/snippets'; then
-        echo "####### Restarting nginx"
-        fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA -s
-      fi;
-
       echo "####### Running staging deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
@@ -108,7 +103,7 @@ deploy_prod:
 #    untracked: true
   script:
     - |
-      if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available/orc|load_balancer/sites-available/default|load_balancer/snippets'; then
+      if git diff HEAD~ --name-only | egrep 'load_balancer/'; then
         echo "####### Restarting nginx"
         fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA
       fi;

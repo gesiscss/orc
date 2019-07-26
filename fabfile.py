@@ -2,7 +2,7 @@ from fabric import task
 
 
 @task
-def nginx(c, password, staging=False, ref='master'):
+def nginx(c, password, ref='master'):
     c.user = 'iuser'
     c.connect_kwargs.password = password
 
@@ -12,11 +12,7 @@ def nginx(c, password, staging=False, ref='master'):
         c.run('git checkout {}'.format(ref))
 
     c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
-    if staging:
-        c.sudo("cp {}sites-available/orc_test /etc/nginx/sites-available/orc_test".format(remote_project_root), password=password)
-    else:
-        c.sudo("cp {}sites-available/default /etc/nginx/sites-available/default".format(remote_project_root), password=password)
-        c.sudo("cp {}sites-available/orc /etc/nginx/sites-available/orc".format(remote_project_root), password=password)
+    c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
     c.sudo("nginx -t", password=password)
     c.sudo("systemctl restart nginx.service", password=password)
     c.sudo("systemctl status nginx.service", password=password)
