@@ -6,20 +6,20 @@ def nginx(c, password, staging=False, ref='master'):
     c.user = 'iuser'
     c.connect_kwargs.password = password
 
-    remote_project_root = '~/ilcm/orc_nginx/load_balancer'
+    remote_project_root = '~/ilcm/orc_nginx/load_balancer/'
     with c.cd(remote_project_root):
         c.run('git fetch --all')
         c.run('git checkout {}'.format(ref))
 
-        c.sudo("cp -R snippets/* /etc/nginx/snippets/")
-        if staging:
-            c.sudo("cp sites-available/orc_test /etc/nginx/sites-available/orc_test")
-        else:
-            c.sudo("cp sites-available/default /etc/nginx/sites-available/default")
-            c.sudo("cp sites-available/orc /etc/nginx/sites-available/orc")
-        c.sudo("nginx -t")
-        c.sudo("systemctl restart nginx.service")
-        c.sudo("systemctl status nginx.service")
+    c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
+    if staging:
+        c.sudo("cp {}sites-available/orc_test /etc/nginx/sites-available/orc_test".format(remote_project_root), password=password)
+    else:
+        c.sudo("cp {}sites-available/default /etc/nginx/sites-available/default".format(remote_project_root), password=password)
+        c.sudo("cp {}sites-available/orc /etc/nginx/sites-available/orc".format(remote_project_root), password=password)
+    c.sudo("nginx -t", password=password)
+    c.sudo("systemctl restart nginx.service", password=password)
+    c.sudo("systemctl status nginx.service", password=password)
 
 
 @task
