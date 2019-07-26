@@ -2,6 +2,26 @@ from fabric import task
 
 
 @task
+def restart_nginx(c, password, staging=False, ref='master'):
+    c.user = 'iuser'
+    c.connect_kwargs.password = password
+
+    remote_project_root = '~/ilcm/orc_nginx/load_balancer'
+    with c.cd(remote_project_root):
+        c.run('git fetch --all')
+        c.run('git checkout {}'.format(ref))
+
+        c.sudo("cp -R snippets/* /etc/nginx/snippets/")
+        if staging:
+            c.sudo("cp sites-available/orc_test /etc/nginx/sites-available/orc_test")
+        else:
+            c.sudo("cp sites-available/default /etc/nginx/sites-available/default")
+            c.sudo("cp sites-available/orc /etc/nginx/sites-available/orc")
+        c.sudo("nginx -t")
+        c.sudo("systemctl restart nginx.service")
+        c.sudo("systemctl status nginx.service")
+
+
 def deploy(c, password, staging=False, ref='master', mode=''):
     """fab -H <master_node_ip> deploy -p <master_node_password> -r <commit_number> -m <deploy_mode> -s
     http://docs.fabfile.org/en/2.4/
