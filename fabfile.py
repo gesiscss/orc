@@ -1,7 +1,6 @@
 from fabric import task
 
 
-@task
 def restart_nginx(c, password, staging=False, ref='master'):
     c.user = 'iuser'
     c.connect_kwargs.password = password
