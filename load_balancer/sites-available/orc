@@ -169,4 +169,9 @@ server {
     #    }
 
     include snippets/ignore_fonts.conf;
+
+    location /static/ {
+        access_log off;
+        root /var/www/prod;
+    }
 }

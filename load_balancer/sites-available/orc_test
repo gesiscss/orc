@@ -128,4 +128,7 @@ server {
     allow 194.95.75.0/27;
     deny all;
 
+    location /static/ {
+        root /var/www/staging;
+    }
 }

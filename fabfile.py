@@ -2,7 +2,7 @@ from fabric import task
 
 
 @task
-def nginx(c, password, ref='master'):
+def nginx(c, password, branch_name, ref='master', mode=''):
     c.user = 'iuser'
     c.connect_kwargs.password = password
 
@@ -12,14 +12,20 @@ def nginx(c, password, ref='master'):
         c.run('git fetch --all')
         c.run('git checkout {}'.format(ref))
 
-    c.run('echo "######## Copying config files"')
-    c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
-    c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
-    c.run('echo "######## Testing config files"')
-    c.sudo("nginx -t", password=password)
-    c.run('echo "######## Restarting nginx"')
-    c.sudo("systemctl restart nginx.service", password=password)
-    c.sudo("systemctl status nginx.service", password=password)
+    mode = mode.split('-')
+    if "static" in mode:
+        c.run('echo "######## Copying static files"')
+        branch_name = "prod" if branch_name == "master" else "staging"
+        c.sudo("cp -R {}static /var/www/{}/static".format(remote_project_root, branch_name), password=password)
+    if "config" in mode:
+        c.run('echo "######## Copying config files"')
+        c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
+        c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
+        c.run('echo "######## Testing config files"')
+        c.sudo("nginx -t", password=password)
+        c.run('echo "######## Restarting nginx"')
+        c.sudo("systemctl restart nginx.service", password=password)
+        c.sudo("systemctl status nginx.service", password=password)
 
 
 @task

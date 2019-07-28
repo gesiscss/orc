@@ -140,11 +140,18 @@ deploy_nginx:
   stage: deploy
   script:
     - |
-      if git diff HEAD~ --name-only | egrep 'load_balancer/'; then
-        echo "####### Restarting nginx"
-        fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA
+      mode="fetch_co"
+      if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
+        echo "####### Restarting nginx ($CI_COMMIT_REF_NAME)"
+        mode+="-config"
       fi;
+      if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
+        echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
+        mode+="-static"
+      fi;
+      fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
   only:
+    - staging
     - master
   tags:
     - orc

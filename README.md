@@ -18,7 +18,7 @@ Because we setup the kubernetes cluster on baremetal, we use the deployment appr
 ["Using a self-provisioned edge"](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#using-a-self-provisioned-edge).
 
 Nginx is used as reverse proxy server and load balancer. 
-It also handles SSL offloading/termination. 
+It also handles SSL offloading/termination and serves static files. 
 It is outside of ORC cluster and a public entrypoint to the cluster. 
 All services in the cluster has type `NodePort`.
 
@@ -49,5 +49,5 @@ and featured projects: https://notebooks.gesis.org/gallery/
 
 ### [ORC Site](/orc_site)
 
-An app to serve ORC project static files and base pages, such as home and about.
+An app to serve ORC project base pages, such as home and about.
 

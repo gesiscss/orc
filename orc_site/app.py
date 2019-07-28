@@ -3,7 +3,9 @@ from flask_caching import Cache
 from flask import Flask, render_template, request
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
-app = Flask(__name__)
+
+static_folder = "../load_balancer/static" if os.getenv("FLASK_ENV") == "development" else "static"
+app = Flask(__name__, static_folder=static_folder)
 if not app.debug:
     # configure flask.app logger
     import logging
