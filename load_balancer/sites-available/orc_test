@@ -127,4 +127,5 @@ server {
     # Private DMZ Koeln
     allow 194.95.75.0/27;
     deny all;
+
 }
