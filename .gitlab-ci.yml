@@ -103,11 +103,6 @@ deploy_prod:
 #    untracked: true
   script:
     - |
-      if git diff HEAD~ --name-only | egrep 'load_balancer/'; then
-        echo "####### Restarting nginx"
-        fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA
-      fi;
-
       echo "####### Running deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
@@ -137,6 +132,23 @@ deploy_prod:
   environment:
     name: production
     url: https://notebooks.gesis.org/
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+deploy_nginx:
+  stage: deploy
+  script:
+    - |
+      if git diff HEAD~ --name-only | egrep 'load_balancer/'; then
+        echo "####### Restarting nginx"
+        fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -r $CI_COMMIT_SHA
+      fi;
+  only:
+    - master
+  tags:
+    - orc
+  when: manual
   allow_failure: false
   dependencies: []
   retry: 1

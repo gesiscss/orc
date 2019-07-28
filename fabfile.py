@@ -7,13 +7,17 @@ def nginx(c, password, ref='master'):
     c.connect_kwargs.password = password
 
     remote_project_root = '~/ilcm/orc_nginx/load_balancer/'
+    c.run('echo "######## Updating code base"')
     with c.cd(remote_project_root):
         c.run('git fetch --all')
         c.run('git checkout {}'.format(ref))
 
+    c.run('echo "######## Copying config files"')
     c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
     c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
+    c.run('echo "######## Testing config files"')
     c.sudo("nginx -t", password=password)
+    c.run('echo "######## Restarting nginx"')
     c.sudo("systemctl restart nginx.service", password=password)
     c.sudo("systemctl status nginx.service", password=password)
 
