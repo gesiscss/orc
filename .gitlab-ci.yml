@@ -142,7 +142,7 @@ deploy_nginx:
     - |
       mode="fetch_co"
       if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
-        echo "####### Restarting nginx ($CI_COMMIT_REF_NAME)"
+        echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
       fi;
       if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then

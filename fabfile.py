@@ -23,8 +23,8 @@ def nginx(c, password, branch_name, ref='master', mode=''):
         c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
         c.run('echo "######## Testing config files"')
         c.sudo("nginx -t", password=password)
-        c.run('echo "######## Restarting nginx"')
-        c.sudo("systemctl restart nginx.service", password=password)
+        c.run('echo "######## Reloading nginx"')
+        c.sudo("systemctl reload nginx.service", password=password)
         c.sudo("systemctl status nginx.service", password=password)
 
 
