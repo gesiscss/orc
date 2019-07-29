@@ -1,8 +1,8 @@
 binderhub:
   resources:
     requests:
-      cpu: "0.25"
-      memory: 1Gi
+      cpu: "0.1"
+      memory: 512Mi
     limits:
       cpu: "1"
       memory: 1Gi
@@ -64,7 +64,7 @@ binderhub:
     hub:
       resources:
         requests:
-          cpu: "0.25"
+          cpu: "0.1"
           memory: 512Mi
         limits:
           cpu: "1"
@@ -91,5 +91,5 @@ binderhub:
         guarantee: 0.1
         limit: 0.5
       memory:
-        guarantee: 512M
+        guarantee: 256M
         limit: 512M

@@ -36,7 +36,7 @@ spec:
       - name: orc-site-test
         image: gesiscss/orc-site:9f0c096
         command: ["gunicorn"]
-        args: ["-b", "0.0.0.0:5000", "-w", "4", "orc_site.app:app"]
+        args: ["-b", "0.0.0.0:5000", "-w", "2", "orc_site.app:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
@@ -47,8 +47,8 @@ spec:
           value:  "notebooks-test.gesis.org"
         resources:
           requests:
-            cpu: "0.25"
+            cpu: "0.1"
             memory: "256Mi"
           limits:
-            cpu: "1"
-            memory: "1Gi"
+            cpu: "0.5"
+            memory: "512Mi"

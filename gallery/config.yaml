@@ -51,7 +51,7 @@ spec:
           value: "true"
         resources:
           requests:
-            cpu: "0.25"
+            cpu: "0.2"
             memory: "256Mi"
           limits:
             cpu: "4"
