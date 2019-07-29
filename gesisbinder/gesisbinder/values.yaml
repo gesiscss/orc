@@ -187,3 +187,15 @@ binderhub:
             mountPath: /etc/jupyter
           - name: etc-jupyter-templates
             mountPath: /etc/jupyter/templates
+
+    scheduling:
+      userScheduler:
+        enabled: false
+      podPriority:
+        enabled: false
+      userPlaceholder:
+        enabled: false
+
+    prePuller:
+      continuous:
+        enabled: false

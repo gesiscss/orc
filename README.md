@@ -38,7 +38,7 @@ Single user server image: https://github.com/gesiscss/data_science_image
 
 BinderHub (with `jupyter/repo2docker:bf29f66f`) runs under https://notebooks.gesis.org/binder/. 
 
-Chart version [0.2.0-9c3045e](https://github.com/jupyterhub/binderhub/tree/9c3045e)
+Chart version [0.2.0-4013220](https://github.com/jupyterhub/binderhub/tree/4013220)
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
@@ -50,4 +50,3 @@ and featured projects: https://notebooks.gesis.org/gallery/
 ### [ORC Site](/orc_site)
 
 An app to serve ORC project base pages, such as home and about.
-
