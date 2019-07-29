@@ -118,15 +118,15 @@ server {
 
     include snippets/ignore_fonts.conf;
 
-    # Private Koeln
-    allow 10.6.0.0/16;
-    # Private Mannheim
-    allow 10.2.0.0/16;
-    # Public DMZ Koeln
-    allow 193.175.238.0/24;
-    # Private DMZ Koeln
-    allow 194.95.75.0/27;
-    deny all;
+    ## Private Koeln
+    #allow 10.6.0.0/16;
+    ## Private Mannheim
+    #allow 10.2.0.0/16;
+    ## Public DMZ Koeln
+    #allow 193.175.238.0/24;
+    ## Private DMZ Koeln
+    #allow 194.95.75.0/27;
+    #deny all;
 
     location /static/ {
         root /var/www/staging;
