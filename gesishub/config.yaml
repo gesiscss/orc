@@ -73,7 +73,7 @@ jupyterhub:
       capacity: 25Gi
     cpu:
       guarantee: 0.1
-      limit: 2
+      limit: 4
     memory:
       guarantee: 1G
-      limit: 4G
+      limit: 32G
