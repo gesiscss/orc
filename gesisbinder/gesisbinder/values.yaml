@@ -21,6 +21,11 @@ etcJupyter:
       # when people leave a notebook open and wander off
       cull_connected: true
 
+# this is set in _secret.yaml
+# this is required to send GESIS Binder events to mybinder.org's StackDriver
+eventsArchiver:
+  serviceAccountKey: ""
+
 binderhub:
   pdb:
     minAvailable: 1
@@ -71,7 +76,7 @@ binderhub:
       mountPath: /etc/binderhub/templates/gesis
 
   extraConfig:
-    01-eventlog: |
+    011-eventlog: |
       from datetime import datetime
       import jsonschema
       import requests
@@ -81,9 +86,9 @@ binderhub:
           """
           Emit event with given schema / version in a capsule.
           """
-          # if not self.handlers_maker:
-          #     # If we don't have a handler setup, ignore everything
-          #     return
+          if not self.handlers_maker:
+              # If we don't have a handler setup, ignore everything
+              return
 
           if (schema_name, version) not in self.schemas:
               raise ValueError(f'Schema {schema_name} version {version} not registered')
@@ -96,7 +101,7 @@ binderhub:
               'version': version
           }
           capsule.update(event)
-          # self.log.info(capsule)
+          self.log.info(capsule)
 
           # token of binder user in gallery
           headers = {'Authorization': f'Bearer {os.environ["GESIS_API_TOKEN"]}'}

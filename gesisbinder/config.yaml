@@ -7,6 +7,18 @@ binderhub:
       cpu: "2"
       memory: 2Gi
 
+  extraVolumes:
+    - name: secrets
+      secret:
+        secretName: events-archiver-secrets
+  extraVolumeMounts:
+    - name: secrets
+      mountPath: /secrets
+      readOnly: true
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /secrets/service-account.json
+
   config:
     BinderHub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
@@ -23,6 +35,26 @@ binderhub:
         USER $NB_USER
 
   extraConfig:
+    # send binder events to mybinder.org's StackDriver on Google Cloud
+    010-eventlog: |
+      import google.cloud.logging
+      import google.cloud.logging.handlers
+      # importing google cloud configures a root log handler,
+      # which prevents tornado's pretty-logging
+      import logging
+      logging.getLogger().handlers = []
+
+      class JSONCloudLoggingHandler(google.cloud.logging.handlers.CloudLoggingHandler):
+          def emit(self, record):
+              record.name = None
+              super().emit(record)
+
+      def _make_eventsink_handler(el):
+          client = google.cloud.logging.Client()
+          # These events are not parsed as JSON in stackdriver, so give it a different name
+          # for now. Should be fixed in https://github.com/googleapis/google-cloud-python/pull/6293
+          return [JSONCloudLoggingHandler(client, name='binderhub-events-text')]
+      c.EventLog.handlers_maker = _make_eventsink_handler
     020-templates: |
       staging = False
       production = True
