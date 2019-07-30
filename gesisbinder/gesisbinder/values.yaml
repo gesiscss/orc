@@ -85,7 +85,7 @@ binderhub:
 
           # token of binder user in gallery
           headers = {'Authorization': f'Bearer {os.environ["GESIS_API_TOKEN"]}'}
-          api_url = os.getenv("GESIS_API_URL", "https://notebooks.gesis.org/gallery/api/v1.0/launches")
+          api_url = os.environ["GESIS_API_URL"]
 
           # emit function is called after .launch, so we can wait before retry
           # this delay shouldn't effect the user
