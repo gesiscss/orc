@@ -1,15 +1,27 @@
 {% extends "page.html" %}
 
+{% block extra_css %}
+<link href="/static/team.css" rel="stylesheet" />
+{% endblock extra_css %}
+
 {% block main %}
 {#<div class="row form-group text-center">#}
 {#<div class="row form-group"></div>#}
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
     {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
-    <h3>Open Research Computing (ORC) Project</h3>
+    <h3 style="color: #58748f;">Open Research Computing (ORC) Project</h3>
 
-    <a href="https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/" target="_blank">Project details</a>
-{#    http://gepris.dfg.de/gepris/projekt/324867496?language=en#}
+    <p style="color: #777;"> The iLCM project aims to develop an integrated research environment for the analysis of structured as well as unstructured data.
+        The research environment extends the existing Leipzig Corpus Miner framework into an "Open Research Computing" (ORC) "Software as a Service" platform.
+        This ORC platform will enable researchers to implement highly individualized research designs and support researchers in meeting highly individualized project-specific requirements.
+        The ORC platform’s design will be based on notebooks. Notebooks are computational executable scripts along their verbal description. The role of GESIS in this project will be the development
+        of a central service for executing, publishing and archiving of notebooks.
+        [<a href="https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/" target="_blank">Project details</a>]
+        {#http://gepris.dfg.de/gepris/projekt/324867496?language=en#}
+    </p>
 </div>
+
+{% include "team.html" %}
 
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6" style="padding-left: 0;">
@@ -34,12 +46,6 @@
         </a>
     </p>
     <p>
-{#TODO team + add dhurim. maybe we make a team page?#}
-{#        <strong>Team: </strong><br>#}
-{#        <a href="https://www.gesis.org/person/arnim.bleier" target="_blank">Dr. Arnim Bleier</a>#}
-{#        <br>#}
-{#        <a href="https://github.com/bitnik" target="_blank">Kenan Erdogan</a>#}
-{#        <br>#}
         <strong>Contact: </strong>notebooks<span style="display:none">idbh</span>@gesis.org
         <a href="#"
            data-name="notebooks"
