@@ -38,7 +38,7 @@ spec:
       - name: gallery-test
         image: gesiscss/binder-gallery:0e25bfa
         command: ["gunicorn"]
-        args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
+        args: ["-b", "0.0.0.0:5000", "-w", "16", "binder_gallery:app"]
         ports:
         - containerPort: 5000
           protocol: TCP
@@ -51,11 +51,11 @@ spec:
           value:  "gallery_config.Config"
         resources:
           requests:
-            cpu: "0.1"
+            cpu: "0.2"
             memory: "256Mi"
           limits:
-            cpu: "1"
-            memory: "1Gi"
+            cpu: "4"
+            memory: "4Gi"
         volumeMounts:
         - name: gallery-config
           mountPath: /binder_gallery/gallery_config.py
