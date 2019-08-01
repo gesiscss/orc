@@ -38,7 +38,7 @@ Single user server image: https://github.com/gesiscss/data_science_image
 
 BinderHub (with `jupyter/repo2docker:bf29f66f`) runs under https://notebooks.gesis.org/binder/. 
 
-Chart version [0.2.0-4013220](https://github.com/jupyterhub/binderhub/tree/4013220)
+Chart version [0.2.0-654b31d](https://github.com/jupyterhub/binderhub/tree/654b31d)
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 
