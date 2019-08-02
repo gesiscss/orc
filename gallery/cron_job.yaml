@@ -19,13 +19,15 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:6ccc3f7
+            image: gesiscss/binder-gallery:88655c0
             command: ["flask"]
-            args: ["parse-archives", "mybinder"]
+            args: ["parse-mybinder-archives", "mybinder"]
             ports:
             - containerPort: 5000
               protocol: TCP
             env:
+            - name: FLASK_APP
+              value:  "binder_gallery"
             - name: FLASK_ENV
               value:  "production"
             - name: BG_BASE_URL
