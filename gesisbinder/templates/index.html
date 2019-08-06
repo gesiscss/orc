@@ -1,4 +1,4 @@
-{% extends "templates/index.html" %}
+{% extends "page.html" %}
 
 {% block head %}
 <meta id="base-url" data-url="{{base_url}}">
@@ -221,3 +221,10 @@
   <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
 </div>
 {% endblock main %}
+
+{% block footer %}
+{{ super () }}
+<script type="text/javascript">
+indexMain();
+</script>
+{% endblock footer %}
