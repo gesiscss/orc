@@ -3,8 +3,8 @@ kind: CronJob
 metadata:
   name: mybinder-archive-parser
 spec:
-  # run every day from 1 am to 10 pm (in UTC) each 3 hours
-  schedule: "0 1,4,7,10,13,16,19,22 * * *"
+  # run every day every hour (in UTC)
+  schedule: "0 * * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 70
@@ -19,7 +19,7 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:537ae81
+            image: gesiscss/binder-gallery:79d7eab
             command: ["flask"]
             args: ["parse-mybinder-archives", "mybinder"]
             ports:
