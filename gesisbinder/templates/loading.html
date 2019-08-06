@@ -3,8 +3,7 @@
 {% block head %}
 <meta id="base-url" data-url="{{base_url}}">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
-<!-- Other OG information in page.html -->
-<meta property="og:description" content="{{social_desc}}">
+
 <script src="{{static_url("dist/bundle.js")}}"></script>
 {{ super() }}
 <link href="{{static_url("loading.css")}}" rel="stylesheet">
@@ -13,8 +12,17 @@ div#log-container {
     width: 100%;
     margin: 0 0;
 }
+div#loader {
+    overflow-wrap: break-word;
+}
 </style>
 {% endblock head %}
+
+{% block meta_og_title %}
+<!-- Other OG information in page.html -->
+<meta property="og:title" content="{{social_desc}}">
+<meta property="og:description" content="Click to run this interactive environment. From the Binder Project: Reproducible, sharable, open, interactive computing environments.">
+{% endblockblock meta_og_title %}
 
 {% block main %}
 <div class="row form-group"></div>
