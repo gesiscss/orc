@@ -9,16 +9,27 @@
 {#<div class="row form-group"></div>#}
 <div class="row" style="padding-left: 30px; padding-right: 30px;">
     {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
-    <h3 style="color: #58748f;">About the Project </h3>
+    <h2 style="color: #58748f;">Open Research Computing for the Social Sciences </h2>
 
-    <p style="color: #777;"> The iLCM project aims to develop an integrated research environment for the analysis of structured as well as unstructured data.
-        The research environment extends the existing Leipzig Corpus Miner framework into an "Open Research Computing" (ORC) "Software as a Service" platform.
-        This ORC platform will enable researchers to implement highly individualized research designs and support researchers in meeting highly individualized project-specific requirements.
-        The ORC platform’s design will be based on notebooks. Notebooks are computational executable scripts along their verbal description. The role of GESIS in this project will be the development
-        of a central service for executing, publishing and archiving of notebooks.
-        [<a href="https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/" target="_blank">Project details</a>]
-        {#http://gepris.dfg.de/gepris/projekt/324867496?language=en#}
+    <p style="color: #777;"> GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation. We aim to enable you to get started quickly with your research ideas,
+        prototyping your data science projects, or learning to program languages such as <a href="http://www.r-project.org/">R </a>, <a href="http://www.python.org/"> Python </a> or <a href="http://julialang.org/">Julia</a> .
     </p>
+    <h3 style="color: #58748f;">Why does Open Research Computing matter? </h3>
+    <p style="color: #777;">
+        “Openness” is regarded by many researchers as the to most important property to any scientific endeavor. However, achieving openness has proven to be non-trivial and comes with many problems, in particular when
+        large data-sets and complex analysis workflows are involved. This poses for infrastructure providers like GESIS <a href="http://nbn-resolving.de/urn:nbn:de:0168-ssoar-54950-5">an important question </a> How can we help to overcome these problems?
+        We, the GESIS Notebooks team, want to promote Open Science by offering easy-to-use technical solutions for documenting and sharing computational workflows for data-intensive research designs. To this end, we created the service <strong>GESIS Notebooks - Open Research Computing for the Social Sciences</strong>.
+        It is our hope that the <strong> GESIS Notebooks </strong> service helps in
+        <ul style="color: #777;">
+            <li>   creating incentives for scholars to make their work more easily reproducible, </li>
+            <li> promoting standards to ensure interoperability of Open Science repositories, </li>
+            <li>offering training material for scholars based on Open Science practices. </li>
+        </ul>
+        <p style="color: #777;">
+            We are convinced that progress in these areas will lead to a significant strengthening of the emerging field of CSS and the paradigm of reproducible research.
+        </p>
+    </p>
+
 </div>
 
 {% include "team.html" %}
@@ -62,5 +73,11 @@
     <p>
         <a href="/gallery/api/v1.0/">API</a> for launch events on GESIS binder
     </p>
+</div>
+<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
+    <h3 style="color: #58748f;">Feedback Wellcome </h3>
+        <p style="color: #777;">
+            To enable us to continuously improve the service, we, the GESIS Notebooks team, would appreciate your <a href="mailto:notebooks@gesis.org?Subject=Feedback" target="_top">feedback</a> if you have suggestions for improvements. The source code of the project is freely available at our <a href="https://github.com/gesiscss/orc"> GitHub Repository </a> and an API for launch events on GESIS binder <a href="https://notebooks.gesis.org/gallery/api/v1.0/">is available </a>.
+        </p>
 </div>
 {% endblock main %}
