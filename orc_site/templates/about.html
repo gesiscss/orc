@@ -10,31 +10,45 @@
 <div class="row" style="padding-left: 30px; padding-right: 30px;">
     {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
     <h2 style="color: #58748f;">Open Research Computing for the Social Sciences </h2>
-
-    <p style="color: #777;"> GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation. We aim to enable you to get started quickly with your research ideas,
-        prototyping your data science projects, or learning to program languages such as <a href="http://www.r-project.org/">R </a>, <a href="http://www.python.org/"> Python </a> or <a href="http://julialang.org/">Julia</a> .
+    <p style="color: #777;">
+        GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation.
+        We aim to enable you to get started quickly with your research ideas,
+        prototyping your data science projects, or learning to program languages such as
+        <a href="http://www.r-project.org/">R</a>, <a href="http://www.python.org/">Python</a> or <a href="http://julialang.org/">Julia</a> .
     </p>
+
     <h3 style="color: #58748f;">Why does Open Research Computing matter? </h3>
     <p style="color: #777;">
-        “Openness” is regarded by many researchers as the to most important property to any scientific endeavor. However, achieving openness has proven to be non-trivial and comes with many problems, in particular when
-        large data-sets and complex analysis workflows are involved. This poses for infrastructure providers like GESIS <a href="http://nbn-resolving.de/urn:nbn:de:0168-ssoar-54950-5">an important question </a> How can we help to overcome these problems?
-        We, the GESIS Notebooks team, want to promote Open Science by offering easy-to-use technical solutions for documenting and sharing computational workflows for data-intensive research designs. To this end, we created the service <strong>GESIS Notebooks - Open Research Computing for the Social Sciences</strong>.
-        It is our hope that the <strong> GESIS Notebooks </strong> service helps in
-        <ul style="color: #777;">
-            <li>   creating incentives for scholars to make their work more easily reproducible, </li>
-            <li> promoting standards to ensure interoperability of Open Science repositories, </li>
-            <li>offering training material for scholars based on Open Science practices. </li>
-        </ul>
-        <p style="color: #777;">
-            We are convinced that progress in these areas will lead to a significant strengthening of the emerging field of CSS and the paradigm of reproducible research.
-        </p>
+        “Openness” is regarded by many researchers as the to most important property to any scientific endeavor.
+        However, achieving openness has proven to be non-trivial and comes with many problems, in particular when
+        large data-sets and complex analysis workflows are involved.
+        This poses for infrastructure providers like GESIS
+        <a href="http://nbn-resolving.de/urn:nbn:de:0168-ssoar-54950-5">an important question</a>: How can we help to overcome these problems?
     </p>
 
+    <p style="color: #777;">
+        We, the GESIS Notebooks team, want to promote Open Science by offering easy-to-use technical solutions for
+        documenting and sharing computational workflows for data-intensive research designs.
+        To this end, we created the service <strong>GESIS Notebooks - Open Research Computing for the Social Sciences</strong>.
+    </p>
+
+    <p style="color: #777;">
+        It is our hope that the <strong>GESIS Notebooks</strong> service helps in
+    </p>
+    <ul style="color: #777;">
+        <li>creating incentives for scholars to make their work more easily reproducible,</li>
+        <li>promoting standards to ensure interoperability of Open Science repositories,</li>
+        <li>offering training material for scholars based on Open Science practices.</li>
+    </ul>
+    <p style="color: #777;">
+        We are convinced that progress in these areas will lead to a significant strengthening of
+        the emerging field of CSS and the paradigm of reproducible research.
+    </p>
 </div>
 
 {% include "team.html" %}
 
-<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
+<div class="row form-group" style="padding-left: 30px; padding-right: 30px; color: #777;">
     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6" style="padding-left: 0;">
         <p><strong>Sponsored by</strong></p>
         <a href="http://www.dfg.de/en/" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif') }}" class="img-responsive center-block"></a>
@@ -43,41 +57,31 @@
 
 {#TODO add partner leipniz#}
 
-<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
+<div class="row" style="padding-left: 30px; padding-right: 30px; color: #777;">
     <p>
         <strong>Powered by </strong>
 {#        TODO add versions of jhub and bhub#}
         <a href="https://jupyterhub.readthedocs.io/en/latest/">JupyterHub</a> and
         <a href="https://binderhub.readthedocs.io/en/latest/">BinderHub</a>
     </p>
-    <p>
-        <strong>Created by </strong>
-        <a href="https://www.gesis.org/en/institute/departments/computational-social-science/">
-            GESIS - Leibniz Institute for the Social Sciences, CSS group
-        </a>
-    </p>
-    <p>
-        <strong>Contact: </strong>notebooks<span style="display:none">idbh</span>@gesis.org
-        <a href="#"
-           data-name="notebooks"
-           data-domain="gesis"
-           data-tld="org"
-           onclick="window.location.href='mailto:'+this.dataset.name+'@'+this.dataset.domain+'.'+this.dataset.tld; return false;">
-            <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>
-        </a>
-        or <a href="https://github.com/gesiscss/orc/issues">create an issue</a>
-    </p>
-    <p>
-        <a href="https://github.com/gesiscss/orc">GitHub Repository</a>
-    </p>
-    <p>
-        <a href="/gallery/api/v1.0/">API</a> for launch events on GESIS binder
-    </p>
 </div>
-<div class="row form-group" style="padding-left: 30px; padding-right: 30px;">
-    <h3 style="color: #58748f;">Feedback Wellcome </h3>
+
+<div class="row" style="padding-left: 30px; padding-right: 30px;">
+    <h3 style="color: #58748f;">Feedback Welcome</h3>
         <p style="color: #777;">
-            To enable us to continuously improve the service, we, the GESIS Notebooks team, would appreciate your <a href="mailto:notebooks@gesis.org?Subject=Feedback" target="_top">feedback</a> if you have suggestions for improvements. The source code of the project is freely available at our <a href="https://github.com/gesiscss/orc"> GitHub Repository </a> and an API for launch events on GESIS binder <a href="https://notebooks.gesis.org/gallery/api/v1.0/">is available </a>.
+            To enable us to continuously improve the service, we, the GESIS Notebooks team,
+            would appreciate your
+            <a href="#"
+               data-name="notebooks"
+               data-domain="gesis"
+               data-tld="org"
+               onclick="window.location.href='mailto:'+this.dataset.name+'@'+this.dataset.domain+'.'+this.dataset.tld+'?subject=Feedback'; return false;"
+             target="_top">
+                feedback</a>
+            if you have suggestions for improvements. The source code of the project is freely available
+            at our <a href="https://github.com/gesiscss/orc"> GitHub Repository </a> and
+            <a href="/gallery/api/v1.0/">an API for launch events</a>
+            on GESIS Binder and on Binder Federation is available.
         </p>
 </div>
 {% endblock main %}
