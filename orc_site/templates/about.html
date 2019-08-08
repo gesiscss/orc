@@ -9,7 +9,7 @@
 {#<div class="row form-group"></div>#}
 <div class="row" style="padding-left: 30px; padding-right: 30px;">
     {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
-    <h2 style="color: #58748f;">Open Research Computing for the Social Sciences </h2>
+    <h2 style="color: #58748f;">About </h2>
     <p style="color: #777;">
         GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation.
         We aim to enable you to get started quickly with your research ideas,
@@ -48,10 +48,16 @@
 
 {% include "team.html" %}
 
+
 <div class="row form-group" style="padding-left: 30px; padding-right: 30px; color: #777;">
-    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6" style="padding-left: 0;">
-        <p><strong>Sponsored by</strong></p>
-        <a href="http://www.dfg.de/en/" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif') }}" class="img-responsive center-block"></a>
+        <p><strong>Supported by</strong></p>
+    <div style="padding-left: 0; display: flex;">
+        <div class="col">
+            <a href="https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif') }}" class="img-responsive center-block" style="margin-top:25%;"></a>
+        </div>
+        <div class="col">
+            <img src="{{ url_for('static', filename='images/gesis-logo.png') }}" class="img-responsive center-block" style="margin-left: 10%;">
+        </div>
     </div>
 </div>
 
