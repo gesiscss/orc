@@ -1,0 +1,137 @@
+.our-content{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease-in-out 0s;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-container .pic img{
+    width: 20%;
+    height: auto;
+    padding-top: 30px;
+    margin-bottom: 10px;
+
+}
+
+.content-container{
+    width: 90%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+
+}
+
+.content-container .team-content{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    padding: 15px 10px;
+    background: #fff;
+    position: relative;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.content-container .title{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #58748f;
+    margin: 0 0 12px 0;
+}
+
+
+.our-content small{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    display: block;
+    font-size: 15px;
+    color: #58748f;
+    margin-bottom: 8px;
+}
+
+.our-content .team-layer{
+    width: 100%;
+    padding: 34px 10px;
+    background: #f7f7f7;
+    border-bottom: 2px solid #716a9e;
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    opacity: 0;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.our-content:hover .team-layer{
+    bottom: 0;
+    opacity: 1;
+}
+
+.our-content .team-layer a{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #58748f;
+    margin: 0 0 12px 0;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.our-content .team-layer a:hover{
+    color: #58748f;
+}
+
+.our-content .post{
+    display: block;
+    font-size: 18px;
+    color: #777;
+}
+.our-team{
+    padding: 0 20px;
+    margin-top: 30px;
+    margin bottom: 20px;
+    text-align: center;
+    position: relative;
+}
+.our-team .pic{
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    margin: 0 auto 25px;
+    overflow: hidden;
+}
+.our-team .pic img{
+    width: 100%;
+    height: auto;
+}
+
+.our-team .title{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    display: inline-block;
+    font-size: 22px;
+    color: #58748f;
+    /*letter-spacing: 1.5px;*/
+    margin: 0 0 0px 0;
+    /*text-transform: uppercase;*/
+}
+.our-team .post{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    display: inline-block;
+    font-size: 14px;
+    color: #f06400;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.our-team .description{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #777;
+    line-height: 24px;
+    padding-bottom: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+@media only screen and (max-width: 990px){
+    .our-team{ margin-bottom: 30px; }
+}
