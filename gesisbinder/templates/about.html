@@ -15,12 +15,6 @@
             {{ message | safe }}
           </p>
           {% endif %}
-          <p>
-              <button id="up-to-date" type="button" class="btn btn-default"
-                      data-container="body" data-toggle="popover" data-placement="right">
-                  Up to date?
-              </button>
-          </p>
         </div>
       </div>
       {% endblock header %}
@@ -31,51 +25,3 @@
 
 {% block footer %}
 {% endblock footer %}
-
-{% block extra_js %}
-<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-    function compare_verions() {
-        var versions_url = "/binder/versions";
-        var versions = "";
-        var mybinder_versions_url = "https://mybinder.org/versions";
-        var mybinder_versions = "";
-        $.get(
-            versions_url,
-            function( data ) {
-                versions = data;
-                $.get(
-                    mybinder_versions_url,
-                    function( data ) {
-                        mybinder_versions = data;
-                        if (versions !== "" && mybinder_versions !== "") {
-                            mybinder_versions = mybinder_versions["binderhub"] + " with " + mybinder_versions["builder"];
-                            versions = versions["binderhub"] + " with " + versions["builder"];
-                            if (versions === mybinder_versions) {
-                                $("#up-to-date").data('bs.popover').options.title = "Yes";
-                                $("#up-to-date").data('bs.popover').options.content = "mybinder.org: " + mybinder_versions + "<br />GESIS binder: " + versions;
-
-                            } else {
-                                $("#up-to-date").data('bs.popover').options.title = "No";
-                                $("#up-to-date").data('bs.popover').options.content = "mybinder.org: " + mybinder_versions + "<br />GESIS binder: " + versions;
-                            }
-                        }
-
-                        },
-                    "json"
-                );
-                },
-            "json"
-        );
-    }
-
-    $( document ).ready(function() {
-        $("#up-to-date").popover({'trigger': 'hover', 'html': true});
-        compare_verions();
-    });
-
-    $("#up-to-date").on('show.bs.popover', function () {
-        compare_verions();
-    });
-</script>
-{% endblock extra_js %}
