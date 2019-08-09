@@ -30,15 +30,11 @@ All services in the cluster has type `NodePort`.
 
 JupyterHub 1.0.0 runs under https://notebooks.gesis.org/hub/. 
 
-Chart version [0.9-dcde99a](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/dcde99a).
-
 Single user server image: https://github.com/gesiscss/data_science_image
 
 ### [GESIS Binder](/gesisbinder)
 
-BinderHub (with `jupyter/repo2docker:9c559d2a`) runs under https://notebooks.gesis.org/binder/. 
-
-Chart version [0.2.0-409f200](https://github.com/jupyterhub/binderhub/tree/409f200)
+BinderHub (with runs under https://notebooks.gesis.org/binder/. 
 
 Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
 

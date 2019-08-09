@@ -194,7 +194,3 @@ binderhub:
         enabled: false
       userPlaceholder:
         enabled: false
-
-    prePuller:
-      continuous:
-        enabled: false
