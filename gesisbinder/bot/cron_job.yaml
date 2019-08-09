@@ -1,0 +1,37 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: update-gesisbinder
+spec:
+  schedule: "0,30 * * * *"
+  # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 70
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: update-gesisbinder
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: update-gesisbinder
+            image: python:3.7.4-stretch
+            command: ["/bin/sh"]
+            args: ["-c", "cd ~ && git clone https://github.com/gesiscss/orc.git orc_repo && pip install -r orc_repo/gesisbinder/bot/requirements.txt --quiet && python orc_repo/gesisbinder/bot/henchbot.py"]
+            env:
+              - name: HENCHBOT_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: henchbot-data
+                    key: token
+              - name: BOT_GH_NAME
+                value: "gesisnotebooks"
+              - name: BOT_EMAIL
+                valueFrom:
+                  secretKeyRef:
+                    name: henchbot-data
+                    key: email
+              # for testing
+              - name: ORG_NAME
+                value: "bitnik"

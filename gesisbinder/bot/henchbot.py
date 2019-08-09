@@ -65,6 +65,8 @@ class henchBotMyBinder:
                     continue
 
                 self.upgrade_repo_commit(existing_pr, repo)
+            else:
+                logging.info(f"{repo}: already up-to-date}")
 
     def check_existing_prs(self, henchbot_prs, repo):
         """
@@ -377,12 +379,12 @@ class henchBotMyBinder:
         """
         Main controlling method to get commit SHAs
         """
-        logging.info('Fetching latest commit SHAs for repo2docker, BinderHub and JupyterHub that deployed on GESIS Binder')
+        # logging.info('Fetching latest commit SHAs for repo2docker, BinderHub and JupyterHub that deployed on GESIS Binder')
         self.get_repo2docker_live()
         self.get_binderhub_live()
         self.get_jupyterhub_live()
 
-        logging.info('Fetching latest commit SHAs for repo2docker, BinderHub and JupyterHub that deployed on mybinder.org')
+        # logging.info('Fetching latest commit SHAs for repo2docker, BinderHub and JupyterHub that deployed on mybinder.org')
         self.get_repo2docker_latest()
         self.get_binderhub_latest()
         self.get_jupyterhub_latest()
