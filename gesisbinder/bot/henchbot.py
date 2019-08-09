@@ -66,7 +66,7 @@ class henchBotMyBinder:
 
                 self.upgrade_repo_commit(existing_pr, repo)
             else:
-                logging.info(f"{repo}: already up-to-date}")
+                logging.info(f"{repo}: already up-to-date")
 
     def check_existing_prs(self, henchbot_prs, repo):
         """
