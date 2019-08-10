@@ -12,9 +12,9 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
-TOKEN = os.environ['HENCHBOT_TOKEN']
+TOKEN = os.environ['HENCHBOT_TOKEN'].decode().strip()
 BOT_GH_NAME = os.environ['BOT_GH_NAME']
-BOT_EMAIL = os.environ['BOT_EMAIL']
+BOT_EMAIL = os.environ['BOT_EMAIL'].decode().strip()
 
 ORG_NAME = os.environ.get("ORG_NAME", "gesiscss")
 REPO_NAME = os.environ.get("REPO_NAME", "orc")
