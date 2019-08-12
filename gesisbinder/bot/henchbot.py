@@ -109,26 +109,29 @@ class henchBotMyBinder:
         """
         subprocess.check_call(['git', 'clone', f'https://github.com/{BOT_GH_NAME}/{REPO_NAME}'])
 
-    def delete_old_branch(self, repo):
+    def delete_old_branch_if_exists(self, repo):
         """
         Delete an old branch in the henchbot fork (if it was merged)
         """
         res = requests.get(f'https://api.github.com/repos/{BOT_GH_NAME}/{REPO_NAME}/branches')
         if repo+'_bump' in [x['name'] for x in res.json()]:
-            subprocess.check_call(['git', 'push', '--delete', 'origin', repo+'_bump'])
+            subprocess.check_call(['git', 'push',
+                                   f'https://{BOT_GH_NAME}:{TOKEN}@github.com/{BOT_GH_NAME}/{REPO_NAME}',
+                                   f':{repo}_bump'])
             # subprocess.call(['git', 'branch', '-d', repo+'_bump'])
 
     def checkout_branch(self, existing_pr, repo):
         """
         Checkout branch for the bump
         """
-        if not existing_pr:
-            if self.fork_exists:  # fork exists for other repo and old branch for this repo
-                self.delete_old_branch(repo)
-                subprocess.check_call(['git', 'pull', REPO_URL, 'master'])
-            # subprocess.check_call(['git', 'checkout', '-b', repo+'_bump'])
-        # else:
-        #     subprocess.check_call(['git', 'checkout', repo+'_bump'])
+        if existing_pr:
+            # fork exists for this repo with old branch
+            self.delete_old_branch_if_exists(repo)
+        elif self.fork_exists:
+            # there is a pr for other repo
+            # fork exists for other repo and old branch for this repo still exists
+            self.delete_old_branch_if_exists(repo)
+            subprocess.check_call(['git', 'pull', REPO_URL, 'master'])
         subprocess.check_call(['git', 'checkout', '-b', repo+'_bump'])
 
     def edit_repo2docker_files(self, repo, existing_pr):
