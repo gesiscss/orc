@@ -2,23 +2,24 @@
 
 {% block extra_css %}
 <link href="/static/team.css" rel="stylesheet" />
+<link href="/static/custom.css" rel="stylesheet" />
 {% endblock extra_css %}
 
 {% block main %}
 {#<div class="row form-group text-center">#}
 {#<div class="row form-group"></div>#}
-<div class="row" style="padding-left: 30px; padding-right: 30px;">
+<div class="row-side-margins row" >
     {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
-    <h2 style="color: #58748f;">About </h2>
-    <p style="color: #777;">
+    <h2 class="title">About </h2>
+    <p class="description">
         GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation.
         We aim to enable you to get started quickly with your research ideas,
         prototyping your data science projects, or learning to program languages such as
         <a href="http://www.r-project.org/">R</a>, <a href="http://www.python.org/">Python</a> or <a href="http://julialang.org/">Julia</a> .
     </p>
 
-    <h3 style="color: #58748f;">Why does Open Research Computing matter? </h3>
-    <p style="color: #777;">
+    <h3 class="title">Why does Open Research Computing matter? </h3>
+    <p class="description">
         “Openness” is regarded by many researchers as the to most important property to any scientific endeavor.
         However, achieving openness has proven to be non-trivial and comes with many problems, in particular when
         large data-sets and complex analysis workflows are involved.
@@ -26,21 +27,21 @@
         <a href="http://nbn-resolving.de/urn:nbn:de:0168-ssoar-54950-5">an important question</a>: How can we help to overcome these problems?
     </p>
 
-    <p style="color: #777;">
+    <p class="description">
         We, the GESIS Notebooks team, want to promote Open Science by offering easy-to-use technical solutions for
         documenting and sharing computational workflows for data-intensive research designs.
         To this end, we created the service <strong>GESIS Notebooks - Open Research Computing for the Social Sciences</strong>.
     </p>
 
-    <p style="color: #777;">
+    <p class="description">
         It is our hope that the <strong>GESIS Notebooks</strong> service helps in
     </p>
-    <ul style="color: #777;">
+    <ul class="description">
         <li>creating incentives for scholars to make their work more easily reproducible,</li>
         <li>promoting standards to ensure interoperability of Open Science repositories,</li>
         <li>offering training material for scholars based on Open Science practices.</li>
     </ul>
-    <p style="color: #777;">
+    <p class="description">
         We are convinced that progress in these areas will lead to a significant strengthening of
         the emerging field of CSS and the paradigm of reproducible research.
     </p>
@@ -49,8 +50,8 @@
 {% include "team.html" %}
 
 
-<div class="row form-group" style="padding-left: 30px; padding-right: 30px; color: #777;">
-        <p><strong>Supported by</strong></p>
+<div class="row form-group row-side-margins">
+        <p class="description"><strong>Supported by</strong></p>
     <div style="padding-left: 0; display: flex;">
         <div class="col">
             <a href="https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif') }}" class="img-responsive center-block" ></a>
@@ -64,8 +65,8 @@
 {#TODO add partner leipniz#}
 
 <div class="row form-group"></div>
-<div class="row" style="padding-left: 30px; padding-right: 30px; color: #777;">
-    <p>
+<div class="row row-side-margins">
+    <p class="description">
         <strong>Powered by </strong>
 {#        TODO add versions of jhub and bhub#}
         <a href="https://jupyterhub.readthedocs.io/en/latest/">JupyterHub</a> and
@@ -73,9 +74,9 @@
     </p>
 </div>
 
-<div class="row" style="padding-left: 30px; padding-right: 30px;">
-    <h3 style="color: #58748f;">Feedback Welcome</h3>
-        <p style="color: #777;">
+<div class="row row-side-margins">
+    <h3 class="title">Feedback Welcome</h3>
+        <p class="description">
             To enable us to continuously improve the service, we, the GESIS Notebooks team,
             would appreciate your
             <a href="#"

@@ -1,0 +1,12 @@
+.row-side-margins{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.row-side-margins .title{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    color: #58748f;
+}
+.row-side-margins .description {
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    color: #777;
+}
