@@ -32,6 +32,3 @@ spec:
                   secretKeyRef:
                     name: henchbot-data
                     key: email
-              # for testing
-              - name: ORG_NAME
-                value: "bitnik"
