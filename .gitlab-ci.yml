@@ -89,7 +89,7 @@ deploy_staging:
     - staging
   tags:
     - orc
-  when: on_success
+  when: manual
   environment:
     name: staging
     url: https://notebooks-test.gesis.org/
