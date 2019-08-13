@@ -107,7 +107,7 @@ deploy_prod:
       URL="https://gesisnotebooks:"
       URL+=$GH_TOKEN
       URL+="@github.com/gesiscss/orc"
-      git push $URL master
+      git push $URL $CI_COMMIT_SHA:master
 
       echo "####### Running deploy"
       mode="fetch_co"
