@@ -18,17 +18,20 @@ spec:
           - name: update-gesisbinder
             image: python:3.7.4-stretch
             command: ["/bin/sh"]
-            args: ["-c", "cd ~ && git clone https://github.com/gesiscss/orc.git orc_repo && pip install -r orc_repo/gesisbinder/bot/requirements.txt --quiet && python orc_repo/gesisbinder/bot/henchbot.py"]
+            args: ["-c", "cd ~ && git clone https://github.com/gesiscss/orc.git orc_repo && pip install -r orc_repo/gesisbinder/bot/requirements.txt --quiet && python orc_repo/gesisbinder/bot/bot.py"]
             env:
-              - name: HENCHBOT_TOKEN
+              - name: GL_BOT_TOKEN
                 valueFrom:
                   secretKeyRef:
-                    name: henchbot-data
+                    name: bot-data
                     key: token
-              - name: BOT_GH_NAME
-                value: "gesisnotebooks"
-              - name: BOT_EMAIL
+              - name: GL_BOT_NAME
                 valueFrom:
                   secretKeyRef:
-                    name: henchbot-data
+                    name: bot-data
+                    key: name
+              - name: GL_BOT_EMAIL
+                valueFrom:
+                  secretKeyRef:
+                    name: bot-data
                     key: email
