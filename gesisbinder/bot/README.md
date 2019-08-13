@@ -1,7 +1,8 @@
-[henchbot/mybinder.org-upgrades](https://github.com/henchbot/mybinder.org-upgrades) is updated 
-in order to
-- fetch updates from [mybinder.org-deploy](https://github.com/jupyterhub/mybinder.org-deploy)
-- run `henchbot.py` script in CronJob Pod
-
-Blog post of henchbot: 
-https://blog.jupyter.org/automating-mybinder-org-dependency-upgrades-in-10-steps-bb5e38542059
+`bot.py` is based on 
+[henchbot script](https://github.com/henchbot/mybinder.org-upgrades/blob/master/henchbot.py). 
+It fetches BinderHub and repo2docker updates of 
+[mybinder.org-deploy](https://github.com/jupyterhub/mybinder.org-deploy) 
+makes related PRs for GESIS Binder. 
+It is implemented to be ran in a
+[CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/) 
+(see `cron_job.yaml` file).
