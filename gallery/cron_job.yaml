@@ -19,7 +19,7 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:3d1f975
+            image: gesiscss/binder-gallery:f11d444
             command: ["flask"]
             args: ["parse-mybinder-archives", "--with-description", "mybinder"]
             ports:
