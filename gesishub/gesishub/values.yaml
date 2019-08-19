@@ -35,9 +35,14 @@ jupyterhub:
       - name: hub-templates
         configMap:
           name: hub-templates
+      - name: hub-templates-gesis
+        configMap:
+          name: hub-templates-gesis
     extraVolumeMounts:
       - name: hub-templates
         mountPath: /etc/jupyterhub/templates
+      - name: hub-templates-gesis
+        mountPath: /etc/jupyterhub/templates/gesis
     extraConfig:
       011-orc: |
         # c.JupyterHub.refresh_pre_spawn = True
