@@ -52,9 +52,23 @@ binderhub:
       per_repo_quota: 100
       per_repo_quota_higher: 200
 
-      template_path: /etc/binderhub/custom/gesisbinder/templates
+      template_path: /etc/binderhub/templates
+      # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
+
+  extraVolumes:
+    - name: binder-templates
+      configMap:
+        name: binder-templates
+    - name: binder-templates-gesis
+      configMap:
+        name: binder-templates-gesis
+  extraVolumeMounts:
+    - name: binder-templates
+      mountPath: /etc/binderhub/templates
+    - name: binder-templates-gesis
+      mountPath: /etc/binderhub/templates/gesis
 
   extraConfig:
     01-eventlog: |
