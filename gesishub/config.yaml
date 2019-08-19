@@ -22,30 +22,6 @@ jupyterhub:
       OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
       OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
 
-    # clone custom JupyterHub templates into a volume
-    initContainers:
-      - name: git-clone-templates
-        image: alpine/git
-        args:
-          - clone
-          - --single-branch
-          - --branch=master
-          - --depth=1
-          - --
-          - https://github.com/gesiscss/orc.git
-          - /etc/jupyterhub/custom
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-          - name: custom-templates
-            mountPath: /etc/jupyterhub/custom
-    extraVolumes:
-      - name: custom-templates
-        emptyDir: {}
-    extraVolumeMounts:
-      - name: custom-templates
-        mountPath: /etc/jupyterhub/custom
-
   # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
   auth:
     custom:

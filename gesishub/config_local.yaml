@@ -1,4 +1,5 @@
 # based on https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/minikube-config.yaml
+# TODO for static files (based on orc site): https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/6
 jupyterhub:
   debug:
     enabled: true
@@ -19,31 +20,6 @@ jupyterhub:
       requests:
         cpu: 0
         memory: 0
-
-    # FIXME static files based on orc site
-#    # clone custom JupyterHub templates into a volume
-#    initContainers:
-#      - name: git-clone-templates
-#        image: alpine/git
-#        args:
-#          - clone
-#          - --single-branch
-#          - --branch=staging
-#          - --depth=1
-#          - --
-#          - https://github.com/gesiscss/orc.git
-#          - /etc/jupyterhub/custom
-#        securityContext:
-#          runAsUser: 0
-#        volumeMounts:
-#          - name: custom-templates
-#            mountPath: /etc/jupyterhub/custom
-#    extraVolumes:
-#      - name: custom-templates
-#        emptyDir: {}
-#    extraVolumeMounts:
-#      - name: custom-templates
-#        mountPath: /etc/jupyterhub/custom
 
   auth:
     type: dummy

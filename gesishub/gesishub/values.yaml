@@ -31,6 +31,13 @@ jupyterhub:
       type: RollingUpdate
     db:
       type: postgres
+    extraVolumes:
+      - name: hub-templates
+        configMap:
+          name: hub-templates
+    extraVolumeMounts:
+      - name: hub-templates
+        mountPath: /etc/jupyterhub/templates
     extraConfig:
       011-orc: |
         # c.JupyterHub.refresh_pre_spawn = True
@@ -40,7 +47,7 @@ jupyterhub:
         else:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
       021-templates: |
-        c.JupyterHub.template_paths = ['/etc/jupyterhub/custom/gesishub/templates']
+        c.JupyterHub.template_paths = ['/etc/jupyterhub/templates']
         context = {
             'staging': staging,
             'production': production,
