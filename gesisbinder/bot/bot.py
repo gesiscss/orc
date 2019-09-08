@@ -177,7 +177,8 @@ class Bot:
         """
         repo_api = compare_url.replace('github.com', 'api.github.com/repos')
         res = requests.get(repo_api).json()
-        commit_shas = [x['sha'] for x in res['commits']]
+        commit_shas = [x['sha'] for x in res.get('commits', [])]
+        logging.warning("Compare url returns no commits but there must be commits. Something must be wrong with compare url.")
 
         pr_api = repo_api.split('/compare/')[0] + '/pulls/'
         associated_prs = ['Associated PRs:']
