@@ -15,9 +15,6 @@ binderhub:
     - name: secrets
       mountPath: /secrets
       readOnly: true
-  extraEnv:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /secrets/service-account.json
 
   config:
     BinderHub:
