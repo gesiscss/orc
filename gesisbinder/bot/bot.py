@@ -141,7 +141,7 @@ class Bot:
 
         if repo == 'repo2docker':
             commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
-                self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1])
+                self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                 self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
@@ -177,8 +177,8 @@ class Bot:
         """
         repo_api = compare_url.replace('github.com', 'api.github.com/repos')
         res = requests.get(repo_api).json()
-        commit_shas = [x['sha'] for x in res.get('commits', [])]
-        logging.warning("Compare url returns no commits but there must be commits. Something must be wrong with compare url.")
+        commit_shas = [x['sha'] for x in res['commits']]
+        logging.error("Compare url returns no commits but there must be commits. Something must be wrong with compare url.")
 
         pr_api = repo_api.split('/compare/')[0] + '/pulls/'
         associated_prs = ['Associated PRs:']
@@ -205,7 +205,7 @@ class Bot:
         if repo == 'repo2docker':
             compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
                                 self.commit_info['repo2docker']['live'],
-                                self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1])
+                                self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                                 self.commit_info['binderhub']['live'],
