@@ -141,7 +141,7 @@ class Bot:
 
         if repo == 'repo2docker':
             commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
-                self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'])
+                self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'].rstrip('.dirty').split('.')[-1])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                 self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
@@ -209,6 +209,7 @@ class Bot:
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                                 self.commit_info['binderhub']['live'],
                                 self.commit_info['binderhub']['latest'])
+        logging.info('compare url: {}'.format(compare_url))
         associated_prs = self.get_associated_prs(compare_url)
         mybinder_compare_url = self.get_mybinder_compare_url(repo)
         body = '\n'.join(
