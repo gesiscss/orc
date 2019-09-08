@@ -204,7 +204,7 @@ class Bot:
         if repo == 'repo2docker':
             compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
                                 self.commit_info['repo2docker']['live'],
-                                self.commit_info['repo2docker']['latest'])
+                                self.commit_info['repo2docker']['latest'].rstrip('.dirty').split('.')[-1])
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                                 self.commit_info['binderhub']['live'],
