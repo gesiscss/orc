@@ -8,10 +8,20 @@ binderhub:
       memory: 2Gi
 
   extraVolumes:
+    - name: binder-templates
+      configMap:
+        name: binder-templates
+    - name: binder-templates-gesis
+      configMap:
+        name: binder-templates-gesis
     - name: secrets
       secret:
         secretName: events-archiver-secrets
   extraVolumeMounts:
+    - name: binder-templates
+      mountPath: /etc/binderhub/templates
+    - name: binder-templates-gesis
+      mountPath: /etc/binderhub/templates/gesis
     - name: secrets
       mountPath: /secrets
       readOnly: true
