@@ -12,6 +12,14 @@ elasticsearch:
       # https://github.com/helm/charts/tree/master/stable/elasticsearch#minimum-master-nodes
       MINIMUM_MASTER_NODES: "2"  # (number of master-eligible nodes (2) / 2) + 1
 
+  master:
+    persistence:
+      size: "12Gi"
+
+  data:
+    persistence:
+      size: "90Gi"
+
 
 kibana:
   # https://github.com/helm/charts/tree/master/stable/kibana#configuration
