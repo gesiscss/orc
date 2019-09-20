@@ -161,7 +161,8 @@ deploy_nginx:
     - master
   tags:
     - orc
-  when: manual
+  when: on_success
+#  when: manual
   allow_failure: false
   dependencies: []
   retry: 1
