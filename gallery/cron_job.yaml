@@ -3,10 +3,8 @@ kind: CronJob
 metadata:
   name: mybinder-archive-parser
 spec:
-  # run every day every hour between 6 am and 9 pm (in UTC)
-  # don't run it around midnight (UTC), it looks like some events are inserted later
-  # and our script starts parsing after last saved event and misses those events which are inserted later
-  schedule: "0 6-21 * * *"
+  # run every day every hour (in UTC)
+  schedule: "0 * * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 70
@@ -21,7 +19,7 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:bb7810e
+            image: gesiscss/binder-gallery:d002b6f
             command: ["flask"]
             args: ["parse-mybinder-archives", "--with-description", "mybinder"]
             ports:
