@@ -28,8 +28,8 @@ eventsArchiver:
 
 binderhub:
   pdb:
-    minAvailable: 1
-  replicas: 2
+    minAvailable: 0
+  replicas: 1
   config:
     GitHubRepoProvider:
       # Add banned repositories to the list below
