@@ -5,7 +5,7 @@ etcJupyter:
       tornado_settings:
         trust_xheaders: true
       # shutdown the server after no activity
-      shutdown_no_activity_timeout: 1800
+      shutdown_no_activity_timeout: 600
 
     # if a user leaves a notebook with a running kernel,
     # the effective idle timeout will typically be CULL_TIMEOUT + CULL_KERNEL_TIMEOUT
@@ -167,7 +167,7 @@ binderhub:
       # cull every 11 minutes so it is out of phase
       # with the proxy check-routes interval of five minutes
       every: 660
-      timeout: 1800
+      timeout: 600
       # maxAge is 6 hours: 6 * 3600 = 21600
       maxAge: 21600
     hub:
