@@ -11,9 +11,10 @@ etcJupyter:
     # the effective idle timeout will typically be CULL_TIMEOUT + CULL_KERNEL_TIMEOUT
     # as culling the kernel will register activity,
     # resetting the no_activity timer for the server as a whole
+    # Check also jupyterhub.cull.timeout config
     MappingKernelManager:
       # shutdown kernels after no activity
-      cull_idle_timeout: 600
+      cull_idle_timeout: 1800
       # check for idle kernels this often
       cull_interval: 60
       # a kernel with open connections but no activity still counts as idle
