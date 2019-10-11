@@ -44,6 +44,7 @@ jupyterhub:
         mountPath: /etc/jupyterhub/templates/gesis
     authenticatePrometheus: false
     redirectToServer: false
+    shutdownOnLogout: true
     templatePaths:
       - "/etc/jupyterhub/templates"
     extraConfig:
