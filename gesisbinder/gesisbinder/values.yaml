@@ -176,15 +176,12 @@ binderhub:
       nodeSelector:
         base: worker  # where database is
       baseUrl: /binder/jupyter/
-      deploymentStrategy:
-        type: RollingUpdate
       db:
         type: postgres
+      authenticatePrometheus: false
       extraConfig:
         neverRestart: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-        noAuthMetrics: |
-          c.JupyterHub.authenticate_prometheus = False
     proxy:
       pdb:
         minAvailable: 0
