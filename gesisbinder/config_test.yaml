@@ -12,13 +12,6 @@ binderhub:
       debug: true
       hub_url: https://notebooks-test.gesis.org/binder/jupyter/
       image_prefix: gesiscss/orc-binder-staging-
-      appendix: |
-        USER root
-        ENV BINDER_URL={binder_url}
-        ENV PERSISTENT_BINDER_URL={persistent_binder_url}
-        ENV REPO_URL={repo_url}
-        ENV REF_URL={ref_url}
-        USER $NB_USER
 
   extraConfig:
     020-templates: |

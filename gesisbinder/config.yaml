@@ -30,13 +30,6 @@ binderhub:
     BinderHub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
       image_prefix: gesiscss/orc-binder-
-      appendix: |
-        USER root
-        ENV BINDER_URL={binder_url}
-        ENV PERSISTENT_BINDER_URL={persistent_binder_url}
-        ENV REPO_URL={repo_url}
-        ENV REF_URL={ref_url}
-        USER $NB_USER
 
   extraConfig:
     # send binder events to mybinder.org's StackDriver on Google Cloud
