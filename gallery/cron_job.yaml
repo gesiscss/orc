@@ -19,9 +19,9 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:d002b6f
+            image: gesiscss/binder-gallery:dba26b8
             command: ["flask"]
-            args: ["parse-mybinder-archives", "--with-description", "mybinder"]
+            args: ["parse-mybinder-archives", "--with-description", "--excluded-origins", "notebooks.gesis.org,", "mybinder"]
             ports:
             - containerPort: 5000
               protocol: TCP
