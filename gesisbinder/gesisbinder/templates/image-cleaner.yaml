@@ -27,9 +27,9 @@ spec:
 #        key: hub.jupyter.org_dedicated
 #        operator: Equal
 #        value: user
-      nodeSelector: {{ toJson .Values.config.BinderHub.build_node_selector  }}
+      nodeSelector: {{ toJson .Values.binderhub.config.BinderHub.build_node_selector  }}
       containers:
-      - name: image-cleaner-host
+      - name: image-cleaner
         image: {{ .Values.imageCleaner.image.name }}:{{ .Values.imageCleaner.image.tag }}
         volumeMounts:
         - name: dockerlib-host
@@ -42,7 +42,7 @@ spec:
         - name: IMAGE_CLEANER_INTERVAL
           value: {{ .Values.imageCleaner.interval | quote }}
         - name: IMAGE_CLEANER_PREFIX
-          value: {{ .Values.config.BinderHub.image_prefix }}
+          value: {{ .Values.binderhub.config.BinderHub.image_prefix }}
         - name: IMAGE_CLEANER_PATH
           value: {{ .Values.imageCleaner.path }}
         - name: IMAGE_CLEANER_DELAY
