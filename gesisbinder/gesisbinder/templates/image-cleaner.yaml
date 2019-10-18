@@ -1,0 +1,69 @@
+{{ if .Values.imageCleaner.enabled -}}
+{{- $Values := .Values -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-image-cleaner
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      name:  {{ .Release.Name }}-image-cleaner
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}-image-cleaner
+        app: binder
+        component: image-cleaner
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+#      tolerations:
+#      - effect: NoSchedule
+#        key: hub.jupyter.org/dedicated
+#        operator: Equal
+#        value: user
+#      - effect: NoSchedule
+#        key: hub.jupyter.org_dedicated
+#        operator: Equal
+#        value: user
+      nodeSelector: {{ toJson $Values.config.BinderHub.build_node_selector  }}
+
+      {{- if $Values.rbac.enabled }}
+      serviceAccountName: {{ .Release.Name }}-image-cleaner
+      {{- end }}
+
+      containers:
+      - name: image-cleaner-{{ $kind }}
+        image: {{ $Values.imageCleaner.image.name }}:{{ $Values.imageCleaner.image.tag }}
+        volumeMounts:
+        - name: dockerlib-host
+          mountPath: /var/lib/docker
+        - name: dockersocket-host
+          mountPath: /var/run/docker.sock
+        env:
+        - name: IMAGE_CLEANER_DAYS
+          value: {{ $Values.imageCleaner.days | quote }}
+        - name: IMAGE_CLEANER_INTERVAL
+          value: {{ $Values.imageCleaner.interval | quote }}
+        - name: IMAGE_CLEANER_PREFIX
+          value: {{ $Values.config.BinderHub.image_prefix | quote }}
+        - name: IMAGE_CLEANER_PATH
+          value: {{ $Values.imageCleaner.path | quote }}
+        - name: IMAGE_CLEANER_DELAY
+          value: {{ $Values.imageCleaner.delay | quote }}
+        - name: IMAGE_CLEANER_HIGH
+          value: {{ $Values.imageCleaner.highLimit | quote }}
+        - name: IMAGE_CLEANER_LOW
+          value: {{ $Values.imageCleaner.lowLimit | quote }}
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: dockerlib-host
+        hostPath:
+          path: {{ $Values.imageCleaner.dockerLibDir }}
+      - name: dockersocket-host
+        hostPath:
+          path: {{ $Values.imageCleaner.dockerSocket }}
+          type: Socket
+{{- end }}

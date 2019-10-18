@@ -96,3 +96,6 @@ binderhub:
       memory:
         guarantee: 1G
         limit: 8G
+
+imageCleaner:
+  enabled: true
