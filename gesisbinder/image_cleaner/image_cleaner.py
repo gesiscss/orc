@@ -34,6 +34,7 @@ def clean_images():
     # response = requests.get("https://notebooks.gesis.org/binder/versions", timeout=1)
     # r2d_version = response.json()["builder"]
 
+    logging.info(f"Cleaning images on {path_to_check}")
     client = docker.from_env()
     while True:
         start_time = time()
