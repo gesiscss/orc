@@ -99,3 +99,9 @@ binderhub:
 
 imageCleaner:
   enabled: true
+  # interval (in seconds) between cleaning processes
+  interval: 7200  # every 2 hours
+  # start cleaning when 80% of disk is used
+  # until it drops below 60%
+  highLimit: 80
+  lowLimit: 60

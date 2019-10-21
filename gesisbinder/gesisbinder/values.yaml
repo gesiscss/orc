@@ -225,7 +225,7 @@ imageCleaner:
   enabled: false
   image:
     name: gesiscss/orc-image-cleaner
-    tag: ca9e36d
+    tag: 38021d0
   # start deleting images which are not used in x days
   days: 7
   # interval (in seconds) between cleaning processes
