@@ -235,3 +235,4 @@ imageCleaner:
   dockerSocket: /var/run/docker.sock
   # dockerLibDir: /var/lib/docker
   dockerLibDir: /ssd/docker
+

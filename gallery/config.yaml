@@ -65,3 +65,4 @@ spec:
       - name: gallery-config
         secret:
           secretName: gallery-config
+
