@@ -52,9 +52,6 @@ binderhub:
           # for now. Should be fixed in https://github.com/googleapis/google-cloud-python/pull/6293
           return [JSONCloudLoggingHandler(client, name='binderhub-events-text')]
       c.EventLog.handlers_maker = _make_eventsink_handler
-    020-templates: |
-      staging = False
-      production = True
 
   service:
     annotations:

@@ -7,9 +7,6 @@ jupyterhub:
     extraConfig:
       010-orc: |
         c.JupyterHub.bind_url = 'https://notebooks.gesis.org'
-      020-templates: |
-        staging = False
-        production = True
     resources:
       requests:
         cpu: "0.25"

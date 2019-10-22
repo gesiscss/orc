@@ -13,9 +13,6 @@ jupyterhub:
       011-orc: |
         # c.JupyterHub.refresh_pre_spawn = True
         c.JupyterHub.redirect_to_server = False
-      020-templates: |
-        staging = True
-        production = False
     resources:
       requests:
         cpu: 0

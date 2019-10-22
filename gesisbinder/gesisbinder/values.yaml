@@ -62,6 +62,19 @@ binderhub:
       # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
+      template_variables:
+        version: beta
+        home_url: /
+        gesishub_url: /hub/
+        gesisbinder_url: /binder/
+        about_url: /about/
+        tou_url: /terms_of_use/
+        imprint_url: https://www.gesis.org/en/institute/imprint/
+        data_protection_url: https://www.gesis.org/en/institute/data-protection/
+        gesis_url: https://www.gesis.org/en/home/
+        gallery_url: /gallery/
+        #help_url: https://www.gesis.org/en/help/
+        active: binder
       appendix: |
         USER root
         ENV BINDER_URL={binder_url}
@@ -134,26 +147,6 @@ binderhub:
 
       from binderhub.events import EventLog
       EventLog.emit = emit
-    021-templates: |
-      site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
-      context = {
-          'staging': staging,
-          'production': production,
-          'version': 'beta',
-          'home_url': '/',
-          'gesishub_url': '/hub/',
-          'gesisbinder_url': '/binder/',
-          'about_url': '/about/',
-          'tou_url': '/terms_of_use/',
-          'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
-          'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
-          'gesis_url': 'https://www.gesis.org/en/home/',
-          'gallery_url': '/gallery/'
-          # 'help_url': 'https://www.gesis.org/en/help/',
-      }
-
-      context.update({'active': 'binder'})
-      c.BinderHub.template_variables = context
 
   service:
     type: NodePort

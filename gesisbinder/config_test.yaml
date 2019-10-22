@@ -13,11 +13,6 @@ binderhub:
       hub_url: https://notebooks-test.gesis.org/binder/jupyter/
       image_prefix: gesiscss/orc-binder-staging-
 
-  extraConfig:
-    020-templates: |
-      staging = True
-      production = False
-
   service:
     annotations:
       prometheus.io/scrape: 'false'

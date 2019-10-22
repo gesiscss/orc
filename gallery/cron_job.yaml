@@ -19,7 +19,7 @@ spec:
             base: worker  # where database is
           containers:
           - name: mybinder-archive-parser
-            image: gesiscss/binder-gallery:31c289c
+            image: gesiscss/binder-gallery:a03bbb4
             command: ["flask"]
             args: ["parse-mybinder-archives", "--with-description", "--excluded-origins", "notebooks.gesis.org,", "mybinder"]
             ports:
@@ -34,8 +34,6 @@ spec:
               value:  "/gallery/"
             - name: BG_APPLICATION_SETTINGS
               value:  "gallery_config.Config"
-            - name: PRODUCTION_SERVER
-              value: "true"
             volumeMounts:
             - name: gallery-config
               mountPath: /binder_gallery/gallery_config.py
