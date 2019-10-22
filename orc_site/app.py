@@ -23,13 +23,7 @@ cache.init_app(app)
 
 
 def get_default_template_context():
-    production = bool(os.getenv("PRODUCTION_SERVER", False))
-    staging = not production
-    site_url = 'https://notebooks{}.gesis.org'.format('-test' if staging else '')
     context = {
-        'staging': staging,
-        'production': production,
-        'site_url': site_url,
         'version': 'beta',
         'home_url': '/',
         'gesishub_url': '/hub/',
@@ -76,19 +70,18 @@ def not_found(error):
 # @cache.cached(timeout=None)
 def home():
     context = get_default_template_context()
-    site_url = context["site_url"]
     binder_examples = [
         {'headline': 'Wiki-Impact',
          'content': '',
-         'binder_link': f'{site_url}/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
+         'binder_link': '/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
          'repo_link': 'https://github.com/gesiscss/wikiwho_demo'},
         {'headline': 'Python Data Science Handbook',
          'content': '',
-         'binder_link': f'{site_url}/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
+         'binder_link': '/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
          'repo_link': 'https://github.com/jakevdp/PythonDataScienceHandbook'},
         {'headline': 'LIGO Binder',
          'content': '',
-         'binder_link': f'{site_url}/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
+         'binder_link': '/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
          'repo_link': 'https://github.com/minrk/ligo-binder'},
     ]
     # FIXME: logged_in
