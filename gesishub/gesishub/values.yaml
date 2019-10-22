@@ -152,7 +152,7 @@ jupyterhub:
                 Override this function to set a custom logout page.
                 """
                 # after logout, redirect user to home page
-                site_url = 'https://notebooks{}.gesis.org'.format('-test' if 'notebooks-test' in self.request.host else '')
+                site_url = 'https://{}'.format(self.request.host)
                 self.redirect(site_url, permanent=False)
 
             async def get(self):
@@ -163,7 +163,8 @@ jupyterhub:
                     logout_url = self.request.full_url() + '?kc=true'
                     if not logout_url.startswith('https'):
                       logout_url = logout_url.replace('http', 'https', 1)
-                    kc_logout_url = 'https://login{}.gesis.org/realms/gesis/protocol/openid-connect/logout'.format('-test' if 'notebooks-test' in self.request.host else '')
+                    kc_logout_url = self.request.host.replace('notebooks', 'login')
+                    kc_logout_url = 'https://{}/realms/gesis/protocol/openid-connect/logout'.format(kc_logout_url)
                     self.redirect(kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
                 else:
                     await super().get()
