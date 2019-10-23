@@ -43,11 +43,10 @@ def clean_images():
         logging.info(f"After prune: {prune_output}")
 
         available = get_available_disk_space(path_to_check)
-        if available < high_limit:
-            # cleaning is done when there is enough free disk space
+        if available > (100 - high_limit):
             logging.info(f"There is enough free disk space ({available}%).")
-            pass
         else:
+            # start cleaning when high_limit% of disk is used
             for days in range(days_limit, -1, -1):
                 logging.info(f"Start deleting images not used in last {days} days. Free disk space: {available}%")
 
@@ -126,7 +125,7 @@ def clean_images():
                         else:
                             deleted += 1
                             available = get_available_disk_space(path_to_check)
-                            if available > low_limit:
+                            if available >= (100 - low_limit):
                                 # cleaning is done when there is enough free disk space
                                 logging.info(f"While deleting images not used in last {days} days, "
                                              f"reached to enough free disk space ({available}%). Stop deleting.")
@@ -137,7 +136,7 @@ def clean_images():
                 logging.info(f"Deleted {deleted} images. Free disk space after deleting {days} days: {available}%")
                 # check available disk space before checking next day
                 available = get_available_disk_space(path_to_check)
-                if available > low_limit:
+                if available >= (100 - low_limit):
                     # cleaning is done when there is enough free disk space
                     logging.info(f"After deleting images not used in last {days} days, "
                                  f"there is enough free disk space ({available}%). Stop deleting.")
