@@ -179,4 +179,6 @@ server {
         access_log off;
         root /var/www/prod;
     }
+
+    include snippets/_secret.conf;
 }
