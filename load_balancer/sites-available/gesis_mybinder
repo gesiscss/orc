@@ -1,0 +1,30 @@
+# HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
+server {
+    listen 80;
+    server_name gesis.mybinder.org;
+    access_log off;  # turn off access log
+    # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+# https://webmasters.stackexchange.com/a/60136
+# HTTPS server for gesis.mybinder.org
+# Redirect everything to https://notebooks.gesis.org/binder
+server {
+    listen 443;
+    ssl on;
+    server_name gesis.mybinder.org;
+    ssl_certificate /etc/letsencrypt/live/gesis.mybinder.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/gesis.mybinder.org/privkey.pem;
+    include snippets/ssl.conf;
+
+    #include snippets/optimization.conf;
+    access_log off;  # turn off access log
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
+    # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
+    return 301 https://notebooks.gesis.org/binder$request_uri;
+    #rewrite ^(.*)$ https://notebooks.gesis.org/binder$1 permanent;
+}
