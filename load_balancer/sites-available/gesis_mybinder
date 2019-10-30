@@ -8,6 +8,7 @@ server {
 }
 
 # https://webmasters.stackexchange.com/a/60136
+# gesis.mybinder.org is a CNAME for notebooks.gesis.org
 # HTTPS server for gesis.mybinder.org
 # Redirect everything to https://notebooks.gesis.org/binder
 server {
@@ -23,8 +24,14 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
-    # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
-    # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
-    return 301 https://notebooks.gesis.org/binder$request_uri;
-    #rewrite ^(.*)$ https://notebooks.gesis.org/binder$1 permanent;
+    location / {
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301
+        limit_except GET {
+            deny  all;
+        }
+        # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
+        # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
+        return 301 https://notebooks.gesis.org/binder$request_uri;
+    }
 }
+
