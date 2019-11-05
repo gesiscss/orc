@@ -231,7 +231,7 @@ imageCleaner:
   # pat to check available disk space
   path: /var/lib/docker
   # delete an image at most every 5 seconds
-  delay: 5
+  delay: 10
   # start cleaning when 80% of disk is used (available <= 20%)
   # until it drops below 40% (available >= 60%)
   highLimit: 80
