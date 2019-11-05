@@ -86,7 +86,9 @@ def clean_images():
                 logging.info(f"Number of launches on GESIS: {len(launches)}")
 
                 deleted = 0
-                for image in client.images.list():
+                images = client.images.list()
+                images.sort(key=lambda i: i.attrs['Size'], reverse=True)
+                for image in images:
                     if not image.tags:
                         # TODO why does this exist?
                         continue
