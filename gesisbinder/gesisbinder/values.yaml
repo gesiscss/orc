@@ -182,6 +182,11 @@ binderhub:
       extraConfig:
         neverRestart: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+        hub_config: |
+          if "cookie_options" in c.JupyterHub.tornado_settings:
+            c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
+          else:
+            c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
     proxy:
       pdb:
         minAvailable: 0
