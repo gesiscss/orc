@@ -49,7 +49,7 @@ binderhub:
       #    config:
       #      quota: 200
     BinderHub:
-      pod_quota: 200
+      pod_quota: 120
       base_url: /binder/
       use_registry: true
       build_image: jupyter/repo2docker:0.10.0-112.g242107b
@@ -240,4 +240,3 @@ imageCleaner:
   dockerSocket: /var/run/docker.sock
   # dockerLibDir: /var/lib/docker
   dockerLibDir: /ssd/docker
-
