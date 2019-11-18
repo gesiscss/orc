@@ -135,6 +135,8 @@ def clean_images():
                     else:
                         logging.info(f"Skipping {tag} with labels: {image.labels}")
 
+                # prune dangling images after deleting for each day
+                client.images.prune(filters={"dangling": True})
                 logging.info(f"Deleted {deleted} images. Free disk space after deleting {days} days: {available}%")
                 # check available disk space before checking next day
                 available = get_available_disk_space(path_to_check)
