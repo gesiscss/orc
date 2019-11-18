@@ -223,12 +223,12 @@ imageCleaner:
   enabled: false
   image:
     name: gesiscss/orc-image-cleaner
-    tag: 641976e
+    tag: c855819
   # start deleting images which are not used in x days
   days: 7
   # interval (in seconds) between cleaning processes
   interval: 1800
-  # pat to check available disk space
+  # path to check available disk space
   path: /var/lib/docker
   # delete an image at most every 5 seconds
   delay: 10
