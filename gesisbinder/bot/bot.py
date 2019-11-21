@@ -146,7 +146,8 @@ class Bot:
                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
+                self.commit_info['binderhub']['live'].split('.')[-1],
+                self.commit_info['binderhub']['latest'].split('.')[-1])
 
         subprocess.check_call(['git', 'config', 'user.name', GL_BOT_NAME])
         subprocess.check_call(['git', 'config', 'user.email', GL_BOT_EMAIL])
@@ -156,22 +157,6 @@ class Bot:
             subprocess.check_call(['git', 'push', '-f', GL_REPO_URL, self.branch_name])
         else:
             subprocess.check_call(['git', 'push', GL_REPO_URL, self.branch_name])
-
-    def get_mybinder_compare_url(self, repo):
-        api_url = MYBINDER_REPO_URL.replace('github.com', 'api.github.com/repos')
-        api_url = api_url + "pulls?state=closed"
-        prs = requests.get(api_url).json()
-        live_commit = self.commit_info[repo]['live']
-        latest_commit = self.commit_info[repo]['latest']
-        compare = '...'
-        for pr in prs:
-            if f'...{latest_commit}' in pr['title']:
-                compare = compare + pr['merge_commit_sha']
-            elif f'...{live_commit}' in pr['title']:
-                compare = pr['merge_commit_sha'] + compare
-                break
-        compare_url = MYBINDER_REPO_URL + "compare/" + compare
-        return compare_url
 
     def get_associated_prs(self, compare_url):
         """
@@ -212,14 +197,13 @@ class Bot:
                                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                                self.commit_info['binderhub']['live'],
-                                self.commit_info['binderhub']['latest'])
+                                self.commit_info['binderhub']['live'].split('.')[-1],
+                                self.commit_info['binderhub']['latest'].split('.')[-1])
         logging.info('compare url: {}'.format(compare_url))
         associated_prs = self.get_associated_prs(compare_url)
-        mybinder_compare_url = self.get_mybinder_compare_url(repo)
         body = '\n'.join(
             [f'This is a {repo} version bump. See the link below for a diff of new changes:\n',
-             compare_url + ' \n'] + associated_prs + [' \n', mybinder_compare_url]
+             compare_url + ' \n'] + associated_prs
         )
         return body
 
@@ -299,7 +283,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['live']}" \
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['live'].split('.')[-1]}" \
                                      f"/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
@@ -332,7 +316,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest']}/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest'].split('.')[-1]}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_latest = jupyterhub_dep['version'].strip()
