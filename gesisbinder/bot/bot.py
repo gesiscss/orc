@@ -146,8 +146,8 @@ class Bot:
                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                self.commit_info['binderhub']['live'].split('.')[-1],
-                self.commit_info['binderhub']['latest'].split('.')[-1])
+                self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1],
+                self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1])
 
         subprocess.check_call(['git', 'config', 'user.name', GL_BOT_NAME])
         subprocess.check_call(['git', 'config', 'user.email', GL_BOT_EMAIL])
@@ -197,8 +197,8 @@ class Bot:
                                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                                self.commit_info['binderhub']['live'].split('.')[-1],
-                                self.commit_info['binderhub']['latest'].split('.')[-1])
+                                self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1],
+                                self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1])
         logging.info('compare url: {}'.format(compare_url))
         associated_prs = self.get_associated_prs(compare_url)
         body = '\n'.join(
@@ -283,7 +283,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['live'].split('.')[-1]}" \
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1]}" \
                                      f"/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
@@ -316,7 +316,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest'].split('.')[-1]}/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1]}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_latest = jupyterhub_dep['version'].strip()
