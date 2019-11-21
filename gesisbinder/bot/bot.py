@@ -114,8 +114,9 @@ class Bot:
             requirements_yaml = f.read()
 
         updated_yaml = requirements_yaml.replace(
-            "version: 0.2.0-{}".format(self.commit_info[repo]['live']),
-            "version: 0.2.0-{}".format(self.commit_info[repo]['latest'])
+            "version: {}".format(self.commit_info[repo]['live']),
+            "version: {}".format(self.commit_info[repo]['latest']),
+            1
         )
 
         with open(fname, 'w', encoding='utf8') as f:
@@ -291,7 +292,7 @@ class Bot:
         url_requirements = f"{GH_REPO_RAW_URL}gesisbinder/gesisbinder/requirements.yaml"
         requirements = load(requests.get(url_requirements).text)
         binderhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'binderhub'][0]
-        bhub_live = binderhub_dep['version'].split('-')[-1]
+        bhub_live = binderhub_dep['version'].strip()
         self.commit_info['binderhub']['live'] = bhub_live
 
     def get_jupyterhub_live(self):
@@ -302,7 +303,7 @@ class Bot:
                                      f"/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
-        jhub_live = jupyterhub_dep['version'].split('-')[-1]
+        jhub_live = jupyterhub_dep['version'].strip()
         self.commit_info['jupyterhub']['live'] = jhub_live
 
     def get_repo2docker_latest(self):
@@ -324,7 +325,7 @@ class Bot:
         url_requirements = f"{MYBINDER_REPO_RAW_URL}master/mybinder/requirements.yaml"
         requirements = load(requests.get(url_requirements).text)
         binderhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'binderhub'][0]
-        bhub_latest = binderhub_dep['version'].split('-')[-1]
+        bhub_latest = binderhub_dep['version'].strip()
         self.commit_info['binderhub']['latest'] = bhub_latest
 
     def get_jupyterhub_latest(self):
@@ -334,7 +335,7 @@ class Bot:
         url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest']}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
-        jhub_latest = jupyterhub_dep['version'].split('-')[-1]
+        jhub_latest = jupyterhub_dep['version'].strip()
         self.commit_info['jupyterhub']['latest'] = jhub_latest
 
     def get_new_commits(self):
