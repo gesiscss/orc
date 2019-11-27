@@ -7,7 +7,7 @@ jupyterhub:
       annotations:
         prometheus.io/scrape: 'false'
     extraConfig:
-      010-orc: |
+      00-orc: |
         c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
     resources:
       requests:

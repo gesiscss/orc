@@ -5,7 +5,7 @@ jupyterhub:
     #  annotations:
     #    prometheus.io/path: "/hub/metrics"
     extraConfig:
-      010-orc: |
+      00-orc: |
         c.JupyterHub.bind_url = 'https://notebooks.gesis.org'
     resources:
       requests:
@@ -34,11 +34,11 @@ jupyterhub:
     chp:
       resources:
         requests:
-          cpu: "0.1"
-          memory: 256Mi
-        limits:
           cpu: "0.5"
           memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
 
   singleuser:
     storage:

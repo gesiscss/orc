@@ -7,10 +7,10 @@ jupyterhub:
     nodeSelector:
       base: null
     extraConfig:
-#      010-orc: |
+#      00-orc: |
 #        # minikube ip -> 192.168.99.100
 #        c.JupyterHub.bind_url = 'http://192.168.99.100:31212'
-      011-orc: |
+      01-orc: |
         # c.JupyterHub.refresh_pre_spawn = True
         c.JupyterHub.redirect_to_server = False
     resources:
