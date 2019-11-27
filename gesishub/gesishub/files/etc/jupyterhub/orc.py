@@ -5,6 +5,7 @@ These handlers are imported in extraConfig in values.yaml
 """
 
 from urllib.parse import urlencode
+from tornado import web
 
 from jupyterhub import orm
 from jupyterhub.handlers import BaseHandler, LogoutHandler
@@ -14,6 +15,7 @@ from jupyterhub.utils import admin_only
 class OrcAdminHandler(BaseHandler):
     """Render the admin page."""
 
+    @web.authenticated
     @admin_only
     async def get(self):
         available = {'name', 'admin', 'running', 'last_activity'}
