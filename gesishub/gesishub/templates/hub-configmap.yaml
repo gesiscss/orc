@@ -32,4 +32,5 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  {{- (.Files.Get "files/etc/jupyterhub/orc.py").AsConfig | nindent 2 }}
+  orc.py: |-
+    {{- .Files.Get "files/etc/jupyterhub/orc.py" | nindent 4 }}
