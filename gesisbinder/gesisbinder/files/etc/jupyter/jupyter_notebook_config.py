@@ -21,12 +21,13 @@ def make_federation_url(url):
     return federation_host + '/v2/' + url_parts[-1]
 
 
-binder_url = make_federation_url(os.environ.get('BINDER_URL', ''))
-persistent_binder_url = make_federation_url(os.environ.get('PERSISTENT_BINDER_URL', ''))
+binder_launch_host = os.environ.get('BINDER_LAUNCH_HOST', '')
+binder_request = os.environ.get('BINDER_REQUEST', '')
+binder_persistent_request = os.environ.get('BINDER_PERSISTENT_REQUEST', '')
 
 c.NotebookApp.jinja_template_vars.update({
-    'binder_url': binder_url,
-    'persistent_binder_url': persistent_binder_url,
-    'repo_url': os.environ.get('REPO_URL', ''),
-    'ref_url': os.environ.get('REF_URL', ''),
+    'binder_url': make_federation_url(binder_launch_host+binder_request),
+    'persistent_binder_url': make_federation_url(binder_launch_host+binder_persistent_request),
+    'repo_url': os.environ.get('BINDER_REPO_URL', ''),
+    'ref_url': os.environ.get('BINDER_REF_URL', ''),
 })

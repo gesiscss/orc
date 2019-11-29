@@ -75,13 +75,6 @@ binderhub:
         gallery_url: /gallery/
         #help_url: https://www.gesis.org/en/help/
         active: binder
-      appendix: |
-        USER root
-        ENV BINDER_URL={binder_url}
-        ENV PERSISTENT_BINDER_URL={persistent_binder_url}
-        ENV REPO_URL={repo_url}
-        ENV REF_URL={ref_url}
-        USER $NB_USER
 
   extraVolumes:
     - name: binder-templates
