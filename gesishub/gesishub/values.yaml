@@ -45,8 +45,8 @@ jupyterhub:
         mountPath: /etc/jupyterhub/templates
       - name: hub-templates-gesis
         mountPath: /etc/jupyterhub/templates/gesis
-      - mountPath: /etc/jupyterhub/orc.py  # mount where jupyterhub_config.py is, we import it there.
-        subPath: orc.py
+      - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
+        subPath: extra_config.py
         name: hub-extra-config
     authenticatePrometheus: false
     redirectToServer: false
