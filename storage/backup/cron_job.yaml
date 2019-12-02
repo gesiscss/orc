@@ -21,7 +21,7 @@ spec:
             base: worker
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:0ca66b5
+            image: gesiscss/nfs-backup-orc:cc6df1b
             env:
               - name: SSHPASS
                 valueFrom:
