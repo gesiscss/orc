@@ -1,3 +1,5 @@
+projectName: gesis-binder-prod
+
 binderhub:
   resources:
     requests:
@@ -74,6 +76,9 @@ binderhub:
       #  annotations:
       #    prometheus.io/scrape: 'true'
       #    prometheus.io/path: '/binder/jupyter/hub/metrics'
+      extraConfig:
+        00-orc: |
+          c.JupyterHub.bind_url = 'https://notebooks.gesis.org'
 
     proxy:
       service:

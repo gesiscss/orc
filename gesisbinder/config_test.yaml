@@ -1,3 +1,5 @@
+projectName: gesis-binder-staging
+
 binderhub:
   resources:
     requests:
@@ -6,6 +8,19 @@ binderhub:
     limits:
       cpu: "1"
       memory: 1Gi
+
+  extraVolumes:
+    - name: binder-templates
+      configMap:
+        name: binder-templates
+    - name: binder-templates-gesis
+      configMap:
+        name: binder-templates-gesis
+  extraVolumeMounts:
+    - name: binder-templates
+      mountPath: /etc/binderhub/templates
+    - name: binder-templates-gesis
+      mountPath: /etc/binderhub/templates/gesis
 
   config:
     BinderHub:
@@ -33,6 +48,9 @@ binderhub:
       service:
         annotations:
           prometheus.io/scrape: 'false'
+      extraConfig:
+        00-orc: |
+          c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
 
     proxy:
       service:
@@ -54,3 +72,8 @@ binderhub:
       memory:
         guarantee: 256M
         limit: 512M
+
+# no need to enable this. prod image_prefix (gesiscss/orc-binder-) covers
+# staging image_prefix (gesiscss/orc-binder-staging-)
+imageCleaner:
+  enabled: false
