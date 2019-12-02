@@ -73,7 +73,7 @@ jupyterhub:
         else:
           c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
 
-        from orc import OrcAdminHandler
+        from extra_config import OrcAdminHandler
         c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
 
         from orc import KeycloakLogoutHandler
