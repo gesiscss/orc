@@ -83,9 +83,9 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/'; then
-        mode+="-jhubtestns"
-      fi;
+      #if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/'; then
+      #  mode+="-jhubtestns"
+      #fi;
       if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/'; then
         mode+="-bhubtestns"
       fi;
