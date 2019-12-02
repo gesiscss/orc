@@ -1,3 +1,5 @@
+projectName: gesis-hub-prod
+
 jupyterhub:
   hub:
     # below is already default of z2jh chart

@@ -1,3 +1,5 @@
+projectName: gesis-hub-staging
+
 jupyterhub:
   debug:
     enabled: true
