@@ -26,18 +26,18 @@ upstream gallery-test {
 }
 
 upstream jhub-test {
-  server 194.95.75.9:30180;
-  server 194.95.75.12:30180;
+  server 194.95.75.9:30180 max_fails=0;
+  server 194.95.75.12:30180 max_fails=0;
 }
 
 upstream bhub-test {
-  server 194.95.75.9:30181;
-  server 194.95.75.12:30181;
+  server 194.95.75.9:30181 max_fails=0;
+  server 194.95.75.12:30181 max_fails=0;
 }
 
 upstream bjhub-test {
-  server 194.95.75.9:30182;
-  server 194.95.75.12:30182;
+  server 194.95.75.9:30182 max_fails=0;
+  server 194.95.75.12:30182 max_fails=0;
 }
 
 
@@ -99,7 +99,7 @@ server {
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub front end
-    location ~* ^/hub/?(.*)$ {
+    location ~* ^/(hub|user|services)/?(.*)$ {
         proxy_buffering off;
         proxy_pass http://jhub-test;
         include snippets/headers.conf;
@@ -107,34 +107,27 @@ server {
         #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
-    location ~* ^/(user|services)/?(.*)$ {
-        proxy_pass http://jhub-test;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        #proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Scheme $scheme;
-    }
-    #location /services/binder/ {
-    #    proxy_buffering off;  # NOTE this is important for binder
-    #    proxy_pass http://jhub-test;
-    #    include snippets/headers.conf;
-    #    include snippets/websocket_headers.conf;
-    #    }
 
     include snippets/ignore_fonts.conf;
 
-    ## Private Koeln
-    #allow 10.6.0.0/16;
-    ## Private Mannheim
-    #allow 10.2.0.0/16;
-    ## Public DMZ Koeln
-    #allow 193.175.238.0/24;
-    ## Private DMZ Koeln
-    #allow 194.95.75.0/27;
-    #deny all;
+    # Private Koeln
+    allow 10.6.0.0/16;
+    # Private Mannheim
+    allow 10.2.0.0/16;
+    # Public DMZ Koeln
+    allow 193.175.238.0/24;
+    # Private DMZ Koeln
+    allow 194.95.75.0/27;
+    deny all;
 
     location /static/ {
+        access_log off;
         root /var/www/staging;
+    }
+
+    # don't show bhub index and loading pages. instead redirect user to jhub home
+    location ~ ^/services/binder/($|v2/.*) {
+        return 302 /hub/;
     }
 
     location = /robots.txt {

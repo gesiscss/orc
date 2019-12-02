@@ -1,6 +1,7 @@
 import os
+import requests
 from flask_caching import Cache
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 
@@ -66,10 +67,33 @@ def not_found(error):
     return render_template('error.html', **context), response_code
 
 
+def user_logged_in():
+    """Check if a user is logged in"""
+    cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
+    cookie_value = request.cookies.get(cookie_name)
+    if cookie_value:
+        api_url = f"/api/authorizations/cookie/{cookie_name}/{cookie_value}"
+        token = os.getenv("JUPYTERHUB_API_TOKEN")
+        headers = {'Authorization': 'token %s' % token}
+        try:
+            r = requests.get(api_url, headers=headers, timeout=1)
+        except requests.exceptions.Timeout:
+            return False
+        else:
+            if r.status_code == 200:
+                return True
+    return False
+
+
 @app.route('/')
 # @cache.cached(timeout=None)
 def home():
     context = get_default_template_context()
+
+    if user_logged_in():
+        app.logger.info(f"User already logged in, redirecting to JupyterHub {context['gesishub_url']}")
+        return redirect(context['gesishub_url'])
+
     binder_examples = [
         {'headline': 'Wiki-Impact',
          'content': '',
@@ -84,10 +108,9 @@ def home():
          'binder_link': '/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
          'repo_link': 'https://github.com/minrk/ligo-binder'},
     ]
-    # FIXME: logged_in
     context.update({'active': 'home',
                     'binder_examples': binder_examples,
-                    'logged_in': "jupyterhub-session-id" in request.cookies})
+                    })
     return render_template('home.html', **context)
 
 

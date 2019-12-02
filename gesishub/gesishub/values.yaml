@@ -22,124 +22,226 @@ etcJupyter:
       # when people leave a notebook open and wander off
       cull_connected: true
 
-jupyterhub:
-  hub:
-    # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
-    # replicas: 1
-    pdb:
-      minAvailable: 0
-    nodeSelector:
-      base: worker  # where database is
-    db:
-      type: postgres
-    extraVolumes:
-      - name: hub-templates
-        configMap:
-          name: hub-templates
-      - name: hub-templates-gesis
-        configMap:
-          name: hub-templates-gesis
-      - name: hub-extra-config
-        configMap:
-          name: hub-extra-config
-    extraVolumeMounts:
-      - name: hub-templates
-        mountPath: /etc/jupyterhub/templates
-      - name: hub-templates-gesis
-        mountPath: /etc/jupyterhub/templates/gesis
-      - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
-        subPath: extra_config.py
-        name: hub-extra-config
-    authenticatePrometheus: false
-    redirectToServer: false
-    shutdownOnLogout: true
-    templateVars:
-      version: beta
-      home_url: /
-      gesishub_url: /hub/
-      gesisbinder_url: /binder/
-      about_url: /about/
-      tou_url: /terms_of_use/
-      imprint_url: https://www.gesis.org/en/institute/imprint/
-      data_protection_url: https://www.gesis.org/en/institute/data-protection/
-      gesis_url: https://www.gesis.org/en/home/
-      gallery_url: /gallery/
-      #help_url: https://www.gesis.org/en/help/
-      active: hub
-    templatePaths:
-      - "/etc/jupyterhub/templates"
-    extraConfig:
-      01-orc: |
-        if "cookie_options" in c.JupyterHub.tornado_settings:
-          c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
-        else:
-          c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
+binderhub:
+  pdb:
+    minAvailable: 0
+  replicas: 1
 
-        from extra_config import OrcAdminHandler, KeycloakLogoutHandler
-        c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
+  config:
+    GitHubRepoProvider:
+      # Add banned repositories to the list below
+      # They should be strings that will match "^<org-name>/<repo-name>.*"
+      banned_specs:
+        # e.g. '^org/repo.*'
+        - ^ines/spacy-binder.*
+        - ^soft4voip/rak.*
+        - ^hmharshit/cn-ait.*
+        - ^shishirchoudharygic/mltraining.*
+        - ^hmharshit/mltraining.*
+      high_quota_specs:
+        - ^gesiscss/.*
+      #spec_config:
+      #  - pattern: ^gesiscss/.*
+      #    config:
+      #      quota: 200
+    BinderHub:
+      auth_enabled: true
+      base_url: /services/binder/
+      use_registry: true
+      build_image: jupyter/repo2docker:0.10.0-127.gd9335cf
+      build_node_selector:
+        user: worker
+      per_repo_quota: 100
+      per_repo_quota_higher: 200
 
-        from oauthenticator.generic import GenericOAuthenticator
-        GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
-        def get_handlers(self, app):
-            return [
-                (r'/oauth_login', self.login_handler),
-                (r'/oauth_callback', self.callback_handler),
-            ] + [(r'/logout', self.logout_handler)]
-        GenericOAuthenticator.get_handlers = get_handlers
+  # TODO gesis templates for binder service?
+  #extraVolumes:
+  #  - name: binder-templates
+  #    configMap:
+  #      name: binder-templates
+  #  - name: binder-templates-gesis
+  #    configMap:
+  #      name: binder-templates-gesis
+  #extraVolumeMounts:
+  #  - name: binder-templates
+  #    mountPath: /etc/binderhub/templates
+  #  - name: binder-templates-gesis
+  #    mountPath: /etc/binderhub/templates/gesis
 
-  proxy:
-    # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
-    # replicas: 1
-    pdb:
-      minAvailable: 0
-    https:
-      enabled: false
-    service:
-      type: NodePort
+  extraEnv:
+    # NOTE: when you change limit, update hub.templateVars.projects_limit too
+    - name: PROJECTS_LIMIT_PER_USER
+      value: "5"
 
-  auth:
-    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-    type: custom
+  extraConfig:
+    00-launcher:  |
+      from tornado import web
+      import json
+      import os
+
+      async def check_user_projects(launcher, image, username, server_name, repo_url):
+          # we are making request to API with admin token
+          resp = await launcher.api_request(
+              'projects/%s' % username,
+              method='GET',
+          )
+          body = json.loads(resp.body.decode('utf-8'))
+          projects = body['projects']
+          projects_limit = int(os.getenv('PROJECTS_LIMIT_PER_USER', 0))
+          if projects_limit > 0 and projects:
+            projects_repo_list = [p[0] for p in projects]
+            if repo_url not in projects_repo_list and len(projects) >= projects_limit:
+                raise web.HTTPError(409, "No more than {} projects is allowed. "
+                                         "One must be deleted before a new project can be created.".format(projects_limit))
+      c.Launcher.pre_launch_hook = check_user_projects
+
+  service:
+    type: NodePort
+
+  cors: &cors
+    allowOrigin: '*'
+
+  dind:
+    enabled: false
+
+  imageCleaner:
+    enabled: false
+
+  jupyterhub:
     custom:
-      className: oauthenticator.generic.GenericOAuthenticator
-      config:
-        auto_login: true
-        userdata_method: GET
-        userdata_params: {'state': 'state'}
-        username_key: preferred_username
-    admin:
-      users:
-        - kenan.erdogan@gesis.org
-        - arnim.bleier@gesis.org
-    state:
-      enabled: true
-
-  singleuser:
-    nodeSelector:
-      user: worker
-    storage:
+      cors: *cors
+      binderauth_enabled: true
+    cull:
+      users: False
+      # kill user pods if idle for 30 mins - default is 1 hour
+      every: 660
+      timeout: 1800
+      # maxAge is 6 hours: 6 * 3600 = 21600
+      maxAge: 21600
+    hub:
+      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+      # replicas: 1
+      pdb:
+        minAvailable: 0
+      nodeSelector:
+        base: worker  # where database is
+      db:
+        type: postgres
       extraVolumes:
-        - name: etc-jupyter
+        - name: hub-templates
           configMap:
-            name: user-etc-jupyter
+            name: hub-templates
+        - name: hub-templates-gesis
+          configMap:
+            name: hub-templates-gesis
+        - name: hub-extra-config
+          configMap:
+            name: hub-extra-config
       extraVolumeMounts:
-        - name: etc-jupyter
-          mountPath: /etc/jupyter
-    image:
-      name: gesiscss/singleuser-orc
-      tag: "r2d-dd93b3e"
+        - name: hub-templates
+          mountPath: /etc/jupyterhub/templates
+        - name: hub-templates-gesis
+          mountPath: /etc/jupyterhub/templates/gesis
+        - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
+          subPath: extra_config.py
+          name: hub-extra-config
+      authenticatePrometheus: false
+      redirectToServer: false
+      shutdownOnLogout: true
+      templateVars:
+        projects_limit: "5"
+        version: beta
+        home_url: /
+        gesishub_url: /hub/
+        gesisbinder_url: /binder/
+        about_url: /about/
+        tou_url: /terms_of_use/
+        imprint_url: https://www.gesis.org/en/institute/imprint/
+        data_protection_url: https://www.gesis.org/en/institute/data-protection/
+        gesis_url: https://www.gesis.org/en/home/
+        gallery_url: /gallery/
+        #help_url: https://www.gesis.org/en/help/
+        active: hub
+      templatePaths:
+        - "/etc/jupyterhub/templates"
+      services:
+        binder:
+          oauth_no_confirm: true
+      extraConfig:
+        01-orc: |
+          if "cookie_options" in c.JupyterHub.tornado_settings:
+            c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
+          else:
+            c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
 
-  scheduling:
-    userScheduler:
-      enabled: false
-    podPriority:
-      enabled: false
-    userPlaceholder:
-      enabled: false
+          from extra_config import OrcAdminHandler, ProjectAPIHandler
+          c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
+                                        (r'/api/projects/([^/]+)', ProjectAPIHandler), ]
 
-  cull:
-    # kill user pods if idle for 30 mins - default is 1 hour
-    every: 660
-    timeout: 1800
-    # maxAge is 6 hours: 6 * 3600 = 21600
-    maxAge: 21600
+          #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+          c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
+        02-orc: |
+          from extra_config import KeycloakLogoutHandler
+          from oauthenticator.generic import GenericOAuthenticator
+          GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
+          def get_handlers(self, app):
+              return [
+                  (r'/oauth_login', self.login_handler),
+                  (r'/oauth_callback', self.callback_handler),
+              ] + [(r'/logout', self.logout_handler)]
+          GenericOAuthenticator.get_handlers = get_handlers
+        00-binder: |
+          from extra_config import PersistentBinderSpawner
+          c.JupyterHub.spawner_class = PersistentBinderSpawner
+    proxy:
+      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+      # replicas: 1
+      pdb:
+        minAvailable: 0
+      https:
+        enabled: false
+      service:
+        type: NodePort
+
+    auth:
+      # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+      type: custom
+      custom:
+        className: oauthenticator.generic.GenericOAuthenticator
+        config:
+          auto_login: true
+          userdata_method: GET
+          userdata_params: {'state': 'state'}
+          username_key: preferred_username
+      admin:
+        users:
+          - kenan.erdogan@gesis.org
+          - arnim.bleier@gesis.org
+      state:
+        enabled: true
+
+    singleuser:
+      events: true  # events_enabled - to get events from kubespawner
+      nodeSelector:
+        user: worker
+      cmd: jupyterhub-singleuser
+      storage:
+        type: dynamic
+        extraVolumes:
+          - name: etc-jupyter
+            configMap:
+              name: user-etc-jupyter
+        extraVolumeMounts:
+          - name: etc-jupyter
+            mountPath: /etc/jupyter
+      image:
+        name: gesiscss/singleuser-orc
+        tag: "r2d-dd93b3e"
+
+    scheduling:
+      userScheduler:
+        enabled: false
+      podPriority:
+        enabled: false
+      userPlaceholder:
+        enabled: false

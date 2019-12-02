@@ -46,6 +46,11 @@ spec:
           value:  "production"
         - name: FLASK_SERVER_NAME
           value:  "notebooks-test.gesis.org"
+        - name: JUPYTERHUB_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: home-secret
+              key: "hub-api-token"
         resources:
           requests:
             cpu: "0.1"

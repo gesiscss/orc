@@ -117,37 +117,37 @@ header .navbar-default{
     /*margin-bottom: 0;*/
 }
 
-.dropdown, .dropdown>a, .dropdown-menu>li>a, .dropdown-menu, .navbar-default .navbar-nav .open .dropdown-menu>li>a {
+.navbar-default .dropdown, .navbar-default .dropdown>a, .navbar-default .dropdown-menu>li>a, .navbar-default .dropdown-menu, .navbar-default .navbar-nav .open .dropdown-menu>li>a {
     color: #58748f;
     font-weight: bold;
     background-color: #cdd5dd;
 }
 
-.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.open>a:focus {
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.open>a:focus {
     color: #58748f;
     font-weight: bold;
     background-color: #cdd5dd;
 }
 
-.navbar-nav>li>.dropdown-menu {
+.navbar-default .navbar-nav>li>.dropdown-menu {
 	padding: 0;
 }
 
 @media (min-width: 768px) {
     /*not in mobile (xs)*/
-.dropdown:hover .dropdown-menu {
+.navbar-default .dropdown:hover .dropdown-menu {
     display: block;
     margin-top: 0;
  }
 }
 
-.navbar-default .navbar-nav>li>a.gs_active_sub, .dropdown>a.gs_active_sub, .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
+.navbar-default .navbar-nav>li>a.gs_active_sub, .navbar-default .dropdown>a.gs_active_sub, .navbar-default .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
     color: #ffffff;
 	background-color: #FF6600;
     font-weight: bold;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .dropdown>a:hover, .dropdown-menu>li>a:hover{
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .dropdown>a:hover, .navbar-default .dropdown-menu>li>a:hover {
     color: #ffffff;
 	background-color: #FF6600;
 }

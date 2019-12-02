@@ -9,6 +9,23 @@
                     </a>
                     <div class="navbar-header pull-right visible-xs hidden-sm hidden-md hidden-lg">
                         <ul class="nav nav-pills pull-left ">
+                            {% if active == 'home' %}
+                            <li>
+                                <a href="{{ gesishub_url }}" style="display: inline; padding: 0;">
+                                    <button class="navbar-toggle navbar-link">
+                                        <b aria-hidden="true" class="visible-xs glyphicon glyphicon glyphicon-log-in"></b>
+                                    </button>
+                                </a>
+                            </li>
+                            {% elif active == 'hub' %}
+                            <li>
+                                <a href="{{ logout_url }}" style="display: inline; padding: 0;">
+                                    <button class="navbar-toggle navbar-link">
+                                        <b aria-hidden="true" class="visible-xs glyphicon glyphicon glyphicon-log-out"></b>
+                                    </button>
+                                </a>
+                            </li>
+                            {% endif %}
                             <li>
                                 <a href="{{ about_url }}" style="display: inline; padding: 0;">
                                     <button class="navbar-toggle navbar-link">
@@ -21,6 +38,25 @@
                 </div>
                 <div class="navbar-header pull-right hidden-xs">
                     <ul class="nav navbar-nav pull-left">
+                        {% if active == 'home' %}
+                        <li>
+                            <a href="{{ gesishub_url }}">
+                                <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-in"></span>
+                              Login
+                          </span>
+                            </a>
+                        </li>
+                        {% elif active == 'hub' %}
+                        <li>
+                            <a href="{{ logout_url }}">
+                                <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-out"></span>
+                              Logout
+                          </span>
+                            </a>
+                        </li>
+                        {% endif %}
                         <li>
                             <a href="{{ about_url }}">
                                 {#<span class="top-menu-item hidden-xs" {% if active == 'about' %}style="color: #ff6100;"{% endif %}>#}
