@@ -116,9 +116,12 @@ spec:
                  'storage': pvc.spec.resources.requests['storage']}
             with open(join(pvcs_backup_path, f'{pvc.metadata.name}.yaml'), 'w') as f:
                 f.write(pvc_template.format(**d))
-        # grafana and prometheus PVs
+        # grafana PVs
+        # dont backup prometheus, it takes too long and causes mostly errors and
+        # actually we dont need it anymore for popular repos
         elif pvc.metadata.namespace == 'default' and \
-            ('grafana' in pvc.metadata.name or 'prometheus' in pvc.metadata.name):
+            ('grafana' in pvc.metadata.name):
+            # ('grafana' in pvc.metadata.name or 'prometheus' in pvc.metadata.name):
             pv_dict_rest[pvc.spec.volume_name] = pvc.metadata.name
         # efk-stack
         # elif pvc.metadata.namespace == 'efk-stack-ns':
@@ -132,7 +135,7 @@ spec:
                 f'{timedelta(seconds=done_config_files-done_db_time)}\n\n')
 
     # backup PVs
-    logger.info('## Back up nfs shares separately: user folders and also grafana, prometheus and efk-stack data')
+    logger.info('## Back up nfs shares separately: user folders and also grafana')
     _pvs = listdir(environ['PV_FOLDER'])
     pvs = []
     # user PVs
@@ -142,7 +145,7 @@ spec:
         # filter out nfs files and PVs of staging
         if pv_dir_name.startswith('pvc-') and pv_dir_name in pv_dict:
             pvs.append([pvs_backup_path, pv_dir_name, pv_dict[pv_dir_name]])
-    # grafana, prometheus, efk-stack PVs
+    # grafana PV
     pvs_backup_path_rest = join(day_path, 'pvs_rest')
     mkdir_p(pvs_backup_path_rest)
     for pv_dir_name in _pvs:
