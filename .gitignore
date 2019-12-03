@@ -12,7 +12,6 @@ documentation
 #gesishub/secret.yaml
 #gesishub/secret_test.yaml
 gesishub/secret_local.yaml
-gesishub/gesishub/charts
 #monitoring/grafana_secret.yaml
 venv
 monitoring/efk_stack/config_default.yaml
