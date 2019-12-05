@@ -24,6 +24,8 @@ etcJupyter:
 
 jupyterhub:
   hub:
+    # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+    # replicas: 1
     pdb:
       minAvailable: 0
     nodeSelector:
@@ -86,6 +88,8 @@ jupyterhub:
         GenericOAuthenticator.get_handlers = get_handlers
 
   proxy:
+    # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+    # replicas: 1
     pdb:
       minAvailable: 0
     https:

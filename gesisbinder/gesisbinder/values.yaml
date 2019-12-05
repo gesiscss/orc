@@ -164,6 +164,8 @@ binderhub:
       # maxAge is 6 hours: 6 * 3600 = 21600
       maxAge: 21600
     hub:
+      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+      # replicas: 1
       pdb:
         minAvailable: 0
       nodeSelector:
@@ -180,6 +182,8 @@ binderhub:
           else:
             c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
     proxy:
+      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+      # replicas: 1
       pdb:
         minAvailable: 0
       https:
