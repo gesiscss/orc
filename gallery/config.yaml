@@ -22,6 +22,8 @@ metadata:
   labels:
     app: gallery
 spec:
+  # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#revision-history-limit
+  revisionHistoryLimit: 3  # default is 10
   replicas: 1
   selector:
     matchLabels:
