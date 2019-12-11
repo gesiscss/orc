@@ -71,7 +71,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             c.run('helm repo update')
             c.run('helm dependency update gesishub/gesishub')
             c.run('helm upgrade --install --namespace=jhub{-test}-ns jhub{-test} gesishub/gesishub '
-                  '--wait --force --debug --timeout=360 '
+                  '--wait --force --debug --timeout=60 '
                   '-f gesishub/config{_test}.yaml '
                   '-f gesishub/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:

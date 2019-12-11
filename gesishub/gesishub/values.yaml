@@ -78,15 +78,6 @@ jupyterhub:
         from extra_config import OrcAdminHandler, KeycloakLogoutHandler
         c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),]
 
-        from oauthenticator.generic import GenericOAuthenticator
-        GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
-        def get_handlers(self, app):
-            return [
-                (r'/oauth_login', self.login_handler),
-                (r'/oauth_callback', self.callback_handler),
-            ] + [(r'/logout', self.logout_handler)]
-        GenericOAuthenticator.get_handlers = get_handlers
-
   proxy:
     # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
     # replicas: 1
@@ -101,7 +92,7 @@ jupyterhub:
     # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
     type: custom
     custom:
-      className: oauthenticator.generic.GenericOAuthenticator
+      className: KeycloakOAuthenticator
       config:
         auto_login: true
         userdata_method: GET
