@@ -11,8 +11,6 @@ from jupyterhub import orm
 from jupyterhub.handlers import BaseHandler, LogoutHandler
 from jupyterhub.utils import admin_only
 
-from oauthenticator.generic import GenericOAuthenticator
-
 
 class OrcAdminHandler(BaseHandler):
     """Render the admin page."""
@@ -113,10 +111,3 @@ class KeycloakLogoutHandler(LogoutHandler):
             self.redirect(kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
         else:
             await super().get()
-
-
-class KeycloakOAuthenticator(GenericOAuthenticator):
-    logout_handler = KeycloakLogoutHandler
-
-    def get_handlers(self, app):
-        return super().get_handlers(app) + [(r'/logout', self.logout_handler)]
