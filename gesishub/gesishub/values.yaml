@@ -81,10 +81,7 @@ jupyterhub:
         from oauthenticator.generic import GenericOAuthenticator
         GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
         def get_handlers(self, app):
-            return [
-                (r'/oauth_login', self.login_handler),
-                (r'/oauth_callback', self.callback_handler),
-            ] + [(r'/logout', self.logout_handler)]
+            return super().get_handlers(app) + [(r'/logout', self.logout_handler)]
         GenericOAuthenticator.get_handlers = get_handlers
 
   proxy:
