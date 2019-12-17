@@ -48,9 +48,6 @@ binderhub:
       service:
         annotations:
           prometheus.io/scrape: 'false'
-      extraConfig:
-        00-orc: |
-          c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
 
     proxy:
       service:

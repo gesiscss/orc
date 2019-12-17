@@ -6,9 +6,6 @@ jupyterhub:
     #service:
     #  annotations:
     #    prometheus.io/path: "/hub/metrics"
-    extraConfig:
-      00-orc: |
-        c.JupyterHub.bind_url = 'https://notebooks.gesis.org'
     resources:
       requests:
         cpu: "0.25"

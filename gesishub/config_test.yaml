@@ -8,9 +8,6 @@ jupyterhub:
     service:
       annotations:
         prometheus.io/scrape: 'false'
-    extraConfig:
-      00-orc: |
-        c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
     resources:
       requests:
         cpu: "0.1"
