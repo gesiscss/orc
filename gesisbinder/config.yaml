@@ -32,12 +32,20 @@ binderhub:
     BinderHub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
       image_prefix: gesiscss/orc-binder-
-      # TODO maybe we can use this in the long run
-      #badge_base_url: https://mybinder.org
-
   extraConfig:
+    00-badge-base-url: |
+      def badge_base_url(handler):
+          launch_host = (
+              handler.request.headers.get('X-Binder-Launch-Host', '') or
+              handler.get_argument('binder_launch_host', ''))
+          if launch_host and not launch_host.endswith('/'):
+              launch_host += '/'
+          if launch_host == 'https://mybinder.org/':
+              return launch_host
+          return ''
+      c.BinderHub.badge_base_url = badge_base_url
     # send binder events to mybinder.org's StackDriver on Google Cloud
-    010-eventlog: |
+    10-eventlog: |
       import google.cloud.logging
       import google.cloud.logging.handlers
       # importing google cloud configures a root log handler,

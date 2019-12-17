@@ -90,7 +90,7 @@ binderhub:
       mountPath: /etc/binderhub/templates/gesis
 
   extraConfig:
-    011-eventlog: |
+    11-eventlog: |
       from datetime import datetime
       import jsonschema
       import requests

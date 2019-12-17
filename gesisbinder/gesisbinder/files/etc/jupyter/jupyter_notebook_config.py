@@ -13,8 +13,7 @@ if V(notebook.__version__) < V('5.1.0'):
     c.NotebookApp.jinja_environment_options = {'extensions': ['jinja2.ext.i18n']}
 
 
-# binder_launch_host = os.environ.get('BINDER_LAUNCH_HOST', '')
-binder_launch_host = 'https://mybinder.org/'
+binder_launch_host = os.environ.get('BINDER_LAUNCH_HOST', '')
 binder_request = os.environ.get('BINDER_REQUEST', '')
 binder_persistent_request = os.environ.get('BINDER_PERSISTENT_REQUEST', '')
 
