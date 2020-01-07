@@ -7,8 +7,8 @@ For more information about ORC project: https://notebooks.gesis.org/about/
 This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 18.04.
 And kubernetes cluster (ORC cluster) is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) 
 (v1.14.1).
-[Flannel](https://github.com/coreos/flannel/tree/v0.11.0) is used as pod network.
-Docker version 18.06.2-ce is installed on servers.
+[Flannel](https://github.com/coreos/flannel/tree/2140ac876ef134e0ed5af15c65e414cf26827915) is used as pod network.
+Docker version 19.03.5 is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
@@ -28,7 +28,7 @@ All services in the cluster has type `NodePort`.
 
 ### [GESIS Hub](/gesishub)
 
-JupyterHub 1.0.0 runs under https://notebooks.gesis.org/hub/. 
+JupyterHub 1.1.0b1 runs under https://notebooks.gesis.org/hub/. 
 
 Single user server image: https://github.com/gesiscss/data_science_image
 

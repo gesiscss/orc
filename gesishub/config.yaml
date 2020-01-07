@@ -42,10 +42,10 @@ jupyterhub:
   singleuser:
     storage:
       # has no effect when using nfs: this is a min limit not a max
-      capacity: 25Gi
+      capacity: 10Gi
     cpu:
       guarantee: 0.1
-      limit: 1
+      limit: 2
     memory:
       guarantee: 1G
       limit: 32G
