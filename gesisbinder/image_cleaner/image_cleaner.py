@@ -24,7 +24,7 @@ def get_available_disk_space(path_to_check):
 def clean_images():
     days_limit = int(os.getenv('IMAGE_CLEANER_DAYS', '7'))
     interval = float(os.getenv('IMAGE_CLEANER_INTERVAL', '1800'))
-    image_prefix = os.getenv('IMAGE_CLEANER_PREFIX', 'gesiscss/orc-binder-')
+    image_prefix = os.getenv('IMAGE_CLEANER_PREFIX', 'gesiscss/binder-')
     path_to_check = os.getenv('IMAGE_CLEANER_PATH', '/var/lib/docker')
     delay = float(os.getenv('IMAGE_CLEANER_DELAY', '5'))
     high_limit = float(os.getenv('IMAGE_CLEANER_HIGH', '80'))

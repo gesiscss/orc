@@ -31,7 +31,7 @@ binderhub:
   config:
     BinderHub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
-      image_prefix: gesiscss/orc-binder-
+      image_prefix: gesiscss/binder-
   extraConfig:
     00-badge-base-url: |
       def badge_base_url(handler):
