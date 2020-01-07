@@ -47,7 +47,7 @@ spec:
         - name: FLASK_SERVER_NAME
           value:  "notebooks.gesis.org"
         - name: GESISHUB_UNDER_MAINTENANCE
-          value: "false"
+          value: "true"
         resources:
           requests:
             cpu: "0.2"
