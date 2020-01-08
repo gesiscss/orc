@@ -256,8 +256,10 @@ footer .container {
 		max-height: 126px;
 		height: 95px;
 		width: auto;
-		padding: 12px;
+		padding-top: 12px;
+		padding-bottom: 12px;
 		padding-left: 15px;
+		vertical-align: middle;
 }
 
 #header > h3 {
@@ -329,4 +331,9 @@ footer {
 #how-it-works, #explanation {
     font-weight: normal;
     line-height: 1.4;
+}
+
+.use-examples > img{
+	height: 140px;
+	width: auto;
 }
