@@ -1,8 +1,8 @@
-# https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
+# chart version 3.10.1: https://github.com/helm/charts/tree/c2e0cd5007378405dad9ea8b808a700868ca1818/stable/grafana
 
 service:
   type: NodePort
-  port: 80
+  port: 80  # default
   nodePort: 30075
 
 nodeSelector:
@@ -19,10 +19,9 @@ resources:
 persistence:
   enabled: true
   # has no effect when using nfs: this is a min limit not a max
-  size: 10Gi
+  size: 10Gi  # default
   accessModes:
-    - ReadWriteOnce
-#  existingClaim:
+    - ReadWriteOnce  # default
 
 # https://grafana.com/plugins
 # Pass the plugins you want installed as a comma separated list.
@@ -53,7 +52,7 @@ datasources:
       - name: prometheus
         orgId: 1
         type: prometheus
-        url: http://prometheus-server:9090
+        url: http://prometheus-server:80
         access: proxy  # server
         isDefault: true
         editable: false

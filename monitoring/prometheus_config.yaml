@@ -1,7 +1,4 @@
-# https://github.com/helm/charts/tree/master/stable/prometheus
-nodeExporter:
-  updateStrategy:
-    type: RollingUpdate
+# chart version version 9.1.2: https://github.com/helm/charts/tree/7b823abaa690e61e5264c51e0a44af44b1d3b68f/stable/prometheus
 alertmanager:
   # TODO
   enabled: false
@@ -14,19 +11,20 @@ server:
   service:
     type: NodePort
     nodePort: 30073
-    servicePort: 9090
+    # used in grafana_config.yaml: datasources.datasources.yaml.datasources.url
+    servicePort: 80  # default
   resources:
     requests:
-      cpu: "2"
+      cpu: "1"
       memory: 8Gi
     limits:
-      cpu: "4"
+      cpu: "2"
       memory: 16Gi
   persistentVolume:
     # has no effect when using nfs: this is a min limit not a max
     size: 96Gi
 #    existingClaim:
-  retention: 90d
+  retention: 60d
 
 kubeStateMetrics:
   nodeSelector:
