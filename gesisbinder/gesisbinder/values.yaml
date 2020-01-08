@@ -235,4 +235,4 @@ imageCleaner:
   # cull images on the host docker
   dockerSocket: /var/run/docker.sock
   # dockerLibDir: /var/lib/docker
-  dockerLibDir: /ssd/docker
+  dockerLibDir: /data2/docker
