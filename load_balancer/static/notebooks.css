@@ -182,7 +182,7 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
 }
 
 #header-container > div.navbar-header.pull-right.hidden-xs > button {
-	background-color: #58748f;
+		background-color: #58748f;
     margin-left: 15px;
 }
 
@@ -190,14 +190,14 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
     color: #fff;
     background-color: #58748f;
     border-color: #58748f;
-	margin-top: 8px;
+		margin-top: 8px;
 	}
 
 #header-container > div.navbar-header.pull-right.hidden-xs > ul > button:hover {
     color: #58748f;
     background-color: #fff;
     border-color: #58748f;
-	margin-top: 8px;
+		margin-top: 8px;
 	}
 /*
 div.trail-wrapper.hidden-print > div.container{
@@ -241,12 +241,23 @@ footer .container {
 
 #header_banner {
 	padding: 0;
+	clear: both;
+	background:url(/static/images/gs_ms_banner_default.jpg);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-position: center center;
 	}
 
+#header_banner > a{
+	display: inline-block;
+}
+
 #header_banner > a > img {
-    max-width: 100%;
-    height: 125px;
-    width: 960px;
+		max-height: 126px;
+		height: 95px;
+		width: auto;
+		padding: 12px;
+		padding-left: 15px;
 }
 
 #header > h3 {
