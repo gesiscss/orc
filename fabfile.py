@@ -16,7 +16,7 @@ def nginx(c, password, branch_name, ref='master', mode=''):
     if "static" in mode:
         c.run('echo "######## Copying static files"')
         branch_name = "prod" if branch_name == "master" else "staging"
-        c.sudo("rm -rf /var/www/{}/static".format(remote_project_root, branch_name), password=password)
+        c.sudo("rm -rf /var/www/{}/static".format(branch_name), password=password)
         c.sudo("cp -R {}static /var/www/{}/".format(remote_project_root, branch_name), password=password)
     if "config" in mode:
         c.run('echo "######## Copying config files"')
