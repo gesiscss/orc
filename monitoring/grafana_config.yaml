@@ -1,4 +1,4 @@
-# chart version 3.10.1: https://github.com/helm/charts/tree/c2e0cd5007378405dad9ea8b808a700868ca1818/stable/grafana
+# chart version 4.3.0: https://github.com/helm/charts/tree/12088766a9cbb5fafc61e643df3b8c41814dfae8/stable/grafana
 
 service:
   type: NodePort
