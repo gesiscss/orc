@@ -33,7 +33,7 @@
     <meta name="description" content="JupyterHub - GESIS Notebooks ({{version}})">
 
     {% block stylesheet %}
-    <link href="/static/vendor/bootstrap/css/bootstrap.min.css?v=1" rel="stylesheet" />
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
     {% endblock %}
     <link href="/static/notebooks.css?v=1" rel="stylesheet" />
@@ -45,8 +45,8 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="/static/vendor/html5shiv.min.js?v=1"></script>
-      <script src="/static/vendor/respond.min.js?v=1"></script>
+      <script src="/static/vendor/html5shiv.min.js"></script>
+      <script src="/static/vendor/respond.min.js"></script>
     <![endif]-->
 
     {% block scripts %}
