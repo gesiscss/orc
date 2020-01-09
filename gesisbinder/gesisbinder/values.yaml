@@ -228,10 +228,10 @@ imageCleaner:
   path: /var/lib/docker
   # delete an image at most every 5 seconds
   delay: 10
-  # start cleaning when 80% of disk is used (available <= 20%)
-  # until it drops below 40% (available >= 60%)
-  highLimit: 80
-  lowLimit: 40
+  # start cleaning when 90% of disk is used (available <= 10%)
+  # until it drops below 30% (available >= 70%)
+  highLimit: 90
+  lowLimit: 30
   # cull images on the host docker
   dockerSocket: /var/run/docker.sock
   # dockerLibDir: /var/lib/docker
