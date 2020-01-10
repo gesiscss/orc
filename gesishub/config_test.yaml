@@ -39,6 +39,19 @@ binderhub:
           c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
         02-orc: |
           c.GitHubOAuthenticator.auto_login = True
+          from jupyterhub.handlers import LogoutHandler
+          class MyLogoutHandler(LogoutHandler):
+              async def render_logout_page(self):
+                  site_url = 'https://{}'.format(self.request.host)
+                  self.redirect(site_url, permanent=False)
+          from oauthenticator.github import GitHubOAuthenticator
+          GitHubOAuthenticator.logout_handler = MyLogoutHandler
+          def get_handlers(self, app):
+              return [
+                  (r'/oauth_login', self.login_handler),
+                  (r'/oauth_callback', self.callback_handler),
+              ] + [(r'/logout', self.logout_handler)]
+          GitHubOAuthenticator.get_handlers = get_handlers
       resources:
         requests:
           cpu: "0.1"
