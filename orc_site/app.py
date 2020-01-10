@@ -71,7 +71,9 @@ def user_logged_in():
     """Check if a user is logged in"""
     cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
     cookie_value = request.cookies.get(cookie_name)
+    app.logger.info(f"#######1 {request.host}")
     if cookie_value:
+        app.logger.info(f"#######2 {request.host}")
         api_url = f"https://{request.host}/hub/api/authorizations/cookie/{cookie_name}/{cookie_value}"
         token = os.getenv("JUPYTERHUB_API_TOKEN")
         headers = {'Authorization': 'token %s' % token}
