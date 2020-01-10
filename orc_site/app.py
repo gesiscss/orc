@@ -72,7 +72,7 @@ def user_logged_in():
     cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
     cookie_value = request.cookies.get(cookie_name)
     if cookie_value:
-        api_url = f"/api/authorizations/cookie/{cookie_name}/{cookie_value}"
+        api_url = f"https://{request.host}/hub/api/authorizations/cookie/{cookie_name}/{cookie_value}"
         token = os.getenv("JUPYTERHUB_API_TOKEN")
         headers = {'Authorization': 'token %s' % token}
         try:
