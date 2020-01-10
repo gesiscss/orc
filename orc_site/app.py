@@ -70,10 +70,12 @@ def not_found(error):
 def user_logged_in():
     """Check if a user is logged in"""
     cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
+    return cookie_name in request.cookies
     cookie_value = request.cookies.get(cookie_name)
     if cookie_value:
+        # FIXME this api only works for `jupyterhub-services` cookie (which is encrypted)
         api_url = f"https://{request.host}/hub/api/authorizations/cookie/{cookie_name}/{cookie_value}"
-        app.logger.info(f"####### {api_url}")
+        # app.logger.info(f"####### {api_url}")
         token = os.getenv("JUPYTERHUB_API_TOKEN", "").strip()
         headers = {'Authorization': 'token %s' % token}
         try:
