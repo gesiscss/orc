@@ -127,11 +127,24 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'gallery/config.yaml'; then
         mode+="-galleryapp"
       fi;
+      if git diff HEAD~ --name-only | egrep 'gallery/cron_job.yaml'; then
+        mode+="-galleryarchives"
+      fi;
       if git diff HEAD~ --name-only | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/'; then
         mode+="-jhubns"
       fi;
       if git diff HEAD~ --name-only | egrep 'gesisbinder/config.yaml|gesisbinder/_secret.yaml|gesisbinder/gesisbinder/'; then
         mode+="-bhubns"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'gesisbinder/bot/'; then
+        mode+="-bhubupgrade"
+      fi;
+      # TODO add nfs-backup cronjob (storage/backup) or better to update it manually?
+      if git diff HEAD~ --name-only | egrep 'monitoring/prometheus_config.yaml'; then
+        mode+="-prometheus"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'monitoring/_secret_grafana.yaml|monitoring/grafana_config.yaml'; then
+        mode+="-grafana"
       fi;
       echo "####### mode: $mode"
       fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode

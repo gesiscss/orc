@@ -6,22 +6,22 @@ def nginx(c, password, branch_name, ref='master', mode=''):
     c.user = 'iuser'
     c.connect_kwargs.password = password
 
-    remote_project_root = '~/ilcm/orc_nginx/load_balancer/'
+    nginx_folder = '~/ilcm/orc_nginx/load_balancer/'  # on base:worker
     c.run('echo "######## Updating code base"')
-    with c.cd(remote_project_root):
+    with c.cd(nginx_folder):
         c.run('git fetch --all')
         c.run('git checkout {}'.format(ref))
 
     mode = mode.split('-')
     if "static" in mode:
-        c.run('echo "######## Copying static files"')
+        c.run('echo "######## Replacing static files"')
         branch_name = "prod" if branch_name == "master" else "staging"
         c.sudo("rm -rf /var/www/{}/static".format(branch_name), password=password)
-        c.sudo("cp -R {}static /var/www/{}/".format(remote_project_root, branch_name), password=password)
+        c.sudo("cp -R {}static /var/www/{}/".format(nginx_folder, branch_name), password=password)
     if "config" in mode:
         c.run('echo "######## Copying config files"')
-        c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(remote_project_root), password=password)
-        c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(remote_project_root), password=password)
+        c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(nginx_folder), password=password)
+        c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.run('echo "######## Testing config files"')
         c.sudo("nginx -t", password=password)
         c.run('echo "######## Reloading nginx"')
@@ -48,7 +48,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         '_test': '_test' if staging else '',
         '-test': '-test' if staging else ''
     }
-    remote_project_root = '~/ilcm/orc_staging' if staging else '~/ilcm/orc'
+    remote_project_root = '~/ilcm/orc_staging' if staging else '~/ilcm/orc'  # on master
     with c.cd(remote_project_root):
         mode = mode.split('-')
         if 'fetch_co' in mode:
@@ -68,6 +68,8 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       '--namespace=gallery{-test}-ns'.format(**format_dict))
             c.run('kubectl apply -f gallery/config{_test}.yaml '
                   '--namespace=gallery{-test}-ns'.format(**format_dict))
+        if 'galleryarchives' in mode and not staging:
+            c.run('kubectl apply -f gallery/cron_job.yaml -n gallery-ns')
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm dependency update gesishub/gesishub')
@@ -82,6 +84,18 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--wait --force --debug --timeout=360 '
                   '-f gesisbinder/config{_test}.yaml '
                   '-f gesisbinder/_secret{_test}.yaml '.format(**format_dict))
+        if 'bhubupgrade' in mode and not staging:
+            c.run('kubectl apply -f gesisbinder/bot/_secret_cron_job.yaml -n bhub-ns')
+            c.run('kubectl apply -f gesisbinder/bot/cron_job.yaml -n bhub-ns')
+        if 'prometheus' in mode and not staging:
+            c.run('helm upgrade prometheus stable/prometheus --version=9.7.4 '
+                  '-f monitoring/prometheus_config.yaml '
+                  '--wait --force --debug --timeout=360')
+        if 'grafana' in mode and not staging:
+            c.run('helm upgrade grafana stable/grafana --version=4.3.0 '
+                  '-f monitoring/grafana_config.yaml '
+                  '-f monitoring/_secret_grafana.yaml '
+                  '--wait --force --debug --timeout=360')
 
 
 @task
