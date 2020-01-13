@@ -59,10 +59,10 @@ body {
 
 .navbar-brand {
     float: left;
-    padding: 15px 15px;
-    font-size: 18px;
-    line-height: 20px;
-    height: 70px;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.4rem;
+		height: 37px;
 	}
 
 header .navbar-brand img.hidden-sm.hidden-xs {
@@ -76,7 +76,7 @@ header .navbar-brand img.visible-sm.visible-xs {
 	}
 
 div.navbar-header {
-	padding: 0rem 2rem;
+	padding: 1.28rem 3.2rem 0.48rem 3.2rem;
 	}
 
 header .navbar-default{
@@ -96,11 +96,12 @@ header .navbar-default{
 #navbar {
     max-width: 100%;
     margin-left: 0;
+		padding-left: 3.2rem;
 }
 
 .navbar-default .navbar-nav>li>a {
     color: #58748f;
-    /*font-size: 1.2rem;*/
+    font-size: 1.5rem;
     font-weight: bold;
     /*line-height: 1.0rem;*/
     /*position: relative;*/
@@ -254,11 +255,11 @@ footer .container {
 
 #header_banner > a > img {
 		max-height: 126px;
-		height: 95px;
+		height: 98px;
 		width: auto;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		padding-left: 9px;
+		padding-top: 1.4rem;
+		padding-bottom: 0.6rem;
+		padding-left: 2.6rem;
 		vertical-align: middle;
 }
 
