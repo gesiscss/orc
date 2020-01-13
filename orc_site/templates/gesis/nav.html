@@ -3,7 +3,7 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid"
                  style="color: #58748f; background-color: #cdd5dd; border: none; border-radius: 0; padding: 0;">
-                <div class="navbar-header">
+                <div>
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                             aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
@@ -14,7 +14,7 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse" style="border-color: #e7e7e7;">
                     {#<ul class="nav navbar-nav" style="float:none; margin: 0 auto; display: table; table-layout: fixed;">#}
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav" id="navbar-list">
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
                         {% if active == 'hub' %}
                         <li><a href="{{ base_url }}home" id="navbar-active-a" class="gs_active_sub">Home</a></li>
