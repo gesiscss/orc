@@ -1,15 +1,16 @@
 {% extends "page.html" %}
 
 {% block main %}
-<div class="row form-group"></div>
+<div class="row form-group" style="margin-bottom: 20px"></div>
 
-<div id="mybinder-text" class="text-center">
+<div id="header" class="text-center">
+  {#      <h3>Turn a Git repo into a collection of interactive notebooks</h3>#}
   <div id="explanation">
     Have a Binder-Ready repository? With GESIS Notebooks, turn this repository into a persistent Jupyter environment, allowing you to continue your analysis from anywhere at any time.
   </div>
 </div>
 
-<div class="row form-group text-center project-text">
+<div class="row text-center project-text">
 {#    <div class="col-lg-1 col-md-1"></div>#}
 {#    <div class="col-lg-10 col-lg-offset-1 text-center">#}
     <div class="col-lg-6 col-md-6 col-sm-5 hidden-xs">
@@ -26,10 +27,8 @@
 <div class="row form-group"></div>
 <div class="row form-group"></div>
 <div class="row form-group"></div>
-<div class="row form-group"></div>
-<div class="row form-group"></div>
 
-<div class="row form-group text-center display-flex">
+<div class="row text-center display-flex">
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
     <div class="use-examples">
       <img src="/static/images/mybinder_vector_logo.svg?v=1" alt="MyBinder Logo">
@@ -62,9 +61,9 @@
   </div>
 </div>
 
-<div class="row text-center" style="margin-bottom : 20px;" >
-  <h3 style="margin-top : 0px;" >questions?<br />read <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865">this post</a> and join the discussion</h3>
-</div>
+  <div class="row text-center">
+    <h3 style="margin-top: 0;" >questions?<br />read <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865">this post</a> and join the discussion</h3>
+  </div>
 
 {#<div class="row form-group page-header">#}
 <div class="row form-group">

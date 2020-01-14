@@ -339,17 +339,22 @@ footer {
 	padding-left: 16px;
 }
 
-#mybinder-text {
+#header {
 	margin-left: 5%;
 	width: 90%;
-	padding-top: 24px;
-	padding-bottom: 48px;
+	border-bottom: 0;
+    padding-top: 12px;
+    padding-bottom: 24px;
 }
 
 .caption > p > a {
 	color: #337ab7;
 	border-bottom: none;
-	text-decoration: all;
+	text-decoration: none;
+}
+
+.caption > p > a:hover {
+	text-decoration: underline;
 }
 
 /*Binder*/
