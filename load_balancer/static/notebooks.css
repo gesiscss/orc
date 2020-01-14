@@ -354,6 +354,13 @@ footer {
 	padding-bottom: 48px;
 }
 
+.caption > p > a {
+	color: #337ab7;
+	text-decoration: default;
+	border-style: default;
+	transition-property: default;
+}
+
 /*Binder*/
 #how-it-works, #explanation {
     font-weight: normal;
@@ -369,4 +376,3 @@ footer {
 	height: 140px;
 	width: auto;
 }
-
