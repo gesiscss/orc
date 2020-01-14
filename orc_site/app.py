@@ -100,15 +100,15 @@ def home():
     binder_examples = [
         {'headline': 'Wiki-Impact',
          'content': '',
-         'binder_link': '/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
+         'binder_link': '/services/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
          'repo_link': 'https://github.com/gesiscss/wikiwho_demo'},
         {'headline': 'Python Data Science Handbook',
          'content': '',
-         'binder_link': '/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
+         'binder_link': '/services/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
          'repo_link': 'https://github.com/jakevdp/PythonDataScienceHandbook'},
         {'headline': 'LIGO Binder',
          'content': '',
-         'binder_link': '/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
+         'binder_link': '/services/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
          'repo_link': 'https://github.com/minrk/ligo-binder'},
     ]
     context.update({'active': 'home',
