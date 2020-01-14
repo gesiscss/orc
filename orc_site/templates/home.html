@@ -3,13 +3,9 @@
 {% block main %}
 <div class="row form-group"></div>
 
-<div class="row">
-  <div class="col-lg-12">
-    <div id="mybinder-text" class="text-center">
-      <div id="explanation">
-        Have a repository full of Jupyter notebooks? With Binder, open those notebooks in an executable environment, making your code immediately reproducible by anyone, anywhere.
-      </div>
-    </div>
+<div id="mybinder-text" class="text-center">
+  <div id="explanation">
+    Have a Binder-Ready repository? With GESIS Notebooks, turn this repository into a persistent Jupyter environment, allowing you to continue your work from anywhere at any time.
   </div>
 </div>
 
@@ -17,7 +13,7 @@
 {#    <div class="col-lg-1 col-md-1"></div>#}
 {#    <div class="col-lg-10 col-lg-offset-1 text-center">#}
     <div class="col-lg-6 col-md-6 col-sm-5 hidden-xs">
-        <img alt="GESIS Notebooks" src="{{ url_for('static', filename='images/notebook.png', v=1) }}" class="img-responsive center-block">
+        <img alt="GESIS Notebooks" src="{{ url_for('static', filename='images/notebook.png', v=1) }}" class="img-responsive center-block" id="gesis-notebooks-img">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
         <h3>
@@ -30,14 +26,17 @@
 <div class="row form-group"></div>
 <div class="row form-group"></div>
 <div class="row form-group"></div>
+<div class="row form-group"></div>
+<div class="row form-group"></div>
 
 <div class="row form-group text-center display-flex">
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
     <div class="use-examples">
       <img src="/static/images/mybinder_vector_logo.svg?v=1" alt="MyBinder Logo">
       <div class="caption">
-        <h3>Build repositories like <a href="#">mybinder.org</a></h3>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut</p>
+        <h3>Import</h3>
+        {#<h3>Build repositories like <a href="#">mybinder.org</a></h3>#}
+        <p>Enter your repository information in the Binder form. We build and launch your <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">binder-ready</a> repository like <a href="https://mybinder.org">MyBinder.org</a>.</p>
       </div>
     </div>
   </div>
@@ -45,17 +44,19 @@
     <div class="use-examples">
       <img src="/static/images/jupyter_vector_logo.svg?v=1" alt="Jupyter Logo">
       <div class="caption">
-        <h3>Persist /projects like a <a href="#">Jovian</a></h3>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod </p>
+        <h3>Persistent Environment</h3>
+        {#<h3>Persist /projects like a <a href="#">Jovian</a></h3>#}
+        <p>Once a repository has been built it will be added to the list of your projects. Your projects have a persistent $HOME directory saving your work in the <a href="https://jupyter.org">Jupyter</a> environment.</p>
       </div>
     </div>
   </div>
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
     <div class="use-examples">
-      <img src="/static/images/logo/logo_new.svg?v=1" alt="Gesis Notebooks Logo">
+      <img src="/static/images/open_science_logo.png?v=1" alt="Gesis Notebooks Logo">
       <div class="caption">
-        <h3>Interact with your work in a live environment</h3>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor </p>
+        <h3>Open Science</h3>
+        {#<h3>Support open scientific research</h3>#}
+        <p>The service supports the publication of reproducible and executable analysis workflows. GESIS Notebooks is freely available and builds on <a href="https://github.com/gesiscss/orc">open-source</a> software.</p>
       </div>
     </div>
   </div>

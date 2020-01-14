@@ -335,6 +335,10 @@ footer {
   height: 100%;
 }
 
+#gesis-notebooks-img {
+	padding-left: 16px;
+}
+
 #logo-container {
 	text-align: center;
 	padding: 16px;
@@ -346,7 +350,8 @@ footer {
 #mybinder-text {
 	margin-left: 5%;
 	width: 90%;
-	padding-bottom: 24px;
+	padding-top: 24px;
+	padding-bottom: 48px;
 }
 
 /*Binder*/
@@ -357,7 +362,7 @@ footer {
 
 #explanation {
 	color: rgb(40, 40, 40);
-	font-size: 20px;
+	font-size: 1.8em;
 }
 
 .use-examples > img{
