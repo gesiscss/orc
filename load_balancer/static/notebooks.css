@@ -87,7 +87,7 @@ header .navbar-default{
 
 .navbar-default {
 	color: #58748f;
-    background-color: #cdd5dd;
+  background-color: #cdd5dd;
 	border: none;
 	border-radius: 0;
 	min-height:30px !important;
@@ -148,13 +148,13 @@ header .navbar-default{
 }
 
 .navbar-default .navbar-nav>li>a.gs_active_sub, .navbar-default .dropdown>a.gs_active_sub, .navbar-default .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
-    color: #ffffff;
+  color: #ffffff;
 	background-color: #FF6600;
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .dropdown>a:hover, .navbar-default .dropdown-menu>li>a:hover {
-    color: #ffffff;
+  color: #ffffff;
 	background-color: #FF6600;
 }
 
@@ -169,7 +169,7 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
 	}
 
 header .navbar-default .navbar-toggle>li>a, header .navbar-default .navbar-nav>li>a {
-    color: #58748f;
+  color: #58748f;
 	font-weight: bold;
 	text-decoration: underline;
 	}
@@ -339,14 +339,6 @@ footer {
 	padding-left: 16px;
 }
 
-#logo-container {
-	text-align: center;
-	padding: 16px;
-}
-#home-mybinder-logo {
-	padding: 16px 4px 30px 4px;
-}
-
 #mybinder-text {
 	margin-left: 5%;
 	width: 90%;
@@ -356,9 +348,8 @@ footer {
 
 .caption > p > a {
 	color: #337ab7;
-	text-decoration: default;
-	border-style: default;
-	transition-property: default;
+	border-bottom: none;
+	text-decoration: all;
 }
 
 /*Binder*/
