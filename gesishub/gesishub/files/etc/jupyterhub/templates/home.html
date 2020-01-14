@@ -251,26 +251,35 @@
   <div class="row form-group"></div>
   <div class="row form-group"></div>
   {% block how_it_works %}
-  <div id="how-it-works" style="font-weight: normal;">
-    <h3 class="text-center" style="font-size: 32px;">How it works</h3>
-
-    <div class="row" style="margin: 16px;">
-      <div class="col-md-1 col-md-offset-2 point-container">
-        <span class="point" style="border-color: #58748f; color: #58748f;">1</span>
-      </div>
-      <div class="col-md-7 front">
-        <span class="front-em">Build repositories like <a href="http://mybinder.org">mybinder.org</a></span><br />
-          Enter your repository information in the <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">Binder form</a>. We build and launch your <a href="https://notebooks.gesis.org/gallery/">binder-ready</a> repository so that you can interact with it just like on <a href="https://binderhub.readthedocs.io/en/latest/known-deployments.html">any other</a> Binder deployment. Once a repository has been launched it will be added to the list of <i>your projects</i>.
+  <div class="row form-group text-center display-flex">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+      <div class="use-examples">
+        <img src="/static/images/mybinder_vector_logo.svg?v=1" alt="MyBinder Logo">
+        <div class="caption">
+          <h3>Import</h3>
+          {#<h3>Build repositories like <a href="#">mybinder.org</a></h3>#}
+          <p>Enter your repository information in the Binder form. We build and launch your <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">binder-ready</a> repository like <a href="https://mybinder.org">MyBinder.org</a>.</p>
+        </div>
       </div>
     </div>
-
-    <div class="row" style="margin: 16px;">
-      <div class="col-md-1 col-md-offset-2 point-container">
-        <span class="point" style="border-color: #ff6100; color: #ff6100;">2</span>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+      <div class="use-examples">
+        <img src="/static/images/jupyter_vector_logo.svg?v=1" alt="Jupyter Logo">
+        <div class="caption">
+          <h3>Persistent Environment</h3>
+          {#<h3>Persist /projects like a <a href="#">Jovian</a></h3>#}
+          <p>Once a repository has been built it will be added to the list of your projects. Your projects have a persistent $HOME directory saving your work in the <a href="https://jupyter.org">Jupyter</a> environment.</p>
+        </div>
       </div>
-      <div class="col-md-7 front">
-        <span class="front-em">Persist <i>/projects</i> like a <a href="https://github.com/jupyter/docker-stacks/issues/358#issuecomment-288844834">Jovyan</a></span><br />
-          You are not just a visitor, but a true resident on <a href="https://jupyter.org/">Jupyter</a>. Your projects have a persistent <i>$HOME</i> directory whose contents are mirrored at <i>/projects</i>. Use the buttons in the table to <i>launch</i>, <i>stop</i> or <i>delete</i> an existing project. The <a href="https://github.com/gesiscss/data_science_image">data science image</a> can be your place to begin. To update a project-image use the Binder form and for files use <i>git</i>. You can launch one project at a time and have up to {{ projects_limit }} projects in total.
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+      <div class="use-examples">
+        <img src="/static/images/open_science_logo.png?v=1" alt="Gesis Notebooks Logo">
+        <div class="caption">
+          <h3>Open Science</h3>
+          {#<h3>Support open scientific research</h3>#}
+          <p>The service supports the publication of reproducible and executable analysis workflows. GESIS Notebooks is freely available and builds on <a href="https://github.com/gesiscss/orc">open-source</a> software.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -279,6 +288,37 @@
   <div class="row text-center">
     <h3>questions?<br />read <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865">this post</a> and join the discussion</h3>
   </div>
+</div>
+
+<div class="row form-group"></div>
+<div class="row form-group"></div>
+
+{#<div class="row form-group page-header">#}
+<div class="row form-group">
+    <div class="col-lg-12 text-center">
+{#    <div class="col-lg-10 col-lg-offset-1">#}
+{#        <div class="text-center">#}
+            <h2>Featured projects</h2>
+{#        </div>#}
+    </div>
+</div>
+
+<div class="row form-group text-center display-flex">
+  {% for example in binder_examples %}
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+    <div class="thumbnail">
+{#      <img src="..." alt="...">#}
+      <div class="caption">
+        <h3>{{ example.headline }}</h3>
+        {% if example.content %}
+        <p>{{ example.content }}</p>
+        {% endif %}
+        <div><a href="{{ example.binder_link }}" class="btn btn-warning orc-button" role="button">Launch Binder</a>
+           <a href="{{ example.repo_link }}" class="btn btn-info orc-button-info" role="button">Visit Repo</a></div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endblock %}
 
