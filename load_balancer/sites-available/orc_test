@@ -96,10 +96,10 @@ server {
     #    alias /static/images/logo/logo.png;
     #}
 
-    # don't show bhub index and loading pages. instead redirect user to jhub home
-    location ~ ^/services/binder/($|v2/.*) {
-        return 302 /hub/;
-    }
+    ## don't show bhub index and loading pages. instead redirect user to jhub home
+    #location ~ ^/services/binder/($|v2/.*) {
+    #    return 302 /hub/;
+    #}
 
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
