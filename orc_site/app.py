@@ -1,5 +1,4 @@
 import os
-import requests
 from flask_caching import Cache
 from flask import Flask, render_template, request, redirect
 
@@ -68,24 +67,11 @@ def not_found(error):
 
 
 def user_logged_in():
-    """Check if a user is logged in"""
+    """Check if a user is logged in by checking if cookie exists"""
+    # FIXME cant we check if user logged in with JHub API?
+    # by default, use the `jupyterhub-session-id` cookie, which is created under `/`
     cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
     return cookie_name in request.cookies
-    cookie_value = request.cookies.get(cookie_name)
-    if cookie_value:
-        # FIXME this api only works for `jupyterhub-services` cookie (which is encrypted)
-        api_url = f"https://{request.host}/hub/api/authorizations/cookie/{cookie_name}/{cookie_value}"
-        # app.logger.info(f"####### {api_url}")
-        token = os.getenv("JUPYTERHUB_API_TOKEN", "").strip()
-        headers = {'Authorization': 'token %s' % token}
-        try:
-            r = requests.get(api_url, headers=headers, timeout=1)
-        except requests.exceptions.Timeout:
-            return False
-        else:
-            if r.status_code == 200:
-                return True
-    return False
 
 
 @app.route('/')
