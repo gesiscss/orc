@@ -375,7 +375,7 @@ footer {
 
 /* projects table  */
 td.projects-display-name {
-    vertical-align: middle;
+    vertical-align: middle!important;
 }
 /* truncate long repo display names */
 td.projects-display-name {
