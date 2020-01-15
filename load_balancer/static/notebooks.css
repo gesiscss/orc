@@ -385,6 +385,24 @@ footer {
 	text-decoration: none;
 }
 
+.project-text {
+	padding-top: 30px;
+	margin-top: -30px;
+	padding-bottom: 30px;
+	margin-bottom: -30px;
+	margin-right: -16px;
+	margin-left: -16px;
+}
+
+.caption {
+	padding: 8px;
+}
+
+.caption > h4 {
+	margin: 0px;
+}
+
+
 .caption > p > a:hover {
 	text-decoration: underline;
 }
@@ -396,6 +414,13 @@ footer {
 }
 
 .caption > p {
+	font-size: 14px;
+}
+.project-caption > h4 {
+	margin: 0px;
+	font-size: 16px;
+}
+.project-caption > h4> b,small,i {
 	font-size: 13px;
 }
 
@@ -407,6 +432,7 @@ footer {
 .featured-projects {
 	padding-left: 2.4rem;
 	padding-right: 2.4rem;
+	margin-bottom:0px;
 }
 
 .project-example {
@@ -416,7 +442,7 @@ footer {
 }
 
 .use-examples > img{
-	height: 130px;
+	height: 100px;
 	width: auto;
 }
 

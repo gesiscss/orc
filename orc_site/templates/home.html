@@ -68,20 +68,20 @@
 </div>
 
 <div class="row form-group text-left display-flex featured-projects">
-{#
+
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
     <div class="thumbnail">
-      <div class="caption" style="padding:8px;">
-        <h4 style="margin:0px;"><a href="https://github.com/CWTSLeiden/CSSS">Scientometrics Summer School</a>
-         <br>
-         <b>By</b> <i>Vincent Traag</i>
-         <br>
+      <div class="caption project-caption">
+        <h4 style="margin:0px; font-size: 16px;"><a href="https://github.com/CWTSLeiden/CSSS"><b>Scientometrics Summer School</b></a>
+          <br>
+          <b>By:</b> <i>Vincent Traag</i>
+          <br>
          <small>Centre for Science and Technology Studies, Leiden University</small>
         </h4>
         <p>In these Notebooks, you will learn how to perform scientometric network analysis.</p>
-          <div style="display: inline-block; vertical-align:middle;">
+          <div style="display: inline-block; vertical-align: middle;">
             <div style="display: inline-block;">
-                <b>Language:</b> Python
+                <b style="font-size: 13px;">Language:</b> Python
             </div>
             <div style="display: inline-block; float: right;">
               <a href="#"  style="align:right;"><img src="/static/images/badge_logo.svg?v=1"" alt="Launch Binder"></a>
@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-#}
+
   {% for example in binder_examples %}
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
     <div class="thumbnail">
@@ -106,8 +106,50 @@
     </div>
   </div>
   {% endfor %}
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
+    <div class="thumbnail">
+      <div class="caption project-caption">
+        <h4 style="margin:0px; font-size: 16px;"><a href="https://github.com/CWTSLeiden/CSSS"><b>Scientometrics Summer School</b></a>
+          <br>
+          <b>By:</b> <i>Vincent Traag</i>
+          <br>
+         <small>Centre for Science and Technology Studies, Leiden University</small>
+        </h4>
+        <p>In these Notebooks, you will learn how to perform scientometric network analysis.</p>
+          <div style="display: inline-block; vertical-align: middle;">
+            <div style="display: inline-block;">
+                <b style="font-size: 13px;">Language:</b> Python
+            </div>
+            <div style="display: inline-block; float: right;">
+              <a href="#"  style="align:right;"><img src="/static/images/badge_logo.svg?v=1"" alt="Launch Binder"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
+      <div class="thumbnail">
+        <div class="caption project-caption">
+          <h4 style="margin:0px; font-size: 16px;"><a href="https://github.com/CWTSLeiden/CSSS"><b>Scientometrics Summer School</b></a>
+            <br>
+            <b>By:</b> <i>Vincent Traag</i>
+            <br>
+           <small>Centre for Science and Technology Studies, Leiden University</small>
+          </h4>
+          <p>In these Notebooks, you will learn how to perform scientometric network analysis.</p>
+            <div style="display: inline-block; vertical-align: middle;">
+              <div style="display: inline-block;">
+                  <b style="font-size: 13px;">Language:</b> Python
+              </div>
+              <div style="display: inline-block; float: right;">
+                <a href="#"  style="align:right;"><img src="/static/images/badge_logo.svg?v=1"" alt="Launch Binder"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
-
+<div class="row form-group" style="padding: 0px 32px 0px 32px;"><a href="https://notebooks.gesis.org/gallery/" target="_blank" style="float:right;">See all Projects ></a></div>
 <div class="row form-group"></div>
 {% endblock main %}
 
