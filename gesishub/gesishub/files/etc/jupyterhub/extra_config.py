@@ -4,8 +4,10 @@ Custom KubeSpawner and JupyterHub handlers for persistent BinderHub deployment.
 These handlers are imported in extraConfig in values.yaml
 """
 import json
+import string
+import random
 from os.path import join
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from tornado import web
 
 from tornado.escape import json_decode
@@ -21,20 +23,41 @@ class PersistentBinderSpawner(KubeSpawner):
     default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-dd93b3e', 'master']
 
     def strip_repo_url(self, repo_url):
-        p = "http://"
-        if repo_url.startswith(p):
-            repo_url = repo_url[len(p):]
-        p = "https://"
-        if repo_url.startswith(p):
-            repo_url = repo_url[len(p):]
+        # p = "http://"
+        # if repo_url.startswith(p):
+        #     repo_url = repo_url[len(p):]
+        # p = "https://"
+        # if repo_url.startswith(p):
+        #     repo_url = repo_url[len(p):]
         p = ".git"
         if repo_url.endswith(p):
             repo_url = repo_url[:-len(p)]
         return repo_url.rstrip('/')
 
-    def url_to_dir(self, url):
+    def url_to_display_name(self, url):
         url = self.strip_repo_url(url)
-        return '_'.join(reversed(url.split('/')[-2:]))
+        url_parts = urlparse(url)
+        provider = url_parts.netloc.lower()
+        if 'gist.github.com' in provider:
+            provider_prefix = 'gist'
+        elif 'github.com' in provider:
+            provider_prefix = 'gh'
+        elif 'gitlab.com' in provider:
+            provider_prefix = 'gl'
+        else:
+            provider_prefix = 'git'
+        path = url_parts.path
+        display_name = f'{provider_prefix}/{path}'
+        return display_name
+
+    def url_to_dir(self, url):
+        display_name = self.url_to_display_name(url)
+        dir_name = ''.join([c if c.isalnum() or c in ['-', '.'] else '_' for c in display_name])
+        if len(dir_name) > 255:
+            suffix_chars = string.ascii_lowercase + string.digits
+            suffix = random.choices(suffix_chars, k=8)
+            dir_name = f'{dir_name[:122]}_{dir_name[-122:]}_{suffix}'
+        return dir_name
 
     def start(self):
         # clean attributes, so we dont save wrong values in state when error happens
@@ -57,7 +80,7 @@ class PersistentBinderSpawner(KubeSpawner):
                 # user starts server without binder form (default)
                 # for example via spawn url or by refreshing user page when server was stopped
                 # launch last repo in projects
-                self.repo_url, self.image, self.ref, _ = projects[-1]
+                self.repo_url, self.image, self.ref, display_name, _ = projects[-1]
             else:
                 # if user has no projects (e.g. user makes first login, deletes default project
                 # and uses spawn url), start default repo
@@ -123,7 +146,8 @@ class PersistentBinderSpawner(KubeSpawner):
         db.commit is called after these methods.
         """
         # default_projects is only to use when first login
-        default_projects = [self.default_project + ['never']]
+        display_name = self.url_to_display_name(self.default_project[0])
+        default_projects = [self.default_project + [display_name, 'never']]
         _state = self.orm_spawner.state
         projects = _state.get('projects', []) if _state else default_projects
         deleted_projects = _state.get('deleted_projects', []) if _state else []
@@ -137,7 +161,7 @@ class PersistentBinderSpawner(KubeSpawner):
             # project is started or already running or is stopped,
             # so move project to the end and update the last launched time (last seen)
             from datetime import datetime
-            e = [self.repo_url, self.image, self.ref, datetime.utcnow().isoformat() + 'Z']
+            e = [self.repo_url, self.image, self.ref, self.url_to_display_name(self.repo_url), datetime.utcnow().isoformat() + 'Z']
             new_projects = []
             for p in projects:
                 if p[0] != e[0]:
@@ -162,6 +186,7 @@ class PersistentBinderSpawner(KubeSpawner):
             if key in self.user_options:
                 env[key.upper()] = self.user_options[key]
         return env
+
 
 class ProjectAPIHandler(APIHandler):
     @admin_only

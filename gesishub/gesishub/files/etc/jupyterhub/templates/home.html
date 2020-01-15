@@ -41,13 +41,12 @@
          <tbody>
             {% for project in projects %}
             <tr>
-                {% set repo_display_name = '/'.join(project[0].rstrip('/').split('://', 1)[-1].split('/', 2)[-2:]) %}
                 {% set project_running = loop.index == loop.length and user.running %}
                 {% set project_active = loop.index == loop.length and user.spawner.active %}
                 {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
-                <td style="vertical-align: middle;"><a href="{{ project[0] }}" target="_blank">{{ repo_display_name }}</a></td>
+                <td style="vertical-align: middle;"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
                 <td style="vertical-align: middle;">{{ project[2][:7] }}</td>
-                <td style="vertical-align: middle;" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[3] }}{% endif %}</td>
+                <td style="vertical-align: middle;" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
                 <td style="vertical-align: middle;">
                     {% if project_running %}
                     {# last element in projects is currently running, add Stop button for it #}
@@ -66,7 +65,7 @@
                        class="project-delete btn btn-sm btn-danger{% if user.spawner.active %} hidden{% endif %}"
                        href="#" title="Delete from projects list and persistent storage"
                        data-url="{{ project[0] }}"
-                       data-name="{{ repo_display_name }}"
+                       data-name="{{ project[3] }}"
                        data-toggle="modal" data-target="#delete-project">
                        Delete
                     </a>
