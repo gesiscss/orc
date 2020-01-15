@@ -346,6 +346,8 @@ footer {
 }
 .thumbnail {
   height: 100%;
+	border-radius: 0px;
+	background-color: #e6e6e6;
 }
 
 /* extra positioning */
@@ -391,14 +393,28 @@ footer {
     line-height: 1.4;
 }
 
+.caption > p {
+	font-size: 13px;
+}
+
 #explanation {
 	color: rgb(40, 40, 40);
 	font-size: 1.8em;
 }
 
+.featured-projects {
+	padding-left: 1.6rem;
+	padding-right: 1.6rem;
+}
+
 .use-examples > img{
 	height: 130px;
 	width: auto;
+}
+
+.footer-container {
+	padding-left: 3.2rem;
+	padding-right: 3.2rem;
 }
 
 /* projects table  */
