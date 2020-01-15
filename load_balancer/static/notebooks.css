@@ -22,6 +22,18 @@
 		margin-right: 15px;
 	}
 
+{# navbar buttons disappearing fix #}
+	.navbar-toggle {
+		position: relative;
+		float: right;
+		padding: 9px 10px;
+		background-color: transparent;
+		background-image: none;
+		border: 1px solid transparent;
+		display: block;
+		border-radius: 4px;
+	}
+
 	.nav > li > a > button {
 		margin: 0px;
 	}
@@ -239,6 +251,8 @@ div.trail-wrapper.hidden-print > div.container > div.row{
 	margin-top: -20px;
 	}
 
+
+
 .container {
 	background-color: #fff;
 	}
@@ -353,10 +367,12 @@ footer {
 
 #header {
 	margin-left: 5%;
+	margin-bottom: 32px;
+	margin-top: 32px;
 	width: 90%;
 	border-bottom: 0;
-    padding-top: 12px;
-    padding-bottom: 24px;
+  padding-top: 12px;
+  padding-bottom: 24px;
 }
 
 .caption > p > a {
@@ -381,7 +397,7 @@ footer {
 }
 
 .use-examples > img{
-	height: 140px;
+	height: 130px;
 	width: auto;
 }
 
