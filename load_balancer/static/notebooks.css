@@ -253,7 +253,9 @@ div.trail-wrapper.hidden-print > div.container > div.row{
 	padding-right: 16px;
 	}
 
-
+.project-text > div> img {
+	max-width: 80%;
+}
 
 .container {
 	background-color: #fff;
