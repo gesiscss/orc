@@ -373,7 +373,11 @@ footer {
 	width: auto;
 }
 
-/* truncate long repo display names in projects table*/
+/* projects table  */
+td.projects-display-name {
+    vertical-align: middle;
+}
+/* truncate long repo display names */
 td.projects-display-name {
     max-width: 50ch;
     overflow: hidden;

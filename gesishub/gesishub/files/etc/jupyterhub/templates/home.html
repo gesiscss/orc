@@ -44,10 +44,10 @@
                 {% set project_running = loop.index == loop.length and user.running %}
                 {% set project_active = loop.index == loop.length and user.spawner.active %}
                 {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
-                <td style="vertical-align: middle;" class="projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
-                <td style="vertical-align: middle;">{{ project[2][:7] }}</td>
-                <td style="vertical-align: middle;" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
-                <td style="vertical-align: middle;">
+                <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
+                <td class="projects-cell">{{ project[2][:7] }}</td>
+                <td class="projects-cell" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
+                <td class="projects-cell">
                     {% if project_running %}
                     {# last element in projects is currently running, add Stop button for it #}
                     <a id="stop" role="button" class="btn btn-sm btn-danger" data-ref="{{ project[2] }}">Stop</a>
