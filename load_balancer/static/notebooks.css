@@ -227,7 +227,7 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
     color: #58748f;
     background-color: #fff;
     border-color: #58748f;
-		margin-top: 8px;
+	margin-top: 8px;
 	}
 /*
 div.trail-wrapper.hidden-print > div.container{
@@ -248,10 +248,14 @@ div.trail-wrapper.hidden-print > div.container > div.row{
 #main-container {
 	/*overflow: hidden;*/
 	background-color: #fff;
-	margin-top: -20px;
 	padding-left: 16px;
 	padding-right: 16px;
 	}
+
+#logo-container {
+	margin-top: -20px;
+    margin-bottom: -50px;
+}
 
 .project-text > div> img {
 	max-width: 80%;
