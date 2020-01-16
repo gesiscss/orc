@@ -306,8 +306,10 @@ binderhub:
           - name: etc-jupyter
             mountPath: /etc/jupyter
       image:
+        # https://github.com/gesiscss/data_science_image
+        # NOTE: when you update this image, don't forget to update `default_project` attribute of `PersistentBinderSpawner` in extra_config.py
         name: gesiscss/singleuser-orc
-        tag: "r2d-dd93b3e"
+        tag: "r2d-12343d4"
 
     scheduling:
       userScheduler:
