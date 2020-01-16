@@ -22,7 +22,7 @@
 		margin-right: 15px;
 	}
 
-{# navbar buttons disappearing fix #}
+/* navbar buttons disappearing fix */
 	.navbar-toggle {
 		position: relative;
 		float: right;
