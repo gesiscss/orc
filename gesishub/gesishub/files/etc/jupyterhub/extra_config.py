@@ -154,6 +154,10 @@ class PersistentBinderSpawner(KubeSpawner):
         default_projects = [self.default_project + [display_name, 'never']]
         _state = self.orm_spawner.state
         projects = _state.get('projects', []) if _state else default_projects
+
+        # workaround for existing users, for when they login to use new gesis hub
+        if not projects:
+            projects = default_projects
         deleted_projects = _state.get('deleted_projects', []) if _state else []
 
         state = super().get_state()
