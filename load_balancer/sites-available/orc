@@ -155,7 +155,7 @@ server {
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub front end
-    location ~* ^/hub/?(.*)$ {
+    location ~* ^/(hub|user|services)/?(.*)$ {
         proxy_buffering off;
         proxy_pass http://jhub;
         include snippets/headers.conf;
@@ -163,14 +163,6 @@ server {
         #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
-    location ~* ^/(user|services)/?(.*)$ {
-        proxy_pass http://jhub;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        #proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Scheme $scheme;
-    }
-
     include snippets/ignore_fonts.conf;
 
     location /static/ {
@@ -180,4 +172,3 @@ server {
 
     include snippets/_secret.conf;
 }
-
