@@ -13,8 +13,7 @@ binderhub:
     BinderHub:
       debug: true
       hub_url: https://notebooks-test.gesis.org
-      # TODO image_prefix: gesiscss/binder-staging-
-      image_prefix: gesiscss/orc-example-binder-
+      image_prefix: gesiscss/binder-staging-
 
   service:
     annotations:
@@ -35,8 +34,6 @@ binderhub:
           oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
           oauth_client_id: "binder-oauth-client-test"
       extraConfig:
-        00-orc: |
-          c.JupyterHub.bind_url = 'https://notebooks-test.gesis.org'
         02-orc: |
           c.GitHubOAuthenticator.auto_login = True
           from jupyterhub.handlers import LogoutHandler
