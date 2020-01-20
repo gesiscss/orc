@@ -419,6 +419,11 @@ footer {
     line-height: 1.4;
 }
 
+#questions {
+	margin-top: 0;
+	font-size: 20px;
+}
+
 .caption > p {
 	font-size: 14px;
 }

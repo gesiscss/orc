@@ -208,7 +208,7 @@ binderhub:
                'binder_link': '/services/binder/v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb',
                'language': 'Python'},
               {'headline': 'Scientometrics Summer School',
-               'repo_link': 'https://github.com/gesiscss/wikiwho_demo',
+               'repo_link': 'https://github.com/CWTSLeiden/CSSS',
                'who': 'Vincent Traag',
                'where': 'Centre for Science and Technology Studies, Leiden University',
                'description': 'In these Notebooks, you will learn how to perform scientometric network analysis.',
@@ -232,7 +232,7 @@ binderhub:
                'repo_link': 'https://github.com/gesiscss/gesis_dataday_20',
                'who': 'Fabian Flöck, Johannes Breuer and Arnim Bleier',
                'where': 'CSS & DAS, GESIS',
-               'description': 'Materials for GESIS DataDay 2020',
+               'description': 'Materials for the GESIS DataDay 2020',
                'binder_link': '/services/binder/v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab',
                'language': 'R'},
               ]

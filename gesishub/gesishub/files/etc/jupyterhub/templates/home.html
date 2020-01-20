@@ -252,7 +252,7 @@
   <div class="row form-group"></div>
 
   <div class="row text-center">
-    <h4 style="margin-top: 0;" >questions?<br />read <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865">this post</a> and join the discussion</h4>
+    <div id="questions">questions?<br />read <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865">this post</a> and join the discussion</div>
   </div>
 
   <div class="row form-group"></div>
@@ -292,7 +292,7 @@
                     <h3>Open Science</h3>
                     <p>
                         This <a href="https://www.go-fair.org">FAIR</a> open access service supports open methodology
-                        with reproducible and transparent documentation of data analysis.
+                        with reproducible and transparent documentation for data analysis.
                     </p>
                 </div>
             </div>
@@ -306,7 +306,7 @@
     <div class="row form-group featured-projects">
         <div class="col-lg-12">
             {#    <div class="col-lg-10 col-lg-offset-1">#}
-            <h2>Featured Projects</h2>
+            <h3>Featured Projects</h3>
         </div>
     </div>
 
@@ -403,7 +403,7 @@ $(document).ready(function() {
         // if server is not running, do following
         if ($(this).attr('href') === '#') {
             e.preventDefault();
-            $("#build-form").get(0).scrollIntoView();
+            //$("#build-form").get(0).scrollIntoView();
             // fill the binder form with values of selected repo and submit
             var ref = $(this).prop('id').replace("launch-","");
             var repo_url = $(this).data('url');
