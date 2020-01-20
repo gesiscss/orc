@@ -79,7 +79,7 @@ def user_logged_in():
 def home():
     context = get_default_template_context()
 
-    if user_logged_in():
+    if user_logged_in() and os.getenv("GESISHUB_UNDER_MAINTENANCE", "false") != "true":
         app.logger.info(f"User already logged in, redirecting to JupyterHub {context['gesishub_url']}")
         return redirect(context['gesishub_url'])
 
