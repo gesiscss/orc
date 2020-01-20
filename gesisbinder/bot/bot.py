@@ -91,19 +91,20 @@ class Bot:
         """
         Update the SHA to latest for r2d
         """
-        fname = 'gesisbinder/gesisbinder/values.yaml'
-        with open(fname, 'r', encoding='utf8') as f:
-            values_yaml = f.read()
+        fnames = ['gesisbinder/gesisbinder/values.yaml',
+                  'gesishub/gesishub/values.yaml']
+        for fname in fnames:
+            with open(fname, 'r', encoding='utf8') as f:
+                values_yaml = f.read()
 
-        updated_yaml = values_yaml.replace(
-            "jupyter/repo2docker:{}".format(self.commit_info[repo]['live']),
-            "jupyter/repo2docker:{}".format(self.commit_info[repo]['latest'])
-        )
+            updated_yaml = values_yaml.replace(
+                "jupyter/repo2docker:{}".format(self.commit_info[repo]['live']),
+                "jupyter/repo2docker:{}".format(self.commit_info[repo]['latest'])
+            )
 
-        with open(fname, 'w', encoding='utf8') as f:
-            f.write(updated_yaml)
-
-        return [fname]
+            with open(fname, 'w', encoding='utf8') as f:
+                f.write(updated_yaml)
+        return fnames
 
     def edit_binderhub_files(self, repo):
         """

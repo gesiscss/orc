@@ -1,53 +1,102 @@
 projectName: gesis-hub-staging
 
-jupyterhub:
-  debug:
-    enabled: true
+binderhub:
+  resources:
+    requests:
+      cpu: "0.25"
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
 
-  hub:
-    service:
-      annotations:
-        prometheus.io/scrape: 'false'
-    resources:
-      requests:
-        cpu: "0.1"
-        memory: 512Mi
-      limits:
-        cpu: "1"
-        memory: 1Gi
-    extraEnv:
-      OAUTH2_AUTHORIZE_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
-      OAUTH2_TOKEN_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
-      OAUTH_CALLBACK_URL: https://notebooks-test.gesis.org/hub/oauth_callback
+  config:
+    BinderHub:
+      debug: true
+      hub_url: https://notebooks-test.gesis.org
+      image_prefix: gesiscss/binder-staging-
 
-  # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-  auth:
-    custom:
-      config:
-        login_service: "GESIS Test Login"  # to customize the label on the login button
-        token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
-        userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+  service:
+    annotations:
+      prometheus.io/scrape: 'false'
+    nodePort: 30183
 
-  proxy:
-    service:
-      nodePorts:
-        http: 30180
-    chp:
+  jupyterhub:
+    debug:
+      enabled: true
+
+    hub:
+      service:
+        annotations:
+          prometheus.io/scrape: 'false'
+      services:
+        binder:
+          url: http://194.95.75.9:30183  # base worker
+          oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
+          oauth_client_id: "binder-oauth-client-test"
+      extraConfig:
+        02-orc: |
+          c.GitHubOAuthenticator.auto_login = True
+          from jupyterhub.handlers import LogoutHandler
+          class MyLogoutHandler(LogoutHandler):
+              async def render_logout_page(self):
+                  site_url = 'https://{}'.format(self.request.host)
+                  self.redirect(site_url, permanent=False)
+          from oauthenticator.github import GitHubOAuthenticator
+          GitHubOAuthenticator.logout_handler = MyLogoutHandler
+          def get_handlers(self, app):
+              return [
+                  (r'/oauth_login', self.login_handler),
+                  (r'/oauth_callback', self.callback_handler),
+              ] + [(r'/logout', self.logout_handler)]
+          GitHubOAuthenticator.get_handlers = get_handlers
       resources:
         requests:
           cpu: "0.1"
-          memory: 256Mi
-        limits:
-          cpu: "0.5"
           memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
+      extraEnv:
+        OAUTH2_AUTHORIZE_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
+        OAUTH2_TOKEN_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+        OAUTH_CALLBACK_URL: https://notebooks-test.gesis.org/hub/oauth_callback
 
-  singleuser:
-    storage:
-      # has no effect when using nfs: this is a min limit not a max
-      capacity: 5Gi
-    cpu:
-      guarantee: 0.1
-      limit: 0.5
-    memory:
-      guarantee: 256M
-      limit: 512M
+    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+    auth:
+      #custom:
+      #  config:
+      #    login_service: "GESIS Test Login"  # to customize the label on the login button
+      #    token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+      #    userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+      type: github
+      custom: {}
+      github:
+        callbackUrl: "https://notebooks-test.gesis.org/hub/oauth_callback"
+      scopes:
+        - "read:user"
+      admin:
+        users: ['bitnik', 'arnim']
+
+    proxy:
+      service:
+        nodePorts:
+          http: 30180
+      chp:
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 256Mi
+          limits:
+            cpu: "0.5"
+            memory: 512Mi
+
+    singleuser:
+      storage:
+        # has no effect when using nfs: this is a min limit not a max
+        capacity: 5Gi
+      cpu:
+        guarantee: 0.1
+        limit: 1
+      memory:
+        guarantee: 256M
+        limit: 4G

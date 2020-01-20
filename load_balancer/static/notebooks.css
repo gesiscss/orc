@@ -15,6 +15,30 @@
  * For ORC  project this is taken from GESIS SSOAR project and customized.
  */
 
+@media (max-width:768px) {
+
+	.navbar-brand {
+		margin-left: 15px;
+		margin-right: 15px;
+	}
+
+/* navbar buttons disappearing fix */
+	.navbar-toggle {
+		position: relative;
+		float: right;
+		padding: 9px 10px;
+		background-color: transparent;
+		background-image: none;
+		border: 1px solid transparent;
+		display: block;
+		border-radius: 4px;
+	}
+
+	.nav > li > a > button {
+		margin: 0px;
+	}
+}
+
 @media (min-width:1200px) {.container{width:960px;}}
 
 @media(min-width:992px) {.container{width:960px;}}
@@ -59,10 +83,10 @@ body {
 
 .navbar-brand {
     float: left;
-    padding: 15px 15px;
-    font-size: 18px;
-    line-height: 20px;
-    height: 70px;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.4rem;
+    height: 37px;
 	}
 
 header .navbar-brand img.hidden-sm.hidden-xs {
@@ -76,7 +100,7 @@ header .navbar-brand img.visible-sm.visible-xs {
 	}
 
 div.navbar-header {
-	padding: 0rem 2rem;
+	padding: 1.28rem 3.2rem 0.8rem 3.2rem;
 	}
 
 header .navbar-default{
@@ -87,7 +111,7 @@ header .navbar-default{
 
 .navbar-default {
 	color: #58748f;
-    background-color: #cdd5dd;
+  background-color: #cdd5dd;
 	border: none;
 	border-radius: 0;
 	min-height:30px !important;
@@ -96,11 +120,12 @@ header .navbar-default{
 #navbar {
     max-width: 100%;
     margin-left: 0;
+		padding-left: 3.2rem;
 }
 
 .navbar-default .navbar-nav>li>a {
     color: #58748f;
-    /*font-size: 1.2rem;*/
+    font-size: 1.5rem;
     font-weight: bold;
     /*line-height: 1.0rem;*/
     /*position: relative;*/
@@ -117,38 +142,43 @@ header .navbar-default{
     /*margin-bottom: 0;*/
 }
 
-.dropdown, .dropdown>a, .dropdown-menu>li>a, .dropdown-menu, .navbar-default .navbar-nav .open .dropdown-menu>li>a {
+#navbar-list > li > a {
+	padding-left: 11.9px;
+	padding-right: 11.9px;
+}
+
+.navbar-default .dropdown, .navbar-default .dropdown>a, .navbar-default .dropdown-menu>li>a, .navbar-default .dropdown-menu, .navbar-default .navbar-nav .open .dropdown-menu>li>a {
     color: #58748f;
     font-weight: bold;
     background-color: #cdd5dd;
 }
 
-.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.open>a:focus {
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.open>a:focus {
     color: #58748f;
     font-weight: bold;
     background-color: #cdd5dd;
 }
 
-.navbar-nav>li>.dropdown-menu {
+.navbar-default .navbar-nav>li>.dropdown-menu {
 	padding: 0;
 }
 
 @media (min-width: 768px) {
     /*not in mobile (xs)*/
-.dropdown:hover .dropdown-menu {
+.navbar-default .dropdown:hover .dropdown-menu {
     display: block;
     margin-top: 0;
  }
 }
 
-.navbar-default .navbar-nav>li>a.gs_active_sub, .dropdown>a.gs_active_sub, .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
-    color: #ffffff;
+.navbar-default .navbar-nav>li>a.gs_active_sub, .navbar-default .dropdown>a.gs_active_sub, .navbar-default .dropdown-menu>li>a.gs_active_sub, .navbar-default .navbar-nav>.open>a.gs_active_sub {
+  color: #ffffff;
 	background-color: #FF6600;
-    font-weight: bold;
+  font-weight: bold;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .dropdown>a:hover, .dropdown-menu>li>a:hover{
-    color: #ffffff;
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .dropdown>a:hover, .navbar-default .dropdown-menu>li>a:hover {
+  color: #ffffff;
 	background-color: #FF6600;
 }
 
@@ -163,7 +193,7 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
 	}
 
 header .navbar-default .navbar-toggle>li>a, header .navbar-default .navbar-nav>li>a {
-    color: #58748f;
+  color: #58748f;
 	font-weight: bold;
 	text-decoration: underline;
 	}
@@ -197,7 +227,7 @@ header .navbar-default .navbar-toggle:hover, header .navbar-default .navbar-togg
     color: #58748f;
     background-color: #fff;
     border-color: #58748f;
-		margin-top: 8px;
+	margin-top: 8px;
 	}
 /*
 div.trail-wrapper.hidden-print > div.container{
@@ -218,8 +248,18 @@ div.trail-wrapper.hidden-print > div.container > div.row{
 #main-container {
 	/*overflow: hidden;*/
 	background-color: #fff;
-	margin-top: -20px;
+	padding-left: 16px;
+	padding-right: 16px;
 	}
+
+#logo-container {
+	margin-top: -20px;
+    margin-bottom: -50px;
+}
+
+.project-text > div> img {
+	max-width: 80%;
+}
 
 .container {
 	background-color: #fff;
@@ -254,11 +294,12 @@ footer .container {
 
 #header_banner > a > img {
 		max-height: 126px;
-		height: 100px;
+		max-width: 232px;
+		height: 95px;
 		width: auto;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		padding-left: 15px;
+		padding-top: 1.2rem;
+		padding-bottom: 0.6rem;
+		padding-left: 3.2rem;
 		vertical-align: middle;
 
 }
@@ -313,6 +354,8 @@ footer {
 }
 .thumbnail {
   height: 100%;
+	border-radius: 0px;
+	background-color: #e6e6e6;
 }
 
 /* extra positioning */
@@ -328,13 +371,104 @@ footer {
   height: 100%;
 }
 
+#gesis-notebooks-img {
+	padding-left: 16px;
+}
+
+#header {
+	margin-left: 4%;
+	margin-bottom: 32px;
+	margin-top: 32px;
+	width: 92%;
+	border-bottom: 0;
+  padding-top: 12px;
+  padding-bottom: 24px;
+}
+
+.caption > p > a {
+	color: #337ab7;
+	border-bottom: none;
+	text-decoration: none;
+}
+
+.project-text {
+	padding-top: 30px;
+	margin-top: -30px;
+	padding-bottom: 30px;
+	margin-bottom: -30px;
+	margin-right: -16px;
+	margin-left: -16px;
+}
+
+.caption {
+	padding: 8px;
+}
+
+.caption > h4 {
+	margin: 0px;
+}
+
+
+.caption > p > a:hover {
+	text-decoration: underline;
+}
+
 /*Binder*/
 #how-it-works, #explanation {
     font-weight: normal;
     line-height: 1.4;
 }
 
+#questions {
+	margin-top: 0;
+	font-size: 20px;
+}
+
+.caption > p {
+	font-size: 14px;
+}
+.project-caption > h4 {
+	margin: 0px;
+	font-size: 16px;
+}
+.project-caption > h4> b,small,i {
+	font-size: 13px;
+}
+
+#explanation {
+	color: rgb(40, 40, 40);
+	font-size: 1.8em;
+}
+
+.featured-projects {
+	padding-left: 2.4rem;
+	padding-right: 2.4rem;
+	margin-bottom:0px;
+}
+
+.project-example {
+	margin-bottom: 16px;
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
 .use-examples > img{
-	height: 140px;
+	height: 100px;
 	width: auto;
+}
+
+.footer-container {
+	padding-left: 3.2rem;
+	padding-right: 3.2rem;
+}
+
+/* projects table  */
+td.projects-display-name {
+    vertical-align: middle!important;
+}
+/* truncate long repo display names */
+td.projects-display-name {
+    max-width: 50ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

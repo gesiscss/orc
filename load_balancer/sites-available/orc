@@ -170,12 +170,6 @@ server {
         #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
-    #location /services/binder/ {
-    #    proxy_buffering off;  # NOTE this is important for binder
-    #    proxy_pass http://jhub;
-    #    include snippets/headers.conf;
-    #    include snippets/websocket_headers.conf;
-    #    }
 
     include snippets/ignore_fonts.conf;
 

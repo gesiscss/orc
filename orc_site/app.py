@@ -1,6 +1,6 @@
 import os
 from flask_caching import Cache
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 
@@ -66,28 +66,112 @@ def not_found(error):
     return render_template('error.html', **context), response_code
 
 
+def user_logged_in():
+    """Check if a user is logged in by checking if cookie exists"""
+    # FIXME cant we check if user logged in with JHub API?
+    # by default, use the `jupyterhub-session-id` cookie, which is created under `/`
+    cookie_name = os.getenv("JUPYTERHUB_COOKIE_NAME", "jupyterhub-session-id")
+    return cookie_name in request.cookies
+
+
 @app.route('/')
 # @cache.cached(timeout=None)
 def home():
     context = get_default_template_context()
+
+    if user_logged_in():
+        app.logger.info(f"User already logged in, redirecting to JupyterHub {context['gesishub_url']}")
+        return redirect(context['gesishub_url'])
+
     binder_examples = [
-        {'headline': 'Wiki-Impact',
-         'content': '',
-         'binder_link': '/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
-         'repo_link': 'https://github.com/gesiscss/wikiwho_demo'},
-        {'headline': 'Python Data Science Handbook',
-         'content': '',
-         'binder_link': '/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
-         'repo_link': 'https://github.com/jakevdp/PythonDataScienceHandbook'},
-        {'headline': 'LIGO Binder',
-         'content': '',
-         'binder_link': '/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
-         'repo_link': 'https://github.com/minrk/ligo-binder'},
+        # {'headline': '',
+        #  'repo_link': '',
+        #  'who': '',
+        #  'where': '',
+        #  'description': '',
+        #  'binder_link': '',
+        #  'language': ''},
+        {'headline': 'Welcome to GESIS Notebooks',
+         'repo_link': 'https://github.com/gesiscss/notebooks_getting_started',
+         'who': 'GESIS Notebooks Team',
+         'where': 'CSS, GESIS',
+         'description': 'GESIS Notebooks is an online service for researchers in the Social Sciences to publish and execute data-driven research designs.',
+         'binder_link': '/services/binder/v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb',
+         'language': 'Python'},
+        {'headline': 'Scientometrics Summer School',
+         'repo_link': 'https://github.com/CWTSLeiden/CSSS',
+         'who': 'Vincent Traag',
+         'where': 'Centre for Science and Technology Studies, Leiden University',
+         'description': 'In these Notebooks, you will learn how to perform scientometric network analysis.',
+         'binder_link': '/services/binder/v2/gh/CWTSLeiden/CSSS/master?filepath=01-basics.ipynb',
+         'language': 'Python'},
+        {'headline': 'Analytical Information Systems',
+         'repo_link': 'https://github.com/wi3jmu/AIS_2019',
+         'who': 'Matthias Griebel',
+         'where': 'Julius Maximilian University of Würzburg',
+         'description': 'Learn about the use of programming for data analysis, data management, and statistical analysis techniques.',
+         'binder_link': '/services/binder/v2/gh/matjesg/AIS_2019/master?urlpath=lab/tree/notebooks/AIS_T01_SS19.ipynb',
+         'language': 'R'},
+        {'headline': 'Meta-Analysis in Social Research',
+         'repo_link': 'https://github.com/berndweiss/cc-meta-analysis-2019',
+         'who': 'Bernd Weiß',
+         'where': 'SDM, GESIS',
+         'description': 'Introduction to Systematic Reviews in International Development, Mannheim, Germany | December 11th-12th, 2019',
+         'binder_link': '/services/binder/v2/gh/berndweiss/cc-meta-analysis-2019/master?filepath=notebooks/0-0-index.ipynb',
+         'language': 'R'},
+        # {'headline': 'Practical Introduction to Text Mining',
+        #  'repo_link': 'https://github.com/gesiscss/ptm',
+        #  'who': 'Arnim Bleier',
+        #  'where': 'CSS, GESIS',
+        #  'description': 'Introduction to Natural Language Processing with a special emphasis on the analysis of Job Advertisements',
+        #  'binder_link': '/services/binder/v2/gh/gesiscss/ptm/master?filepath=index.ipynb',
+        #  'language': 'R'},
+        # {'headline': 'RStan + Binder',
+        #  'repo_link': 'https://github.com/arnim/RStan-Binder',
+        #  'who': 'Arnim Bleier',
+        #  'where': 'CSS, GESIS',
+        #  'description': 'Stan is an probabilistic programming language. Probabilistic programming languages are languages designed to describe probabilistic models as well as perform the necessary inferential computation.',
+        #  'binder_link': '/services/binder/v2/gh/arnim/RStan-Binder/master?urlpath=lab/tree/examples/bernoulli.ipynb',
+        #  'language': 'R'},
+        {'headline': 'GESIS DataDay 2020',
+         'repo_link': 'https://github.com/gesiscss/gesis_dataday_20',
+         'who': 'Fabian Flöck, Johannes Breuer and Arnim Bleier',
+         'where': 'CSS & DAS, GESIS',
+         'description': 'Materials for the GESIS DataDay 2020',
+         'binder_link': '/services/binder/v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab',
+         'language': 'R'},
+        # {'headline': 'compsoc',
+        #  'repo_link': 'https://github.com/gesiscss/compsoc',
+        #  'who': 'Haiko Lietz',
+        #  'where': 'CSS, GESIS',
+        #  'description': 'Notebooks for Computational Sociology',
+        #  'binder_link': '/services/binder/v2/gh/gesiscss/compsoc/master',
+        #  'language': 'Python'},
+        # {'headline': 'Wiki-Impact',
+        #  'repo_link': 'https://github.com/gesiscss/wikiwho_demo',
+        #  'who': '',
+        #  'where': '',
+        #  'description': 'A demonstration of how to use the <a href="https://www.wikiwho.net">WikiWho service</a> to complement other external tools.',
+        #  'binder_link': '/services/binder/v2/gh/gesiscss/wikiwho_demo/master?urlpath=%2Fapps%2F1.%20General%20Metadata%20of%20a%20Wikipedia%20Article.ipynb',
+        #  'language': 'Python'},
+        # {'headline': 'Python Data Science Handbook',
+        #  'repo_link': 'https://github.com/jakevdp/PythonDataScienceHandbook',
+        #  'who': '',
+        #  'where': '',
+        #  'description': '',
+        #  'binder_link': '/services/binder/v2/gh/jakevdp/PythonDataScienceHandbook/master?filepath=notebooks%2FIndex.ipynb',
+        #  'language': 'Python'},
+        # {'headline': 'LIGO Binder',
+        #  'repo_link': 'https://github.com/minrk/ligo-binder',
+        #  'who': '',
+        #  'where': '',
+        #  'description': '',
+        #  'binder_link': '/services/binder/v2/gh/minrk/ligo-binder/master?filepath=index.ipynb',
+        #  'language': 'Python'},
     ]
-    # FIXME: logged_in
     context.update({'active': 'home',
                     'binder_examples': binder_examples,
-                    'logged_in': "jupyterhub-session-id" in request.cookies})
+                    })
     return render_template('home.html', **context)
 
 

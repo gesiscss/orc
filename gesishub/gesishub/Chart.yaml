@@ -1,4 +1,4 @@
 apiVersion: v1
-description: A Helm chart for JupyterHub deployment on notebooks.gesis.org
+description: A Helm chart for persistent BinderHub deployment on notebooks.gesis.org
 name: gesishub
-version: 0.1.0
+version: 0.2.0
