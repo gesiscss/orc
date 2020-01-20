@@ -72,7 +72,10 @@ class PersistentBinderSpawner(KubeSpawner):
             # NOTE: user can pass any options through API (without using binder) too
             self.image = self.user_options['image']
             self.ref = self.image.split(':')[-1]
-            self.repo_url = self.user_options['repo_url']  # repo_url is generated in bhub by repo providers
+            # repo_url is generated in bhub by repo providers
+            repo_url = self.user_options['repo_url']
+            # strip .git at the end
+            self.repo_url = self.strip_repo_url(repo_url)
         else:
             # get saved projects
             projects = self.get_state_field('projects')
