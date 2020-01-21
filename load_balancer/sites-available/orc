@@ -163,6 +163,7 @@ server {
         #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
+
     include snippets/ignore_fonts.conf;
 
     location /static/ {
