@@ -1,0 +1,64 @@
+elasticsearch:
+  # https://github.com/elastic/helm-charts/tree/7.5.1/elasticsearch
+  enabled: true
+  # https://www.elastic.co/guide/en/elasticsearch/reference/6.7/discovery-settings.html#minimum_master_nodes
+  # (number of master-eligible nodes (2) / 2) + 1
+  minimumMasterNodes: 2
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 90Gi
+
+
+kibana:
+  # https://github.com/elastic/helm-charts/tree/7.5.1/kibana
+  enabled: true
+  nodeSelector:
+    base: worker  # we need this for filebeat
+
+  service:
+    type: NodePort
+    nodePort: 30070
+
+  extraEnvs:
+    # All Kibana configuration options are adjustable via env vars.
+    # To adjust a config option to an env var uppercase + replace `.` with `_`
+    # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+
+    # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services
+    - ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client.elastic-stack-ns.svc.cluster.local:9200
+  elasticsearchHosts: "http://elastic-stack-elasticsearch-client.elastic-stack-ns.svc.cluster.local:9200"
+  kibanaConfig:
+    kibana.yml:
+      ## Default Kibana configuration from kibana-docker.
+      elasticsearch.hosts: http://elastic-stack-elasticsearch-client.elastic-stack-ns.svc.cluster.local:9200
+      ## Custom config properties below
+      ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+      server.basePath: "/kibana"
+      server.rewriteBasePath: true
+
+logstash:
+  enabled: false
+
+fluentd-elasticsearch:
+  # https://github.com/kiwigrid/helm-charts/tree/04b2c2f5f9e40bd947e6ec7d180b7b5806078ae4/charts/fluentd-elasticsearch
+  enabled: true
+  elasticsearch:
+    host: 'elastic-stack-elasticsearch-client'  # elasticsearch client service name
+    # better use default prefix "logstash"
+    # Kibana-dashboards.json also uses it
+    #logstash_prefix: 'orc-logstash'
+  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /data2/docker
+  extraVolumes:
+    - name: customvarlibdockercontainers
+      hostPath:
+        path: /data2/docker/containers
+  extraVolumeMounts:
+    - name: customvarlibdockercontainers
+      mountPath: /data2/docker/containers
+      readOnly: true
+
+#  secret:
+#  # - name: ELASTICSEARCH_PASSWORD
+#  #   secret_name: elasticsearch
+#  #   secret_key: password

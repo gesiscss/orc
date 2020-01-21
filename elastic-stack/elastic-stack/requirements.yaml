@@ -1,0 +1,23 @@
+dependencies:
+  # https://hub.helm.sh/charts/elastic
+- name: elasticsearch
+  version: ^7.5.1
+  repository: https://helm.elastic.co
+  condition: elasticsearch.enabled
+- name: kibana
+  version: ^7.5.1
+  repository: https://helm.elastic.co
+  condition: kibana.enabled
+- name: filebeat
+  version: ^7.5.1
+  repository: https://helm.elastic.co
+  condition: filebeat.enabled
+- name: logstash
+  version: ^7.5.1
+  repository: https://helm.elastic.co
+  condition: logstash.enabled
+  # https://hub.helm.sh/charts/kiwigrid/fluentd-elasticsearch
+- name: fluentd-elasticsearch
+  version: ^6.1.0
+  repository: https://kiwigrid.github.io
+  condition: fluentd-elasticsearch.enabled

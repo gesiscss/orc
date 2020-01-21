@@ -1,0 +1,14 @@
+elasticsearch:
+  enabled: true
+
+kibana:
+  enabled: true
+
+logstash:
+  enabled: true
+
+filebeat:
+  enabled: false
+
+fluentd-elasticsearch:
+  enabled: false
