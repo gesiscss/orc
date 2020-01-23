@@ -35,11 +35,6 @@ upstream prometheus {
   server 194.95.75.12:30073;
 }
 
-upstream kibana {
-  server 194.95.75.9:30070;
-  server 194.95.75.11:30070;
-}
-
 # max_fails=0 => health checks are disabled for this server
 # or in other words: makes nginx to accept upstream server always as healthy
 # we add this in order to get rid of "no live upstreams while connecting to upstream..." errors
@@ -116,22 +111,6 @@ server {
         rewrite ^/prometheus/(.*)$ /$1 break;
     }
 
-    # Kibana
-    # https://discuss.elastic.co/t/kibana-and-nginx-in-subpath/90280/5
-    location /kibana/ {
-        auth_basic "Administrator's Area";
-        auth_basic_user_file /etc/letsencrypt/.kibana_htpasswd;
-
-        # without trailing slash means nginx passes subpath (/kibana/...) to kibana
-        # and kibana will rewrite it
-        proxy_pass http://kibana;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
     # Managing literal requests to the BinderHub
     location /binder/ {
         # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
@@ -167,6 +146,7 @@ server {
     include snippets/ignore_fonts.conf;
 
     location /static/ {
+    # TODO do this for jhub/static and bhub/static files!
         access_log off;
         root /var/www/prod;
     }

@@ -1,0 +1,75 @@
+elasticsearch:
+  # https://github.com/elastic/helm-charts/tree/7.5.2/elasticsearch
+  enabled: true
+  replicas: 2
+  # https://www.elastic.co/guide/en/elasticsearch/reference/6.7/discovery-settings.html#minimum_master_nodes
+  # (number of master-eligible nodes (2) / 2) + 1
+  minimumMasterNodes: 2
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 90Gi
+
+
+kibana:
+  # https://github.com/elastic/helm-charts/tree/7.5.2/kibana
+  enabled: true
+
+  #service:
+  #  type: NodePort
+  #  nodePort: 30070
+  #kibanaConfig:
+  #  kibana.yml: |
+  #    ## Custom config properties below
+  #    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+  #    server:
+  #      basePath: "/kibana"
+  #      rewriteBasePath: true
+
+logstash:
+  # https://github.com/elastic/helm-charts/tree/7.5.2/logstash
+  enabled: false
+  replicas: 2
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 30Gi
+  # https://github.com/elastic/helm-charts/blob/7.5.2/logstash/examples/elasticsearch/values.yaml
+  persistence:
+    enabled: true
+
+  logstashConfig:
+    logstash.yml: |
+      http.host: 0.0.0.0
+      xpack.monitoring.enabled: false
+  logstashPipeline:
+    uptime.conf: |
+      input { exec { command => "uptime" interval => 30 } }
+      output { elasticsearch { hosts => ["http://elasticsearch-master:9200"] index => "logstash" } }
+  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /data2/docker
+  # FIXME Templatable string
+#  extraVolumes: "- name: customvarlibdockercontainers
+#  hostPath:
+#    path: /data2/docker/containers"
+#  extraVolumeMounts: "- name: customvarlibdockercontainers
+#  mountPath: /data2/docker/containers
+#  readOnly: true"
+
+fluentd-elasticsearch:
+  # https://github.com/kiwigrid/helm-charts/tree/04b2c2f5f9e40bd947e6ec7d180b7b5806078ae4/charts/fluentd-elasticsearch
+  enabled: true
+  elasticsearch:
+    host: 'elasticsearch-master'  # elasticsearch client service name
+    # better use default prefix "logstash"
+    # Kibana-dashboards.json also uses it
+    #logstash_prefix: 'orc-logstash'
+  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /data2/docker
+  extraVolumes:
+    - name: customvarlibdockercontainers
+      hostPath:
+        path: /data2/docker/containers
+  extraVolumeMounts:
+    - name: customvarlibdockercontainers
+      mountPath: /data2/docker/containers
+      readOnly: true
