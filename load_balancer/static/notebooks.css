@@ -472,3 +472,73 @@ td.projects-display-name {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Questions CSS */
+.panel-default {
+	border-radius: 0px !important;
+	border: none;
+	margin-bottom: 1.28rem !important;
+	-webkit-box-shadow: none;
+}
+
+.panel-heading  a:before {
+   font-family: 'Glyphicons Halflings';
+   content: "\25BC";
+   float: right;
+   transition: all 0.75s;
+}
+
+.panel-heading {
+	background-color: #58748f !important;
+	padding: 0px 0px !important;
+	border-radius: 0;
+	font: inherit;
+}
+
+.panel-heading.active a:before {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+.topic-question > a:hover {
+	text-decoration: none;
+	color: white;
+	display: block;
+	background-color: #e6e6e6;
+}
+
+.panel-title > a {
+	color: white;
+	display: block;
+	font-size: 1.5rem;
+	font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+	text-rendering: optimizeLegibility;
+	line-height: 1.4rem;
+	text-decoration: none;
+	padding: 10px 15px;
+	font-weight: bold;
+}
+
+.panel-body {
+	border-style: none !important;
+	padding: 10px 4px;
+}
+
+.panel-body > p {
+	margin: 0px;
+}
+
+.active {
+	background-color: #e6e6e6;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}

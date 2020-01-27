@@ -1,4 +1,4 @@
-import os
+import os, json
 from flask_caching import Cache
 from flask import Flask, render_template, request, redirect
 
@@ -33,7 +33,8 @@ def get_default_template_context():
         'imprint_url': 'https://www.gesis.org/en/institute/imprint/',
         'data_protection_url': 'https://www.gesis.org/en/institute/data-protection/',
         'gesis_url': 'https://www.gesis.org/en/home/',
-        'gallery_url': '/gallery/'
+        'gallery_url': '/gallery/',
+        'questions_url': '/questions/'
         # 'help_url': 'https://www.gesis.org/en/help/',
     }
 
@@ -189,3 +190,12 @@ def terms_of_use():
     context = get_default_template_context()
     context.update({'active': 'terms_of_use'})
     return render_template('terms_of_use.html', **context)
+
+@app.route('/questions/')
+@cache.cached(timeout=None)
+def questions():
+    context = get_default_template_context()
+    questions_file = open("../load_balancer/static/test.json", "r")
+    question_answers = json.load(questions_file)
+    context.update({'active': 'questions', 'question_answers': question_answers})
+    return render_template('questions.html', **context)
