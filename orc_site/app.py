@@ -1,4 +1,4 @@
-import os, json
+import os, json, requests
 from flask_caching import Cache
 from flask import Flask, render_template, request, redirect
 
@@ -195,7 +195,7 @@ def terms_of_use():
 @cache.cached(timeout=None)
 def questions():
     context = get_default_template_context()
-    questions_file = open("../load_balancer/static/faq-test.json", "r")
-    question_answers = json.load(questions_file)
+    data = requests.get('https://notebooks-test.gesis.org/static/faq-test.json')
+    question_answers = data.json()
     context.update({'active': 'questions', 'question_answers': question_answers})
     return render_template('questions.html', **context)

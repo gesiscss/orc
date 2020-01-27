@@ -1,25 +1,24 @@
 {% extends "page.html" %}
 
 {% block main %}
-
 <div class="row form-group" style="padding-left: 32px; padding-right: 32px;">
-<h2 style>Frequently Asked Questions</h2>
+<h2 style="margin-bottom: 3.2rem;">Frequently Asked Questions</h2>
     {% for section in question_answers%}
-    <h3 style="margin-bottom: 2rem;">{{section["Section"].get("Name")}}</h3>
+    <h3 style="margin-bottom: 1.4rem;"><strong>{{section["Section"].get("Name")}}</strong></h3>
 
     <div class="panel-group" id="accordion">
       {% for questions in section['Section']['Questions'] %}
         {% for question in questions.items() %}
           <div class="panel panel-default">
-              <div class="panel-heading topic-question noselect">
-                  <h3 class="panel-title noselect">
-                      <a class="accordion-toggle noselect" data-toggle="collapse" data-parent="#accordion{{question[1].get('ID')}}" href="#{{question[1].get('ID')}}"><strong>{{question[1].get('Question')}}</strong></a>
+              <div class="panel-heading topic-question">
+                  <h3 class="panel-title">
+                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion{{question[1].get('ID')}}" href="#{{question[1].get('ID')}}"><strong>{{question[1].get('Question')}}</strong></a>
                   </h3>
               </div>
               <div id="{{question[1].get('ID')}}" class="panel-collapse collapse">
                   <div class="panel-body">
                     <p>
-                      {{question[1].get('Answer')|safe}}
+                      {{question[1].get('Answer')}}
                     </p>
                   </div>
               </div>
@@ -27,15 +26,16 @@
           {% endfor %}
         {% endfor %}
   </div>
+
   {% endfor%}
 </div>
-<script type="text/javascript">
-  $('.panel-collapse').on('show.bs.collapse', function () {
-   $(this).siblings('.panel-heading').addClass('active');
- });
+  <script type="text/javascript">
+    $('.panel-collapse').on('show.bs.collapse', function () {
+     $(this).siblings('.panel-heading').addClass('active');
+   });
 
- $('.panel-collapse').on('hide.bs.collapse', function () {
-   $(this).siblings('.panel-heading').removeClass('active');
- });
-</script>
-{% endblock main %}
+   $('.panel-collapse').on('hide.bs.collapse', function () {
+     $(this).siblings('.panel-heading').removeClass('active');
+   });
+  </script>
+  {% endblock main %}
