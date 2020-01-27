@@ -195,7 +195,7 @@ def terms_of_use():
 @cache.cached(timeout=None)
 def questions():
     context = get_default_template_context()
-    questions_file = open("../load_balancer/static/test.json", "r")
+    questions_file = open("../load_balancer/static/faq-test.json", "r")
     question_answers = json.load(questions_file)
     context.update({'active': 'questions', 'question_answers': question_answers})
     return render_template('questions.html', **context)
