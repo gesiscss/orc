@@ -36,7 +36,7 @@
           },
           "Question 7": {
             "Question": "Where can I create a JupyterHub API token?",
-            "Answer": "You can use <a href='/hub/token' target='_blank'>token request page</a> to create JupyterHub API token. You can also read more about the JupyterHub API in the <a href='https://jupyterhub.readthedocs.io/en/stable/reference/rest.html' target='_blank'>JupyterHub docs</a>, how to make an API request and the different ways you can use the API.",
+            "Answer": "You can use <a href='/hub/token' target='_blank'>token request page</a> to create a JupyterHub API token. You can also read more about the JupyterHub API in the <a href='https://jupyterhub.readthedocs.io/en/stable/reference/rest.html' target='_blank'>JupyterHub docs</a>, how to make an API request and the different ways you can use the API.",
             "ID": "15"
           }
         }
