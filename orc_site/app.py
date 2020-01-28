@@ -1,6 +1,7 @@
 import os, json, requests
 from flask_caching import Cache
 from flask import Flask, render_template, request, redirect
+import urllib.parse
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 
@@ -192,10 +193,14 @@ def terms_of_use():
     return render_template('terms_of_use.html', **context)
 
 @app.route('/questions/')
-@cache.cached(timeout=None)
 def questions():
     context = get_default_template_context()
-    data = requests.get('https://notebooks-test.gesis.org/static/faq-test.json')
-    question_answers = data.json()
+    if app.debug:
+        with open("../load_balancer/static/faq-test.json", "r") as f:
+            question_answers = json.load(f)
+    else:
+        file_name = "faq-test.json" if "notebooks-test" in request.host else "faq.json"
+        url = urllib.parse.urljoin(request.url_root, f"static/{file_name}")
+        question_answers = requests.get(url).json()
     context.update({'active': 'questions', 'question_answers': question_answers})
     return render_template('questions.html', **context)
