@@ -2,9 +2,13 @@
 
 {% block main %}
 <div class="row form-group" style="padding-left: 32px; padding-right: 32px;">
-<h2 style="margin-bottom: 3.2rem;">Frequently Asked Questions</h2>
+  <div id="header" class="text-center">
+      <div id="explanation">
+          Frequently Asked Questions
+      </div>
+  </div>
     {% for section in question_answers%}
-    <h3 style="margin-bottom: 1.4rem;"><strong>{{section["Section"].get("Name")}}</strong></h3>
+    <h3 style="margin-bottom: 1.4rem;">{{section["Section"].get("Name")}}</h3>
 
     <div class="panel-group" id="accordion">
       {% for questions in section['Section']['Questions'] %}
@@ -18,17 +22,18 @@
               <div id="{{question[1].get('ID')}}" class="panel-collapse collapse">
                   <div class="panel-body">
                     <p>
-                      {{question[1].get('Answer')}}
+                      {{question[1].get('Answer')|safe}}
                     </p>
                   </div>
               </div>
           </div>
           {% endfor %}
         {% endfor %}
-  </div>
+      </div>
 
   {% endfor%}
-</div>
+  </div>
+
   <script type="text/javascript">
     $('.panel-collapse').on('show.bs.collapse', function () {
      $(this).siblings('.panel-heading').addClass('active');
@@ -37,5 +42,6 @@
    $('.panel-collapse').on('hide.bs.collapse', function () {
      $(this).siblings('.panel-heading').removeClass('active');
    });
+
   </script>
-  {% endblock main %}
+{% endblock main %}

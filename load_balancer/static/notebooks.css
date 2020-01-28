@@ -522,7 +522,8 @@ td.projects-display-name {
 
 .panel-body {
 	border-style: none !important;
-	padding: 10px 4px;
+	padding: 2px 4px;
+	padding-top: 10px;
 }
 
 .panel-body > p {
