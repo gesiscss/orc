@@ -1,0 +1,69 @@
+[
+    {
+      "Section": {
+        "Name": "GESIS Notebooks Overview",
+        "Questions": [
+          {
+          "Question 1": {
+            "Question": "Who can use this service?",
+            "Answer": "This service is intended for use by social scientists. You can build and launch all binder-ready projects without logging in. If you want to have more persistent projects, you need to log in.",
+            "ID": "1"
+          },
+          "Question 2": {
+            "Question": "Is the service free? ",
+            "Answer": "The service is free for social scientists. In the future GESIS may include a premium offer with additional features.",
+            "ID": "2"
+          },
+          "Question 3": {
+            "Question": "What languages/environments can be on the service? Can I use my preferred R, Julia or Python environment?",
+            "Answer": "You can select any language/environment available from our gallery of more than 5000 <a href='/gallery/' target='_blank'>binder-ready projects</a>. The gallery contains projects from the <a href='https://archive.analytics.mybinder.org' target='_blank'>MyBinder.org Events Archive</a>.",
+            "ID": "3"
+          },
+          "Question 4": {
+            "Question": "What are the service's restrictions?",
+            "Answer": "For the anonymous use of via Binder, the service has a limit of: <br> <ul><li>4 GB memory</li><li>2 CPU cores</li><li>10 minutes inactivity timeout</li></ul> For authenticated users, the service has a limit of: <br> <ul><li>32 GB memory</li><li>2 CPU cores</li><li>40 minutes inactivity timeout</li><li>a maximum of 10 GB of persistent disk space</li></ul> Usage rights are limited to academic activities and governed by our <a href='/terms_of_use/' target='_blank'>Terms of Use</a>.",
+            "ID": "4"
+          },
+          "Question 5": {
+            "Question": "I have a question or have found a bug. Where can I open up an Issue?",
+            "Answer": "For questions regarding Jupyter or the Binder import, join the <a href='https://gitter.im/jupyterhub/binder' target='_blank'>Binder-Chat</a>, read the <a href='https://mybinder.readthedocs.io/en/latest/' target='_blank'>docs</a> or see the <a href='https://github.com/jupyterhub/binderhub' target='_blank'>code</a>. Please open an issue on our <a href='https://github.com/gesiscss/orc/issues' target='_blank'>GitHub repository</a> for questions regarding GESIS Notebooks. We are looking forward to hearing from you.<br>If possible, please include:<ul><li>a short description</li><li>steps necessary to reproduce the problem</li><li>a screenshot of the issue</li>",
+            "ID": "5"
+          },
+          "Question 6": {
+            "Question": "Can I host my own version of this platform?",
+            "Answer": "The project is open-source and the code is available at <a href='https://github.com/gesiscss/orc' target='_blank'>https://github.com/gesiscss/orc</a>.",
+            "ID": "6"
+          },
+          "Question 7": {
+            "Question": "Where can I create a JupyterHub API token?",
+            "Answer": "You can use <a href='/hub/token' target='_blank'>token request page</a> to create JupyterHub API token. You can also read more about the JupyterHub API in the <a href='https://jupyterhub.readthedocs.io/en/stable/reference/rest.html' target='_blank'>JupyterHub docs</a>, how to make an API request and the different ways you can use the API.",
+            "ID": "15"
+          }
+        }
+        ]
+      }
+    },
+    {
+    "Section": {
+      "Name": "Binder Project Import ",
+      "Questions": [{
+        "Question 1": {
+          "Question": "What is Binder?",
+          "Answer": "Binder is an open-source project that enables the creation of shareable, interactive, reproducible scientific analysis environments. You can read more about Binder <a href='https://mybinder.readthedocs.io/en/latest/introduction.html' target='_blank'>here</a>.",
+          "ID": "7"
+        },
+        "Question 2": {
+          "Question": "Where can I find binder-ready projects?",
+          "Answer": "The Binder Federation maintains a machine readable <a href='https://archive.analytics.mybinder.org/' target='_blank'>archive</a> of projects that are binder-ready and suited for the import in GESIS Notebooks. A gallery for you to browse is available at <a href='/gallery/' target='_blank'>https://notebooks.gesis.org/gallery/</a>.",
+          "ID": "8"
+        },
+        "Question 3": {
+          "Question": "How can I make my Notebooks binder-ready?",
+          "Answer": "For more information about making a Notebook binder-ready, take a look at the <a href='https://mybinder.readthedocs.io/en/latest/index.html#how-to-guides-and-tutorials' target='_blank'>binder user guide</a>.",
+          "ID": "9"
+        }
+      }]
+    }
+  }
+]
+
