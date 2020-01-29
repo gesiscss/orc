@@ -147,8 +147,8 @@ class Bot:
                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1],
-                self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1])
+                self.bhub_live,
+                self.bhub_latest)
 
         subprocess.check_call(['git', 'config', 'user.name', GL_BOT_NAME])
         subprocess.check_call(['git', 'config', 'user.email', GL_BOT_EMAIL])
@@ -198,8 +198,8 @@ class Bot:
                                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                                self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1],
-                                self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1])
+                                self.bhub_live,
+                                self.bhub_latest)
         logging.info('compare url: {}'.format(compare_url))
         associated_prs = self.get_associated_prs(compare_url)
         body = '\n'.join(
@@ -284,8 +284,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['live'].split('-')[-1].split('.')[-1]}" \
-                                     f"/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_live()}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_live = jupyterhub_dep['version'].strip()
@@ -317,7 +316,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.commit_info['binderhub']['latest'].split('-')[-1].split('.')[-1]}/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_latest}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_latest = jupyterhub_dep['version'].strip()
@@ -338,6 +337,39 @@ class Bot:
         self.get_jupyterhub_latest()
 
         logging.info(self.commit_info)
+
+    def parse_chart_version(self, chart_version):
+        """
+        All cases: https://github.com/jupyterhub/chartpress#examples-chart-versions-and-image-tags
+        - 0.8.0
+        - 0.8.0-n004.hasdf123
+        - 0.9.0-beta.1
+        - 0.9.0-beta.1.n001.hdfgh345
+        """
+        chart_version = self.commit_info['binderhub']['live']
+        parts = chart_version.split('-')
+        if len(parts) == 1:
+            # stable version: 0.8.0
+            return chart_version
+        else:
+            parts = chart_version.split('-')[-1].split('.')
+            if len(parts) == 2 and not parts[0].startswith('n'):
+                # beta verion: 0.9.0-beta.1
+                return chart_version
+            else:
+                # dev: 0.8.0-n004.hasdf123 or 0.9.0-beta.1.n001.hdfgh345
+                chart_version = parts[-1]
+                if chart_version.startswith('h'):
+                    chart_version = chart_version[1:]
+                return chart_version
+
+    @property
+    def bhub_live(self):
+        return self.parse_chart_version(self.commit_info['binderhub']['live'])
+
+    @property
+    def bhub_latest(self):
+        return self.parse_chart_version(self.commit_info['binderhub']['latest'])
 
 
 if __name__ == '__main__':
