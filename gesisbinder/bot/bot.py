@@ -357,7 +357,7 @@ class Bot:
                 # beta version: 0.9.0-beta.1
                 return chart_version
             else:
-                # dev: 0.8.0-n004.hasdf123 or 0.9.0-beta.1.n001.hdfgh345
+                # dev: 0.8.0-n004.hasdf123 or 0.9.0-beta.1.n001.hdfgh345 or 0.2.0-072.544c0b1
                 chart_version = parts[-1]
                 if chart_version.startswith('h'):
                     chart_version = chart_version[1:]
