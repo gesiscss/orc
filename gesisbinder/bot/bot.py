@@ -353,7 +353,7 @@ class Bot:
             return chart_version
         else:
             parts = chart_version.split('-')[-1].split('.')
-            if len(parts) == 2 and not parts[0].startswith('n') and not parts.isdigit():
+            if len(parts) == 2 and not parts[0].startswith('n') and not parts[0].isdigit():
                 # beta version: 0.9.0-beta.1
                 return chart_version
             else:
