@@ -344,6 +344,7 @@ class Bot:
         - 0.8.0
         - 0.8.0-n004.hasdf123
         - 0.9.0-beta.1
+        - 0.2.0-072.544c0b1
         - 0.9.0-beta.1.n001.hdfgh345
         """
         parts = chart_version.split('-')
@@ -352,8 +353,8 @@ class Bot:
             return chart_version
         else:
             parts = chart_version.split('-')[-1].split('.')
-            if len(parts) == 2 and not parts[0].startswith('n'):
-                # beta verion: 0.9.0-beta.1
+            if len(parts) == 2 and not parts[0].startswith('n') and not parts.isdigit():
+                # beta version: 0.9.0-beta.1
                 return chart_version
             else:
                 # dev: 0.8.0-n004.hasdf123 or 0.9.0-beta.1.n001.hdfgh345
