@@ -481,21 +481,21 @@ td.projects-display-name {
 	-webkit-box-shadow: none;
 }
 
-.panel-heading  a:before {
+.topic-question  a:before {
    font-family: 'Glyphicons Halflings';
    content: "\25BC";
    float: right;
    transition: all 0.75s;
 }
 
-.panel-heading {
+.topic-question {
 	background-color: #58748f !important;
 	padding: 0px 0px !important;
 	border-radius: 0;
 	font: inherit;
 }
 
-.panel-heading.active a:before {
+.topic-question.active a:before {
 	-webkit-transform: rotate(180deg);
 	-moz-transform: rotate(180deg);
 	transform: rotate(180deg);
@@ -542,4 +542,31 @@ td.projects-display-name {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
+}
+
+#navbar-list > li > a:focus {
+	color: #58748f !important;
+}
+
+/* GesisHub CSS */
+
+.projects-container {
+	padding-left: 17px;
+	padding-right: 17px;
+}
+.projects-container > h3 {
+	padding-left: 7px;
+}
+
+.build-form-container {
+	padding: 32px 16px;
+}
+
+#build-form {
+	padding-left: 23px !important;
+	padding-right: 22px !important;
+}
+
+#build-form > h3 {
+	margin-top: 0 !important;
 }
