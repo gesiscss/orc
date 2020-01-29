@@ -81,6 +81,15 @@ body {
     margin-top: -20px;
 }
 
+
+#navbar-list > li > a:focus {
+	color: #58748f;
+}
+
+.gs_active_sub:focus {
+	color: white !important;
+}
+
 .navbar-brand {
     float: left;
     padding: 0;
@@ -474,7 +483,7 @@ td.projects-display-name {
 }
 
 /* Questions CSS */
-.panel-default {
+.questions-panel-default {
 	border-radius: 0px !important;
 	border: none;
 	margin-bottom: 1.28rem !important;
@@ -520,13 +529,13 @@ td.projects-display-name {
 	font-weight: bold;
 }
 
-.panel-body {
+.questions-panel-body {
 	border-style: none !important;
 	padding: 2px 4px;
 	padding-top: 10px;
 }
 
-.panel-body > p {
+.questions-panel-body > p {
 	margin: 0px;
 }
 
@@ -542,10 +551,6 @@ td.projects-display-name {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
-}
-
-#navbar-list > li > a:focus {
-	color: #58748f !important;
 }
 
 /* GesisHub CSS */
