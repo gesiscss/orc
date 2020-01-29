@@ -346,7 +346,6 @@ class Bot:
         - 0.9.0-beta.1
         - 0.9.0-beta.1.n001.hdfgh345
         """
-        chart_version = self.commit_info['binderhub']['live']
         parts = chart_version.split('-')
         if len(parts) == 1:
             # stable version: 0.8.0
