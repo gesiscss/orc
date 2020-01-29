@@ -306,3 +306,4 @@ binderhub:
         enabled: false
       userPlaceholder:
         enabled: false
+
