@@ -20,7 +20,7 @@ from kubespawner import KubeSpawner
 
 
 class PersistentBinderSpawner(KubeSpawner):
-    default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-12343d4', 'master']
+    default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-42f6fa3', 'master']
 
     def strip_repo_url(self, repo_url):
         # p = "http://"

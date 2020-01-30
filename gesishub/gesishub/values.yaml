@@ -48,7 +48,7 @@ binderhub:
       auth_enabled: true
       base_url: /services/binder/
       use_registry: true
-      build_image: jupyter/repo2docker:0.10.0-133.gdb9f1ff
+      build_image: jupyter/repo2docker:0.10.0-159.g356ea10
       build_node_selector:
         user: worker
       per_repo_quota: 100
@@ -297,7 +297,7 @@ binderhub:
         # https://github.com/gesiscss/data_science_image
         # NOTE: when you update this image, don't forget to update `default_project` attribute of `PersistentBinderSpawner` in extra_config.py
         name: gesiscss/singleuser-orc
-        tag: "r2d-12343d4"
+        tag: "r2d-42f6fa3"
 
     scheduling:
       userScheduler:

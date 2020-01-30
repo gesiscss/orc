@@ -28,7 +28,7 @@ All services in the cluster has type `NodePort`.
 
 ### [GESIS Hub](/gesishub)
 
-JupyterHub 1.1.0b1 runs under https://notebooks.gesis.org/hub/.
+JupyterHub 1.1.0 runs under https://notebooks.gesis.org/hub/.
 
 Single user server image: https://github.com/gesiscss/data_science_image
 
