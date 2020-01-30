@@ -1,5 +1,5 @@
 // highlighting nav elements on hover
-$("div#navbar>ul>li").hover(
+$("div#navbar>ul>li>a").hover(
     function() {
         // in
         $("div#navbar>ul>li>a").removeClass("gs_active_sub");

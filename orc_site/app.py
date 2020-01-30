@@ -196,7 +196,7 @@ def terms_of_use():
 def questions():
     context = get_default_template_context()
     if app.debug:
-        with open("../load_balancer/static/faq-test.json", "r") as f:
+        with open("../load_balancer/static/faq.json", "r") as f:
             question_answers = json.load(f)
     else:
         url = urllib.parse.urljoin(request.url_root, "static/faq.json")
