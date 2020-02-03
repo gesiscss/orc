@@ -539,10 +539,6 @@ td.projects-display-name {
 	margin: 0px;
 }
 
-.active {
-	background-color: #e6e6e6;
-}
-
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
