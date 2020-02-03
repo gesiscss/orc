@@ -549,6 +549,11 @@ td.projects-display-name {
                                   supported by Chrome, Opera and Firefox */
 }
 
+.about-main-row {
+	padding-left: 17px !important;
+	padding-right: 17px !important;
+}
+
 #main-container {
 	padding-left: 32px;
 	padding-right: 32px;
