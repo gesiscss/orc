@@ -347,8 +347,10 @@ class KeycloakLogoutHandler(LogoutHandler):
         else:
             await super().get()
 
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
 import uuid
-with open('extra_config.json') as extra_config_file:
+with open(os.path.join(current_dir, 'extra_config.json')) as extra_config_file:
     template_vars = json.load(extra_config_file)["template_vars"]
 template_vars.update({
     "static_version": uuid.uuid4().hex,

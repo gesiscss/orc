@@ -66,7 +66,7 @@ binderhub:
     - name: binder-templates-gesis
       configMap:
         name: hub-templates-gesis
-    - name: hub-extra-config-json
+    - name: binder-extra-config-json
       configMap:
         name: hub-extra-config-json
   extraVolumeMounts:
@@ -74,9 +74,9 @@ binderhub:
       mountPath: /etc/binderhub/templates
     - name: binder-templates-gesis
       mountPath: /etc/binderhub/templates/gesis
-    - mountPath: /etc/binderhub/extra_config.json
+    - name: binder-extra-config-json
+      mountPath: /etc/binderhub/extra_config.json
       subPath: extra_config.json
-      name: hub-extra-config-json
 
   extraEnv:
     # NOTE: when you change limit, update hub.templateVars.projects_limit too
@@ -85,6 +85,7 @@ binderhub:
 
   extraConfig:
     00-tempalte-variables:  |
+      import json
       with open('/etc/binderhub/extra_config.json') as extra_config_file:
           template_vars = json.load(extra_config_file)["template_vars"]
       import uuid
@@ -206,7 +207,6 @@ binderhub:
                   html = self.render_template("orc_home.html", **{"active": "home"})
                   self.finish(html)
           RootHandler.get = get
-          c.Authenticator.auto_login = False
           # c.JupyterHub.default_url = "/"
 
           from jupyterhub.handlers.base import PrefixRedirectHandler
