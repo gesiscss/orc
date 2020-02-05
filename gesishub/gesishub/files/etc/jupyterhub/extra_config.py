@@ -346,3 +346,16 @@ class KeycloakLogoutHandler(LogoutHandler):
             self.redirect(kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
         else:
             await super().get()
+
+import uuid
+with open('extra_config.json') as extra_config_file:
+    template_vars = json.load(extra_config_file)["template_vars"]
+template_vars.update({
+    "static_version": uuid.uuid4().hex,
+    # 'help_url': 'https://www.gesis.org/en/help/',
+})
+
+from jupyterhub.handlers import BaseHandler
+class Custom404(BaseHandler):
+    def prepare(self):
+        raise web.HTTPError(404)

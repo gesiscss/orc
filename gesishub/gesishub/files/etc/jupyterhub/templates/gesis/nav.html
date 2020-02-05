@@ -16,8 +16,9 @@
                     {#<ul class="nav navbar-nav" style="float:none; margin: 0 auto; display: table; table-layout: fixed;">#}
                     <ul class="nav navbar-nav" id="navbar-list">
                         {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
-                        {% if active == 'hub' %}
-                        <li><a href="{{ base_url }}home" id="navbar-active-a" class="gs_active_sub">Home</a></li>
+                        {% if active == 'hub' and user and not status_code %}  {# not status_code -> no 400 or 500 errors #}
+                        <li><a href="{{ home_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>
+{#                        <li><a href="{{ base_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>#}
                         {% if user.admin %}
                         <li><a href="{{ base_url }}admin_orc" >Admin</a></li>
                         {% endif %}
@@ -26,7 +27,7 @@
                         {% endif %}
                         <li><a href="{{ gesisbinder_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
                         <li><a href="{{ gallery_url }}" {% if active == 'gallery' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Gallery</a></li>
-                        <li><a href="{{ questions_url }}" {% if active == 'questions' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>FAQ</a></li>
+                        <li><a href="{{ faq_url }}" {% if active == 'faq' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>FAQ</a></li>
                     </ul>
                 </div>
             </div>

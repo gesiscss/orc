@@ -1,13 +1,24 @@
 {% extends "page.html" %}
 
+{% block meta_social %}
+<meta property="og:title" content="GESIS Notebooks">
+<meta property="og:description" content="Open Research Computing for the Social Sciences.">
+<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="GESIS Notebooks Logo"/>
+<meta name="twitter:card" content="summary">
+{% endblock meta_social %}
+
 {% block main %}
+<div id="main-container" class="container">
 <div class="row form-group" style="padding-left: 16px; padding-right: 16px;">
   <div id="header" class="text-center">
       <div id="explanation">
           Frequently Asked Questions
       </div>
   </div>
-    {% for section in question_answers%}
+    {% for section in faq%}
     <h3 style="margin-bottom: 1.4rem;">{{section["Section"].get("Name")}}</h3>
 
     <div class="panel-group" id="accordion">
@@ -33,6 +44,7 @@
 
   {% endfor%}
   </div>
+</div>
 {% endblock main %}
 
 {% block extra_js %}

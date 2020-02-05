@@ -34,7 +34,7 @@ binderhub:
           oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
           oauth_client_id: "binder-oauth-client-test"
       extraConfig:
-        02-orc: |
+        03-orc: |
           c.GitHubOAuthenticator.auto_login = True
           from jupyterhub.handlers import LogoutHandler
           class MyLogoutHandler(LogoutHandler):

@@ -291,7 +291,7 @@ footer .container {
 #header_banner {
 	padding: 0;
 	clear: both;
-	background:url(/static/images/gs_ms_banner_default.jpg);
+	background:url(images/gs_ms_banner_default.jpg);
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	background-position: center center;

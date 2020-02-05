@@ -3,8 +3,8 @@
 {% block stylesheet %}
 <meta id="base-url" data-url="/services/binder/">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
-<script src="/services/binder/static/dist/bundle.js"></script>
-<link href="/services/binder/static/dist/styles.css" rel="stylesheet"/>
+<script src="{{ static_binder }}dist/bundle.js"></script>
+<link href="{{ static_binder }}dist/styles.css" rel="stylesheet"/>
 {{ super() }}
 {% endblock %}
 
@@ -14,10 +14,8 @@
 {#    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>#}
 {% endblock %}
 
-{% set projects = user.spawner.get_state_field('projects') %}
-
 {% block main %}
-<div class="container" id="main-container">
+<div id="main-container" class="container">
   {% block binder_header %}
     <div id="header" class="text-center">
         {#      <h3>Turn a Git repo into a collection of interactive notebooks</h3>#}
@@ -27,6 +25,9 @@
         </div>
     </div>
   {% endblock binder_header %}
+
+  {% block projects %}
+  {% set projects = user.spawner.get_state_field('projects') %}
   <div class="projects-container">
     <h3>Your Projects</h3>
     <div class="table-responsive">
@@ -103,9 +104,9 @@
       </div>
     </div>
   </div>
-</div>
+  {% endblock projects %}
 
-<div id="main-container" class="container">
+  {% block projects_form %}
   <div class="row form-group"></div>
   <div class="row form-group no-projects{% if projects %} hidden{% endif %}"></div>
   <div class="row">
@@ -183,13 +184,13 @@
             </div>
             <div class="url-row">
               <pre id="basic-url-snippet" data-default="Fill in the fields to see a URL for sharing your Binder."></pre>
-              <img class="icon clipboard" src="/services/binder/static/images/copy-icon-black.svg" data-clipboard-target="#basic-url-snippet" alt="Copy to clipboard">
+              <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg" data-clipboard-target="#basic-url-snippet" alt="Copy to clipboard">
             </div>
         </div>
 
         <div class="badges row" style="display: none;">
             <div class="dropdownmenu" id="toggle-badge-snippet">
-              <label>Copy the text below, then paste into your README to show a binder badge: <img id="badge" src="/services/binder/static/images/badge_logo.svg"></label>
+              <label>Copy the text below, then paste into your README to show a binder badge: <img id="badge" src="{{ static_binder }}images/badge_logo.svg"></label>
               <a id="badge-link"></a>
               <a href="#" title="show badge snippets"><span id="badge-snippet-caret" class="glyphicon glyphicon-triangle-right"></span></a>
             </div>
@@ -197,17 +198,17 @@
               <!--Markdown section-->
               <div  class="badge-snippet-row">
                  <pre id="markdown-badge-snippet" data-default="Fill in the fields to see the markdown badge snippet."></pre>
-                 <img class="icon" src="/services/binder/static/images/markdown-icon.svg">
+                 <img class="icon" src="{{ static_binder }}images/markdown-icon.svg">
                  <img class="icon clipboard"
-                    src="/services/binder/static/images/copy-icon-black.svg"
+                    src="{{ static_binder }}images/copy-icon-black.svg"
                     data-clipboard-target="#markdown-badge-snippet"
                     alt="Copy markdown link to clipboard">
               </div>
               <!--RST section-->
               <div  class="badge-snippet-row">
                   <pre id="rst-badge-snippet" data-default="Fill in the fields to see the rST badge snippet."></pre>
-                  <img class="icon" src="/services/binder/static/images/rst-icon.svg">
-                  <img class="icon clipboard" src="/services/binder/static/images/copy-icon-black.svg"
+                  <img class="icon" src="{{ static_binder }}images/rst-icon.svg">
+                  <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg"
                     data-clipboard-target="#rst-badge-snippet"
                     alt="Copy rst link to clipboard">
               </div>
@@ -260,12 +261,13 @@
 
   <div class="row form-group"></div>
   <div class="row form-group"></div>
+  {% endblock projects_form %}
 
   {% block how_it_works %}
     <div class="row text-center display-flex" style="margin: 54px -16px 0px -16px;">
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
             <div class="use-examples">
-                <img src="/static/images/mybinder_vector_logo.svg?v=1" alt="MyBinder Logo">
+                <img src="{{ static_hub }}images/mybinder_vector_logo.svg?v={{ static_version }}" alt="MyBinder Logo">
                 <div class="caption">
                     <h3>Import</h3>
                     <p>
@@ -278,7 +280,7 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
             <div class="use-examples">
-                <img src="/static/images/powered_by_jupyter_logo.svg?v=1" alt="Jupyter Logo">
+                <img src="{{ static_hub }}images/powered_by_jupyter_logo.svg?v={{ static_version }}" alt="Jupyter Logo">
                 <div class="caption">
                     <h3>Persistent Environment</h3>
                     <p>
@@ -290,7 +292,7 @@
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
             <div class="use-examples">
-                <img src="/static/images/open_science_logo.png?v=1" alt="Open Science Logo">
+                <img src="{{ static_hub }}images/open_science_logo.png?v={{ static_version }}" alt="Open Science Logo">
                 <div class="caption">
                     <h3>Open Science</h3>
                     <p>
@@ -304,6 +306,7 @@
   {% endblock how_it_works %}
 
 
+    {% block featured_projects %}
     <div class="row form-group"></div>
     {#<div class="row form-group page-header">#}
     <div class="row form-group featured-projects">
@@ -314,7 +317,7 @@
     </div>
 
     <div class="row form-group text-left display-flex featured-projects">
-        {% for example in binder_examples %}
+        {% for example in featured_projects %}
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
             <div class="thumbnail">
                 <div class="caption project-caption">
@@ -337,7 +340,7 @@
                         </div>
                         <div style="display: inline-block; float: right;">
                             <a href="{{ example.binder_link }}" style="align:right;">
-                                <img src="/static/images/badge_logo.svg?v=1" alt="Launch Binder">
+                                <img src="{{ static_hub }}images/badge_logo.svg?v={{ static_version }}" alt="Launch Binder">
                             </a>
                         </div>
                     </div>
@@ -347,9 +350,10 @@
         {% endfor %}
     </div>
     <div class="row form-group" style="padding: 0px 16px 0px 16px;">
-        <a href="/gallery/" style="float:right;">See all projects >></a>
+        <a href="{{ gallery_url }}" style="float:right;">See all projects >></a>
     </div>
     <div class="row form-group"></div>
+    {% endblock featured_projects %}
 </div>
 {% endblock %}
 

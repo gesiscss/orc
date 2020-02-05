@@ -1,0 +1,79 @@
+{% extends "home.html" %}
+
+{% block meta_social %}
+<!-- Social media previews -->
+<meta property="og:title" content="GESIS Notebooks">
+<meta property="og:description" content="Open Research Computing for the Social Sciences.">
+<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="GESIS Notebooks Logo"/>
+<meta name="twitter:card" content="summary">
+{% endblock meta_social %}
+
+{% block stylesheet %}
+<link href="{{ static_hub }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+{#<link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>#}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{{ static_hub }}orc_site.css?v={{ static_version }}" rel="stylesheet" />
+{% endblock extra_css %}
+
+{% block scripts %}
+{#<script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>#}
+<script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
+{% block require_script %}
+{% endblock require_script %}
+
+{% block projects %}
+<div class="row text-center project-text">
+  {#    <div class="col-lg-1 col-md-1"></div>#}
+  {#    <div class="col-lg-10 col-lg-offset-1 text-center">#}
+  <div class="col-lg-6 col-md-6 col-sm-5 hidden-xs">
+      <img alt="GESIS Notebooks" src="{{ static_hub }}images/notebook.png?v={{ static_version }}"
+           class="img-responsive center-block" id="gesis-notebooks-img">
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
+      <h3>
+          <span id="typed"></span>
+      </h3>
+      <a href="{{ login_url }}" class="btn btn-lg btn-warning orc-button" role="button">Try it now >></a>
+  </div>
+</div>
+
+<div class="row form-group"></div>
+<div class="row form-group"></div>
+<div class="row form-group"></div>
+{% endblock projects %}
+
+{% block projects_form %}
+{% endblock projects_form %}
+
+{% block script %}
+<script src="{{ static_hub }}vendor/typed.js-2.0.6/lib/typed.min.js"></script>
+
+<script>
+    var typed = new Typed('#typed',
+        {
+            strings: ["Open Methodology", "Open Source", "Open Science",
+                "Open Research Computing for the Social Sciences"],
+            typeSpeed: 64,
+            smartBackspace: true,
+            // startDelay: 0,
+            backDelay: 1000,
+            backSpeed: 64,
+            // loop: true,
+            // loopCount: 3,
+            contentType: null,
+            // fadeOut: true
+            // call when done callback function
+            onComplete: function () {
+                $("span.typed-cursor").hide();
+            }
+        });
+</script>
+{% endblock %}

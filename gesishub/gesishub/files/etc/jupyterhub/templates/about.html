@@ -1,10 +1,23 @@
 {% extends "page.html" %}
 
+{% block meta_social %}
+<!-- Social media previews -->
+<meta property="og:title" content="GESIS Notebooks">
+<meta property="og:description" content="Open Research Computing for the Social Sciences.">
+<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="GESIS Notebooks Logo"/>
+<meta name="twitter:card" content="summary">
+{% endblock meta_social %}
+
 {% block extra_css %}
-<link href="/static/team.css" rel="stylesheet" />
+<link href="{{ static_hub }}orc_site.css?v={{ static_version }}" rel="stylesheet" />
+<link href="{{ static_hub }}team.css?v={{ static_version }}" rel="stylesheet" />
 {% endblock extra_css %}
 
 {% block main %}
+<div id="main-container" class="container">
 {#<div class="row form-group text-center">#}
 {#<div class="row form-group"></div>#}
 <div class="row-side-margins row about-main-row" >
@@ -53,10 +66,10 @@
         <p class="description"><strong>Supported by</strong></p>
     <div class="sponsored">
         <div class="col">
-            <a href="https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&" target="_blank"><img src="{{ url_for('static', filename='images/DFG_CLAIM_163X60px.gif', v=1) }}" class="img-responsive center-block" ></a>
+            <a href="https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&" target="_blank"><img src="{{ static_hub }}images/DFG_CLAIM_163X60px.gif?v={{ static_version }}" class="img-responsive center-block" ></a>
         </div>
         <div class="col">
-            <img src="{{ url_for('static', filename='images/gesis-logo.png', v=1) }}" class="img-responsive center-block gesis-logo">
+            <img src="{{ static_hub }}images/gesis-logo.png?v={{ static_version }}" class="img-responsive center-block gesis-logo">
         </div>
     </div>
 </div>
@@ -90,5 +103,6 @@
             <a href="/gallery/api/v1.0/">an API for launch events</a>
             on GESIS Binder and on Binder Federation is available.
         </p>
+</div>
 </div>
 {% endblock main %}

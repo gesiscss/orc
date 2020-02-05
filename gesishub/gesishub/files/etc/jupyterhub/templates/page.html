@@ -32,12 +32,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="JupyterHub - GESIS Notebooks ({{version}})">
 
+    {% block meta_social %}
+    {% endblock meta_social %}
+
     {% block stylesheet %}
-    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ static_hub }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
     {% endblock %}
-    <link href="/static/notebooks.css?v=17" rel="stylesheet" />
-    <link id="favicon" rel="shortcut icon" type="image/png" href="/static/images/logo/logo.png?v=1" />
+    <link href="{{ static_hub }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+    <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_hub }}images/logo/logo.png?v={{ static_version }}" />
 
     {% block extra_css %}
     {% endblock extra_css %}
@@ -45,8 +48,8 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="/static/vendor/html5shiv.min.js"></script>
-      <script src="/static/vendor/respond.min.js"></script>
+      <script src="{{ static_hub }}vendor/html5shiv.min.js"></script>
+      <script src="{{ static_hub }}vendor/respond.min.js"></script>
     <![endif]-->
 
     {% block scripts %}
@@ -54,6 +57,7 @@
     <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
     {% endblock %}
+    {% block require_script %}
     <script>
       require.config({
           {% if version_hash %}
@@ -74,6 +78,7 @@
           }
       });
     </script>
+    {% endblock require_script %}
 
     <script type="text/javascript">
       window.jhdata = {
@@ -142,9 +147,7 @@
 {% endblock footer %}
 {% endblock body %}
 
-{#{% if show_jhub_menu %}#}
-<script src="/static/gesis_nav.js?v=1"></script>
-{#{% endif %}#}
+<script src="{{ static_hub }}gesis_nav.js?v={{ static_version }}"></script>
 
 {% block script %}
 {% endblock %}

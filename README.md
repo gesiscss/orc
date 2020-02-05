@@ -42,7 +42,3 @@ Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built ima
 
 Gallery of popular repos launched on [GESIS Binder](https://notebooks.gesis.org/binder/)
 and featured projects: https://notebooks.gesis.org/gallery/
-
-### [ORC Site](/orc_site)
-
-An app to serve ORC project base pages, such as home and about.
