@@ -45,7 +45,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  extra_config.py: |-
+  extra_config.json: |-
     {{- .Files.Get "files/etc/jupyterhub/extra_config.json" | nindent 4 }}
 ---
 kind: ConfigMap
