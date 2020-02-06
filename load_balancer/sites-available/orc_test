@@ -90,14 +90,6 @@ server {
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
-    #location = / {
-    #    proxy_buffering off;
-    #    proxy_pass http://jhub-test/hub/;
-    #    include snippets/headers.conf;
-    #    include snippets/websocket_headers.conf;
-    #    #proxy_set_header X-Forwarded-Proto $scheme;
-    #    proxy_set_header X-Scheme $scheme;
-    #}
     location / {
         proxy_buffering off;
         proxy_pass http://jhub-test;

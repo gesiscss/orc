@@ -187,7 +187,7 @@ binderhub:
           else:
             c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
         01-orc: |
-          from extra_config import OrcAdminHandler, ProjectAPIHandler, Custom404
+          from extra_config import OrcAdminHandler, ProjectAPIHandler, Custom404, ORC_LOGIN_COOKIE_NAME
           c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
                                         (r'/api/projects/([^/]+)', ProjectAPIHandler),
                                         # return 404 for /hub/(about|faq|terms_of_use)/
@@ -204,11 +204,7 @@ binderhub:
                   url = self.get_next_url(user)
                   self.redirect(url)
               else:
-                  if self.request.path == "/hub/":
-                      self.redirect("/hub/login")
-                  else:
-                    html = self.render_template("orc_home.html", **{"active": "home"})
-                    self.finish(html)
+                  self.redirect("/hub/login")
           RootHandler.get = get
           # c.JupyterHub.default_url = "/"
 
@@ -216,7 +212,6 @@ binderhub:
           from jupyterhub.utils import url_path_join
           def get(self):
               path = self.request.path
-              # user = self.current_user
               if path == "/about/":
                   html = self.render_template("about.html", **{"active": "about"})
                   self.finish(html)
@@ -226,10 +221,12 @@ binderhub:
               elif path == "/faq/":
                   html = self.render_template("faq.html", **{"active": "faq"})
                   self.finish(html)
-              # elif path == "/" and not user:
               elif path == "/":
-                  html = self.render_template("orc_home.html", **{"active": "home"})
-                  self.finish(html)
+                  if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
+                      self.redirect("/hub/")
+                  else:
+                      html = self.render_template("orc_home.html", **{"active": "home"})
+                      self.finish(html)
               else:
                   # below is taken from original get method
                   uri = self.request.uri

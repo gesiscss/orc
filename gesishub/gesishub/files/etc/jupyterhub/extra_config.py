@@ -18,6 +18,9 @@ from jupyterhub.apihandlers.base import APIHandler
 from jupyterhub.apihandlers.users import admin_or_self
 from kubespawner import KubeSpawner
 
+ORC_LOGIN_COOKIE_NAME = "user-logged-in"
+ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
+
 
 class PersistentBinderSpawner(KubeSpawner):
     default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-42f6fa3', 'master']
