@@ -12,15 +12,10 @@ map $http_upgrade $connection_upgrade {
 # --service-node-port-range flag (default: 30000-32767),
 # and each Node will proxy that port (the same port number on every Node) into your Service.
 # => That's why we add all nodes into upstream
-upstream orc-site {
+upstream gallery {
   # http://nginx.org/en/docs/http/load_balancing.html
   # least_conn;
-  # server 194.95.75.9:30080 weight=3;
-  server 194.95.75.9:30078;
-  server 194.95.75.12:30078;
-}
-
-upstream gallery {
+  # server 194.95.75.9:30079 weight=3;
   server 194.95.75.9:30079;
   server 194.95.75.12:30079;
 }
@@ -78,12 +73,6 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
-    # Managing literal requests to orc site app
-    # http://flask.pocoo.org/docs/1.0/deploying/wsgi-standalone/#proxy-setups
-    location / {
-        proxy_pass http://orc-site;
-        include snippets/flask.conf;
-    }
     # binder gallery
     location /gallery/ {
         proxy_pass http://gallery;
@@ -133,8 +122,8 @@ server {
 
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
-    # Managing literal requests to the JupyterHub front end
-    location ~* ^/(hub|user|services)/?(.*)$ {
+    # Managing literal requests to the JupyterHub
+    location / {
         proxy_buffering off;
         proxy_pass http://jhub;
         include snippets/headers.conf;
@@ -146,7 +135,6 @@ server {
     include snippets/ignore_fonts.conf;
 
     location /static/ {
-    # TODO do this for jhub/static and bhub/static files!
         access_log off;
         root /var/www/prod;
     }

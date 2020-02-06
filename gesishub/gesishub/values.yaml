@@ -251,14 +251,16 @@ binderhub:
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
         03-orc: |
-          from extra_config import KeycloakLogoutHandler
+          from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
           from oauthenticator.generic import GenericOAuthenticator
-          GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
+          GenericOAuthenticator.default_logout_handler = KeycloakLogoutHandler
+          GenericOAuthenticator.default_login_handler = KeycloakLoginHandler
+          GenericOAuthenticator.callback_handler = KeycloakOAuthCallbackHandler
           def get_handlers(self, app):
               return [
                   (r'/oauth_login', self.login_handler),
                   (r'/oauth_callback', self.callback_handler),
-              ] + [(r'/logout', self.logout_handler)]
+              ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
           GenericOAuthenticator.get_handlers = get_handlers
         00-binder: |
           from extra_config import PersistentBinderSpawner
