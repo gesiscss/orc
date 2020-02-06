@@ -34,20 +34,35 @@ binderhub:
           oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
           oauth_client_id: "binder-oauth-client-test"
       extraConfig:
-        02-orc: |
+        03-orc: |
           c.GitHubOAuthenticator.auto_login = True
-          from jupyterhub.handlers import LogoutHandler
+          from jupyterhub.handlers import LogoutHandler, LoginHandler
+          from oauthenticator.github import GitHubOAuthenticator
+          from oauthenticator.oauth2 import OAuthCallbackHandler
+          from extra_config import ORC_LOGIN_COOKIE_NAME, ORC_LOGIN_COOKIE_EXPIRES_DAYS
           class MyLogoutHandler(LogoutHandler):
+              def clear_login_cookie(self, name=None):
+                  super().clear_login_cookie(name)
+                  self.clear_cookie(ORC_LOGIN_COOKIE_NAME, path="/")
               async def render_logout_page(self):
                   site_url = 'https://{}'.format(self.request.host)
                   self.redirect(site_url, permanent=False)
-          from oauthenticator.github import GitHubOAuthenticator
-          GitHubOAuthenticator.logout_handler = MyLogoutHandler
+          class MyLoginHandler(LoginHandler):
+              def set_login_cookie(self, user):
+                  super().set_login_cookie(user)
+                  self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+          class MyOAuthCallbackHandler(OAuthCallbackHandler):
+              def set_login_cookie(self, user):
+                  super().set_login_cookie(user)
+                  self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+          GitHubOAuthenticator.default_logout_handler = MyLogoutHandler
+          GitHubOAuthenticator.default_login_handler = MyLoginHandler
+          GitHubOAuthenticator.callback_handler = MyOAuthCallbackHandler
           def get_handlers(self, app):
               return [
                   (r'/oauth_login', self.login_handler),
                   (r'/oauth_callback', self.callback_handler),
-              ] + [(r'/logout', self.logout_handler)]
+              ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
           GitHubOAuthenticator.get_handlers = get_handlers
       resources:
         requests:

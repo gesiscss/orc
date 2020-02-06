@@ -12,11 +12,15 @@ from tornado import web
 
 from tornado.escape import json_decode
 from jupyterhub import orm, __version__
-from jupyterhub.handlers import BaseHandler, LogoutHandler
+from jupyterhub.handlers import BaseHandler, LogoutHandler, LoginHandler
 from jupyterhub.utils import admin_only
 from jupyterhub.apihandlers.base import APIHandler
 from jupyterhub.apihandlers.users import admin_or_self
+from oauthenticator.oauth2 import OAuthCallbackHandler
 from kubespawner import KubeSpawner
+
+ORC_LOGIN_COOKIE_NAME = "user-logged-in"
+ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
 
 class PersistentBinderSpawner(KubeSpawner):
@@ -324,6 +328,10 @@ class KeycloakLogoutHandler(LogoutHandler):
     https://github.com/InfuseAI/primehub/blob/master/helm/primehub/jupyterhub_primehub.py
     """
 
+    def clear_login_cookie(self, name=None):
+        super().clear_login_cookie(name)
+        self.clear_cookie(ORC_LOGIN_COOKIE_NAME, path="/")
+
     async def render_logout_page(self):
         """Render the logout page, if any
 
@@ -346,3 +354,31 @@ class KeycloakLogoutHandler(LogoutHandler):
             self.redirect(kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
         else:
             await super().get()
+
+
+class KeycloakLoginHandler(LoginHandler):
+    def set_login_cookie(self, user):
+        super().set_login_cookie(user)
+        self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+
+
+class KeycloakOAuthCallbackHandler(OAuthCallbackHandler):
+    def set_login_cookie(self, user):
+        super().set_login_cookie(user)
+        self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+
+
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+import uuid
+with open(os.path.join(current_dir, 'extra_config.json')) as extra_config_file:
+    template_vars = json.load(extra_config_file)["template_vars"]
+template_vars.update({
+    "static_version": uuid.uuid4().hex,
+    # 'help_url': 'https://www.gesis.org/en/help/',
+})
+
+from jupyterhub.handlers import BaseHandler
+class Custom404(BaseHandler):
+    def prepare(self):
+        raise web.HTTPError(404)

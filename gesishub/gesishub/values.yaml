@@ -58,22 +58,6 @@ binderhub:
       # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
-      template_variables:
-        version: beta
-        home_url: /
-        gesishub_url: /hub/
-        gesisbinder_url: /binder/
-        about_url: /about/
-        tou_url: /terms_of_use/
-        imprint_url: https://www.gesis.org/en/institute/imprint/
-        data_protection_url: https://www.gesis.org/en/institute/data-protection/
-        gesis_url: https://www.gesis.org/en/home/
-        gallery_url: /gallery/
-        questions_url: /faq/
-        #help_url: https://www.gesis.org/en/help/
-        active: hub
-        user: null
-        logout_url: /hub/logout
 
   extraVolumes:
     - name: binder-templates
@@ -82,11 +66,17 @@ binderhub:
     - name: binder-templates-gesis
       configMap:
         name: hub-templates-gesis
+    - name: binder-extra-config-json
+      configMap:
+        name: hub-extra-config-json
   extraVolumeMounts:
     - name: binder-templates
       mountPath: /etc/binderhub/templates
     - name: binder-templates-gesis
       mountPath: /etc/binderhub/templates/gesis
+    - name: binder-extra-config-json
+      mountPath: /etc/binderhub/extra_config.json
+      subPath: extra_config.json
 
   extraEnv:
     # NOTE: when you change limit, update hub.templateVars.projects_limit too
@@ -94,7 +84,18 @@ binderhub:
       value: "5"
 
   extraConfig:
-    00-launcher:  |
+    00-tempalte-variables:  |
+      import json
+      with open('/etc/binderhub/extra_config.json') as extra_config_file:
+          template_vars = json.load(extra_config_file)["template_vars"]
+      import uuid
+      template_vars.update({'user': None,
+                            'logout_url': '/hub/logout',
+                            #'help_url': 'https://www.gesis.org/en/help/',
+                            "static_version": uuid.uuid4().hex
+                            })
+      c.BinderHub.template_variables.update(template_vars)
+    01-launcher:  |
       from tornado import web
       import json
       import os
@@ -157,6 +158,9 @@ binderhub:
         - name: hub-extra-config
           configMap:
             name: hub-extra-config
+        - name: hub-extra-config-json
+          configMap:
+            name: hub-extra-config-json
       extraVolumeMounts:
         - name: hub-templates
           mountPath: /etc/jupyterhub/templates
@@ -165,89 +169,98 @@ binderhub:
         - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
           subPath: extra_config.py
           name: hub-extra-config
+        - mountPath: /etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
+          subPath: extra_config.json
+          name: hub-extra-config-json
       authenticatePrometheus: false
       redirectToServer: false
       shutdownOnLogout: true
-      templateVars:
-        projects_limit: "5"
-        version: beta
-        home_url: /
-        gesishub_url: /hub/
-        gesisbinder_url: /binder/
-        about_url: /about/
-        tou_url: /terms_of_use/
-        imprint_url: https://www.gesis.org/en/institute/imprint/
-        data_protection_url: https://www.gesis.org/en/institute/data-protection/
-        gesis_url: https://www.gesis.org/en/home/
-        gallery_url: /gallery/
-        questions_url: /faq/
-        #help_url: https://www.gesis.org/en/help/
-        active: hub
       templatePaths:
         - "/etc/jupyterhub/templates"
       services:
         binder:
           oauth_no_confirm: true
       extraConfig:
-        01-orc: |
+        00-orc: |
           if "cookie_options" in c.JupyterHub.tornado_settings:
             c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
           else:
             c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
-
-          from extra_config import OrcAdminHandler, ProjectAPIHandler
+        01-orc: |
+          from extra_config import OrcAdminHandler, ProjectAPIHandler, Custom404, ORC_LOGIN_COOKIE_NAME
           c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
-                                        (r'/api/projects/([^/]+)', ProjectAPIHandler), ]
+                                        (r'/api/projects/([^/]+)', ProjectAPIHandler),
+                                        # return 404 for /hub/(about|faq|terms_of_use)/
+                                        # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
+                                        (r'/about/', Custom404),
+                                        (r'/faq/', Custom404),
+                                        (r'/terms_of_use/', Custom404),
+                                        ]
+          # render orc_home.html in root, not home.html template
+          from jupyterhub.handlers.pages import RootHandler
+          def get(self):
+              user = self.current_user
+              if user:
+                  url = self.get_next_url(user)
+                  self.redirect(url)
+              else:
+                  self.redirect("/hub/login")
+          RootHandler.get = get
+          # c.JupyterHub.default_url = "/"
 
+          from jupyterhub.handlers.base import PrefixRedirectHandler
+          from jupyterhub.utils import url_path_join
+          def get(self):
+              path = self.request.path
+              if path == "/about/":
+                  html = self.render_template("about.html", **{"active": "about"})
+                  self.finish(html)
+              elif path == "/terms_of_use/":
+                  html = self.render_template("terms_of_use.html", **{"active": "terms_of_use"})
+                  self.finish(html)
+              elif path == "/faq/":
+                  html = self.render_template("faq.html", **{"active": "faq"})
+                  self.finish(html)
+              elif path == "/":
+                  if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
+                      self.redirect("/hub/")
+                  else:
+                      html = self.render_template("orc_home.html", **{"active": "home"})
+                      self.finish(html)
+              else:
+                  # below is taken from original get method
+                  uri = self.request.uri
+                  # Since self.base_url will end with trailing slash.
+                  # Ensure uri will end with trailing slash when matching
+                  # with self.base_url.
+                  if not uri.endswith('/'):
+                      uri += '/'
+                  if uri.startswith(self.base_url):
+                      path = self.request.uri[len(self.base_url):]
+                  else:
+                      path = self.request.path
+                  if not path:
+                      # default / -> /hub/ redirect
+                      # avoiding extra hop through /hub
+                      path = '/'
+                  self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
+          PrefixRedirectHandler.get = get
+        02-orc: |
+          from extra_config import template_vars
+          c.JupyterHub.template_vars.update(template_vars)
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
-          binder_examples = [
-              {'headline': 'Welcome to GESIS Notebooks',
-               'repo_link': 'https://github.com/gesiscss/notebooks_getting_started',
-               'who': 'GESIS Notebooks Team',
-               'where': 'CSS, GESIS',
-               'description': 'GESIS Notebooks is an online service for researchers in the Social Sciences to publish and execute data-driven research designs.',
-               'binder_link': '/services/binder/v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb',
-               'language': 'Python'},
-              {'headline': 'Scientometrics Summer School',
-               'repo_link': 'https://github.com/CWTSLeiden/CSSS',
-               'who': 'Vincent Traag',
-               'where': 'Centre for Science and Technology Studies, Leiden University',
-               'description': 'In these Notebooks, you will learn how to perform scientometric network analysis.',
-               'binder_link': '/services/binder/v2/gh/CWTSLeiden/CSSS/master?filepath=01-basics.ipynb',
-               'language': 'Python'},
-              {'headline': 'Analytical Information Systems',
-               'repo_link': 'https://github.com/wi3jmu/AIS_2019',
-               'who': 'Matthias Griebel',
-               'where': 'Julius Maximilian University of Würzburg',
-               'description': 'Learn about the use of programming for data analysis, data management, and statistical analysis techniques.',
-               'binder_link': '/services/binder/v2/gh/matjesg/AIS_2019/master?urlpath=lab/tree/notebooks/AIS_T01_SS19.ipynb',
-               'language': 'R'},
-              {'headline': 'Meta-Analysis in Social Research',
-               'repo_link': 'https://github.com/berndweiss/cc-meta-analysis-2019',
-               'who': 'Bernd Weiß',
-               'where': 'SDM, GESIS',
-               'description': 'Introduction to Systematic Reviews in International Development, Mannheim, Germany | December 11th-12th, 2019',
-               'binder_link': '/services/binder/v2/gh/berndweiss/cc-meta-analysis-2019/master?filepath=notebooks/0-0-index.ipynb',
-               'language': 'R'},
-              {'headline': 'GESIS DataDay 2020',
-               'repo_link': 'https://github.com/gesiscss/gesis_dataday_20',
-               'who': 'Fabian Flöck, Johannes Breuer and Arnim Bleier',
-               'where': 'CSS & DAS, GESIS',
-               'description': 'Materials for the GESIS DataDay 2020',
-               'binder_link': '/services/binder/v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab',
-               'language': 'R'},
-              ]
-          c.JupyterHub.template_vars.update({'binder_examples': binder_examples})
-        02-orc: |
-          from extra_config import KeycloakLogoutHandler
+        03-orc: |
+          from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
           from oauthenticator.generic import GenericOAuthenticator
-          GenericOAuthenticator.logout_handler = KeycloakLogoutHandler
+          GenericOAuthenticator.default_logout_handler = KeycloakLogoutHandler
+          GenericOAuthenticator.default_login_handler = KeycloakLoginHandler
+          GenericOAuthenticator.callback_handler = KeycloakOAuthCallbackHandler
           def get_handlers(self, app):
               return [
                   (r'/oauth_login', self.login_handler),
                   (r'/oauth_callback', self.callback_handler),
-              ] + [(r'/logout', self.logout_handler)]
+              ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
           GenericOAuthenticator.get_handlers = get_handlers
         00-binder: |
           from extra_config import PersistentBinderSpawner

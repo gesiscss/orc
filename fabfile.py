@@ -54,9 +54,6 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'fetch_co' in mode:
             c.run('git fetch --all')
             c.run('git checkout {}'.format(ref))
-        if 'orcsite' in mode or 'orctestsite' in mode:
-            c.run('kubectl apply -f orc_site/deploy/orc-site-app{-test}.yaml '
-                  '--namespace=orc{-test}-ns'.format(**format_dict))
         if 'galleryapp' in mode or 'gallerytestapp' in mode or \
            'galleryconf' in mode or 'gallerytestconf' in mode:
             if 'galleryconf' in mode or 'gallerytestconf' in mode:

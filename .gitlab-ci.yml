@@ -37,14 +37,6 @@ build_job:
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
       CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
       echo $CI_COMMIT_SHA_SHORT
-      if git diff HEAD~ --name-only | egrep 'orc_site/'; then
-        if git diff HEAD~ --name-only | egrep --invert-match 'orc_site/deploy/|orc_site/README.md|orc_site/.dockerignore' | grep 'orc_site/'; then
-          echo "####### gesiscss/orc-site:$CI_COMMIT_SHA_SHORT"
-          docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-          docker build -t gesiscss/orc-site:$CI_COMMIT_SHA_SHORT orc_site/.
-          docker push gesiscss/orc-site:$CI_COMMIT_SHA_SHORT
-        fi;
-      fi;
       if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
@@ -74,9 +66,6 @@ deploy_staging:
       echo "####### Running staging deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
-      if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app-test.yaml'; then
-        mode+="-orctestsite"
-      fi;
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
         mode+="-gallerytestconf"
       fi;
@@ -118,9 +107,6 @@ deploy_prod:
       echo "####### Running deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
-      if git diff HEAD~ --name-only | egrep 'orc_site/deploy/orc-site-app.yaml'; then
-        mode+="-orcsite"
-      fi;
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config.py'; then
         mode+="-galleryconf"
       fi;

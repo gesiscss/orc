@@ -1,5 +1,6 @@
 .idea/
 *.pyc
+jupyterhub-proxy.pid
 jupyterhub.sqlite
 jupyterhub_cookie_secret
 cookie_secret
@@ -11,9 +12,9 @@ documentation
 #gesisbinder/secret_test.yaml
 #gesishub/secret.yaml
 #gesishub/secret_test.yaml
-gesishub/secret_local.yaml
 #monitoring/grafana_secret.yaml
 venv
 monitoring/efk_stack/config_default.yaml
 load_balancer/sites-available/default_nginx
 gallery/bindergallery
+gesishub/gesishub/charts

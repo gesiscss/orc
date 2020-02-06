@@ -1,0 +1,137 @@
+{
+  "template_vars": {
+    "version": "beta",
+    "home_url": "/",
+    "gesishub_url": "/hub/",
+    "gesisbinder_url": "/binder/",
+    "about_url": "/about/",
+    "tou_url": "/terms_of_use/",
+    "imprint_url": "https://www.gesis.org/en/institute/imprint/",
+    "data_protection_url": "https://www.gesis.org/en/institute/data-protection/",
+    "gesis_url": "https://www.gesis.org/en/home/",
+    "gallery_url": "/gallery/",
+    "faq_url": "/faq/",
+    "active": "hub",
+
+    "static_hub": "/static/",
+    "static_binder": "/services/binder/static/",
+    "projects_limit": "5",
+    "featured_projects": [
+      {
+        "headline": "Welcome to GESIS Notebooks",
+        "repo_link": "https://github.com/gesiscss/notebooks_getting_started",
+        "who": "GESIS Notebooks Team",
+        "where": "CSS, GESIS",
+        "description": "GESIS Notebooks is an online service for researchers in the Social Sciences to publish and execute data-driven research designs.",
+        "binder_link": "/services/binder/v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb",
+        "language": "Python"
+      },
+      {
+        "headline": "Scientometrics Summer School",
+        "repo_link": "https://github.com/CWTSLeiden/CSSS",
+        "who": "Vincent Traag",
+        "where": "Centre for Science and Technology Studies, Leiden University",
+        "description": "In these Notebooks, you will learn how to perform scientometric network analysis.",
+        "binder_link": "/services/binder/v2/gh/CWTSLeiden/CSSS/master?filepath=01-basics.ipynb",
+        "language": "Python"
+      },
+      {
+        "headline": "Analytical Information Systems",
+        "repo_link": "https://github.com/wi3jmu/AIS_2019",
+        "who": "Matthias Griebel",
+        "where": "Julius Maximilian University of Würzburg",
+        "description": "Learn about the use of programming for data analysis, data management, and statistical analysis techniques.",
+        "binder_link": "/services/binder/v2/gh/matjesg/AIS_2019/master?urlpath=lab/tree/notebooks/AIS_T01_SS19.ipynb",
+        "language": "R"
+      },
+      {
+        "headline": "Meta-Analysis in Social Research",
+        "repo_link": "https://github.com/berndweiss/cc-meta-analysis-2019",
+        "who": "Bernd Weiß",
+        "where": "SDM, GESIS",
+        "description": "Introduction to Systematic Reviews in International Development, Mannheim, Germany | December 11th-12th, 2019",
+        "binder_link": "/services/binder/v2/gh/berndweiss/cc-meta-analysis-2019/master?filepath=notebooks/0-0-index.ipynb",
+        "language": "R"
+      },
+      {
+        "headline": "GESIS DataDay 2020",
+        "repo_link": "https://github.com/gesiscss/gesis_dataday_20",
+        "who": "Fabian Flöck, Johannes Breuer and Arnim Bleier",
+        "where": "CSS & DAS, GESIS",
+        "description": "Materials for the GESIS DataDay 2020",
+        "binder_link": "/services/binder/v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab",
+        "language": "R"
+      }
+    ],
+    "faq": [
+      {
+        "Section": {
+          "Name": "GESIS Notebooks Overview",
+          "Questions": [
+            {
+              "Question 1": {
+                "Question": "Who can use this service?",
+                "Answer": "This service is intended for use by social scientists. You can build and launch all binder-ready projects without logging in. If you want to have more persistent projects, you need to log in.",
+                "ID": "1"
+              },
+              "Question 2": {
+                "Question": "Is the service free? ",
+                "Answer": "The service is free for social scientists. In the future GESIS may include a premium offer with additional features.",
+                "ID": "2"
+              },
+              "Question 3": {
+                "Question": "What languages/environments can be on the service? Can I use my preferred R, Julia or Python environment?",
+                "Answer": "You can select any language/environment available from our gallery of more than 5000 <a href='/gallery/' target='_blank'>binder-ready projects</a>. The gallery contains projects from the <a href='https://archive.analytics.mybinder.org' target='_blank'>MyBinder.org Events Archive</a>.",
+                "ID": "3"
+              },
+              "Question 4": {
+                "Question": "What are the service's restrictions?",
+                "Answer": "For the anonymous use of via Binder, the service has a limit of: <br> <ul><li>4 GB memory</li><li>2 CPU cores</li><li>10 minutes inactivity timeout</li></ul> For authenticated users, the service has a limit of: <br> <ul><li>32 GB memory</li><li>2 CPU cores</li><li>40 minutes inactivity timeout</li><li>a maximum of 10 GB of persistent disk space</li></ul> Usage rights are limited to academic activities and governed by our <a href='/terms_of_use/' target='_blank'>Terms of Use</a>.",
+                "ID": "4"
+              },
+              "Question 5": {
+                "Question": "I have a question or have found a bug. Where can I open up an Issue?",
+                "Answer": "For questions regarding Jupyter or the Binder import, join the <a href='https://gitter.im/jupyterhub/binder' target='_blank'>Binder-Chat</a>, read the <a href='https://mybinder.readthedocs.io/en/latest/' target='_blank'>docs</a> or see the <a href='https://github.com/jupyterhub/binderhub' target='_blank'>code</a>. Please open an issue on our <a href='https://github.com/gesiscss/orc/issues' target='_blank'>GitHub repository</a> for questions regarding GESIS Notebooks. We are looking forward to hearing from you.<br>If possible, please include:<ul><li>a short description</li><li>steps necessary to reproduce the problem</li><li>a screenshot of the issue</li>",
+                "ID": "5"
+              },
+              "Question 6": {
+                "Question": "Can I host my own version of this platform?",
+                "Answer": "The project is open-source and the code is available at <a href='https://github.com/gesiscss/orc' target='_blank'>https://github.com/gesiscss/orc</a>.",
+                "ID": "6"
+              },
+              "Question 7": {
+                "Question": "Where can I create a JupyterHub API token?",
+                "Answer": "You can use <a href='/hub/token' target='_blank'>token request page</a> to create a JupyterHub API token. You can also read more about the JupyterHub API in the <a href='https://jupyterhub.readthedocs.io/en/stable/reference/rest.html' target='_blank'>JupyterHub docs</a>, how to make an API request and the different ways you can use the API.",
+                "ID": "15"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "Section": {
+          "Name": "Binder Project Import ",
+          "Questions": [
+            {
+              "Question 1": {
+                "Question": "What is Binder?",
+                "Answer": "Binder is an open-source project that enables the creation of shareable, interactive, reproducible scientific analysis environments. You can read more about Binder <a href='https://mybinder.readthedocs.io/en/latest/introduction.html' target='_blank'>here</a>.",
+                "ID": "7"
+              },
+              "Question 2": {
+                "Question": "Where can I find binder-ready projects?",
+                "Answer": "The Binder Federation maintains a machine readable <a href='https://archive.analytics.mybinder.org/' target='_blank'>archive</a> of projects that are binder-ready and suited for the import in GESIS Notebooks. A gallery for you to browse is available at <a href='/gallery/' target='_blank'>https://notebooks.gesis.org/gallery/</a>.",
+                "ID": "8"
+              },
+              "Question 3": {
+                "Question": "How can I make my Notebooks binder-ready?",
+                "Answer": "For more information about making a Notebook binder-ready, take a look at the <a href='https://mybinder.readthedocs.io/en/latest/index.html#how-to-guides-and-tutorials' target='_blank'>binder user guide</a>.",
+                "ID": "9"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
