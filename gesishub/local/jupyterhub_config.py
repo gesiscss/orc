@@ -1142,4 +1142,4 @@ class MyDummyAuthenticator(DummyAuthenticator):
     def get_handlers(self, app):
         return [(r"/login", MyLoginHandler), (r"/logout", MyLogoutHandler)]
 c.JupyterHub.authenticator_class = MyDummyAuthenticator
-
+c.Authenticator.admin_users = ["admin"]
