@@ -180,9 +180,6 @@ binderhub:
       services:
         binder:
           oauth_no_confirm: true
-      extraEnv:
-        - name: GESISHUB_UNDER_MAINTENANCE
-          value: "false"
       extraConfig:
         00-orc: |
           if "cookie_options" in c.JupyterHub.tornado_settings:
