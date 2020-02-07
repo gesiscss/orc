@@ -87,20 +87,20 @@ server {
     #    return 302 /hub/;
     #}
 
-    # maintenance, temporary redirect with the 302 code
-    location ~* ^/(hub|user|services)/?(.*)$ {
-        error_page 503 /var/www/staging/maintenance.html;
-    }
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
-        proxy_buffering off;
-        proxy_pass http://jhub-test;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        #proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Scheme $scheme;
+        # maintenance page
+        error_page 503 /static/maintenance.html;
+        return 503;
+
+        #proxy_buffering off;
+        #proxy_pass http://jhub-test;
+        #include snippets/headers.conf;
+        #include snippets/websocket_headers.conf;
+        ##proxy_set_header X-Forwarded-Proto $scheme;
+        #proxy_set_header X-Scheme $scheme;
     }
 
     include snippets/ignore_fonts.conf;

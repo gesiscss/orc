@@ -120,12 +120,14 @@ server {
     #    alias /static/images/logo/logo.png;
     #}
 
-    # maintenance, temporary redirect with the 302 code
-    #rewrite ^/(hub|user|services)/?(.*)$ /maintenance redirect;
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
+        ## maintenance page
+        #error_page 503 /static/maintenance.html;
+        #return 503;
+
         proxy_buffering off;
         proxy_pass http://jhub;
         include snippets/headers.conf;
