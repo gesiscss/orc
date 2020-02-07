@@ -15,7 +15,7 @@
  * For ORC  project this is taken from GESIS SSOAR project and customized.
  */
 
-@media (max-width:768px) {
+@media (max-width:767px) {
 
 	.navbar-brand {
 		margin-left: 15px;
@@ -36,6 +36,10 @@
 
 	.nav > li > a > button {
 		margin: 0px;
+	}
+
+	.navbar-header {
+		float: none;
 	}
 }
 

@@ -91,6 +91,10 @@ server {
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
+        ## maintenance page
+        #error_page 503 /static/maintenance.html;
+        #return 503;
+
         proxy_buffering off;
         proxy_pass http://jhub-test;
         include snippets/headers.conf;
