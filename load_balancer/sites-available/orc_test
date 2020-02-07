@@ -87,6 +87,8 @@ server {
     #    return 302 /hub/;
     #}
 
+    # maintenance, temporary redirect with the 302 code
+    rewrite ^/(hub|user|services)/?(.*)$ /maintenance redirect;
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub

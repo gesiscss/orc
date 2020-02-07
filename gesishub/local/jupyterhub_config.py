@@ -1074,6 +1074,18 @@ def get(self):
         else:
             html = self.render_template("orc_home.html", **{"active": "home"})
             self.finish(html)
+    # elif path == "/maintenance" and os.getenv("GESISHUB_UNDER_MAINTENANCE", "false") == "true":
+    elif path == "/maintenance":
+        status_code = 503
+        status_message = "Under maintenance"
+        self.set_status(status_code, status_message)
+        context = {'status_code': status_code,
+                   'status_message': status_message,
+                   'message': "This service will be back soon.",
+                   # 'message_html': "This service will be back soon.",
+                   'active': "home"}
+        html = self.render_template("error.html", **context)
+        self.finish(html)
     else:
         # below is taken from original get method
         uri = self.request.uri
