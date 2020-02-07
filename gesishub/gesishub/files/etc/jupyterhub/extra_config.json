@@ -13,7 +13,7 @@
     "faq_url": "/faq/",
     "active": "hub",
 
-    "static_hub": "/static/",
+    "static_nginx": "/static/",
     "static_binder": "/services/binder/static/",
     "projects_limit": "5",
     "featured_projects": [
