@@ -1,7 +1,7 @@
 {% extends "templates/home.html" %}
 
 {% block stylesheet %}
-<meta id="base-url" data-url="/services/binder/">
+<meta id="base-url" data-url="{{ binder_base_url }}">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
 <script src="{{ static_binder }}dist/bundle.js"></script>
 <link href="{{ static_binder }}dist/styles.css" rel="stylesheet"/>

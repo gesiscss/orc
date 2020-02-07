@@ -62,20 +62,6 @@ binderhub:
       # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
-      template_variables:
-        version: beta
-        home_url: /
-        gesishub_url: /hub/
-        gesisbinder_url: /binder/
-        about_url: /about/
-        tou_url: /terms_of_use/
-        imprint_url: https://www.gesis.org/en/institute/imprint/
-        data_protection_url: https://www.gesis.org/en/institute/data-protection/
-        gesis_url: https://www.gesis.org/en/home/
-        gallery_url: /gallery/
-        questions_url: /faq/
-        #help_url: https://www.gesis.org/en/help/
-        active: binder
 
   extraVolumes:
     - name: binder-templates
@@ -91,6 +77,28 @@ binderhub:
       mountPath: /etc/binderhub/templates/gesis
 
   extraConfig:
+    00-tempalte-variables:  |
+      import uuid
+      template_vars = {
+          "version": "beta",
+          "home_url": "/",
+          "gesishub_url": "/hub/",
+          "gesisbinder_url": "/binder/",
+          "about_url": "/about/",
+          "tou_url": "/terms_of_use/",
+          "imprint_url": "https://www.gesis.org/en/institute/imprint/",
+          "data_protection_url": "https://www.gesis.org/en/institute/data-protection/",
+          "gesis_url": "https://www.gesis.org/en/home/",
+          "gallery_url": "/gallery/",
+          "faq_url": "/faq/",
+
+          "active": "binder",
+          "static_nginx": "/static/",
+
+          "static_version": uuid.uuid4().hex,
+          "user": None,
+      }
+      c.BinderHub.template_variables.update(template_vars)
     11-eventlog: |
       from datetime import datetime
       import jsonschema
@@ -176,7 +184,7 @@ binderhub:
         type: postgres
       authenticatePrometheus: false
       extraConfig:
-        01-orc: |
+        02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           if "cookie_options" in c.JupyterHub.tornado_settings:
             c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
