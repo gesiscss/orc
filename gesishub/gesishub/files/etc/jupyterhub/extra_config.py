@@ -377,8 +377,3 @@ template_vars.update({
     "static_version": uuid.uuid4().hex,
     # 'help_url': 'https://www.gesis.org/en/help/',
 })
-
-from jupyterhub.handlers import BaseHandler
-class Custom404(BaseHandler):
-    def prepare(self):
-        raise web.HTTPError(404)

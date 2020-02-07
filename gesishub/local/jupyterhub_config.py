@@ -1026,7 +1026,7 @@ import json
 with open(os.path.join(repo_dir, 'gesishub/gesishub/files/etc/jupyterhub/extra_config.json')) as extra_config_file:
     template_vars = json.load(extra_config_file)["template_vars"]
 template_vars.update({
-    "static_nginx": "/static_nginx/",
+    "static_nginx": "/static_local/",
     # NOTE: local dev takes static files of binder from staging
     "static_binder": "https://notebooks-test.gesis.org/services/binder/static/",
     "static_version": uuid.uuid4().hex,
@@ -1042,53 +1042,20 @@ extra_handlers = [
 ## Paths to search for jinja templates, before using the default templates.
 c.JupyterHub.template_paths = [os.path.join(repo_dir, "gesishub/gesishub/files/etc/jupyterhub/templates")]
 
-
-
-
-from jupyterhub.handlers import BaseHandler
-# OrcTemplateHandler works for /hub/(about|faq|terms_of_use)/, but we want to return 404 for those pages
-# class OrcTemplateHandler(BaseHandler):
-#     def initialize(self, template_name):
-#         self.template_name = template_name
-#
-#     async def get(self):
-#         context = {'active': self.template_name[:-5]}
-#         html = self.render_template(self.template_name, **context)
-#         self.finish(html)
-class Custom404(BaseHandler):
-    def prepare(self):
-        raise web.HTTPError(404)
-
+from jupyterhub.handlers import Template404
 extra_handlers.extend([
-    # (r'/about/', OrcTemplateHandler, {'template_name': 'about.html'}),
-    # (r'/faq/', OrcTemplateHandler, {'template_name': 'faq.html'}),
-    # (r'/terms_of_use/', OrcTemplateHandler, {'template_name': 'terms_of_use.html'}),
     # return 404 for /hub/(about|faq|terms_of_use)/
     # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
-    (r'/about/', Custom404),
-    (r'/faq/', Custom404),
-    (r'/terms_of_use/', Custom404),
+    (r'/about/', Template404),
+    (r'/faq/', Template404),
+    (r'/terms_of_use/', Template404),
 ])
-
 c.JupyterHub.extra_handlers = extra_handlers
-
-# render orc_home.html in root, not home.html template
-from jupyterhub.handlers.pages import RootHandler
-def get(self):
-    user = self.current_user
-    if user:
-        url = self.get_next_url(user)
-        self.redirect(url)
-    else:
-        self.redirect("/hub/login")
-RootHandler.get = get
-# c.JupyterHub.default_url = "/"
 
 from jupyterhub.handlers.base import PrefixRedirectHandler
 from jupyterhub.utils import url_path_join
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
-
 
 def get(self):
     path = self.request.path
@@ -1103,7 +1070,7 @@ def get(self):
         self.finish(html)
     elif path == "/":
         if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
-            self.redirect("/hub/")
+            self.redirect("/hub/home")
         else:
             html = self.render_template("orc_home.html", **{"active": "home"})
             self.finish(html)

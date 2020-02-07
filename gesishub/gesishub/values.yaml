@@ -188,26 +188,16 @@ binderhub:
           else:
             c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
         01-orc: |
-          from extra_config import OrcAdminHandler, ProjectAPIHandler, Custom404, ORC_LOGIN_COOKIE_NAME
+          from extra_config import OrcAdminHandler, ProjectAPIHandler, ORC_LOGIN_COOKIE_NAME
+          from jupyterhub.handlers import Template404
           c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
                                         (r'/api/projects/([^/]+)', ProjectAPIHandler),
                                         # return 404 for /hub/(about|faq|terms_of_use)/
                                         # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
-                                        (r'/about/', Custom404),
-                                        (r'/faq/', Custom404),
-                                        (r'/terms_of_use/', Custom404),
+                                        (r'/about/', Template404),
+                                        (r'/faq/', Template404),
+                                        (r'/terms_of_use/', Template404),
                                         ]
-          # render orc_home.html in root, not home.html template
-          from jupyterhub.handlers.pages import RootHandler
-          def get(self):
-              user = self.current_user
-              if user:
-                  url = self.get_next_url(user)
-                  self.redirect(url)
-              else:
-                  self.redirect("/hub/login")
-          RootHandler.get = get
-          # c.JupyterHub.default_url = "/"
 
           from jupyterhub.handlers.base import PrefixRedirectHandler
           from jupyterhub.utils import url_path_join
@@ -224,7 +214,7 @@ binderhub:
                   self.finish(html)
               elif path == "/":
                   if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
-                      self.redirect("/hub/")
+                      self.redirect("/hub/home")
                   else:
                       html = self.render_template("orc_home.html", **{"active": "home"})
                       self.finish(html)
