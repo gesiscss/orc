@@ -10,11 +10,11 @@
   <title>{% block title %}GESIS Notebooks ({{version}}){% endblock %}</title>
   {% block head %}
   <link href="{{static_url("dist/styles.css")}}" rel="stylesheet"/>
-  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   {% endblock head %}
-  <script src="/static/vendor/jquery-3.2.1.min.js"></script>
-  <link href="/static/notebooks.css?v=17" rel="stylesheet" />
-  <link id="favicon" rel="shortcut icon" type="image/png" href="/static/images/logo/logo.png?v=1" />
+  <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
+  <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+  <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
 
   <!-- Social media previews -->
   {% block meta_social %}
@@ -22,7 +22,7 @@
   <meta property="og:title" content="GESIS Binder">
   <meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
   {% endblock meta_social_title %}
-  <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v=1">
+  <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
   <meta property="og:image:width" content="800">
   <meta property="og:image:height" content="800">
   <meta property="og:image:alt" content="GESIS Notebooks Logo" />
@@ -35,8 +35,8 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="/static/vendor/html5shiv.min.js"></script>
-      <script src="/static/vendor/respond.min.js"></script>
+      <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
+      <script src="{{ static_nginx }}vendor/respond.min.js"></script>
     <![endif]-->
 </head>
 
@@ -82,7 +82,7 @@
 
     {% endblock body %}
 
-    <script src="/static/gesis_nav.js?v=1"></script>
+    <script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
     {% block extra_js %}
     {% endblock extra_js %}
 </body>
