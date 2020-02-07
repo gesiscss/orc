@@ -212,17 +212,6 @@ binderhub:
               elif path == "/faq/":
                   html = self.render_template("faq.html", **{"active": "faq"})
                   self.finish(html)
-              elif path == "/maintenance" and os.getenv("GESISHUB_UNDER_MAINTENANCE", "false") == "true":
-                  status_code = 503
-                  status_message = "Under maintenance"
-                  self.set_status(status_code, status_message)
-                  context = {'status_code': status_code,
-                             'status_message': status_message,
-                             'message': "This service will be back soon.",
-                             # 'message_html': "This service will be back soon.",
-                             'active': "home"}
-                  html = self.render_template("error.html", **context)
-                  self.finish(html)
               elif path == "/":
                   if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
                       self.redirect("/hub/home")

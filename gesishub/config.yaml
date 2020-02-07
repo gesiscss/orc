@@ -42,7 +42,6 @@ binderhub:
         OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
         OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
         OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
-        GESISHUB_UNDER_MAINTENANCE: "false"
 
     # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
     auth:

@@ -88,7 +88,9 @@ server {
     #}
 
     # maintenance, temporary redirect with the 302 code
-    rewrite ^/(hub|user|services)/?(.*)$ /maintenance redirect;
+    location ~* ^/(hub|user|services)/?(.*)$ {
+        error_page 503 /var/www/staging/maintenance.html;
+    }
     # redirect from old location
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
