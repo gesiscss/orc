@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /binder/v2/
+Disallow: /binder/jupyter/
+Disallow: /services/binder/
+Disallow: /user/
+
+Sitemap: https://notebooks.gesis.org/sitemap.xml

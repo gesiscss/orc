@@ -143,5 +143,14 @@ server {
         root /var/www/prod;
     }
 
+    location = /robots.txt {
+       # https://www.robotstxt.org/robotstxt.html
+       #return 200 "User-agent: *\nDisallow:\nSitemap: https://notebooks.gesis.org/sitemap.xml\n";
+       root /var/www/prod/static/;
+    }
+    location = /sitemap.xml {
+        root /var/www/prod/static/;
+    }
+
     include snippets/_secret.conf;
 }
