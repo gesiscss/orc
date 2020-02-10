@@ -7,6 +7,8 @@
   {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
   <title>{% block title %}GESIS Notebooks ({{ version }}){% endblock %}</title>
   <meta name="description" content="GESIS Notebooks ({{ version }})">
+  <meta name="robots" content="noindex, nofollow">
+
   {% block head %}
   <link href="{{static_url("dist/styles.css")}}" rel="stylesheet"/>
   <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
