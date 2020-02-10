@@ -14,7 +14,7 @@
 
 First way (`Run only JupyterHub to test templates and static files`) should normally be enough for local 
 development. If you still need it, you can run it with minikube as it is explained here. But be aware that 
-`local/config.yaml` might be incomplete.
+`config.yaml` might be incomplete.
 
 1. [Install minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)
 
