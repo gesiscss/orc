@@ -1,0 +1,182 @@
+binderhub:
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+
+  config:
+    BinderHub:
+      debug: true
+      # 192.168.99.100 is minikube ip
+      hub_url: http://192.168.99.100:30123
+      use_registry: false
+      build_node_selector:
+        user: null
+  extraConfig:
+    # update value of `static_nginx` to "/static_local/"
+    # because it has default value of "/static/", at that uri tornado has the default statichandler
+    00-tempalte-variables:  |
+      import json
+      with open('/etc/binderhub/extra_config.json') as extra_config_file:
+          template_vars = json.load(extra_config_file)["template_vars"]
+      template_vars.update({"static_nginx": "/static_local/"})
+      import uuid
+      template_vars.update({'user': None,
+                            'logout_url': '/hub/logout',
+
+                            #'help_url': 'https://www.gesis.org/en/help/',
+                            "static_version": uuid.uuid4().hex
+                            })
+      c.BinderHub.template_variables.update(template_vars)
+
+  service:
+    nodePort: 30124
+
+  jupyterhub:
+    debug:
+      enabled: true
+    hub:
+      cookieSecret: "29195074ffd6cae79ed3dcb7483f65c098275b172a4757cc998c00dcc63ff173"
+      services:
+        binder:
+          # 192.168.99.100 is minikube ip
+          url: http://192.168.99.100:30124
+          oauth_redirect_uri: "http://192.168.99.100:30123/services/binder/oauth_callback"
+          oauth_client_id: "binder-oauth-client-dev"
+          apiToken: "6e5252a4ef9f19554cfffd970270e144e4dcca1520b9c6bb6c6f412743cbea7a"
+      nodeSelector:
+        base: null
+      db:
+        type: sqlite-pvc
+      extraVolumes:
+        - name: hub-templates
+          configMap:
+            name: hub-templates
+        - name: hub-templates-gesis
+          configMap:
+            name: hub-templates-gesis
+        - name: hub-extra-config
+          configMap:
+            name: hub-extra-config
+        - name: hub-extra-config-json
+          configMap:
+            name: hub-extra-config-json
+        - name: test-volume
+          hostPath:
+            path: /static_extra
+            type: Directory
+      extraVolumeMounts:
+        - name: hub-templates
+          mountPath: /etc/jupyterhub/templates
+        - name: hub-templates-gesis
+          mountPath: /etc/jupyterhub/templates/gesis
+        - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
+          subPath: extra_config.py
+          name: hub-extra-config
+        - mountPath: /etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
+          subPath: extra_config.json
+          name: hub-extra-config-json
+        - mountPath: /usr/local/share/jupyterhub/static_extra
+          name: test-volume
+      extraConfig:
+        00-orc: |
+          pass
+        01-orc: |
+          import tornado.web
+          from extra_config import OrcAdminHandler, ProjectAPIHandler, ORC_LOGIN_COOKIE_NAME
+          from jupyterhub.handlers import Template404
+          c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
+                                        #(r'/api/projects/([^/]+)', ProjectAPIHandler),
+                                        # return 404 for /hub/(about|faq|terms_of_use)/
+                                        # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
+                                        (r'/about/', Template404),
+                                        (r'/faq/', Template404),
+                                        (r'/terms_of_use/', Template404),
+                                        (r'/static_local/(.*)', tornado.web.StaticFileHandler, {'path': '/usr/local/share/jupyterhub/static_extra'})
+                                        ]
+
+          from jupyterhub.handlers.base import PrefixRedirectHandler
+          from jupyterhub.utils import url_path_join
+          import os
+          def get(self):
+              path = self.request.path
+              if path == "/about/":
+                  html = self.render_template("about.html", **{"active": "about"})
+                  self.finish(html)
+              elif path == "/terms_of_use/":
+                  html = self.render_template("terms_of_use.html", **{"active": "terms_of_use"})
+                  self.finish(html)
+              elif path == "/faq/":
+                  html = self.render_template("faq.html", **{"active": "faq"})
+                  self.finish(html)
+              elif path == "/":
+                  if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
+                      self.redirect("/hub/home")
+                  else:
+                      html = self.render_template("orc_home.html", **{"active": "home"})
+                      self.finish(html)
+              else:
+                  # below is taken from original get method
+                  uri = self.request.uri
+                  # Since self.base_url will end with trailing slash.
+                  # Ensure uri will end with trailing slash when matching
+                  # with self.base_url.
+                  if not uri.endswith('/'):
+                      uri += '/'
+                  if uri.startswith(self.base_url):
+                      path = self.request.uri[len(self.base_url):]
+                  else:
+                      path = self.request.path
+                  if not path:
+                      # default / -> /hub/ redirect
+                      # avoiding extra hop through /hub
+                      path = '/'
+                  self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
+          PrefixRedirectHandler.get = get
+        # update value of `static_nginx` to "/static_local/"
+        # because it has default value of "/static/", at that uri tornado has the default statichandler
+        02-orc: |
+          from extra_config import template_vars
+          template_vars.update({"static_nginx": "/static_local/"})
+
+          c.JupyterHub.template_vars.update(template_vars)
+          #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+          c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
+      resources:
+        requests:
+          cpu: 0
+          memory: 0
+
+    auth:
+      type: dummy
+      custom: {}
+      extraEnv: {}
+      admin:
+        users:
+          - admin
+      state:
+        cryptoKey: "696dc77c0a950f42710b7e5694b721dfe9298c047e204854fea5cff6cbb9eb98"
+
+    proxy:
+      secretToken: "790fd9f44ea71a380294cb1d3b483cef1b3d4cb0fe9335132c56661e85b6ab69"
+      https:
+        enabled: false
+      service:
+        nodePorts:
+          http: 30123
+      chp:
+        resources:
+          requests:
+            memory: 0
+            cpu: 0
+
+    singleuser:
+      nodeSelector:
+        user: null
+      cpu:
+        guarantee: 0
+      memory:
+        #guarantee: null
+        guarantee: 0
+      storage:
+        type: none
