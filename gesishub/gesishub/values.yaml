@@ -303,7 +303,7 @@ binderhub:
         # https://github.com/gesiscss/data_science_image
         # NOTE: when you update this image, don't forget to update `default_project` attribute of `PersistentBinderSpawner` in extra_config.py
         name: gesiscss/singleuser-orc
-        tag: "r2d-42f6fa3"
+        tag: "r2d-49e91d9"
 
     scheduling:
       userScheduler:

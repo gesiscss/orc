@@ -1014,8 +1014,8 @@ class LocalProcessSpawner(BaseLocalProcessSpawner):
             # they wont launch, because binder wont be not running
             # this is only to check style of projects table
             projects = [
-                ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-42f6fa3', 'master'] + ['gh/gesiscss/data_science_image', 'never'],
-                ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-42f6fa3', 'master'] + ['gh/gesiscss/data_science_image', 'never']
+                ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-49e91d9', 'master'] + ['gh/gesiscss/data_science_image', 'never'],
+                ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-49e91d9', 'master'] + ['gh/gesiscss/data_science_image', 'never']
             ]
             return projects
 c.JupyterHub.spawner_class = LocalProcessSpawner

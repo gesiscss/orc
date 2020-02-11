@@ -24,7 +24,7 @@ ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
 
 class PersistentBinderSpawner(KubeSpawner):
-    default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-42f6fa3', 'master']
+    default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-49e91d9', 'master']
 
     def strip_repo_url(self, repo_url):
         # p = "http://"
