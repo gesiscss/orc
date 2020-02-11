@@ -113,7 +113,7 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'gallery/config.yaml'; then
         mode+="-galleryapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gallery/cron_job.yaml'; then
+      if git diff HEAD~ --name-only | egrep 'gallery/cron_job.yaml|gallery/_secret_config.py'; then
         mode+="-galleryarchives"
       fi;
       if git diff HEAD~ --name-only | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/'; then
