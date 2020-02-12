@@ -562,3 +562,13 @@ td.projects-display-name {
 	padding-left: 32px;
 	padding-right: 32px;
 }
+
+
+/* GESIS Hub */
+/* admin interface */
+.email-col {
+	max-width: 25ch;
+	overflow: overlay;
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+}

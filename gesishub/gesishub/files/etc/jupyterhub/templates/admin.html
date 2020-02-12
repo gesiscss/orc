@@ -68,3 +68,18 @@ access server
 </td>
 </tr>
 {% endblock user_row %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+$("table").parent('div').addClass('table-responsive');
+$("th").each(function() {
+    var sort_value = $(this).data("sort");
+    if (sort_value === "admin" || sort_value === "last_activity" || sort_value === "created") {
+        $(this).addClass("hidden-xs hidden-sm hidden-md");
+    }
+});
+$("td.admin-col").addClass("hidden-xs hidden-sm hidden-md");
+$("td.time-col").addClass("hidden-xs hidden-sm hidden-md");
+</script>
+{% endblock %}
