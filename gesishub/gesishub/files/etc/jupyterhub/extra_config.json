@@ -24,7 +24,7 @@
         "who": "GESIS Notebooks Team",
         "where": "CSS, GESIS",
         "description": "GESIS Notebooks is an online service for researchers in the Social Sciences to publish and execute data-driven research designs.",
-        "binder_link": "/services/binder/v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb",
+        "binder_link": "v2/gh/gesiscss/notebooks_getting_started/master?urlpath=lab/tree/introduction_python.ipynb",
         "language": "Python"
       },
       {
@@ -33,7 +33,7 @@
         "who": "Vincent Traag",
         "where": "Centre for Science and Technology Studies, Leiden University",
         "description": "In these Notebooks, you will learn how to perform scientometric network analysis.",
-        "binder_link": "/services/binder/v2/gh/CWTSLeiden/CSSS/master?filepath=01-basics.ipynb",
+        "binder_link": "v2/gh/CWTSLeiden/CSSS/master?filepath=01-basics.ipynb",
         "language": "Python"
       },
       {
@@ -42,7 +42,7 @@
         "who": "Matthias Griebel",
         "where": "Julius Maximilian University of Würzburg",
         "description": "Learn about the use of programming for data analysis, data management, and statistical analysis techniques.",
-        "binder_link": "/services/binder/v2/gh/matjesg/AIS_2019/master?urlpath=lab/tree/notebooks/AIS_T01_SS19.ipynb",
+        "binder_link": "v2/gh/matjesg/AIS_2019/master?urlpath=lab/tree/notebooks/AIS_T01_SS19.ipynb",
         "language": "R"
       },
       {
@@ -51,7 +51,7 @@
         "who": "Bernd Weiß",
         "where": "SDM, GESIS",
         "description": "Introduction to Systematic Reviews in International Development, Mannheim, Germany | December 11th-12th, 2019",
-        "binder_link": "/services/binder/v2/gh/berndweiss/cc-meta-analysis-2019/master?filepath=notebooks/0-0-index.ipynb",
+        "binder_link": "v2/gh/berndweiss/cc-meta-analysis-2019/master?filepath=notebooks/0-0-index.ipynb",
         "language": "R"
       },
       {
@@ -60,7 +60,7 @@
         "who": "Fabian Flöck, Johannes Breuer and Arnim Bleier",
         "where": "CSS & DAS, GESIS",
         "description": "Materials for the GESIS DataDay 2020",
-        "binder_link": "/services/binder/v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab",
+        "binder_link": "v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab",
         "language": "R"
       }
     ],

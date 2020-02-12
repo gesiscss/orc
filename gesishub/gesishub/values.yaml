@@ -217,7 +217,9 @@ binderhub:
                   if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
                       self.redirect("/hub/home")
                   else:
-                      html = self.render_template("orc_home.html", **{"active": "home"})
+                      # user is not logged in, so link featured projects to (public) GESIS binder
+                      binder_base_url = "/binder/"
+                      html = self.render_template("orc_home.html", **{"active": "home", "binder_base_url": binder_base_url})
                       self.finish(html)
               else:
                   # below is taken from original get method
