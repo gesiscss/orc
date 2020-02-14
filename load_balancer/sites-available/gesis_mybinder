@@ -26,7 +26,7 @@ server {
 
     location / {
         # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301
-        limit_except GET OPTIONS {
+        limit_except GET {
             deny  all;
         }
         # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
@@ -39,7 +39,7 @@ server {
     }
 
     location /build/ {
-        limit_except GET OPTIONS {
+        limit_except GET {
             deny  all;
         }
         add_header "Access-Control-Allow-Origin"  *;
