@@ -1,77 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
-  <title>{% block title %}GESIS Notebooks ({{ version }}){% endblock %}</title>
-  <meta name="description" content="GESIS Notebooks ({{ version }})">
-  <meta name="robots" content="noindex, nofollow">
+{% extends "templates/page.html" %}
 
-  {% block head %}
-  <link href="{{static_url("dist/styles.css")}}" rel="stylesheet"/>
-  <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  {% endblock head %}
-  <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
-  <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
-  <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
+{% block title %}GESIS Binder{% endblock %}
 
-  {% block extra_css %}
-  {% endblock extra_css %}
+{% block meta %}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
+<meta name="description" content="GESIS Notebooks ({{ version }})">
+<meta name="robots" content="noindex, nofollow">
+{% endblock meta %}
+{# Social media previews #}
+{% block meta_social %}
+{% endblock meta_social %}
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
-      <script src="{{ static_nginx }}vendor/respond.min.js"></script>
-    <![endif]-->
-</head>
+{% block favicon %}
+<link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
+{% endblock %}
 
-<body>
-    {% block body %}
+{% block head %}
+{# this is important, because head, meta and meta_social are nested blocks #}
+{{ super() }}
+{% endblock head %}
 
-{#    {% if banner %}#}
-{#    <div id="banner-container">#}
-{#      {{ banner | safe }}#}
-{#    </div>#}
-{#    {% endif %}#}
+{% block extra_head %}
+<link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
+<link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+<link href="{{ static_nginx }}binder.css?v={{ static_version }}" rel="stylesheet" />
 
-    {% block gesis_header %}
-    {% include "gesis/header.html" %}
-    {% endblock gesis_header %}
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
+  <script src="{{ static_nginx }}vendor/respond.min.js"></script>
+<![endif]-->
+{% endblock extra_head %}
 
-    {% block nav_bar %}
-    {% include "gesis/nav.html" %}
-    {% endblock nav_bar %}
+{% block body %}
 
-    <div id="main-container" class="container">
-        {% block headline %}
-        {% endblock headline %}
+{% include "gesis/header.html" %}
+{% include "gesis/nav.html" %}
 
-        {% block main %}
-        {% endblock main %}
-    </div>
+{% block banner %}
+{{ super() }}
+{% endblock banner %}
 
-    {% block extra_container %}
-    {% endblock extra_container %}
+{% block logo %}
+{{ super() }}
+{% endblock logo %}
 
-    {% block footer %}
-    {% include "gesis/footer.html" %}
-    {% endblock footer %}
+{#<div id="main-container" class="container">#}
+{% block main %}
+{% endblock main %}
+{#</div>#}
 
-    {% if extra_footer_scripts %}
-    {% for script in extra_footer_scripts|dictsort %}
-    <script>
-      {{ script[1]|safe }}
-    </script>
-    {% endfor %}
-    {% endif %}
+{% block footer %}
+<div id="questions-footer" class="container">
+  <div class="row text-center">
+    <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
+  </div>
+</div>
+{% endblock footer %}
 
-    {% endblock body %}
+{% include "gesis/footer.html" %}
 
-    <script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
-    {% block extra_js %}
-    {% endblock extra_js %}
-</body>
-</html>
+{% block scripts %}
+<script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
+{% endblock scripts %}
+
+{% block extra_footer_scripts %}
+{{ super() }}
+{% endblock extra_footer_scripts %}
+
+{% endblock body %}

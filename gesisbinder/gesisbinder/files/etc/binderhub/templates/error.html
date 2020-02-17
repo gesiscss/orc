@@ -1,16 +1,4 @@
-{% extends "page.html" %}
+{% extends "templates/error.html" %}
 
-{% block meta_social %}
-{% endblock meta_social %}
-
-{% block main %}
-<div class="text-center jumbotron" style="background-color: #ffffff;">
-  <h1>
-    {{status_code}}: {{status_message}}
-  </h1>
-
-  <p class="lead">
-    {{message}}
-  </p>
-</div>
-{% endblock main %}
+{% block logo %}
+{% endblock logo %}

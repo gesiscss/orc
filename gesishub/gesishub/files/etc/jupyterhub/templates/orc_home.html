@@ -1,7 +1,6 @@
 {% extends "home.html" %}
 
 {% block meta_social %}
-<!-- Social media previews -->
 <meta property="og:title" content="GESIS Notebooks">
 <meta property="og:description" content="Open Research Computing for the Social Sciences.">
 <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
@@ -17,7 +16,6 @@
 {% endblock %}
 
 {% block extra_css %}
-<link href="{{ static_nginx }}orc_site.css?v={{ static_version }}" rel="stylesheet" />
 {% endblock extra_css %}
 
 {% block scripts %}
@@ -44,10 +42,6 @@
       <a href="{{ login_url }}" class="btn btn-lg btn-warning orc-button" role="button">Try it now >></a>
   </div>
 </div>
-
-<div class="row form-group"></div>
-<div class="row form-group"></div>
-<div class="row form-group"></div>
 {% endblock projects %}
 
 {% block projects_form %}

@@ -34,6 +34,7 @@
     <meta name="description" content="GESIS Notebooks is an online service for researchers in the Social Sciences to publish and execute data-driven research designs.">
     {% endblock %}
 
+    {# Social media previews #}
     {% block meta_social %}
     {% endblock meta_social %}
 
@@ -42,6 +43,7 @@
     <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
     {% endblock %}
     <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+    <link href="{{ static_nginx }}hub.css?v={{ static_version }}" rel="stylesheet" />
     <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
 
     {% block extra_css %}
