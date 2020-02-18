@@ -42,7 +42,7 @@ server {
         limit_except GET {
             deny  all;
         }
-        add_header "Access-Control-Allow-Origin"  "https://mybinder.org";
+        add_header "Access-Control-Allow-Origin"  "https://staging.mybinder.org";
         add_header "Access-Control-Allow-Credentials"  "false";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
         add_header 'Content-Type' 'text/event-stream';
