@@ -43,7 +43,7 @@ server {
             deny  all;
         }
         add_header "Access-Control-Allow-Origin"  "https://staging.mybinder.org";
-        add_header "Access-Control-Allow-Credentials"  "false";
+        add_header "Access-Control-Allow-Credentials"  "true";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
         add_header 'Content-Type' 'text/event-stream';
         add_header 'Cache-Control' 'no-cache';
