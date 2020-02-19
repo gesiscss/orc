@@ -426,6 +426,15 @@ footer {
 	text-decoration: underline;
 }
 
+.projects-container {
+	padding-left: 16px;
+	padding-right:16px;
+}
+
+.build-form {
+	padding: 5px 18px 20px 18px !important;
+}
+
 /*Binder*/
 #how-it-works, #explanation {
     font-weight: normal;
