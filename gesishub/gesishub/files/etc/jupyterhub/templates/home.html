@@ -31,7 +31,7 @@
   {% block projects_form %}
   <div class="row form-group"></div>
   <div class="row form-group no-projects{% if projects %} hidden{% endif %}"></div>
-  <div class="row">
+  <div class="row build-project-container">
     <div class="col-lg-12 build-form-container">
     {% block binder_form %}
     <form id="build-form" class="form jumbotron build-form" style="margin-bottom: 0;">
@@ -274,7 +274,7 @@
       </div>
       <div class="col-md-7 front">
         <span class="front-em">Persist /projects like a <a href="https://github.com/jupyter/docker-stacks/issues/358#issuecomment-288844834">Jovyan</a> </span><br>You are not just a visitor, but a true resident on <a href="">Jupyter</a>.
-        Your projects have a persistent $HOME directory whose contents are mirrored at /projects. Use the buttons in the table to launch, stop or delete an existing project. 
+        Your projects have a persistent $HOME directory whose contents are mirrored at /projects. Use the buttons in the table to launch, stop or delete an existing project.
         The <a href="https://github.com/gesiscss/data_science_image">data science</a>  image can be your place to begin. To update a project-image use the Binder form and for files use git.
         You can launch one project at a time and have up to 5 projects in total.
       </div>
