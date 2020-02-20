@@ -1,3 +1,8 @@
+map $http_origin $allowed_origin {
+    default $http_origin;
+    "" "*";
+}
+
 # HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
@@ -42,7 +47,7 @@ server {
         limit_except GET {
             deny  all;
         }
-        add_header Access-Control-Allow-Origin $http_origin;
+        add_header Access-Control-Allow-Origin $allowed_origin;
         add_header Vary Origin;
         add_header "Access-Control-Allow-Credentials"  "true";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
