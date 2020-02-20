@@ -1,3 +1,6 @@
+# http_origin holds the value of Origin request header
+# set allowed_origin to http_origin if http_origin/Origin is not empty (default)
+# set allowed_origin to "*" if http_origin/Origin is empty
 map $http_origin $allowed_origin {
     default $http_origin;
     "" "*";
@@ -49,8 +52,11 @@ server {
         limit_except GET OPTIONS {
             deny  all;
         }
+        # allow all origins if request Origin is empty, otherwise allow only rquest Origin
         add_header Access-Control-Allow-Origin $allowed_origin;
+        # to indicate to browsers that server responses can differ based on the value of the Origin request header
         add_header Vary Origin;
+
         add_header "Access-Control-Allow-Credentials"  "true";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
         add_header 'Content-Type' 'text/event-stream';
