@@ -79,7 +79,6 @@ binderhub:
       subPath: extra_config.json
 
   extraEnv:
-    # NOTE: when you change limit, update hub.templateVars.projects_limit too
     - name: PROJECTS_LIMIT_PER_USER
       value: "5"
 
