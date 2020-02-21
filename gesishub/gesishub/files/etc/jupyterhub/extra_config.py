@@ -26,21 +26,11 @@ ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 class PersistentBinderSpawner(KubeSpawner):
     default_project = ['https://github.com/gesiscss/data_science_image', 'gesiscss/singleuser-orc:r2d-49e91d9', 'master']
 
-    def strip_repo_url(self, repo_url):
-        # p = "http://"
-        # if repo_url.startswith(p):
-        #     repo_url = repo_url[len(p):]
-        # p = "https://"
-        # if repo_url.startswith(p):
-        #     repo_url = repo_url[len(p):]
-        p = ".git"
-        if repo_url.endswith(p):
-            repo_url = repo_url[:-len(p)]
-        return repo_url.rstrip('/')
-
     def url_to_display_name(self, url):
-        url = self.strip_repo_url(url)
+        if url.endswith('.git'):
+            url = url[:-4]
         url_parts = urlparse(url)
+        # TODO handle provider prefix for other providers
         provider = url_parts.netloc.lower()
         if 'gist.github.com' in provider:
             provider_prefix = 'gist'
@@ -158,14 +148,10 @@ class PersistentBinderSpawner(KubeSpawner):
         default_projects = [self.default_project + [display_name, 'never']]
         _state = self.orm_spawner.state
         projects = _state.get('projects', []) if _state else default_projects
-        # workaround for existing users, for when they login to use new gesis hub
-        if not projects and _state.get('first_login_new_system', True):
-            projects = default_projects
         deleted_projects = _state.get('deleted_projects', []) if _state else []
 
         state = super().get_state()
         state['projects'] = projects
-        state['first_login_new_system'] = False
         state['deleted_projects'] = deleted_projects
 
         if getattr(self, 'update_projects', True) is True and \
@@ -221,7 +207,6 @@ class ProjectAPIHandler(APIHandler):
             body = json_decode(self.request.body)
             if "repo_url" in body and "name" in body and "id" in body:
                 repo_url = body["repo_url"]
-                delete_on_disk = body.get("delete_on_disk", False)
                 projects = user.spawner.get_state_field('projects')
                 new_projects = []
                 deleted_projects = user.spawner.get_state_field('deleted_projects')
@@ -231,7 +216,7 @@ class ProjectAPIHandler(APIHandler):
                         new_projects.append(project)
                     else:
                         found = True
-                        if delete_on_disk is True and repo_url not in deleted_projects:
+                        if repo_url not in deleted_projects:
                             deleted_projects.append(repo_url)
                 if found is True:
                     # NOTE: this way we ensure that this JSONDict field (state) is updated with db.commit()

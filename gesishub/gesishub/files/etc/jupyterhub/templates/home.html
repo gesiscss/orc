@@ -93,16 +93,14 @@
         <div class="modal-body" id="delete-project-body">
           <span id="delete-project-text">Are you sure that you want to delete the project?</span>
           <br>
-          <label class="delete-project-label"><input type="checkbox" id="delete-on-disk"> Delete the project also on my persistent storage.</label>
+          <label class="delete-project-label"><input type="checkbox" id="delete-on-disk"> I do understand that this also deletes my project files.</label>
           <input type="hidden" id="delete-url" value=""/>
           <input type="hidden" id="delete-id" value=""/>
           <input type="hidden" id="delete-name" value=""/>
         </div>
-        <div id="delete-project-success" class="alert alert-success hidden"></div>
         <div id="delete-project-error" class="alert alert-danger hidden"></div>
         <div class="modal-footer">
-          <button type="button" id="delete-cancel" class="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" id="delete-confirm" class="btn btn-default">Yes</button>
+          <button type="button" id="delete-confirm" class="btn btn-default btn-danger" disabled>Delete now</button>
         </div>
       </div>
     </div>
@@ -381,7 +379,7 @@ require(["jquery", "jhapi", "moment"], function($, JHAPI, moment) {
            .click(function() {
                return false;
            });
-    // hide next launch ("My Server") button
+    // hide "My Server" button while stopping
     $(this).next('a').addClass('hidden');
     api.stop_server(user, {
       success: function() {
@@ -412,7 +410,7 @@ require(["jquery", "jhapi", "moment"], function($, JHAPI, moment) {
 $(document).ready(function() {
     // Project launch through table
     $('.project-launch').click(function(e) {
-        // if server is running, this button holds the url of server
+        // if server is running, this button holds the url of the server
         // if server is not running, do following
         if ($(this).attr('href') === '#') {
             e.preventDefault();
@@ -423,7 +421,7 @@ $(document).ready(function() {
             var repo_url_lower = repo_url.toLowerCase();
             var provider_prefix;
             var provider_prefix_selected;
-            // TODO add other repo providers: zenodo and figshare
+            // TODO handle provider prefix for other providers
             if (repo_url_lower.indexOf('github.com') !== -1 && repo_url_lower.indexOf('gist.github.com') === -1) {
                provider_prefix = 'gh';
                provider_prefix_selected = 'GitHub';
@@ -453,26 +451,41 @@ $(document).ready(function() {
     });
 
     // Project deletion
+    // TODO use show.bs.modal event instead of click: https://getbootstrap.com/docs/3.4/javascript/#modals-events
     $('.project-delete').on('click', function (event) {
         // reset parts of dialog
         $('#delete-project-body').children().removeClass("hidden");
-        $('#delete-cancel').text("No");
-        $('#delete-confirm').removeClass("hidden");
-        $('#delete-on-disk').prop("checked", false);
-        $('#delete-project-success').text('').addClass("hidden");
         $('#delete-project-error').text('').addClass("hidden");
+        $('#delete-on-disk').prop("checked", false);
+        $('#delete-confirm').text("Delete now").removeClass("hidden").prop("disabled", true);
         // fill hidden inputs, they will be used in ajax call to delete project
         $('#delete-url').val($(this).data('url'));
-        $('#delete-id').val($(this).prop('id'));  // this will be used success of ajax call to delete project row from table
+        $('#delete-id').val($(this).prop('id'));  // this will be used in success return of ajax call to delete project row from table
         var project_name = $(this).data('name');
         $('#delete-name').val(project_name);
         // update text in confirm dialog
-        $('#delete-project-label').text('Delete project ' + project_name);
+        $('#delete-project-label').text('Delete project: ' + project_name);
         $('#delete-project-text').text('Are you sure that you want to delete "' + project_name +'" project?');
     });
+    $('#delete-on-disk').on('click', function (event) {
+        // Enable/disable "Delete now" button according to delete-on-disk checkbox
+        $('#delete-confirm').prop("disabled", !$(this).prop("checked"));
+    });
+    function display_error(message) {
+        // display error message in modal
+        $('#delete-project-body').children().addClass("hidden");
+        $('#delete-project-error').text(message).removeClass("hidden");
+        $('#delete-confirm').addClass("hidden");
+    }
+    $('#delete-project').on('hide.bs.modal', function (e) {
+        // reset hidden inputs, when modal is closed
+        $('#delete-url').val('');
+        $('#delete-name').val('');
+        $('#delete-id').val('');
+    });
     $('#delete-confirm').on('click', function (event) {
+        $('#delete-confirm').prop("disabled", true).text("Deleting");
         var body = JSON.stringify({repo_url: $('#delete-url').val(),
-                                   delete_on_disk: $('#delete-on-disk').prop("checked"),
                                    name: $('#delete-name').val(),
                                    id: $('#delete-id').val()});
         var user_name = window.jhdata.user;
@@ -484,37 +497,24 @@ $(document).ready(function() {
             data: body,
             success: function (response) {
                 if ("error" in response) {
-                    // show error message
-                    $('#delete-project-body').children().addClass("hidden");
-                    $('#delete-project-success').text('').addClass("hidden");
-                    $('#delete-project-error').text(response['error']).removeClass("hidden");
-                    // show only OK button, user should handle the error first
-                    $('#delete-cancel').text("Okay");
-                    $('#delete-confirm').addClass("hidden");
+                    // show error message only, user should handle the error first
+                    display_error(response['error']);
                 } else {
-                    // show success message
-                    $('#delete-project-body').children().addClass("hidden");
-                    $('#delete-project-error').text('').addClass("hidden");
-                    $('#delete-project-success').text(response['success']).removeClass("hidden");
-                    // project is deleted, so leave just an OK button to close the modal
-                    $('#delete-cancel').text("Okay");
-                    $('#delete-confirm').addClass("hidden");
-                    // reset hidden inputs
-                    $('#delete-url').val('');
-                    $('#delete-name').val('');
-                    $('#delete-id').val('');
-                    //$('#delete-close').trigger('click');
+                    // project is deleted
+                    // remove project from "Your Projects" table
                     $("#"+response["id"]).closest('tr').remove();
                     if ($('#your-projects tr').length === 1) {
                         // user has no projects, so remove empty projects table
                         $('#your-projects').addClass("hidden");
                         $('.no-projects').removeClass("hidden");
                     }
+                    // close modal
+                    $('#delete-project').modal('hide');
+                    //$('#delete-close').trigger('click');
                 }
                 },
             error: function () {
-                $('#delete-project-success').text('').addClass("hidden");
-                $('#delete-project-error').text("Error. Please try again.").removeClass("hidden");
+                display_error("Error. Please refresh the page and try again.");
             }
         });
     });
