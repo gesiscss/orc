@@ -24,8 +24,9 @@ etcJupyter:
 
 binderhub:
   pdb:
-    minAvailable: 1
-  replicas: 2
+    minAvailable: 0
+  # NOTE: binder pod must have 1 replica, otherwise there are authentication errors
+  replicas: 1
 
   config:
     GitHubRepoProvider:
