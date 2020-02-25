@@ -24,8 +24,8 @@ etcJupyter:
 
 binderhub:
   pdb:
-    minAvailable: 0
-  replicas: 1
+    minAvailable: 1
+  replicas: 2
 
   config:
     GitHubRepoProvider:
