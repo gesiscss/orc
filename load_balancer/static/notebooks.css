@@ -426,20 +426,6 @@ footer {
 	text-decoration: underline;
 }
 
-.projects-container {
-	padding-left: 18px;
-	padding-right:18px;
-}
-
-.build-form {
-	padding: 5px 18px 20px 18px !important;
-}
-
-.build-project-container {
-	background: rgb(235, 236, 237);
-	margin: 0px;
-}
-
 /*Binder*/
 #how-it-works, #explanation {
     font-weight: normal;
