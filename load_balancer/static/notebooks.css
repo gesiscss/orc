@@ -344,7 +344,17 @@ footer.footer {
 }
 
 /* maintenance page */
-.maintenance {
+div.maintenance {
 	margin: 2em;
 	text-align: center;
+}
+
+div.maintenance > h1 {
+	font-size: 300%;
+    line-height: normal;
+}
+
+div.maintenance > p {
+	font-size: 200%;
+    line-height: normal;
 }
