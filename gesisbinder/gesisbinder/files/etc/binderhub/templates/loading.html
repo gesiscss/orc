@@ -1,74 +1,29 @@
-{% extends "page.html" %}
+{% extends "templates/loading.html" %}
 
 {% block head %}
 {#<meta name="robots" content="noindex, nofollow">#}
 <meta id="base-url" data-url="{{base_url}}">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
 
-<script src="{{static_url("dist/bundle.js")}}"></script>
-{{ super() }}
-<link href="{{static_url("loading.css")}}" rel="stylesheet">
-<style>
-div#log-container {
-    width: 100%;
-    margin: 0 0;
-}
-div#loader-text {
-    overflow-wrap: break-word;
-}
-</style>
-{% endblock head %}
-
-{% block meta_social_title %}
-<!-- Other OG information in page.html -->
+{# Social media previews #}
 <meta property="og:title" content="{{social_desc}}">
 <meta property="og:description" content="Click to run this interactive environment. From the Binder Project: Reproducible, sharable, open, interactive computing environments.">
-{% endblock meta_social_title %}
+<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="GESIS Notebooks Logo" />
+<meta name="twitter:card" content="summary">
+
+<link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+<link href="{{static_url("loading.css")}}" rel="stylesheet">
+<script src="{{static_url("dist/bundle.js")}}"></script>
+{% endblock head %}
+
+{% block logo %}
+{% endblock logo %}
 
 {% block main %}
-<div class="row form-group"></div>
-<div class="row form-group"></div>
-
-<div id="loader"></div>
-<div id="loader-text">
-	<p class="launching">Launching your Binder...</p>
+<div id="main" class="container">
+  {{ super() }}
 </div>
-<div id="loader-links">
-  <p class="text-center">New to Binder? Check out the <a target="_blank" href="https://mybinder.readthedocs.io/en/latest/">Binder Documentation</a> for more information</p>
-</div>
-
-<div id="log-container" class="panel panel-default on-build hidden row">
-  <div id="toggle-logs" class="panel-heading">
-    Build logs
-    <button class="btn btn-link btn-xs pull-right">show</button>
-  </div>
-  <div class="panel-body hidden">
-    <div id="log"></div>
-  </div>
-</div>
-
-{% block preview %}
-{% if nbviewer_url %}
-<div class="preview container" style="width: 100%;">
-<p class="preview-text text-center">
-Here's a non-interactive preview on
-<a href="https://nbviewer.jupyter.org">nbviewer</a>
-while we start a server for you.
-Your binder will open automatically when it is ready.
-</p>
-<div id="nbviewer-preview">
-  <iframe src="{{ nbviewer_url }}"></iframe>
-</div>
-</div>
-{% endif %}
-{% endblock preview %}
-
-<div class="row form-group"></div>
-<div class="row form-group"></div>
 {% endblock main %}
-
-{% block extra_js %}
-<script type="text/javascript">
-loadingMain("{{provider_spec}}");
-</script>
-{% endblock extra_js %}

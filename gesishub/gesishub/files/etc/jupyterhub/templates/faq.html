@@ -13,16 +13,20 @@
 <meta name="twitter:card" content="summary">
 {% endblock meta_social %}
 
+{% block extra_css %}
+<link href="{{ static_nginx }}faq.css?v={{ static_version }}" rel="stylesheet" />
+{% endblock extra_css %}
+
 {% block main %}
 <div id="main-container" class="container">
-<div class="row form-group" style="padding-left: 16px; padding-right: 16px;">
-  <div id="header" class="text-center">
-      <div id="explanation">
-          Frequently Asked Questions
-      </div>
-  </div>
+<div class="row form-group faq">
+    <div id="header" class="text-center">
+        <div id="explanation">
+            Frequently Asked Questions
+        </div>
+    </div>
     {% for section in faq%}
-    <h3 style="margin-bottom: 1.4rem;">{{section["Section"].get("Name")}}</h3>
+    <h3>{{section["Section"].get("Name")}}</h3>
 
     <div class="panel-group" id="accordion">
       {% for questions in section['Section']['Questions'] %}

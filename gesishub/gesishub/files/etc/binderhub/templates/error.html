@@ -1,13 +1,8 @@
-{% extends "page.html" %}
+{% extends "templates/error.html" %}
 
-{% block main %}
-<div class="text-center jumbotron" style="background-color: #ffffff;">
-  <h1>
-    {{status_code}}: {{status_message}}
-  </h1>
+{% block head %}
+<link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+{% endblock head %}
 
-  <p class="lead">
-    {{message}}
-  </p>
-</div>
-{% endblock main %}
+{% block logo %}
+{% endblock logo %}

@@ -79,7 +79,6 @@ binderhub:
       subPath: extra_config.json
 
   extraEnv:
-    # NOTE: when you change limit, update hub.templateVars.projects_limit too
     - name: PROJECTS_LIMIT_PER_USER
       value: "5"
 
@@ -96,7 +95,15 @@ binderhub:
                             "static_version": uuid.uuid4().hex
                             })
       c.BinderHub.template_variables.update(template_vars)
-    01-launcher:  |
+    01-repo-providers:  |
+      from binderhub.repoproviders import GitHubRepoProvider, GitRepoProvider, GitLabRepoProvider, GistRepoProvider
+      c.BinderHub.repo_providers = {
+          'gh': GitHubRepoProvider,
+          'gist': GistRepoProvider,
+          'gl': GitLabRepoProvider,
+          'git': GitRepoProvider,
+      }
+    02-launcher:  |
       from tornado import web
       import json
       import os
@@ -243,6 +250,7 @@ binderhub:
         02-orc: |
           from extra_config import template_vars
           c.JupyterHub.template_vars.update(template_vars)
+
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
         03-orc: |

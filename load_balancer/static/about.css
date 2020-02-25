@@ -1,3 +1,31 @@
+/*row-side-margins used only at about.html*/
+.row-side-margins{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.title{
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    color: #58748f;
+}
+.description {
+    font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
+    color: #777;
+}
+.sponsored{
+    padding-left: 0;
+    display: flex;
+}
+/* GESIS Logo at #supported by  in about.html*/
+.row .sponsored .gesis-logo{
+    margin-left: 20%;
+}
+
+.about-main-row {
+	padding-left: 17px !important;
+	padding-right: 17px !important;
+}
+
+/*css for team*/
 .our-content{
     font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.15);
@@ -90,7 +118,7 @@
 .our-team{
     padding: 0 20px;
     margin-top: 30px;
-    margin bottom: 20px;
+    margin-bottom: 20px;
     text-align: center;
     position: relative;
 }
