@@ -1,13 +1,11 @@
-{% extends "templates/loading.html" %}
+{% extends "templates/index.html" %}
 
 {% block head %}
-{#<meta name="robots" content="noindex, nofollow">#}
 <meta id="base-url" data-url="{{base_url}}">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
-
 {# Social media previews #}
-<meta property="og:title" content="{{social_desc}}">
-<meta property="og:description" content="Click to run this interactive environment. From the Binder Project: Reproducible, sharable, open, interactive computing environments.">
+<meta property="og:title" content="GESIS Binder">
+<meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
 <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
 <meta property="og:image:width" content="800">
 <meta property="og:image:height" content="800">
@@ -15,15 +13,5 @@
 <meta name="twitter:card" content="summary">
 
 <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
-<link href="{{static_url("loading.css")}}" rel="stylesheet">
 <script src="{{static_url("dist/bundle.js")}}"></script>
 {% endblock head %}
-
-{% block logo %}
-{% endblock logo %}
-
-{% block main %}
-<div id="main" class="container">
-  {{ super() }}
-</div>
-{% endblock main %}

@@ -1,83 +1,103 @@
-{% extends "templates/page.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}Binder{% endblock %}</title>
 
-{% block title %}GESIS Binder{% endblock %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
+  <meta name="description" content="Reproducible, sharable, open, interactive computing environments.">
 
-{% block meta %}
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
-<meta name="description" content="Reproducible, sharable, open, interactive computing environments.">
-{{ super() }}
-{% endblock meta %}
-{# Social media previews #}
-{% block meta_social %}
-<meta property="og:title" content="GESIS Binder">
-<meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
-<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
-<meta property="og:image:width" content="800">
-<meta property="og:image:height" content="800">
-<meta property="og:image:alt" content="GESIS Notebooks Logo" />
-<meta name="twitter:card" content="summary">
-{% endblock meta_social %}
+  {% block head %}
+  {# Social media previews #}
+  <meta property="og:title" content="GESIS Binder">
+  <meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
+  <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="800">
+  <meta property="og:image:alt" content="GESIS Notebooks Logo" />
+  <meta name="twitter:card" content="summary">
 
-{% block favicon %}
-<link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
-{% endblock %}
+  <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+  {% endblock head %}
+  <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
 
-{% block head %}
-{# this is important, because head, meta and meta_social are nested blocks #}
-{{ super() }}
-{% endblock head %}
+  <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
+  <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+  <link href="{{ static_nginx }}binder.css?v={{ static_version }}" rel="stylesheet" />
 
-{% block extra_head %}
-<link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-<script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
-<link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
-<link href="{{ static_nginx }}binder.css?v={{ static_version }}" rel="stylesheet" />
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
+    <script src="{{ static_nginx }}vendor/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+  {% block body %}
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-  <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
-  <script src="{{ static_nginx }}vendor/respond.min.js"></script>
-<![endif]-->
-{% endblock extra_head %}
+  {% include "gesis/header.html" %}
+  {% include "gesis/nav.html" %}
 
-{% block body %}
-
-{% include "gesis/header.html" %}
-{% include "gesis/nav.html" %}
-
-{% block banner %}
-{{ super() }}
-{% endblock banner %}
-
-{% block logo %}
-{{ super() }}
-{% endblock logo %}
-
-{#<div id="main-container" class="container">#}
-{% block main %}
-{% endblock main %}
-{#</div>#}
-
-{% block footer %}
-<div id="questions-footer" class="container">
-  <div class="row text-center">
-    <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
+  {% if banner %}
+  <div id="banner-container">
+    {{ banner | safe }}
   </div>
-</div>
-{% endblock footer %}
+  {% endif %}
 
-{% include "gesis/footer.html" %}
+  {% block logo %}
+  <div class="container">
+    <div class="row">
+      <div id="logo-container">
+        <img id="logo" src={% block logo_image %}"{{static_url("logo.svg")}}"{% endblock logo_image %} width="390px"  />
+      </div>
+    </div>
+  </div>
+  {% endblock logo %}
 
-{% block scripts %}
-<script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
-{% endblock scripts %}
+  {% block main %}
+  {% endblock main %}
 
-{% block extra_footer_scripts %}
-{{ super() }}
-{% endblock extra_footer_scripts %}
+  {% block footer %}
+  <div id="questions-footer" class="container">
+    <div class="row text-center">
+      <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
+    </div>
+  </div>
+  {% endblock footer %}
 
-{% endblock body %}
+  {% include "gesis/footer.html" %}
+  <script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
+
+  {% if google_analytics_code %}
+  <script>
+    // Only load GA if DNT is not set
+    if (navigator.doNotTrack != "1" && // Most Firefox & Chrome
+      window.doNotTrack != "1" && // IE & Safari
+      navigator.msDoNotTrack != "1" // Old IE
+  ) {
+    console.log("Loading Google Analytics, since Do Not Track is off");
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', '{{ google_analytics_code }}', '{{ google_analytics_domain }}',
+      {'storage': 'none'});
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  }
+  </script>
+  {% endif %}
+  {% if extra_footer_scripts %}
+  {% for script in extra_footer_scripts|dictsort %}
+  <script>
+    {{ script[1]|safe }}
+  </script>
+  {% endfor %}
+  {% endif %}
+  {% endblock body %}
+</body>
+</html>

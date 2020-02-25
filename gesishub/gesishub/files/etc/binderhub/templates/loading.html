@@ -1,12 +1,14 @@
 {% extends "templates/loading.html" %}
 
-{#{% block meta %}#}
-{#{{ super() }}#}
+{% block head %}
 {#<meta name="robots" content="noindex, nofollow">#}
-{#{% endblock meta %}#}
+<meta id="base-url" data-url="{{base_url}}">
+<meta id="badge-base-url" data-url="{{badge_base_url}}">
 
-{% block meta_social %}
-{% endblock meta_social %}
+<link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+<link href="{{static_url("loading.css")}}" rel="stylesheet">
+<script src="{{static_url("dist/bundle.js")}}"></script>
+{% endblock head %}
 
 {% block logo %}
 {% endblock logo %}
