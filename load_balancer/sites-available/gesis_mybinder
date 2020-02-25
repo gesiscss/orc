@@ -1,3 +1,11 @@
+# http_origin holds the value of Origin request header
+# set allowed_origin to http_origin if http_origin/Origin is not empty (default)
+# set allowed_origin to "*" if http_origin/Origin is empty
+map $http_origin $allowed_origin {
+    default $http_origin;
+    "" "*";
+}
+
 # HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
@@ -26,7 +34,7 @@ server {
 
     location / {
         # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301
-        limit_except GET {
+        limit_except GET OPTIONS {
             deny  all;
         }
         # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
@@ -35,18 +43,25 @@ server {
         add_header 'Cache-Control' 'no-cache';
         # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
         # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
-        return 301 https://notebooks.gesis.org/binder$request_uri;
+        return 308 https://notebooks.gesis.org/binder$request_uri;
     }
 
     location /build/ {
-        limit_except GET {
+        # add OPTIONS for Preflighted requests: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+        # adding OPTIONS is just to be safe, I am not sure if this is preflighted
+        limit_except GET OPTIONS {
             deny  all;
         }
-        add_header "Access-Control-Allow-Origin"  *;
+        # allow all origins if request Origin is empty, otherwise allow only rquest Origin
+        add_header Access-Control-Allow-Origin $allowed_origin;
+        # to indicate to browsers that server responses can differ based on the value of the Origin request header
+        add_header Vary Origin;
+
+        add_header "Access-Control-Allow-Credentials"  "true";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
         add_header 'Content-Type' 'text/event-stream';
         add_header 'Cache-Control' 'no-cache';
-        return 301 https://notebooks.gesis.org/binder$request_uri;
+        # use Permanent Redirect (308) instead of 301, mybinder.org redirects with 307
+        return 308 https://notebooks.gesis.org/binder$request_uri;
     }
 }
-

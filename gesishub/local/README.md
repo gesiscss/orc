@@ -10,6 +10,29 @@
 
 4. Open http://localhost:8000
 
+#### Run JupyterHub in Docker
+
+1. cd into orc repo
+
+2.
+```bash
+# v1.1.0 has problem with the templates, so run v 1.2.0dev
+#docker run --rm -p 8000:8000 -v "$PWD":/srv/orc --name jupyterhub jupyterhub/jupyterhub:1.1.0 jupyterhub -f /srv/orc/gesishub/local/jupyterhub_config.py
+docker run --rm -p 8000:8000 -v "$PWD":/srv/orc --name jupyterhub jupyterhub/jupyterhub:1.2.0dev jupyterhub -f /srv/orc/gesishub/local/jupyterhub_config.py
+#      --rm                             Automatically remove the container when it exits
+
+# if you want to run container in background:
+docker run -d -p 8000:8000 -v "$PWD":/srv/orc --name jupyterhub jupyterhub/jupyterhub:1.1.0 jupyterhub -f /srv/orc/gesishub/local/jupyterhub_config.py
+#   -d, --detach                         Run container in background and print container ID
+docker container ls
+# to execute an interactive bash shell on the container
+docker exec -it jupyterhub bash
+# to stop and delete the container
+docker stop jupyterhub
+docker rm jupyterhub
+
+```
+
 ### Run GESIS Hub in minikube
 
 First way (`Run only JupyterHub to test templates and static files`) should normally be enough for local 

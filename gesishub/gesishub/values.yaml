@@ -24,8 +24,8 @@ etcJupyter:
 
 binderhub:
   pdb:
-    minAvailable: 0
-  replicas: 1
+    minAvailable: 1
+  replicas: 2
 
   config:
     GitHubRepoProvider:
@@ -48,7 +48,7 @@ binderhub:
       auth_enabled: true
       base_url: /services/binder/
       use_registry: true
-      build_image: jupyter/repo2docker:0.11.0-5.g8d490cf
+      build_image: jupyter/repo2docker:0.11.0-13.g26542df
       build_node_selector:
         user: worker
       per_repo_quota: 100
