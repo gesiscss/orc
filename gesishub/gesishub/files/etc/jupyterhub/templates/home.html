@@ -15,7 +15,7 @@
 {% block scripts %}
     <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
+{#    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>#}
 {% endblock %}
 
 {% block main %}
@@ -509,8 +509,8 @@ $(document).ready(function() {
                         $('.no-projects').removeClass("hidden");
                     }
                     // close modal
-                    $('#delete-project').modal('hide');
-                    //$('#delete-close').trigger('click');
+                    //$('#delete-project').modal('hide');
+                    $('#delete-close').trigger('click');
                 }
                 },
             error: function () {
