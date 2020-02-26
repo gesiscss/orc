@@ -451,7 +451,9 @@ $(document).ready(function() {
     });
 
     // Project deletion
-    // TODO use show.bs.modal event instead of click: https://getbootstrap.com/docs/3.4/javascript/#modals-events
+    // we would use show.bs.modal event instead of click: https://getbootstrap.com/docs/3.4/javascript/#modals-events
+    // but it bootstrap methods fails because we load jquery after bootstrap js
+    // see: https://stackoverflow.com/questions/25757968/bootstrap-modal-is-not-a-function
     $('.project-delete').on('click', function (event) {
         // reset parts of dialog
         $('#delete-project-body').children().removeClass("hidden");
@@ -509,6 +511,8 @@ $(document).ready(function() {
                         $('.no-projects').removeClass("hidden");
                     }
                     // close modal
+                    // .modal fails because we load jquery after bootstrap js
+                    // see: https://stackoverflow.com/questions/25757968/bootstrap-modal-is-not-a-function
                     //$('#delete-project').modal('hide');
                     $('#delete-close').trigger('click');
                 }
