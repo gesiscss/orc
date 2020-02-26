@@ -359,13 +359,13 @@ class KeycloakLogoutHandler(LogoutHandler):
 class KeycloakLoginHandler(LoginHandler):
     def set_login_cookie(self, user):
         super().set_login_cookie(user)
-        self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+        # self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
 
 
 class KeycloakOAuthCallbackHandler(OAuthCallbackHandler):
     def set_login_cookie(self, user):
         super().set_login_cookie(user)
-        self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+        # self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
 
 
 import os
