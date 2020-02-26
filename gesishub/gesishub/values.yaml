@@ -248,6 +248,7 @@ binderhub:
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
         03-orc: |
           from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
+
           from oauthenticator.generic import GenericOAuthenticator
           GenericOAuthenticator.default_logout_handler = KeycloakLogoutHandler
           GenericOAuthenticator.default_login_handler = KeycloakLoginHandler
