@@ -119,6 +119,10 @@ server {
         access_log off;
         root /var/www/staging;
     }
+    # turn of access log for all static files from different services
+    location ~ ^/(hub|services/binder|binder|gallery)/static/ {
+        access_log off;
+    }
 
     location = /robots.txt {
        add_header Content-Type text/plain;
