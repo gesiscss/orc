@@ -59,7 +59,7 @@ server {
         add_header "Access-Control-Allow-Credentials"  "true";
         add_header 'Access-Control-Allow-Headers' 'cache-control';
         add_header 'Content-Type' 'text/event-stream';
-        default_type 'text/event-stream';
+        #default_type 'text/event-stream';
         add_header 'Cache-Control' 'no-cache';
         # use Permanent Redirect (308) instead of 301, mybinder.org redirects with 307
         return 308 https://notebooks.gesis.org/binder$request_uri;
