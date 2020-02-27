@@ -53,6 +53,8 @@ server {
 
     include snippets/optimization.conf;
     access_log off;  # turn off access log
+    # log staging logs into access-test.log file
+    # access_log /var/log/nginx/access-test.log combined;
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
