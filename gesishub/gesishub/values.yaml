@@ -26,6 +26,7 @@ binderhub:
   pdb:
     minAvailable: 0
   # NOTE: binder pod must have 1 replica, otherwise there are authentication errors
+  # https://github.com/jupyterhub/jupyterhub/issues/2841
   replicas: 1
 
   config:
