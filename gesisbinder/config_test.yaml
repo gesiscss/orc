@@ -52,7 +52,8 @@ binderhub:
     proxy:
       service:
         nodePorts:
-          http: 30182
+          http: 30185
+          https: 30182
       chp:
         resources:
           requests:
