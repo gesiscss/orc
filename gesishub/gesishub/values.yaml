@@ -270,7 +270,7 @@ binderhub:
       pdb:
         minAvailable: 0
       https:
-        type: offload
+        enabled: false
       service:
         type: NodePort
 
