@@ -190,11 +190,6 @@ binderhub:
         binder:
           oauth_no_confirm: true
       extraConfig:
-        00-orc: |
-          if "cookie_options" in c.JupyterHub.tornado_settings:
-            c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
-          else:
-            c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
         01-orc: |
           from extra_config import OrcAdminHandler, ProjectAPIHandler, ORC_LOGIN_COOKIE_NAME
 
