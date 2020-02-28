@@ -186,17 +186,13 @@ binderhub:
       extraConfig:
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-          if "cookie_options" in c.JupyterHub.tornado_settings:
-            c.JupyterHub.tornado_settings["cookie_options"].update({"secure": True})
-          else:
-            c.JupyterHub.tornado_settings["cookie_options"] = dict(secure=True)
     proxy:
       # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
       # replicas: 1
       pdb:
         minAvailable: 0
       https:
-        enabled: false
+        type: offload
       service:
         type: NodePort
     singleuser:
