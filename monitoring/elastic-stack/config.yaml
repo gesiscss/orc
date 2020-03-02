@@ -47,13 +47,13 @@ logstash:
     uptime.conf: |
       input { exec { command => "uptime" interval => 30 } }
       output { elasticsearch { hosts => ["http://elasticsearch-master:9200"] index => "logstash" } }
-  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /data2/docker
+  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
   # FIXME Templatable string
 #  extraVolumes: "- name: customvarlibdockercontainers
 #  hostPath:
-#    path: /data2/docker/containers"
+#    path: /ssd/docker/containers"
 #  extraVolumeMounts: "- name: customvarlibdockercontainers
-#  mountPath: /data2/docker/containers
+#  mountPath: /ssd/docker/containers
 #  readOnly: true"
 
 fluentd-elasticsearch:
@@ -64,12 +64,12 @@ fluentd-elasticsearch:
     # better use default prefix "logstash"
     # Kibana-dashboards.json also uses it
     #logstash_prefix: 'orc-logstash'
-  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /data2/docker
+  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
   extraVolumes:
     - name: customvarlibdockercontainers
       hostPath:
-        path: /data2/docker/containers
+        path: /ssd/docker/containers
   extraVolumeMounts:
     - name: customvarlibdockercontainers
-      mountPath: /data2/docker/containers
+      mountPath: /ssd/docker/containers
       readOnly: true
