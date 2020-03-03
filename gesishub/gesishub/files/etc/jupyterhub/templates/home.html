@@ -29,92 +29,14 @@
         </div>
     </div>
   {% endblock binder_header %}
-
-  {% block projects %}
-  {% set projects = user.spawner.get_state_field('projects') %}
-  <div class="projects-container">
-    <h3>Your Projects</h3>
-    <div class="table-responsive">
-     <table id="your-projects" class="table table-striped{% if not projects %} hidden{% endif %}">
-         <thead>
-         <tr>
-             <th>Repository</th>
-             <th>Commit</th>
-             <th>Last used</th>
-             <th>Actions</th>
-         </tr>
-         </thead>
-         <tbody>
-            {% for project in projects %}
-            <tr>
-                {% set project_running = loop.index == loop.length and user.running %}
-                {% set project_active = loop.index == loop.length and user.spawner.active %}
-                {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
-                <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
-                <td class="projects-cell">{{ project[2][:7] }}</td>
-                <td class="projects-cell" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
-                <td class="projects-cell">
-                    {% if project_running %}
-                    {# last element in projects is currently running, add Stop button for it #}
-                    <a id="stop" role="button" class="btn btn-sm btn-danger" data-ref="{{ project[2] }}">Stop</a>
-                    {% endif %}
-                    {# add launch button for each element, if user has no server running #}
-                    {# if last element is running, hide launch buttons of all other elements #}
-                    <a role="button" id="launch-{{ project[2] }}"
-                       class="project-launch btn btn-sm {% if project_active %}btn-primary{% else %}btn-warning{% endif %}{% if project_not_active %} hidden{% endif %}"
-                       href="{% if project_active %}{{ url }}{% else %}#{% endif %}"
-                       data-url="{{ project[0] }}">
-                       {% if project_active %}My Server{% else %}Launch{% endif %}
-                    </a>
-                    <a role="button" id="delete-{{ project[2] }}"
-                       class="project-delete btn btn-sm btn-danger{% if user.spawner.active %} hidden{% endif %}"
-                       href="#" title="Delete from projects list and persistent storage"
-                       data-url="{{ project[0] }}"
-                       data-name="{{ project[3] }}"
-                       data-toggle="modal" data-target="#delete-project">
-                       Delete
-                    </a>
-                 </td>
-            </tr>
-            {% endfor %}
-         </tbody>
-     </table>
-    <span class="no-projects{% if projects %} hidden{% endif %}">You have no projects.</span>
-    </div>
-  </div>
-  {# Modal for project deletion dialog #}
-  <div class="modal fade" id="delete-project" tabindex="-1" role="dialog" aria-labelledby="delete-project-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button id="delete-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="delete-project-label">Delete a project</h4>
-        </div>
-        <div class="modal-body" id="delete-project-body">
-          <span id="delete-project-text">Are you sure that you want to delete the project?</span>
-          <br>
-          <label class="delete-project-label"><input type="checkbox" id="delete-on-disk"> I do understand that this also deletes the files associated with this project.</label>
-          <input type="hidden" id="delete-url" value=""/>
-          <input type="hidden" id="delete-id" value=""/>
-          <input type="hidden" id="delete-name" value=""/>
-        </div>
-        <div id="delete-project-error" class="alert alert-danger hidden"></div>
-        <div class="modal-footer">
-          <button type="button" id="delete-confirm" class="btn btn-default btn-danger" disabled>Delete now</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endblock projects %}
-
   {% block projects_form %}
   <div class="row form-group"></div>
   <div class="row form-group no-projects{% if projects %} hidden{% endif %}"></div>
-  <div class="row">
+  <div class="row build-project-container">
     <div class="col-lg-12 build-form-container">
     {# copied from https://github.com/jupyterhub/binderhub/blob/207ae704752cde82f33fc771a3b58aa1ecc04b6d/binderhub/templates/index.html#L34 #}
     {% block binder_form %}
-      <form id="build-form" class="form jumbotron">
+      <form id="build-form" class="form jumbotron build-form">
         <h3 id="form-header" class='row'>Build and launch a new repository</h3>
         <input type="hidden" id="provider_prefix" value="gh"/>
         <div class="form-group row">
@@ -180,6 +102,84 @@
             </div>
           </div>
         </div>
+
+        {% block projects %}
+        {% set projects = user.spawner.get_state_field('projects') %}
+        <div class="projects-container">
+          <h3>Your Projects</h3>
+          <div class="table-responsive">
+           <table id="your-projects" class="table table-striped{% if not projects %} hidden{% endif %}">
+               <thead>
+               <tr>
+                   <th>Repository</th>
+                   <th>Commit</th>
+                   <th>Last used</th>
+                   <th>Actions</th>
+               </tr>
+               </thead>
+               <tbody>
+                  {% for project in projects %}
+                  <tr>
+                      {% set project_running = loop.index == loop.length and user.running %}
+                      {% set project_active = loop.index == loop.length and user.spawner.active %}
+                      {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
+                      <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
+                      <td class="projects-cell">{{ project[2][:7] }}</td>
+                      <td class="projects-cell" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
+                      <td class="projects-cell">
+                          {% if project_running %}
+                          {# last element in projects is currently running, add Stop button for it #}
+                          <a id="stop" role="button" class="btn btn-sm btn-danger" data-ref="{{ project[2] }}">Stop</a>
+                          {% endif %}
+                          {# add launch button for each element, if user has no server running #}
+                          {# if last element is running, hide launch buttons of all other elements #}
+                          <a role="button" id="launch-{{ project[2] }}"
+                             class="project-launch btn btn-sm {% if project_active %}btn-primary{% else %}btn-warning{% endif %}{% if project_not_active %} disabled{% endif %}"
+                             href="{% if project_active %}{{ url }}{% else %}#{% endif %}"
+                             data-url="{{ project[0] }}">
+                             {% if project_active %}My Server{% else %}Launch{% endif %}
+                          </a>
+                          <a role="button" id="delete-{{ project[2] }}"
+                             class="project-delete btn btn-sm btn-danger{% if user.spawner.active %} disabled{% endif %}"
+                             href="#" title="Delete from projects list and persistent storage"
+                             data-url="{{ project[0] }}"
+                             data-name="{{ project[3] }}"
+                             data-toggle="modal" data-target="#delete-project">
+                             Delete
+                          </a>
+                       </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+           </table>
+          <span class="no-projects{% if projects %} hidden{% endif %}">You have no projects.</span>
+          </div>
+        </div>
+        {# Modal for project deletion dialog #}
+        <div class="modal fade" id="delete-project" tabindex="-1" role="dialog" aria-labelledby="delete-project-label">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="delete-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="delete-project-label">Delete a project</h4>
+              </div>
+              <div class="modal-body" id="delete-project-body">
+                <span id="delete-project-text">Are you sure that you want to delete the project?</span>
+                <br>
+                <label class="delete-project-label"><input type="checkbox" id="delete-on-disk"> I do understand that this also deletes my project files.</label>
+                <input type="hidden" id="delete-url" value=""/>
+                <input type="hidden" id="delete-id" value=""/>
+                <input type="hidden" id="delete-name" value=""/>
+              </div>
+              <div id="delete-project-error" class="alert alert-danger hidden"></div>
+              <div class="modal-footer">
+                <button type="button" id="delete-confirm" class="btn btn-default btn-danger" disabled>Delete now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endblock projects %}
+
 
         <!--url section-->
         <div class="url row">
@@ -255,6 +255,33 @@
   </div>
 
   <div class="row form-group"></div>
+  <div id="how-it-works">
+  <h3 class="text-center">How it works</h3>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-orange">1</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Build repositories like <a href="http://mybinder.org/">MyBinder.org</a></span><br>Enter your repository information in the <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">Binder</a> form.
+      We build and launch your <a href="https://notebooks.gesis.org/gallery/">binder-ready</a> repository so that you can interact with it just like on <a href="https://binderhub.readthedocs.io/en/latest/known-deployments.html">any other</a> Binder deployment.
+      Once a repository has been launched it will be added to the list of your projects.
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-red">2</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Persist /projects like a <a href="https://github.com/jupyter/docker-stacks/issues/358#issuecomment-288844834">Jovyan</a> </span><br>You are not just a visitor, but a true resident on <a href="">Jupyter</a>.
+      Your projects have a persistent $HOME directory whose contents are mirrored at /projects. Use the buttons in the table to launch, stop or delete an existing project.
+      The <a href="https://github.com/gesiscss/data_science_image">data science</a>  image can be your place to begin. To update a project-image use the Binder form and for files use git.
+      You can launch one project at a time and have up to 5 projects in total.
+    </div>
+  </div>
+</div>
 
   <div class="row text-center">
     <div id="questions">questions?<br />read
@@ -266,49 +293,6 @@
   <div class="row form-group"></div>
   <div class="row form-group"></div>
   {% endblock projects_form %}
-
-  {% block how_it_works %}
-    <div id="how-it-works-gesis" class="row text-center display-flex">
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/mybinder_vector_logo.svg?v={{ static_version }}" alt="MyBinder Logo">
-                <div class="caption">
-                    <h3>Import</h3>
-                    <p>
-                        Enter your repository information and we build and launch your
-                        <a href="https://mybinder.readthedocs.io/en/latest/introduction.html" target='_blank'>binder-ready</a>
-                        repository like <a href="https://mybinder.org" target='_blank'>MyBinder.org</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/powered_by_jupyter_logo.svg?v={{ static_version }}" alt="Jupyter Logo">
-                <div class="caption">
-                    <h3>Persistent Environment</h3>
-                    <p>
-                        Once a repository has been built it will be added to your list of projects saving your work in a
-                        persistent <a href="https://jupyter.org" target='_blank'>Jupyter</a> environment.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/open_science_logo.png?v={{ static_version }}" alt="Open Science Logo">
-                <div class="caption">
-                    <h3>Open Science</h3>
-                    <p>
-                        This <a href="https://www.go-fair.org" target='_blank'>FAIR</a> open access service supports open methodology
-                        with reproducible and transparent documentation for data analysis.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-  {% endblock how_it_works %}
-
 
     {% block featured_projects %}
     <div class="row form-group"></div>
