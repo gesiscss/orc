@@ -124,7 +124,7 @@
                       {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
                       <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
                       <td class="projects-cell">{{ project[2][:7] }}</td>
-                      <td class="projects-cell" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
+                      <td class="projects-cell time-col" id="last-used-{{ project[2] }}">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
                       <td class="projects-cell">
                           {% if project_running %}
                           {# last element in projects is currently running, add Stop button for it #}
