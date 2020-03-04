@@ -104,7 +104,7 @@
 
         {% block projects %}
         {% set projects = user.spawner.get_state_field('projects') %}
-        <div class="projects-container">
+        <div class="projects-container{% if not projects %} no-projects{% endif %}">
           <h3>Your Projects</h3>
           <div class="table-responsive">
            <table id="your-projects" class="table table-striped{% if not projects %} hidden{% endif %}">
@@ -151,7 +151,7 @@
                   {% endfor %}
                </tbody>
            </table>
-          <span class="no-projects{% if projects %} hidden{% endif %}">You have no projects.</span>
+          <span id="no-projects" {% if projects %}class="hidden"{% endif %}>You have no projects.</span>
           </div>
         </div>
         {# Modal for project deletion dialog #}
@@ -496,7 +496,8 @@ $(document).ready(function() {
                     if ($('#your-projects tr').length === 1) {
                         // user has no projects, so remove empty projects table
                         $('#your-projects').addClass("hidden");
-                        $('.no-projects').removeClass("hidden");
+                        $('#no-projects').removeClass("hidden");
+                        $('.projects-container').addClass("no-projects");
                     }
                     // close modal
                     // .modal fails because we load jquery after bootstrap js
