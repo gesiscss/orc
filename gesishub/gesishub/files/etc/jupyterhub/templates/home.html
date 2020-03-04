@@ -255,6 +255,9 @@
   </div>
 
   <div class="row form-group"></div>
+  {% endblock projects_form %}
+
+  {% block how_it_works %}
   <div id="how-it-works">
   <h3 class="text-center">How it works</h3>
 
@@ -281,8 +284,10 @@
       You can launch one project at a time and have up to 5 projects in total.
     </div>
   </div>
-</div>
+  </div>
+  {% endblock how_it_works %}
 
+  {% block binder_questions %}
   <div class="row text-center">
     <div id="questions">questions?<br />read
         <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865" target='_blank'>this post</a>,
@@ -292,7 +297,7 @@
 
   <div class="row form-group"></div>
   <div class="row form-group"></div>
-  {% endblock projects_form %}
+  {% endblock binder_questions %}
 
     {% block featured_projects %}
     <div class="row form-group"></div>
@@ -343,7 +348,7 @@
     <div class="row form-group"></div>
     {% endblock featured_projects %}
 </div>
-{% endblock %}
+{% endblock main %}
 
 {% block script %}
 <script type="text/javascript">
