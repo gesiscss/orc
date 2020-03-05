@@ -137,16 +137,16 @@ server {
     rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
-        # maintenance page
-        error_page 503 /static/maintenance.html;
-        return 503;
+        ## maintenance page
+        #error_page 503 /static/maintenance.html;
+        #return 503;
 
-        #proxy_buffering off;
-        #proxy_pass http://jhub;
-        #include snippets/headers.conf;
-        #include snippets/websocket_headers.conf;
-        ##proxy_set_header X-Forwarded-Proto $scheme;
-        #proxy_set_header X-Scheme $scheme;
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        #proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Scheme $scheme;
     }
 
     include snippets/ignore_fonts.conf;
