@@ -4,7 +4,6 @@ metadata:
   name: data-nfs-nfs-server-provisioner-0
 spec:
   capacity:
-    # TODO this is a min limit, right?
     storage: 4000Gi
   accessModes:
     - ReadWriteOnce

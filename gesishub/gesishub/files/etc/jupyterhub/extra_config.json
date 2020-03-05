@@ -16,7 +16,6 @@
     "static_nginx": "/static/",
     "static_binder": "/services/binder/static/",
     "binder_base_url": "/services/binder/",
-    "projects_limit": "5",
     "featured_projects": [
       {
         "headline": "Welcome to GESIS Notebooks",

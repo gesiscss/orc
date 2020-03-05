@@ -1,77 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>{% block title %}Binder{% endblock %}</title>
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
-  <title>{% block title %}GESIS Notebooks ({{ version }}){% endblock %}</title>
   <meta name="description" content="GESIS Notebooks ({{ version }})">
   <meta name="robots" content="noindex, nofollow">
 
   {% block head %}
-  <link href="{{static_url("dist/styles.css")}}" rel="stylesheet"/>
-  <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
   {% endblock head %}
-  <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
-  <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
   <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
 
-  {% block extra_css %}
-  {% endblock extra_css %}
+  <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
+  <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />
+  <link href="{{ static_nginx }}binder.css?v={{ static_version }}" rel="stylesheet" />
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
-      <script src="{{ static_nginx }}vendor/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
+    <script src="{{ static_nginx }}vendor/respond.min.js"></script>
+  <![endif]-->
 </head>
-
 <body>
-    {% block body %}
+  {% block body %}
 
-{#    {% if banner %}#}
-{#    <div id="banner-container">#}
-{#      {{ banner | safe }}#}
-{#    </div>#}
-{#    {% endif %}#}
+  {% include "gesis/header.html" %}
+  {% include "gesis/nav.html" %}
 
-    {% block gesis_header %}
-    {% include "gesis/header.html" %}
-    {% endblock gesis_header %}
+  {% if banner %}
+  <div id="banner-container">
+    {{ banner | safe }}
+  </div>
+  {% endif %}
 
-    {% block nav_bar %}
-    {% include "gesis/nav.html" %}
-    {% endblock nav_bar %}
-
-    <div id="main-container" class="container">
-        {% block headline %}
-        {% endblock headline %}
-
-        {% block main %}
-        {% endblock main %}
+  {% block logo %}
+  <div class="container">
+    <div class="row">
+      <div id="logo-container">
+        <img id="logo" src={% block logo_image %}"{{static_url("logo.svg")}}"{% endblock logo_image %} width="390px"  />
+      </div>
     </div>
+  </div>
+  {% endblock logo %}
 
-    {% block extra_container %}
-    {% endblock extra_container %}
+  {% block main %}
+  {% endblock main %}
 
-    {% block footer %}
-    {% include "gesis/footer.html" %}
-    {% endblock footer %}
+  {% block footer %}
+  <div id="questions-footer" class="container">
+    <div class="row text-center">
+      <h3>questions?<br />join the <a href="https://gitter.im/jupyterhub/binder">Binder chat</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
+    </div>
+  </div>
+  {% endblock footer %}
 
-    {% if extra_footer_scripts %}
-    {% for script in extra_footer_scripts|dictsort %}
-    <script>
-      {{ script[1]|safe }}
-    </script>
-    {% endfor %}
-    {% endif %}
+  {% include "gesis/footer.html" %}
+  <script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
 
-    {% endblock body %}
+  {% if google_analytics_code %}
+  <script>
+    // Only load GA if DNT is not set
+    if (navigator.doNotTrack != "1" && // Most Firefox & Chrome
+      window.doNotTrack != "1" && // IE & Safari
+      navigator.msDoNotTrack != "1" // Old IE
+  ) {
+    console.log("Loading Google Analytics, since Do Not Track is off");
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    <script src="{{ static_nginx }}gesis_nav.js?v={{ static_version }}"></script>
-    {% block extra_js %}
-    {% endblock extra_js %}
+    ga('create', '{{ google_analytics_code }}', '{{ google_analytics_domain }}',
+      {'storage': 'none'});
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  }
+  </script>
+  {% endif %}
+  {% if extra_footer_scripts %}
+  {% for script in extra_footer_scripts|dictsort %}
+  <script>
+    {{ script[1]|safe }}
+  </script>
+  {% endfor %}
+  {% endif %}
+  {% endblock body %}
 </body>
 </html>

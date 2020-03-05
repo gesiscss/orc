@@ -84,7 +84,13 @@ body {
 #nav-container {
     margin-top: -20px;
 }
-
+.nav-main-container {
+	color: #58748f;
+	background-color: #cdd5dd;
+	border: none;
+	border-radius: 0;
+	padding: 0;
+}
 
 #navbar-list > li > a:focus {
 	color: #58748f;
@@ -101,6 +107,17 @@ body {
     line-height: 1.4rem;
     height: 37px;
 	}
+
+header {
+	background-color: #333;
+}
+header > div.navbar > div {
+	background-color: #333;
+}
+.header-icon-link {
+	display: inline;
+	padding: 0;
+}
 
 header .navbar-brand img.hidden-sm.hidden-xs {
     max-width: 100%;
@@ -133,7 +150,8 @@ header .navbar-default{
 #navbar {
     max-width: 100%;
     margin-left: 0;
-		padding-left: 3.2rem;
+	padding-left: 3.2rem;
+	border-color: #e7e7e7;
 }
 
 .navbar-default .navbar-nav>li>a {
@@ -147,12 +165,6 @@ header .navbar-default{
 	padding-top:5px !important;
 	padding-bottom:0 !important;
 	height: 30px;
-}
-
-#main-container .navbar-toggle {
-	padding: 0 0;
-    /*margin-top: 7px;*/
-    /*margin-bottom: 0;*/
 }
 
 #navbar-list > li > a {
@@ -258,22 +270,6 @@ div.trail-wrapper.hidden-print > div.container > div.row{
 	}
 */
 
-#main-container {
-	/*overflow: hidden;*/
-	background-color: #fff;
-	padding-left: 16px;
-	padding-right: 16px;
-	}
-
-#logo-container {
-	margin-top: -20px;
-    margin-bottom: -50px;
-}
-
-.project-text > div> img {
-	max-width: 80%;
-}
-
 .container {
 	background-color: #fff;
 	}
@@ -317,18 +313,7 @@ footer .container {
 
 }
 
-#header > h3 {
-    /*color: #ff6100;*/
-    font-size: 42px;
-    line-height: 1.3;
-}
-
-#typed, .typed-cursor {
-    font-size: 42px;
-    line-height: 1.3;
-}
-
-footer {
+footer.footer {
     padding: 1.0rem 0;
     color: #fff;
     margin-bottom: 10px;
@@ -340,6 +325,10 @@ footer {
     padding-right: 30px;
 }
 
+.footer-span-no-padding {
+    padding-right: 0;
+}
+
 .footer-link {
     color: #fff;
     text-decoration: underline;
@@ -349,226 +338,23 @@ footer {
     color: #ff6100;
 }
 
-.orc-button, .orc-button:hover, .orc-button:active, .orc-button:visited, .orc-button:focus, .orc-button:active:focus {
-    background-color: #ff6100;
-    border-color: #ff6100;
-}
-
-.orc-button-info, .orc-button-info:hover, .orc-button-info:active, .orc-button-info:visited, .orc-button-info:focus, .orc-button-info:active:focus {
-    background-color: #58748f;
-    border-color: #58748f;
-}
-
-/*Thumbnail - same height*/
-
-.row.display-flex {
-  display: flex;
-  flex-wrap: wrap;
-}
-.thumbnail {
-  height: 100%;
-	border-radius: 0px;
-	background-color: #e6e6e6;
-}
-
-/* extra positioning */
-.thumbnail {
-  display: flex;
-  flex-direction: column;
-}
-
-.thumbnail .caption {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-#gesis-notebooks-img {
-	padding-left: 16px;
-}
-
-#header {
-	margin-left: 3%;
-	margin-bottom: 32px;
-	margin-top: 32px;
-	width: 94%;
-	border-bottom: 0;
-  padding-top: 12px;
-  padding-bottom: 24px;
-}
-
-.caption > p > a {
-	color: #337ab7;
-	border-bottom: none;
-	text-decoration: none;
-}
-
-.project-text {
-	padding-top: 30px;
-	margin-top: -30px;
-	padding-bottom: 30px;
-	margin-bottom: -30px;
-	margin-right: -32px;
-	margin-left: -32px;
-}
-
-.caption {
-	padding: 8px;
-}
-
-.caption > h4 {
-	margin: 0px;
-}
-
-
-.caption > p > a:hover {
-	text-decoration: underline;
-}
-
-/*Binder*/
-#how-it-works, #explanation {
-    font-weight: normal;
-    line-height: 1.4;
-}
-
-#questions {
-	margin-top: 0;
-	font-size: 24px;
-}
-
-.caption > p {
-	font-size: 14px;
-}
-.project-caption > h4 {
-	margin: 0px;
-	font-size: 16px;
-}
-.project-caption > h4> b,small,i {
-	font-size: 13px;
-}
-
-#explanation {
-	color: rgb(40, 40, 40);
-	font-size: 1.8em;
-}
-
-.featured-projects {
-	padding-left: 0.8rem;
-	padding-right: 0.8rem;
-	margin-bottom:0px;
-}
-
-.project-example {
-	margin-bottom: 10px;
-	padding-right: 6px;
-	padding-left: 6px;
-}
-
-.use-examples > img{
-	height: 100px;
-	width: auto;
-}
-
 .footer-container {
 	padding-left: 3.2rem;
 	padding-right: 3.2rem;
 }
 
-/* projects table  */
-td.projects-display-name {
-    vertical-align: middle!important;
-}
-/* truncate long repo display names */
-td.projects-display-name {
-    max-width: 50ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* maintenance page */
+div.maintenance {
+	margin: 2em;
+	text-align: center;
 }
 
-/* Questions CSS */
-.questions-panel-default {
-	border-radius: 0px !important;
-	border: none;
-	margin-bottom: 1.28rem !important;
-	-webkit-box-shadow: none;
+div.maintenance > h1 {
+	font-size: 300%;
+    line-height: normal;
 }
 
-.topic-question  a:before {
-   font-family: 'Glyphicons Halflings';
-   content: "\25BC";
-   float: right;
-   transition: all 0.75s;
-}
-
-.topic-question {
-	background-color: #58748f !important;
-	padding: 0px 0px !important;
-	border-radius: 0;
-	font: inherit;
-}
-
-.topic-question.active a:before {
-	-webkit-transform: rotate(180deg);
-	-moz-transform: rotate(180deg);
-	transform: rotate(180deg);
-}
-
-.topic-question > a:hover {
-	text-decoration: none;
-	color: white;
-	display: block;
-	background-color: #e6e6e6;
-}
-
-.panel-title > a {
-	color: white;
-	display: block;
-	font-size: 1.5rem;
-	font-family: "Droid Sans", Arial, Verdana, Helvetica, sans-serif;
-	text-rendering: optimizeLegibility;
-	line-height: 1.4rem;
-	text-decoration: none;
-	padding: 10px 15px;
-	font-weight: bold;
-}
-
-.questions-panel-body {
-	border-style: none !important;
-	padding: 2px 4px;
-	padding-top: 10px;
-}
-
-.questions-panel-body > p {
-	margin: 0px;
-}
-
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Opera and Firefox */
-}
-
-.about-main-row {
-	padding-left: 17px !important;
-	padding-right: 17px !important;
-}
-
-#main-container {
-	padding-left: 32px;
-	padding-right: 32px;
-}
-
-
-/* GESIS Hub */
-/* admin interface */
-.email-col {
-	max-width: 25ch;
-	overflow: overlay;
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
+div.maintenance > p {
+	font-size: 200%;
+    line-height: normal;
 }

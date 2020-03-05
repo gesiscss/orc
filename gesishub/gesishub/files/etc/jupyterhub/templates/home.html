@@ -3,10 +3,14 @@
 {% block stylesheet %}
 <meta id="base-url" data-url="{{ binder_base_url }}">
 <meta id="badge-base-url" data-url="{{badge_base_url}}">
-<script src="{{ static_binder }}dist/bundle.js"></script>
-<link href="{{ static_binder }}dist/styles.css" rel="stylesheet"/>
+<script src="{{ static_binder }}dist/bundle.js?v={{ static_version }}"></script>
+<link href="{{ static_binder }}dist/styles.css?v={{ static_version }}" rel="stylesheet"/>
 {{ super() }}
 {% endblock %}
+
+{% block extra_css %}
+<link href="{{ static_nginx }}binder.css?v={{ static_version }}" rel="stylesheet" />
+{% endblock extra_css %}
 
 {% block scripts %}
     <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
@@ -25,98 +29,17 @@
         </div>
     </div>
   {% endblock binder_header %}
-
-  {% block projects %}
-  {% set projects = user.spawner.get_state_field('projects') %}
-  <div class="projects-container">
-    <h3>Your Projects</h3>
-    <div class="table-responsive">
-     <table id="your-projects" class="table table-striped{% if not projects %} hidden{% endif %}">
-         <thead>
-         <tr>
-             <th>Repository</th>
-             <th>Commit</th>
-             <th>Last used</th>
-             <th>Actions</th>
-         </tr>
-         </thead>
-         <tbody>
-            {% for project in projects %}
-            <tr>
-                {% set project_running = loop.index == loop.length and user.running %}
-                {% set project_active = loop.index == loop.length and user.spawner.active %}
-                {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
-                <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
-                <td class="projects-cell">{{ project[2][:7] }}</td>
-                <td class="projects-cell" id="last-used-{{ project[2] }}" class="time-col">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
-                <td class="projects-cell">
-                    {% if project_running %}
-                    {# last element in projects is currently running, add Stop button for it #}
-                    <a id="stop" role="button" class="btn btn-sm btn-danger" data-ref="{{ project[2] }}">Stop</a>
-                    {% endif %}
-                    {# add launch button for each element, if user has no server running #}
-                    {# if last element is running, hide launch buttons of all other elements #}
-                    <a role="button" id="launch-{{ project[2] }}"
-                       class="project-launch btn btn-sm {% if project_active %}btn-primary{% else %}btn-warning{% endif %}{% if project_not_active %} hidden{% endif %}"
-                       href="{% if project_active %}{{ url }}{% else %}#{% endif %}"
-                       data-url="{{ project[0] }}"
-                       style="vertical-align: top;">
-                       {% if project_active %}My Server{% else %}Launch{% endif %}
-                    </a>
-                    <a role="button" id="delete-{{ project[2] }}"
-                       class="project-delete btn btn-sm btn-danger{% if user.spawner.active %} hidden{% endif %}"
-                       href="#" title="Delete from projects list and persistent storage"
-                       data-url="{{ project[0] }}"
-                       data-name="{{ project[3] }}"
-                       data-toggle="modal" data-target="#delete-project">
-                       Delete
-                    </a>
-                 </td>
-            </tr>
-            {% endfor %}
-         </tbody>
-     </table>
-    <span class="no-projects{% if projects %} hidden{% endif %}">You have no projects.</span>
-    </div>
-  </div>
-  {# Modal for project deletion dialog #}
-  <div class="modal fade" id="delete-project" tabindex="-1" role="dialog" aria-labelledby="delete-project-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button id="delete-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="delete-project-label">Delete a project</h4>
-        </div>
-        <div class="modal-body" id="delete-project-body">
-          <span id="delete-project-text">Are you sure that you want to delete the project?</span>
-          <br>
-          <label style="font-weight: normal;"><input type="checkbox" id="delete-on-disk"> Delete the project also on my persistent storage.</label>
-          <input type="hidden" id="delete-url" value=""/>
-          <input type="hidden" id="delete-id" value=""/>
-          <input type="hidden" id="delete-name" value=""/>
-        </div>
-        <div id="delete-project-success" class="alert alert-success hidden"></div>
-        <div id="delete-project-error" class="alert alert-danger hidden"></div>
-        <div class="modal-footer">
-          <button type="button" id="delete-cancel" class="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" id="delete-confirm" class="btn btn-default">Yes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endblock projects %}
-
   {% block projects_form %}
   <div class="row form-group"></div>
-  <div class="row form-group no-projects{% if projects %} hidden{% endif %}"></div>
-  <div class="row">
+  <div class="row build-project-container">
     <div class="col-lg-12 build-form-container">
+    {# copied from https://github.com/jupyterhub/binderhub/blob/207ae704752cde82f33fc771a3b58aa1ecc04b6d/binderhub/templates/index.html#L34 #}
     {% block binder_form %}
-    <form id="build-form" class="form jumbotron" style="margin-bottom: 0;">
+      <form id="build-form" class="form jumbotron build-form">
         <h3 id="form-header" class='row'>Build and launch a new repository</h3>
         <input type="hidden" id="provider_prefix" value="gh"/>
         <div class="form-group row">
-          <label for="repository">Git repository URL (github.com, gitlab.com or self-host)</label>
+          <label for="repository">GitHub repository name or URL</label>
           <div class="input-group">
             <div class="input-group-btn" id="url-type-btn">
               <button type="button" class="btn btn-secondary dropdown-toggle"
@@ -133,18 +56,20 @@
                 <li class="dropdown-item" value="gist"><a href="#">Gist</a></li>
                 <li class="dropdown-item" value="gl"><a href="#">GitLab.com</a></li>
                 <li class="dropdown-item" value="git"><a href="#">Git repository</a></li>
-                {# TODO enable zenodo and figshare #}
+                {# TODO enable zenodo, figshare and others #}
 {#                <li class="dropdown-item" value="zenodo"><a href="#">Zenodo DOI</a></li>#}
 {#                <li class="dropdown-item" value="figshare"><a href="#">Figshare DOI</a></li>#}
+{#                <li class="dropdown-item" value="hydroshare"><a href="#">Hydroshare resource</a></li>#}
+{#                <li class="dropdown-item" value="dataverse"><a href="#">Dataverse DOI</a></li>#}
               </ul>
             </div>
-            <input class="form-control" type="text" id="repository" data-lpignore="true" placeholder="GitHub repository name or link"/>
+            <input class="form-control" type="text" id="repository" data-lpignore="true" placeholder="GitHub repository name or URL"/>
           </div>
         </div>
         <div class="form-row row">
           <div class="form-group col-md-4">
             <label for="ref">Git branch, tag, or commit</label>
-            <input class="form-control" type="text" id="ref" placeholder="master"/>
+            <input class="form-control" type="text" id="ref" placeholder="Git branch, tag, or commit"/>
           </div>
           <div class="form-group col-md-6">
             <label for="filepath"></label>
@@ -177,20 +102,98 @@
           </div>
         </div>
 
+        {% block projects %}
+        {% set projects = user.spawner.get_state_field('projects') %}
+        <div class="projects-container{% if not projects %} no-projects{% endif %}">
+          <h3>Your Projects</h3>
+          <div class="table-responsive">
+           <table id="your-projects" class="table table-striped{% if not projects %} hidden{% endif %}">
+               <thead>
+               <tr>
+                   <th>Repository</th>
+                   <th>Commit</th>
+                   <th>Last used</th>
+                   <th>Actions</th>
+               </tr>
+               </thead>
+               <tbody>
+                  {% for project in projects %}
+                  <tr>
+                      {% set project_running = loop.index == loop.length and user.running %}
+                      {% set project_active = loop.index == loop.length and user.spawner.active %}
+                      {% set project_not_active = user.spawner._stop_pending or (user.spawner.active and loop.index != loop.length) %}
+                      <td class="projects-cell projects-display-name"><a href="{{ project[0] }}" target="_blank">{{ project[3] }}</a></td>
+                      <td class="projects-cell">{{ project[2][:7] }}</td>
+                      <td class="projects-cell time-col" id="last-used-{{ project[2] }}">{% if project_running %}running{% else %}{{ project[4] }}{% endif %}</td>
+                      <td class="projects-cell">
+                          {% if project_running %}
+                          {# last element in projects is currently running, add Stop button for it #}
+                          <a id="stop" role="button" class="btn btn-sm btn-danger" data-ref="{{ project[2] }}">Stop</a>
+                          {% endif %}
+                          {# add launch button for each element, if user has no server running #}
+                          {# if last element is running, hide launch buttons of all other elements #}
+                          <a role="button" id="launch-{{ project[2] }}"
+                             class="project-launch btn btn-sm {% if project_active %}btn-primary{% else %}btn-warning{% endif %}{% if project_not_active %} hidden{% endif %}"
+                             href="{% if project_active %}{{ url }}{% else %}#{% endif %}"
+                             data-url="{{ project[0] }}">
+                             {% if project_active %}My Server{% else %}Launch{% endif %}
+                          </a>
+                          <a role="button" id="delete-{{ project[2] }}"
+                             class="project-delete btn btn-sm btn-danger{% if user.spawner.active %} hidden{% endif %}"
+                             href="#" title="Delete from projects list and persistent storage"
+                             data-url="{{ project[0] }}"
+                             data-name="{{ project[3] }}"
+                             data-toggle="modal" data-target="#delete-project">
+                             Delete
+                          </a>
+                       </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+           </table>
+          <span id="no-projects" {% if projects %}class="hidden"{% endif %}>You have no projects.</span>
+          </div>
+        </div>
+        {# Modal for project deletion dialog #}
+        <div class="modal fade" id="delete-project" tabindex="-1" role="dialog" aria-labelledby="delete-project-label">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button id="delete-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="delete-project-label">Delete a project</h4>
+              </div>
+              <div class="modal-body" id="delete-project-body">
+                <span id="delete-project-text">Are you sure that you want to delete the project?</span>
+                <br>
+                <label class="delete-project-label"><input type="checkbox" id="delete-on-disk"> I do understand that this also deletes the files associated with this project.</label>
+                <input type="hidden" id="delete-url" value=""/>
+                <input type="hidden" id="delete-id" value=""/>
+                <input type="hidden" id="delete-name" value=""/>
+              </div>
+              <div id="delete-project-error" class="alert alert-danger hidden"></div>
+              <div class="modal-footer">
+                <button type="button" id="delete-confirm" class="btn btn-default btn-danger" disabled>Delete now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endblock projects %}
+
+
         <!--url section-->
-        <div class="url row" style="display: none;">
+        <div class="url row">
             <div class="dropdownmenu">
               <label>Copy the URL below and share your Binder with others:</label>
             </div>
             <div class="url-row">
               <pre id="basic-url-snippet" data-default="Fill in the fields to see a URL for sharing your Binder."></pre>
-              <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg" data-clipboard-target="#basic-url-snippet" alt="Copy to clipboard">
+              <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg?v={{ static_version }}" data-clipboard-target="#basic-url-snippet" alt="Copy to clipboard">
             </div>
         </div>
 
-        <div class="badges row" style="display: none;">
+        <div class="badges row">
             <div class="dropdownmenu" id="toggle-badge-snippet">
-              <label>Copy the text below, then paste into your README to show a binder badge: <img id="badge" src="{{ static_binder }}images/badge_logo.svg"></label>
+              <label>Copy the text below, then paste into your README to show a binder badge: <img id="badge" src="{{ static_binder }}images/badge_logo.svg?v={{ static_version }}"></label>
               <a id="badge-link"></a>
               <a href="#" title="show badge snippets"><span id="badge-snippet-caret" class="glyphicon glyphicon-triangle-right"></span></a>
             </div>
@@ -198,17 +201,17 @@
               <!--Markdown section-->
               <div  class="badge-snippet-row">
                  <pre id="markdown-badge-snippet" data-default="Fill in the fields to see the markdown badge snippet."></pre>
-                 <img class="icon" src="{{ static_binder }}images/markdown-icon.svg">
+                 <img class="icon" src="{{ static_binder }}images/markdown-icon.svg?v={{ static_version }}">
                  <img class="icon clipboard"
-                    src="{{ static_binder }}images/copy-icon-black.svg"
+                    src="{{ static_binder }}images/copy-icon-black.svg?v={{ static_version }}"
                     data-clipboard-target="#markdown-badge-snippet"
                     alt="Copy markdown link to clipboard">
               </div>
               <!--RST section-->
               <div  class="badge-snippet-row">
                   <pre id="rst-badge-snippet" data-default="Fill in the fields to see the rST badge snippet."></pre>
-                  <img class="icon" src="{{ static_binder }}images/rst-icon.svg">
-                  <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg"
+                  <img class="icon" src="{{ static_binder }}images/rst-icon.svg?v={{ static_version }}">
+                  <img class="icon clipboard" src="{{ static_binder }}images/copy-icon-black.svg?v={{ static_version }}"
                     data-clipboard-target="#rst-badge-snippet"
                     alt="Copy rst link to clipboard">
               </div>
@@ -217,7 +220,7 @@
 
         <div id="build-progress" class="progress on-build hidden row">
           <div id="phase-failed" class="progress-bar progress-bar-danger progress-bar-striped hidden" style="width: 100%">
-            Failed
+            Failed. Try refreshing this page in a few seconds.
           </div>
           <div id="phase-waiting" class="progress-bar progress-bar-danger progress-bar-striped active hidden" style="width: 10%">
             Waiting
@@ -251,7 +254,39 @@
   </div>
 
   <div class="row form-group"></div>
+  {% endblock projects_form %}
 
+  {% block how_it_works %}
+  <div id="how-it-works">
+  <h3 class="text-center">How it works</h3>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-orange">1</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Build repositories like <a href="http://mybinder.org/">MyBinder.org</a></span><br>Enter your repository information in the <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">Binder</a> form.
+      We build and launch your <a href="https://notebooks.gesis.org/gallery/">binder-ready</a> repository so that you can interact with it just like on <a href="https://binderhub.readthedocs.io/en/latest/known-deployments.html">any other</a> Binder deployment.
+      Once a repository has been launched it will be added to the list of your projects.
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-red">2</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Persist /projects like a <a href="https://github.com/jupyter/docker-stacks/issues/358#issuecomment-288844834">Jovyan</a> </span><br>You are not just a visitor, but a true resident on <a href="">Jupyter</a>.
+      Your projects have a persistent $HOME directory whose contents are mirrored at /projects. Use the buttons in the table to launch, stop or delete an existing project.
+      The <a href="https://github.com/gesiscss/data_science_image">data science</a>  image can be your place to begin. To update a project-image use the Binder form and for files use git.
+      You can launch one project at a time and have up to 5 projects in total.
+    </div>
+  </div>
+  </div>
+  {% endblock how_it_works %}
+
+  {% block binder_questions %}
   <div class="row text-center">
     <div id="questions">questions?<br />read
         <a href="https://discourse.jupyter.org/t/a-persistent-binderhub-deployment/2865" target='_blank'>this post</a>,
@@ -261,50 +296,7 @@
 
   <div class="row form-group"></div>
   <div class="row form-group"></div>
-  {% endblock projects_form %}
-
-  {% block how_it_works %}
-    <div class="row text-center display-flex" style="margin: 54px -16px 0px -16px;">
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/mybinder_vector_logo.svg?v={{ static_version }}" alt="MyBinder Logo">
-                <div class="caption">
-                    <h3>Import</h3>
-                    <p>
-                        Enter your repository information and we build and launch your
-                        <a href="https://mybinder.readthedocs.io/en/latest/introduction.html" target='_blank'>binder-ready</a>
-                        repository like <a href="https://mybinder.org" target='_blank'>MyBinder.org</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/powered_by_jupyter_logo.svg?v={{ static_version }}" alt="Jupyter Logo">
-                <div class="caption">
-                    <h3>Persistent Environment</h3>
-                    <p>
-                        Once a repository has been built it will be added to your list of projects saving your work in a
-                        persistent <a href="https://jupyter.org" target='_blank'>Jupyter</a> environment.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-            <div class="use-examples">
-                <img src="{{ static_nginx }}images/open_science_logo.png?v={{ static_version }}" alt="Open Science Logo">
-                <div class="caption">
-                    <h3>Open Science</h3>
-                    <p>
-                        This <a href="https://www.go-fair.org" target='_blank'>FAIR</a> open access service supports open methodology
-                        with reproducible and transparent documentation for data analysis.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-  {% endblock how_it_works %}
-
+  {% endblock binder_questions %}
 
     {% block featured_projects %}
     <div class="row form-group"></div>
@@ -321,7 +313,7 @@
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
             <div class="thumbnail">
                 <div class="caption project-caption">
-                    <h4 style="margin:0; font-size: 16px;"><a href="{{ example.repo_link }}" target='_blank'><b>{{ example.headline }}</b></a>
+                    <h4><a href="{{ example.repo_link }}" target='_blank'><b>{{ example.headline }}</b></a>
                         <br>
                         {% if example.who %}
                         <b>By:</b> <i>{{ example.who|safe }}</i>
@@ -332,14 +324,14 @@
                         {% endif %}
                     </h4>
                     <p>{{ example.description|safe }}</p>
-                    <div style="display: inline-block; vertical-align: middle;">
-                        <div style="display: inline-block;">
-                            {% if example.where %}
-                            <b style="font-size: 13px;">Language:</b> {{ example.language }}
+                    <div>
+                        <div class="project-language">
+                            {% if example.language %}
+                            <b>Language:</b> {{ example.language }}
                             {% endif %}
                         </div>
-                        <div style="display: inline-block; float: right;">
-                            <a href="{{ binder_base_url }}{{ example.binder_link }}" style="align:right;">
+                        <div class="project-badge">
+                            <a href="{{ binder_base_url }}{{ example.binder_link }}">
                                 <img src="{{ static_nginx }}images/badge_logo.svg?v={{ static_version }}" alt="Launch Binder">
                             </a>
                         </div>
@@ -349,13 +341,13 @@
         </div>
         {% endfor %}
     </div>
-    <div class="row form-group" style="padding: 0px 16px 0px 16px;">
-        <a href="{{ gallery_url }}" style="float:right;">See all projects >></a>
+    <div class="row form-group see-all-projects">
+        <a href="{{ gallery_url }}">See all projects >></a>
     </div>
     <div class="row form-group"></div>
     {% endblock featured_projects %}
 </div>
-{% endblock %}
+{% endblock main %}
 
 {% block script %}
 <script type="text/javascript">
@@ -375,7 +367,7 @@ require(["jquery", "jhapi", "moment"], function($, JHAPI, moment) {
            .click(function() {
                return false;
            });
-    // hide next launch ("My Server") button
+    // hide "My Server" button while stopping
     $(this).next('a').addClass('hidden');
     api.stop_server(user, {
       success: function() {
@@ -406,7 +398,7 @@ require(["jquery", "jhapi", "moment"], function($, JHAPI, moment) {
 $(document).ready(function() {
     // Project launch through table
     $('.project-launch').click(function(e) {
-        // if server is running, this button holds the url of server
+        // if server is running, this button holds the url of the server
         // if server is not running, do following
         if ($(this).attr('href') === '#') {
             e.preventDefault();
@@ -417,7 +409,7 @@ $(document).ready(function() {
             var repo_url_lower = repo_url.toLowerCase();
             var provider_prefix;
             var provider_prefix_selected;
-            // TODO add other repo providers: zenodo and figshare
+            // TODO handle provider prefix for other providers
             if (repo_url_lower.indexOf('github.com') !== -1 && repo_url_lower.indexOf('gist.github.com') === -1) {
                provider_prefix = 'gh';
                provider_prefix_selected = 'GitHub';
@@ -447,26 +439,43 @@ $(document).ready(function() {
     });
 
     // Project deletion
+    // we would use show.bs.modal event instead of click: https://getbootstrap.com/docs/3.4/javascript/#modals-events
+    // but it bootstrap methods fails because we load jquery after bootstrap js
+    // see: https://stackoverflow.com/questions/25757968/bootstrap-modal-is-not-a-function
     $('.project-delete').on('click', function (event) {
         // reset parts of dialog
         $('#delete-project-body').children().removeClass("hidden");
-        $('#delete-cancel').text("No");
-        $('#delete-confirm').removeClass("hidden");
-        $('#delete-on-disk').prop("checked", false);
-        $('#delete-project-success').text('').addClass("hidden");
         $('#delete-project-error').text('').addClass("hidden");
+        $('#delete-on-disk').prop("checked", false);
+        $('#delete-confirm').text("Delete now").removeClass("hidden").prop("disabled", true);
         // fill hidden inputs, they will be used in ajax call to delete project
         $('#delete-url').val($(this).data('url'));
-        $('#delete-id').val($(this).prop('id'));  // this will be used success of ajax call to delete project row from table
+        $('#delete-id').val($(this).prop('id'));  // this will be used in success return of ajax call to delete project row from table
         var project_name = $(this).data('name');
         $('#delete-name').val(project_name);
         // update text in confirm dialog
-        $('#delete-project-label').text('Delete project ' + project_name);
+        $('#delete-project-label').text('Delete project: ' + project_name);
         $('#delete-project-text').text('Are you sure that you want to delete "' + project_name +'" project?');
     });
+    $('#delete-on-disk').on('click', function (event) {
+        // Enable/disable "Delete now" button according to delete-on-disk checkbox
+        $('#delete-confirm').prop("disabled", !$(this).prop("checked"));
+    });
+    function display_error(message) {
+        // display error message in modal
+        $('#delete-project-body').children().addClass("hidden");
+        $('#delete-project-error').text(message).removeClass("hidden");
+        $('#delete-confirm').addClass("hidden");
+    }
+    $('#delete-project').on('hide.bs.modal', function (e) {
+        // reset hidden inputs, when modal is closed
+        $('#delete-url').val('');
+        $('#delete-name').val('');
+        $('#delete-id').val('');
+    });
     $('#delete-confirm').on('click', function (event) {
+        $('#delete-confirm').prop("disabled", true).text("Deleting");
         var body = JSON.stringify({repo_url: $('#delete-url').val(),
-                                   delete_on_disk: $('#delete-on-disk').prop("checked"),
                                    name: $('#delete-name').val(),
                                    id: $('#delete-id').val()});
         var user_name = window.jhdata.user;
@@ -478,37 +487,27 @@ $(document).ready(function() {
             data: body,
             success: function (response) {
                 if ("error" in response) {
-                    // show error message
-                    $('#delete-project-body').children().addClass("hidden");
-                    $('#delete-project-success').text('').addClass("hidden");
-                    $('#delete-project-error').text(response['error']).removeClass("hidden");
-                    // show only OK button, user should handle the error first
-                    $('#delete-cancel').text("Okay");
-                    $('#delete-confirm').addClass("hidden");
+                    // show error message only, user should handle the error first
+                    display_error(response['error']);
                 } else {
-                    // show success message
-                    $('#delete-project-body').children().addClass("hidden");
-                    $('#delete-project-error').text('').addClass("hidden");
-                    $('#delete-project-success').text(response['success']).removeClass("hidden");
-                    // project is deleted, so leave just an OK button to close the modal
-                    $('#delete-cancel').text("Okay");
-                    $('#delete-confirm').addClass("hidden");
-                    // reset hidden inputs
-                    $('#delete-url').val('');
-                    $('#delete-name').val('');
-                    $('#delete-id').val('');
-                    //$('#delete-close').trigger('click');
+                    // project is deleted
+                    // remove project from "Your Projects" table
                     $("#"+response["id"]).closest('tr').remove();
                     if ($('#your-projects tr').length === 1) {
                         // user has no projects, so remove empty projects table
                         $('#your-projects').addClass("hidden");
-                        $('.no-projects').removeClass("hidden");
+                        $('#no-projects').removeClass("hidden");
+                        $('.projects-container').addClass("no-projects");
                     }
+                    // close modal
+                    // .modal fails because we load jquery after bootstrap js
+                    // see: https://stackoverflow.com/questions/25757968/bootstrap-modal-is-not-a-function
+                    //$('#delete-project').modal('hide');
+                    $('#delete-close').trigger('click');
                 }
                 },
             error: function () {
-                $('#delete-project-success').text('').addClass("hidden");
-                $('#delete-project-error').text("Error. Please try again.").removeClass("hidden");
+                display_error("Error. Please refresh the page and try again.");
             }
         });
     });
