@@ -18,3 +18,5 @@ monitoring/efk_stack/config_default.yaml
 load_balancer/sites-available/default_nginx
 gallery/bindergallery
 gesishub/gesishub/charts
+gesisbinder/gesisbinder/charts
+monitoring/elastic-stack/elastic-stack/charts
