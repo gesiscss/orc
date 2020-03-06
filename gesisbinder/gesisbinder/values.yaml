@@ -31,6 +31,22 @@ binderhub:
   pdb:
     minAvailable: 1
   replicas: 2
+  # copied from mybinder.org-deploy repo
+  # We also allow outbound traffic to mongodb and mysql
+  # this networkPolicy is applied to singleuser-server and dind pods! not to binder pod
+  networkPolicy:
+    enabled: true
+    egress:
+      tcpPorts:
+        - 80 # http
+        - 443 # https
+        - 9418 # git
+        - 873 # rsync
+        - 1094 # xroot
+        - 1095 # xroot
+        - 27017 # mongodb
+        - 3306  # mysql
+      cidr: 0.0.0.0/0  # represents all possible IP addresses
   config:
     GitHubRepoProvider:
       # Add banned repositories to the list below
@@ -177,6 +193,13 @@ binderhub:
       # replicas: 1
       pdb:
         minAvailable: 0
+      networkPolicy:
+        # z2jh chart has a default ingress rule which allows inbound traffic
+        # only to port 8081 (API port)
+        # from pods with label "hub.jupyter.org/network-access-hub",
+        # user and proxy pods have this label
+        # z2jh chart has a default egress rule: allow all outbound traffic for hub
+        enabled: true
       nodeSelector:
         base: worker  # where database is
       baseUrl: /binder/jupyter/
@@ -193,9 +216,27 @@ binderhub:
         minAvailable: 0
       https:
         type: offload
+      networkPolicy:
+        # z2jh chart has a default ingress rule which allows inbound traffic
+        # to port 8000 (HTTP port) from pods with label "hub.jupyter.org/network-access-proxy-HTTP" and
+        # to port 8001 (API port) from pods with label "hub.jupyter.org/network-access-proxy-API",
+        # and only hub pod has these labels
+        # so only the hub pod can talk to the proxy's API and HTTP ports
+        # z2jh chart has a default egress rule: allow all outbound traffic for proxy
+        enabled: true
       service:
         type: NodePort
     singleuser:
+      networkPolicy:
+        enabled: true
+        # z2jh chart has a default ingress rule which allows inbound traffic
+        # only to port 8888
+        # from pods with label "hub.jupyter.org/network-access-singleuser",
+        # hub and proxy pods have this label
+        #ingress: []
+        # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
+        egress: []  # no additional egress rule
+        # NOTE: check binderhub.networkPolicy.egress.tcpPorts for other outbound traffic we allow from user pods
       nodeSelector:
         user: worker
       storage:
