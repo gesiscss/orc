@@ -31,22 +31,6 @@ binderhub:
   pdb:
     minAvailable: 1
   replicas: 2
-  # copied from mybinder.org-deploy repo
-  # We also allow outbound traffic to mongodb and mysql
-  # this networkPolicy is applied to singleuser-server and dind pods! not to binder pod
-  networkPolicy:
-    enabled: true
-    egress:
-      tcpPorts:
-        - 80 # http
-        - 443 # https
-        - 9418 # git
-        - 873 # rsync
-        - 1094 # xroot
-        - 1095 # xroot
-        - 27017 # mongodb
-        - 3306  # mysql
-      cidr: 0.0.0.0/0  # represents all possible IP addresses
   config:
     GitHubRepoProvider:
       # Add banned repositories to the list below
@@ -235,8 +219,55 @@ binderhub:
         # hub and proxy pods have this label
         #ingress: []
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
-        egress: []  # no additional egress rule
-        # NOTE: check binderhub.networkPolicy.egress.tcpPorts for other outbound traffic we allow from user pods
+        #egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
+        egress:
+          # These egress rules are copied from mybinder.org-deploy repo
+          # (https://github.com/jupyterhub/mybinder.org-deploy/blob/master/mybinder/templates/netpol.yaml)
+          # We also allow outbound traffic to mongodb and mysql
+          # allow DNS resolution in the cluster
+          # it would be nicer to be able to pin this to only the kube-dns service,
+          # but we can only seem to select *pods* not *services* as the destination
+          - ports:
+              - port: 53
+                protocol: TCP
+              - port: 53
+                protocol: UDP
+            to:
+              - ipBlock:
+                  cidr: 10.0.0.0/8
+              - ipBlock:
+                  cidr: 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
+          # allow access to the world,
+          # but not the cluster
+          # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
+          # By default, Calico uses 192.168.0.0/16 as the Pod network CIDR
+          # For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16
+          # For Cilium to work correctly, you must pass --pod-network-cidr=10.217.0.0/16 to kubeadm init.
+          # 10.244.0.0/16 and 10.217.0.0/16 must be covered by 10.0.0.0/8
+          - ports:
+              - port: 80
+                protocol: TCP
+              - port: 443
+                protocol: TCP
+              - port: 9418 # git
+                protocol: TCP
+              - port: 873 # rsync
+                protocol: TCP
+              - port: 1094 # xroot
+                protocol: TCP
+              - port: 1095 # xroot
+                protocol: TCP
+              - port: 27017 # mongodb
+                protocol: TCP
+              - port: 3306  # mysql
+                protocol: TCP
+            to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0  # represents all possible IP addresses
+                  except:
+                    - 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
+                    - 169.254.169.254/32
+                    - 10.0.0.0/8
       nodeSelector:
         user: worker
       storage:
