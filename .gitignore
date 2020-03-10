@@ -20,3 +20,5 @@ gallery/bindergallery
 gesishub/gesishub/charts
 gesisbinder/gesisbinder/charts
 monitoring/elastic-stack/elastic-stack/charts
+gesisbinder/gesisbinder/requirements.lock
+gesishub/gesishub/requirements.lock
