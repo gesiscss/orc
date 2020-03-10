@@ -234,8 +234,9 @@ binderhub:
                 protocol: UDP
             to:
               - ipBlock:
-                  cidr: 10.0.0.0/8
+                  cidr: 10.0.0.0/8  # we need this range for kubernetes services
               - ipBlock:
+                  # TODO do we really need this for allowing DNS in cluster
                   cidr: 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
           # allow access to the world,
           # but not the cluster
