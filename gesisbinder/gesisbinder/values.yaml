@@ -246,22 +246,15 @@ binderhub:
           # For Cilium to work correctly, you must pass --pod-network-cidr=10.217.0.0/16 to kubeadm init.
           # 10.244.0.0/16 and 10.217.0.0/16 must be covered by 10.0.0.0/8
           - ports:
+              # TCP is the default protocol
               - port: 80
-                protocol: TCP
               - port: 443
-                protocol: TCP
               - port: 9418 # git
-                protocol: TCP
               - port: 873 # rsync
-                protocol: TCP
               - port: 1094 # xroot
-                protocol: TCP
               - port: 1095 # xroot
-                protocol: TCP
               - port: 27017 # mongodb
-                protocol: TCP
               - port: 3306  # mysql
-                protocol: TCP
             to:
               - ipBlock:
                   cidr: 0.0.0.0/0  # represents all possible IP addresses
@@ -269,6 +262,8 @@ binderhub:
                     - 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
                     - 169.254.169.254/32
                     - 10.0.0.0/8
+              - ipBlock:
+                  cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
       nodeSelector:
         user: worker
       storage:
