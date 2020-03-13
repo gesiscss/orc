@@ -120,7 +120,7 @@
               },
               "Question 4": {
                 "Question": "How can I manage my projects?",
-                "Answer": "After launching a new repository, it will appear in Your Projects:  <ol><li>Concurrently store up to 5 projects</li><li>Control the projects you are currently working on</li><li>Directly link to the project repositories</li></ol><img alt='GESIS Notebooks' src='/static_local/images/faq/YourProjects.png?v=123456' class='img-responsive center-block' id='faq-img'>",
+                "Answer": "After launching a new repository, it will appear in Your Projects:  <ol><li>Concurrently store up to 5 projects</li><li>Control the projects you are currently working on</li><li>Directly link to the project repositories</li></ol><img alt='GESIS Notebooks' src='/static/images/faq/YourProjects.png?v=123456' class='img-responsive center-block' id='faq-img'>",
                 "ID": "8"
               },
               "Question 2": {
