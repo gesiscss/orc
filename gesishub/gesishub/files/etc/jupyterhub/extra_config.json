@@ -118,15 +118,20 @@
                 "Answer": "Binder is an open-source project that enables the creation of shareable, interactive, reproducible scientific analysis environments. You can read more about Binder <a href='https://mybinder.readthedocs.io/en/latest/introduction.html' target='_blank'>here</a>.",
                 "ID": "7"
               },
+              "Question 4": {
+                "Question": "How can I manage my projects?",
+                "Answer": "After launching a new repository, it will appear in Your Projects:  <ol><li>Concurrently store up to 5 projects</li><li>Control the projects you are currently working on</li><li>Directly link to the project repositories</li></ol><img alt='GESIS Notebooks' src='/static/images/faq/YourProjects.png?v=123456' class='img-responsive center-block' id='faq-img'>",
+                "ID": "8"
+              },
               "Question 2": {
                 "Question": "Where can I find binder-ready projects?",
                 "Answer": "The Binder Federation maintains a machine readable <a href='https://archive.analytics.mybinder.org/' target='_blank'>archive</a> of projects that are binder-ready and suited for the import in GESIS Notebooks. A gallery for you to browse is available at <a href='/gallery/' target='_blank'>https://notebooks.gesis.org/gallery/</a>.",
-                "ID": "8"
+                "ID": "9"
               },
               "Question 3": {
                 "Question": "How can I make my Notebooks binder-ready?",
                 "Answer": "For more information about making a Notebook binder-ready, take a look at the <a href='https://mybinder.readthedocs.io/en/latest/index.html#how-to-guides-and-tutorials' target='_blank'>binder user guide</a>.",
-                "ID": "9"
+                "ID": "10"
               }
             }
           ]

@@ -22,3 +22,4 @@ gesisbinder/gesisbinder/charts
 monitoring/elastic-stack/elastic-stack/charts
 gesisbinder/gesisbinder/requirements.lock
 gesishub/gesishub/requirements.lock
+monitoring/elastic-stack/elastic-stack/requirements.lock

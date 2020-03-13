@@ -70,3 +70,8 @@ div.faq {
 div.faq > h3 {
 	margin-bottom: 1.4rem;
 }
+
+#faq-img {
+	width: 98%;
+	height: auto;
+}
