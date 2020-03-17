@@ -60,6 +60,7 @@ upstream bjhub {
 # HTTP server to redirect notebooks.gesis.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
+    listen [::]:80;
     server_name notebooks.gesis.org;
     access_log off;  # turn off access log
     # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
@@ -68,9 +69,11 @@ server {
 
 # HTTPS server for notebooks.gesis.org
 server {
-    listen 443;
-    ssl on;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
     server_name notebooks.gesis.org;
+    # generated 2020-03-17, Mozilla Guideline v5.4, nginx 1.17.7, OpenSSL 1.1.1, intermediate configuration
+    # https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=intermediate&openssl=1.1.1&guideline=5.4
     ssl_certificate /etc/letsencrypt/live/notebooks.gesis.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/notebooks.gesis.org/privkey.pem;
     include snippets/ssl.conf;
