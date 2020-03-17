@@ -101,7 +101,6 @@ server {
         proxy_pass http://jhub-test;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
-        #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
 

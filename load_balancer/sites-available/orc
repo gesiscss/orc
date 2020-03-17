@@ -103,7 +103,6 @@ server {
         proxy_set_header Accept-Encoding "";
         proxy_pass http://prometheus/;
         include snippets/headers.conf;
-        proxy_set_header X-Forwarded-Proto $scheme;
 
         #sub_filter_types text/html;
         sub_filter_once off;
@@ -145,7 +144,6 @@ server {
         proxy_pass http://jhub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
-        #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Scheme $scheme;
     }
 
