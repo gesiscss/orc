@@ -6,6 +6,11 @@ map $http_origin $allowed_origin {
     "" "*";
 }
 
+upstream gesisbinder {
+  server 194.95.75.9:30081 max_fails=0;
+  server 194.95.75.12:30081 max_fails=0;
+}
+
 # HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
@@ -47,22 +52,9 @@ server {
     }
 
     location /build/ {
-        # add OPTIONS for Preflighted requests: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-        # adding OPTIONS is just to be safe, I am not sure if this is preflighted
-        limit_except GET OPTIONS {
-            deny  all;
-        }
-        # allow all origins if request Origin is empty, otherwise allow only rquest Origin
-        add_header Access-Control-Allow-Origin $allowed_origin;
-        # to indicate to browsers that server responses can differ based on the value of the Origin request header
-        add_header Vary Origin;
-
-        add_header "Access-Control-Allow-Credentials"  "true";
-        add_header 'Access-Control-Allow-Headers' 'cache-control';
-        add_header 'Content-Type' 'text/event-stream';
-        #default_type 'text/event-stream';
-        add_header 'Cache-Control' 'no-cache';
-        # use Permanent Redirect (308) instead of 301, mybinder.org redirects with 307
-        return 308 https://notebooks.gesis.org/binder$request_uri;
+        proxy_buffering off;
+        proxy_pass http://gesisbinder;
+        include snippets/headers.conf;
+        proxy_set_header X-Scheme $scheme;
     }
 }
