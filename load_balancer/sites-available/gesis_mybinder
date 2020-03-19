@@ -53,7 +53,7 @@ server {
 
     location /build/ {
         proxy_buffering off;
-        proxy_pass http://gesisbinder;
+        proxy_pass http://gesisbinder/binder/build/;
         include snippets/headers.conf;
         proxy_set_header X-Scheme $scheme;
     }
