@@ -51,6 +51,10 @@ server {
         return 308 https://notebooks.gesis.org/binder$request_uri;
     }
 
+    # remove base_url from gesis.mybinder.org domain, we use it only in notebooks.gesis.org:
+    # this fixes wrong launch urls in binder buttons
+    rewrite ^/binder/(.*)$ /$1 redirect;
+    # dont redirect build endpoint
     location /build/ {
         proxy_buffering off;
         proxy_pass http://gesisbinder/binder/build/;
