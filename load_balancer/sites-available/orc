@@ -88,9 +88,9 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
 
     # DNT policy
-    location = /.well-known/dnt-policy.txt {
-        alias /var/www/prod/static/dnt-policy.txt;
-    }
+    #location = /.well-known/dnt-policy.txt {
+    #    alias /var/www/prod/static/dnt-policy.txt;
+    #}
 
     # binder gallery
     location /gallery/ {
