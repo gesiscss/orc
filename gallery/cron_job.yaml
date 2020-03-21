@@ -21,7 +21,7 @@ spec:
           - name: mybinder-archive-parser
             image: gesiscss/binder-gallery:e40ab70
             command: ["flask"]
-            args: ["parse-mybinder-archives", "--with-description", "--excluded-origins", "notebooks.gesis.org,", "mybinder"]
+            args: ["parse-mybinder-archives", "--with-description", "--excluded-origins", "notebooks.gesis.org,gesis.mybinder.org,", "mybinder"]
             ports:
             - containerPort: 5000
               protocol: TCP
