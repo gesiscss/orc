@@ -48,7 +48,6 @@ binderhub:
     BinderHub:
       auth_enabled: true
       base_url: /services/binder/
-      use_registry: true
       build_image: jupyter/repo2docker:0.11.0-24.gfce6488
       build_node_selector:
         user: worker
@@ -253,7 +252,6 @@ binderhub:
         02-orc: |
           from extra_config import template_vars
           c.JupyterHub.template_vars.update(template_vars)
-
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
           #c.KubeSpawner.start_timeout = 600
