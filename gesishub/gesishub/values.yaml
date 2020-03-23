@@ -255,8 +255,7 @@ binderhub:
           c.JupyterHub.template_vars.update(template_vars)
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
-
-          c.KubeSpawner.start_timeout = 600
+          #c.KubeSpawner.start_timeout = 600
         03-orc: |
           from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
           from oauthenticator.generic import GenericOAuthenticator
