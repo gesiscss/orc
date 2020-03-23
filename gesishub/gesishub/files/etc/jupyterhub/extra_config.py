@@ -117,7 +117,7 @@ class PersistentBinderSpawner(KubeSpawner):
         # notebook container (user server)
         # mount all projects (complete user disk) to /projects
         # https://kubernetes.io/docs/concepts/storage/volumes/#using-subpath
-        #self.volume_mounts.append(projects_volume_mount)
+        self.volume_mounts.append(projects_volume_mount)
         # mountPath is /home/jovyan, this is set in z2jh helm chart values.yaml
         # mount_path = "~/"
         # mount_path = "$(HOME)"

@@ -102,7 +102,12 @@
               "Question 7": {
                 "Question": "Where can I create a JupyterHub API token?",
                 "Answer": "You can use <a href='/hub/token' target='_blank'>token request page</a> to create a JupyterHub API token. You can also read more about the JupyterHub API in the <a href='https://jupyterhub.readthedocs.io/en/stable/reference/rest.html' target='_blank'>JupyterHub docs</a>, how to make an API request and the different ways you can use the API.",
-                "ID": "15"
+                "ID": "7"
+              },
+              "Question 8": {
+                "Question": "How can I export my data?",
+                "Answer": "<ol><li><a href='https://notebooks.gesis.org/services/binder/v2/gh/gesiscss/data_science_image/master?urlpath=/terminals/1'>Launch <em>gh/gesiscss/data_science_image</em> and start a terminal</a></li><li>Run <em>zip -r ~/myprojects.zip /projects/*</em> in the terminal</li><li>Go to the Notebook dashboard, select <em>myprojects.zip</em> file and download</li></ol>",
+                "ID": "8"
               }
             }
           ]
