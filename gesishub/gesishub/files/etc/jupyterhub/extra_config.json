@@ -106,7 +106,7 @@
               },
               "Question 8": {
                 "Question": "How can I export my data?",
-                "Answer": "<ol><li><a href='https://notebooks.gesis.org/services/binder/v2/gh/gesiscss/data_science_image/master?urlpath=/terminals/1'>Launch <em>gh/gesiscss/data_science_image</em> and start a terminal</a></li><li>Run <em>zip -r ~/myprojects.zip /projects/*</em> in the terminal</li><li>Go to the Notebook dashboard, select <em>myprojects.zip</em> file and download</li></ol>",
+                "Answer": "<ol><li><a href='/services/binder/v2/gh/gesiscss/data_science_image/master?urlpath=/terminals/1'>Launch <em>gh/gesiscss/data_science_image</em> and start a terminal</a></li><li>Run <em>zip -r ~/myprojects.zip /projects/*</em> in the terminal</li><li>Go to the Notebook dashboard, select <em>myprojects.zip</em> file and download</li></ol>",
                 "ID": "8"
               }
             }
