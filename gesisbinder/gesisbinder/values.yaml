@@ -49,7 +49,7 @@ binderhub:
       #    config:
       #      quota: 200
     BinderHub:
-      pod_quota: 20
+      pod_quota: 200
       base_url: /binder/
       use_registry: true
       build_image: jupyter/repo2docker:0.11.0-24.gfce6488
