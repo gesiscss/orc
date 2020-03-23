@@ -64,8 +64,6 @@ binderhub:
             memory: 512Mi
 
     singleuser:
-      nodeSelector:
-        base: worker
       cpu:
         guarantee: 0.1
         limit: 0.5
