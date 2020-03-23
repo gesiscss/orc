@@ -362,7 +362,7 @@ binderhub:
               - ipBlock:
                   cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
       nodeSelector:
-        user: worker
+        base: worker
       cmd: jupyterhub-singleuser
       storage:
         type: dynamic
