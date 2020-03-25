@@ -49,7 +49,7 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
-      - name: prometheus
+      - name: gesis-prometheus
         orgId: 1
         type: prometheus
         url: http://prometheus-server:80
