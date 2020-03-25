@@ -4,7 +4,7 @@ metadata:
   name: data-nfs-nfs-server-provisioner-0
 spec:
   capacity:
-    storage: 4000Gi
+    storage: 5000Gi
   accessModes:
     - ReadWriteOnce
   hostPath:

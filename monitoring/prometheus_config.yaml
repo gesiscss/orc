@@ -6,8 +6,8 @@ pushgateway:
   enabled: false
 
 server:
-  nodeSelector:
-    base: worker
+#  nodeSelector:
+#    base: worker
   service:
     type: NodePort
     nodePort: 30073
@@ -27,6 +27,6 @@ server:
   retention: 60d
 
 kubeStateMetrics:
-  nodeSelector:
-    base: worker
+#  nodeSelector:
+#    base: worker
 #  resources:

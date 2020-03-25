@@ -5,8 +5,8 @@ service:
   port: 80  # default
   nodePort: 30075
 
-nodeSelector:
-  base: worker
+#nodeSelector:
+#  base: worker
 
 resources:
   requests:
