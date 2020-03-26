@@ -57,7 +57,7 @@ server {
     # dont redirect build endpoint
     location /build/ {
         proxy_buffering off;
-        proxy_pass http://gesisbinder/binder/build/;
+        proxy_pass http://gesisbinder/binder$request_uri;
         include snippets/headers.conf;
         proxy_set_header X-Scheme $scheme;
     }
