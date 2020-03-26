@@ -5,7 +5,8 @@ https://github.com/kubernetes-incubator/external-storage/tree/nfs-provisioner-v2
 
 It uses xfs quota to limit size of user directories, but by default it does not work fully and 
 that's why we have `quota.py` 
-(see https://github.com/kubernetes-incubator/external-storage/issues/855).
+(see https://github.com/kubernetes-incubator/external-storage/issues/855). 
+This started to work after we moved the nfs pod to another node (user:worker).
 
 `backup` is a daily job to backup GESIS hub, GESIS binder and gallery databases and 
 user, grafana and prometheus persistent volumes.
