@@ -44,12 +44,13 @@ binderhub:
         - ^hmharshit/mltraining.*
       high_quota_specs:
         - ^gesiscss/.*
+        - ^mitx-803/vis/.*
       #spec_config:
       #  - pattern: ^gesiscss/.*
       #    config:
       #      quota: 200
     BinderHub:
-      pod_quota: 200
+      pod_quota: 300
       base_url: /binder/
       use_registry: true
       build_image: jupyter/repo2docker:0.11.0-31.g1776b79
