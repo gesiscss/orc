@@ -11,7 +11,6 @@ binderhub:
 
   config:
     BinderHub:
-      debug: true
       hub_url: https://notebooks.gesis.org
       image_prefix: gesiscss/binder-
 
