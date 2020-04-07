@@ -84,7 +84,7 @@ class PersistentBinderSpawner(KubeSpawner):
                 # and uses spawn url), start default repo
                 self.repo_url, self.image, self.ref = self.default_project
 
-        # prepare initContainer
+        # prepare the initContainer
         # NOTE: first initContainer runs and when it is done, then notebook container runs
         # https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
         # https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-initialization/#create-a-pod-that-has-an-init-container
@@ -116,12 +116,17 @@ class PersistentBinderSpawner(KubeSpawner):
 
         # notebook container (user server)
         # mount all projects (complete user disk) to /projects
-        # https://kubernetes.io/docs/concepts/storage/volumes/#using-subpath
+        # first remove existing volume mounts to /projects, it should be unique,
+        # normally we shouldn't need this, but sometimes there is duplication when there is a spawn error
+        for i, v_m in enumerate(self.volume_mounts):
+            if v_m['mountPath'] == projects_volume_mount['mountPath']:
+                del self.volume_mounts[i]
         self.volume_mounts.append(projects_volume_mount)
         # mountPath is /home/jovyan, this is set in z2jh helm chart values.yaml
         # mount_path = "~/"
         # mount_path = "$(HOME)"
         # self.volume_mounts[0]['mountPath'] = mount_path
+        # https://kubernetes.io/docs/concepts/storage/volumes/#using-subpath
         # mount only project_path to home
         self.volume_mounts[0]['subPath'] = project_dir
 
