@@ -91,7 +91,6 @@ binderhub:
       import uuid
       template_vars.update({'user': None,
                             'logout_url': '/hub/logout',
-
                             #'help_url': 'https://www.gesis.org/en/help/',
                             "static_version": uuid.uuid4().hex
                             })
@@ -105,24 +104,29 @@ binderhub:
           'git': GitRepoProvider,
       }
     02-launcher:  |
-      from tornado import web
       import json
       import os
+      from tornado import web
 
       async def check_user_projects(launcher, image, username, server_name, repo_url):
-          # we are making request to API with admin token
-          resp = await launcher.api_request(
-              'projects/%s' % username,
-              method='GET',
-          )
-          body = json.loads(resp.body.decode('utf-8'))
-          projects = body['projects']
+          """Checks if current user exceeds the limit of projects stored per user or not.
+          If yes, show an error message to user.
+          """
           projects_limit = int(os.getenv('PROJECTS_LIMIT_PER_USER', 0))
-          if projects_limit > 0 and projects:
-            projects_repo_list = [p[0] for p in projects]
-            if repo_url not in projects_repo_list and len(projects) >= projects_limit:
-                raise web.HTTPError(409, "No more than {} projects is allowed. "
-                                         "One must be deleted before a new project can be created.".format(projects_limit))
+          if projects_limit > 0:
+            # we are making request to API with admin token
+            resp = await launcher.api_request(
+                'projects/%s' % username,
+                method='GET',
+            )
+            body = json.loads(resp.body.decode('utf-8'))
+            projects = body['projects']
+            if projects:
+              projects_repo_list = [p[0] for p in projects]
+              if repo_url not in projects_repo_list and len(projects) >= projects_limit:
+                  raise web.HTTPError(409, "No more than {} projects is allowed. "
+                                           "One must be deleted before a new project can be created.".
+                                           format(projects_limit))
       c.Launcher.pre_launch_hook = check_user_projects
 
   service:
@@ -255,7 +259,9 @@ binderhub:
           c.JupyterHub.template_vars.update(template_vars)
 
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-          c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
+          # restart_policy is already set 'OnFailure' by kubespawner:
+          # https://github.com/jupyterhub/kubespawner/blob/8751773916ccc6b84c998f7950dd3e07fea5ae4e/kubespawner/objects.py#L231
+          #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
           #c.KubeSpawner.start_timeout = 600
         03-orc: |
           from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
