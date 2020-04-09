@@ -104,24 +104,29 @@ binderhub:
           'git': GitRepoProvider,
       }
     02-launcher:  |
-      from tornado import web
       import json
       import os
+      from tornado import web
 
       async def check_user_projects(launcher, image, username, server_name, repo_url):
-          # we are making request to API with admin token
-          resp = await launcher.api_request(
-              'projects/%s' % username,
-              method='GET',
-          )
-          body = json.loads(resp.body.decode('utf-8'))
-          projects = body['projects']
+          """Checks if current user exceeds the limit of projects stored per user or not.
+          If yes, show an error message to user.
+          """
           projects_limit = int(os.getenv('PROJECTS_LIMIT_PER_USER', 0))
-          if projects_limit > 0 and projects:
-            projects_repo_list = [p[0] for p in projects]
-            if repo_url not in projects_repo_list and len(projects) >= projects_limit:
-                raise web.HTTPError(409, "No more than {} projects is allowed. "
-                                         "One must be deleted before a new project can be created.".format(projects_limit))
+          if projects_limit > 0:
+            # we are making request to API with admin token
+            resp = await launcher.api_request(
+                'projects/%s' % username,
+                method='GET',
+            )
+            body = json.loads(resp.body.decode('utf-8'))
+            projects = body['projects']
+            if projects:
+              projects_repo_list = [p[0] for p in projects]
+              if repo_url not in projects_repo_list and len(projects) >= projects_limit:
+                  raise web.HTTPError(409, "No more than {} projects is allowed. "
+                                           "One must be deleted before a new project can be created.".
+                                           format(projects_limit))
       c.Launcher.pre_launch_hook = check_user_projects
 
   service:
