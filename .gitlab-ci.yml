@@ -135,7 +135,7 @@ deploy_prod:
       echo "####### mode: $mode"
       fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
   only:
-    - master
+    - staging
 #    - tags
   tags:
     - orc
