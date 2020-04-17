@@ -44,7 +44,6 @@ binderhub:
         - ^hmharshit/mltraining.*
       high_quota_specs:
         - ^gesiscss/.*
-        - ^mitx-803/vis/.*
       #spec_config:
       #  - pattern: ^gesiscss/.*
       #    config:
