@@ -67,25 +67,25 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                   '--namespace=gallery{-test}-ns'.format(**format_dict))
         if 'galleryarchives' in mode and not staging:
             c.run('kubectl apply -f gallery/cron_job.yaml -n gallery-ns')
-        if 'jhubns' in mode or 'jhubtestns' in mode:
-            c.run('helm repo update')
-            c.run('helm dependency update gesishub/gesishub')
-            c.run('helm upgrade jhub{-test} gesishub/gesishub --install '
-                  '--create-namespace --namespace=jhub{-test}-ns  '
-                  '--cleanup-on-fail --force --debug '
-                  '-f gesishub/config{_test}.yaml '
-                  '-f gesishub/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm dependency update gesisbinder/gesisbinder')
-            c.run('helm upgrade bhub{-test} gesisbinder/gesisbinder --install '
-                  '--create-namespace --namespace=bhub{-test}-ns '
+            c.run('helm upgrade bhub{-test} gesisbinder/gesisbinder '
+                  '--namespace=bhub{-test}-ns '
                   '--cleanup-on-fail --force --debug '
                   '-f gesisbinder/config{_test}.yaml '
                   '-f gesisbinder/_secret{_test}.yaml '.format(**format_dict))
         if 'bhubupgrade' in mode and not staging:
             c.run('kubectl apply -f gesisbinder/bot/_secret_cron_job.yaml -n bhub-ns')
             c.run('kubectl apply -f gesisbinder/bot/cron_job.yaml -n bhub-ns')
+        if 'jhubns' in mode or 'jhubtestns' in mode:
+            c.run('helm repo update')
+            c.run('helm dependency update gesishub/gesishub')
+            c.run('helm upgrade jhub{-test} gesishub/gesishub '
+                  '--namespace=jhub{-test}-ns  '
+                  '--cleanup-on-fail --force --debug '
+                  '-f gesishub/config{_test}.yaml '
+                  '-f gesishub/_secret{_test}.yaml '.format(**format_dict))
         if 'prometheus' in mode and not staging:
             c.run('helm upgrade prometheus stable/prometheus --version=9.7.4 '
                   '-f monitoring/prometheus_config.yaml '
