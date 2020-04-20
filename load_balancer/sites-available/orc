@@ -98,6 +98,28 @@ server {
         include snippets/flask.conf;
     }
 
+    # Grafana UI
+    location /grafana/ {
+        proxy_pass http://grafana/;
+        include snippets/headers.conf;
+    }
+    # Prometheus
+    location /prometheus/ {
+        auth_basic "Administrator's Area";
+        auth_basic_user_file /etc/letsencrypt/.htpasswd_prometheus;
+        # https://github.com/prometheus/prometheus/issues/2193
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://prometheus/;
+        include snippets/headers.conf;
+
+        #sub_filter_types text/html;
+        sub_filter_once off;
+        sub_filter '="/' '="/prometheus/';
+        sub_filter 'var PATH_PREFIX = "";' 'var PATH_PREFIX = "/prometheus";';
+        rewrite ^/prometheus/?$ /prometheus/graph redirect;
+        rewrite ^/prometheus/(.*)$ /$1 break;
+    }
+
     # Managing literal requests to the BinderHub
     location /binder/ {
         # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
@@ -118,18 +140,27 @@ server {
     #    alias /static/images/logo/logo.png;
     #}
 
+    # redirect from old location
+    rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
-        # maintenance page
-        error_page 503 /static/maintenance.html;
-        return 503;
+        ## maintenance page
+        #error_page 503 /static/maintenance.html;
+        #return 503;
 
-        #proxy_buffering off;
-        #proxy_pass http://jhub;
-        #include snippets/headers.conf;
-        #include snippets/websocket_headers.conf;
-        #proxy_set_header X-Scheme $scheme;
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        proxy_set_header X-Scheme $scheme;
     }
+    #location ~ ^/(faq|about|terms_of_use)/ {
+    #    proxy_buffering off;
+    #    proxy_pass http://jhub;
+    #    include snippets/headers.conf;
+    #    include snippets/websocket_headers.conf;
+    #    proxy_set_header X-Scheme $scheme;
+    #}
 
     include snippets/ignore_fonts.conf;
 
