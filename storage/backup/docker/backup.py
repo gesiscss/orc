@@ -50,7 +50,7 @@ def backup():
     logger.setLevel(logging.INFO)
 
     # dump all production databases
-    databases = ['jhub_db', 'bhub_db', 'gallery']
+    databases = ['gesishub', 'gesisbinder', 'gallery']
     logger.info(f"## dumping databases: {', '.join(databases)}")
     mkdir(expanduser('~/.ssh'))
     command = 'ssh-keyscan -H 194.95.75.9 > ~/.ssh/known_hosts'
