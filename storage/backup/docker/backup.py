@@ -62,7 +62,7 @@ def backup():
         dump_path = join(day_path, f'{db}.sql.gz')
         # take password from SSHPASS env variable
         command = f'sshpass -e ssh iuser@194.95.75.9 ' \
-                  f'"pg_dump -Fp -h "localhost" -U "jhub" -d "{db}"" ' \
+                  f'"pg_dump -Fp -h "localhost" -U "orc" -d "{db}"" ' \
                   f'| gzip > {dump_path}'
         cp = run(command, shell=True, stdout=PIPE, stderr=PIPE)
         logger.info(f"#### command for {db}: {cp.args} -> {cp.returncode} - stdout: {cp.stdout}")
