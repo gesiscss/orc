@@ -22,376 +22,325 @@ etcJupyter:
       # when people leave a notebook open and wander off
       cull_connected: true
 
-binderhub:
-  pdb:
-    minAvailable: 0
-  # NOTE: binder pod must have 1 replica, otherwise there are authentication errors
-  # https://github.com/jupyterhub/jupyterhub/issues/2841
-  replicas: 1
-  config:
-    GitHubRepoProvider:
-      # Add banned repositories to the list below
-      # They should be strings that will match "^<org-name>/<repo-name>.*"
-      banned_specs:
-        # e.g. '^org/repo.*'
-        - ^ines/spacy-binder.*
-        - ^soft4voip/rak.*
-        - ^hmharshit/cn-ait.*
-        - ^shishirchoudharygic/mltraining.*
-        - ^hmharshit/mltraining.*
-      high_quota_specs:
-        - ^gesiscss/.*
-      #spec_config:
-      #  - pattern: ^gesiscss/.*
-      #    config:
-      #      quota: 200
-    BinderHub:
-      auth_enabled: true
-      base_url: /services/binder/
-      use_registry: true
-      build_image: jupyter/repo2docker:0.11.0-52.g175b930
-      build_node_selector:
-        user: worker
-      per_repo_quota: 100
-      per_repo_quota_higher: 200
+persistent_binderhub:
+  binderhub:
+    config:
+      GitHubRepoProvider:
+        # Add banned repositories to the list below
+        # They should be strings that will match "^<org-name>/<repo-name>.*"
+        banned_specs:
+          # e.g. '^org/repo.*'
+          - ^ines/spacy-binder.*
+          - ^soft4voip/rak.*
+          - ^hmharshit/cn-ait.*
+          - ^shishirchoudharygic/mltraining.*
+          - ^hmharshit/mltraining.*
+        high_quota_specs:
+          - ^gesiscss/.*
+        #spec_config:
+        #  - pattern: ^gesiscss/.*
+        #    config:
+        #      quota: 200
+      BinderHub:
+        build_image: jupyter/repo2docker:0.11.0-52.g175b930
+        build_node_selector:
+          user: worker
+        per_repo_quota: 100
+        per_repo_quota_higher: 200
 
-      template_path: /etc/binderhub/templates
-      # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
-      #extra_static_path: /etc/binderhub/custom/gesisbinder/static
-      #extra_static_url_prefix: /extra_static/
+        template_path: /etc/binderhub/templates
 
-  extraVolumes:
-    - name: binder-templates
-      configMap:
-        name: binder-templates
-    - name: binder-templates-gesis
-      configMap:
-        name: hub-templates-gesis
-    - name: binder-extra-config-json
-      configMap:
-        name: hub-extra-config-json
-  extraVolumeMounts:
-    - name: binder-templates
-      mountPath: /etc/binderhub/templates
-    - name: binder-templates-gesis
-      mountPath: /etc/binderhub/templates/gesis
-    - name: binder-extra-config-json
-      mountPath: /etc/binderhub/extra_config.json
-      subPath: extra_config.json
-
-  extraEnv:
-    - name: PROJECTS_LIMIT_PER_USER
-      value: "5"
-
-  extraConfig:
-    00-tempalte-variables:  |
-      import json
-      with open('/etc/binderhub/extra_config.json') as extra_config_file:
-          template_vars = json.load(extra_config_file)["template_vars"]
-      import uuid
-      template_vars.update({'user': None,
-                            'logout_url': '/hub/logout',
-                            #'help_url': 'https://www.gesis.org/en/help/',
-                            "static_version": uuid.uuid4().hex
-                            })
-      c.BinderHub.template_variables.update(template_vars)
-    01-repo-providers:  |
-      from binderhub.repoproviders import GitHubRepoProvider, GitRepoProvider, GitLabRepoProvider, GistRepoProvider
-      c.BinderHub.repo_providers = {
-          'gh': GitHubRepoProvider,
-          'gist': GistRepoProvider,
-          'gl': GitLabRepoProvider,
-          'git': GitRepoProvider,
-      }
-    02-launcher:  |
-      import json
-      import os
-      from tornado import web
-
-      async def check_user_projects(launcher, image, username, server_name, repo_url):
-          """Checks if current user exceeds the limit of projects stored per user or not.
-          If yes, show an error message to user.
-          """
-          projects_limit = int(os.getenv('PROJECTS_LIMIT_PER_USER', 0))
-          if projects_limit > 0:
-            # we are making request to API with admin token
-            resp = await launcher.api_request(
-                'projects/%s' % username,
-                method='GET',
-            )
-            body = json.loads(resp.body.decode('utf-8'))
-            projects = body['projects']
-            if projects:
-              projects_repo_list = [p[0] for p in projects]
-              if repo_url not in projects_repo_list and len(projects) >= projects_limit:
-                  raise web.HTTPError(409, "No more than {} projects is allowed. "
-                                           "One must be deleted before a new project can be created.".
-                                           format(projects_limit))
-      c.Launcher.pre_launch_hook = check_user_projects
-
-  service:
-    type: NodePort
-
-  cors: &cors
-    allowOrigin: '*'
-
-  dind:
-    enabled: false
-
-  imageCleaner:
-    enabled: false
-
-  jupyterhub:
-    custom:
-      cors: *cors
-      binderauth_enabled: true
-    cull:
-      users: False
-      # kill user pods if idle for 30 mins - default is 1 hour
-      every: 660
-      timeout: 1800
-      # maxAge is 6 hours: 6 * 3600 = 21600
-      maxAge: 21600
-    hub:
-      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
-      # replicas: 1
-      pdb:
-        minAvailable: 0
-      networkPolicy:
-        # z2jh chart has a default ingress rule which allows inbound traffic
-        # only to port 8081 (API port)
-        # from pods with label "hub.jupyter.org/network-access-hub",
-        # user and proxy pods have this label
-        # z2jh chart has a default egress rule: allow all outbound traffic for hub
-        enabled: true
-      nodeSelector:
-        base: worker  # where database is
-      db:
-        type: postgres
-      extraVolumes:
-        - name: hub-templates
-          configMap:
-            name: hub-templates
-        - name: hub-templates-gesis
-          configMap:
-            name: hub-templates-gesis
-        - name: hub-extra-config
-          configMap:
-            name: hub-extra-config
-        - name: hub-extra-config-json
-          configMap:
-            name: hub-extra-config-json
-      extraVolumeMounts:
-        - name: hub-templates
-          mountPath: /etc/jupyterhub/templates
-        - name: hub-templates-gesis
-          mountPath: /etc/jupyterhub/templates/gesis
-        - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
-          subPath: extra_config.py
-          name: hub-extra-config
-        - mountPath: /etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
-          subPath: extra_config.json
+    extraVolumes:
+      - name: binder-templates
+        configMap:
+          name: binder-templates
+      - name: binder-templates-gesis
+        configMap:
+          name: hub-templates-gesis
+      - name: binder-extra-config-json
+        configMap:
           name: hub-extra-config-json
-      authenticatePrometheus: false
-      redirectToServer: false
-      shutdownOnLogout: true
-      templatePaths:
-        - "/etc/jupyterhub/templates"
-      services:
-        binder:
-          oauth_no_confirm: true
-      extraConfig:
-        01-orc: |
-          from extra_config import OrcAdminHandler, ProjectAPIHandler, ORC_LOGIN_COOKIE_NAME
+    extraVolumeMounts:
+      - name: binder-templates
+        mountPath: /etc/binderhub/templates
+      - name: binder-templates-gesis
+        mountPath: /etc/binderhub/templates/gesis
+      - name: binder-extra-config-json
+        mountPath: /etc/binderhub/extra_config.json
+        subPath: extra_config.json
 
-          from jupyterhub.handlers import Template404
-          c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
-                                        (r'/api/projects/([^/]+)', ProjectAPIHandler),
-                                        # return 404 for /hub/(about|faq|terms_of_use)/
-                                        # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
-                                        (r'/about/', Template404),
-                                        (r'/faq/', Template404),
-                                        (r'/terms_of_use/', Template404),
-                                        ]
+    extraConfig:
+      00-tempalte-variables:  |
+        import json
+        with open('/etc/binderhub/extra_config.json') as extra_config_file:
+            template_vars = json.load(extra_config_file)["template_vars"]
+        import uuid
+        template_vars.update({'user': None,
+                              'logout_url': '/hub/logout',
+                              #'help_url': 'https://www.gesis.org/en/help/',
+                              "static_version": uuid.uuid4().hex
+                              })
+        c.BinderHub.template_variables.update(template_vars)
 
-          from jupyterhub.handlers.base import PrefixRedirectHandler
-          from jupyterhub.utils import url_path_join
-          import os
-          def get(self):
-              path = self.request.path
-              if path == "/about/":
-                  html = self.render_template("about.html", **{"active": "about"})
-                  self.finish(html)
-              elif path == "/terms_of_use/":
-                  html = self.render_template("terms_of_use.html", **{"active": "terms_of_use"})
-                  self.finish(html)
-              elif path == "/faq/":
-                  html = self.render_template("faq.html", **{"active": "faq"})
-                  self.finish(html)
-              elif path == "/":
-                  if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
-                      self.redirect("/hub/home")
-                  else:
-                      # user is not logged in, so link featured projects to (public) GESIS binder
-                      binder_base_url = "/binder/"
-                      html = self.render_template("orc_home.html", **{"active": "home", "binder_base_url": binder_base_url})
-                      self.finish(html)
-              else:
-                  # below is taken from original get method
-                  uri = self.request.uri
-                  # Since self.base_url will end with trailing slash.
-                  # Ensure uri will end with trailing slash when matching
-                  # with self.base_url.
-                  if not uri.endswith('/'):
-                      uri += '/'
-                  if uri.startswith(self.base_url):
-                      path = self.request.uri[len(self.base_url):]
-                  else:
-                      path = self.request.path
-                  if not path:
-                      # default / -> /hub/ redirect
-                      # avoiding extra hop through /hub
-                      path = '/'
-                  self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
-          PrefixRedirectHandler.get = get
-        02-orc: |
-          from extra_config import template_vars
-          c.JupyterHub.template_vars.update(template_vars)
+    service:
+      type: NodePort
 
-          #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
-          # restart_policy is already set 'OnFailure' by kubespawner:
-          # https://github.com/jupyterhub/kubespawner/blob/8751773916ccc6b84c998f7950dd3e07fea5ae4e/kubespawner/objects.py#L231
-          #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'OnFailure'})
-          #c.KubeSpawner.start_timeout = 600
-        03-orc: |
-          from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
-          from oauthenticator.generic import GenericOAuthenticator
-          GenericOAuthenticator.default_logout_handler = KeycloakLogoutHandler
-          GenericOAuthenticator.default_login_handler = KeycloakLoginHandler
-          GenericOAuthenticator.callback_handler = KeycloakOAuthCallbackHandler
-          def get_handlers(self, app):
-              return [
-                  (r'/oauth_login', self.login_handler),
-                  (r'/oauth_callback', self.callback_handler),
-              ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
-          GenericOAuthenticator.get_handlers = get_handlers
-        00-binder: |
-          from extra_config import PersistentBinderSpawner
-          c.JupyterHub.spawner_class = PersistentBinderSpawner
-    proxy:
-      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
-      # replicas: 1
-      pdb:
-        minAvailable: 0
-      https:
-        type: offload
-      networkPolicy:
-        # z2jh chart has a default ingress rule which allows inbound traffic
-        # to port 8000 (HTTP port) from pods with label "hub.jupyter.org/network-access-proxy-HTTP" and
-        # to port 8001 (API port) from pods with label "hub.jupyter.org/network-access-proxy-API",
-        # and only hub pod has these labels
-        # so only the hub pod can talk to the proxy's API and HTTP ports
-        # z2jh chart has a default egress rule: allow all outbound traffic for proxy
-        enabled: true
-      service:
-        type: NodePort
+    cors: &cors
+      allowOrigin: '*'
 
-    auth:
-      # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-      type: custom
+    dind:
+      enabled: false
+
+    imageCleaner:
+      enabled: false
+
+    jupyterhub:
       custom:
-        className: oauthenticator.generic.GenericOAuthenticator
-        config:
-          auto_login: true
-          userdata_method: GET
-          userdata_params: {'state': 'state'}
-          username_key: preferred_username
-      admin:
-        users:
-          - kenan.erdogan@gesis.org
-          - arnim.bleier@gesis.org
-      state:
-        enabled: true
-
-    singleuser:
-      events: true  # events_enabled - to get events from kubespawner
-      networkPolicy:
-        enabled: true
-        # z2jh chart has a default ingress rule which allows inbound traffic
-        # only to port 8888
-        # from pods with label "hub.jupyter.org/network-access-singleuser",
-        # hub and proxy pods have this label
-        #ingress: []
-        # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
-        #egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
-        egress:
-          # These egress rules are copied from mybinder.org-deploy repo
-          # (https://github.com/jupyterhub/mybinder.org-deploy/blob/master/mybinder/templates/netpol.yaml)
-          # We also allow outbound traffic to mongodb and mysql
-          # allow DNS resolution in the cluster
-          # it would be nicer to be able to pin this to only the kube-dns service,
-          # but we can only seem to select *pods* not *services* as the destination
-          - ports:
-              - port: 53
-                protocol: TCP
-              - port: 53
-                protocol: UDP
-            to:
-              - ipBlock:
-                  cidr: 10.0.0.0/8  # we need this range for kubernetes services
-              # we changed the Pod network CIDR to 10.244.0.0/16 for calico
-              #- ipBlock:
-              #    # TODO do we really need this for allowing DNS in cluster
-              #    cidr: 192.168.0.0/16  # Calico by default uses 192.168.0.0/16 as the Pod network CIDR
-          # allow access to the world,
-          # but not the cluster
-          # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
-          # By default, Calico uses 192.168.0.0/16 as the Pod network CIDR
-          # For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16
-          # For Cilium to work correctly, you must pass --pod-network-cidr=10.217.0.0/16 to kubeadm init.
-          # 10.244.0.0/16 and 10.217.0.0/16 must be covered by 10.0.0.0/8
-          - ports:
-              # TCP is the default protocol
-              - port: 80
-              - port: 443
-              - port: 9418 # git
-              - port: 873 # rsync
-              - port: 1094 # xroot
-              - port: 1095 # xroot
-              - port: 27017 # mongodb
-              - port: 3306  # mysql
-            to:
-              - ipBlock:
-                  cidr: 0.0.0.0/0  # represents all possible IP addresses
-                  # we changed the Pod network CIDR to 10.244.0.0/16 for calico
-                  except:
-                    #- 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
-                    - 169.254.169.254/32
-                    - 10.0.0.0/8
-              - ipBlock:
-                  cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
-      nodeSelector:
-        user: worker
-      cmd: jupyterhub-singleuser
-      storage:
-        type: dynamic
+        cors: *cors
+      cull:
+        # kill user pods if idle for 30 mins - default is 1 hour
+        every: 660
+        timeout: 1800
+        # maxAge is 6 hours: 6 * 3600 = 21600
+        maxAge: 21600
+      hub:
+        networkPolicy:
+          # z2jh chart has a default ingress rule which allows inbound traffic
+          # only to port 8081 (API port)
+          # from pods with label "hub.jupyter.org/network-access-hub",
+          # user and proxy pods have this label
+          # z2jh chart has a default egress rule: allow all outbound traffic for hub
+          enabled: true
+        nodeSelector:
+          base: worker  # where database is
+        db:
+          type: postgres
         extraVolumes:
-          - name: etc-jupyter
+          # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
+          - name: persistent-bhub-templates
             configMap:
-              name: user-etc-jupyter
+              name: persistent-bhub-templates
+          - name: persistent-bhub-statics
+            configMap:
+              name: persistent-bhub-statics
+          - name: persistent-bhub-config
+            configMap:
+              name: persistent-bhub-config
+          - name: hub-templates
+            configMap:
+              name: hub-templates
+          - name: hub-templates-gesis
+            configMap:
+              name: hub-templates-gesis
+          - name: hub-extra-config
+            configMap:
+              name: hub-extra-config
+          - name: hub-extra-config-json
+            configMap:
+              name: hub-extra-config-json
         extraVolumeMounts:
-          - name: etc-jupyter
-            mountPath: /etc/jupyter
-      image:
-        # https://github.com/gesiscss/data_science_image
-        # NOTE: when you update this image, don't forget to update `default_project` attribute of `PersistentBinderSpawner` in extra_config.py
-        name: gesiscss/singleuser-orc
-        tag: "r2d-49e91d9"
+          # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
+          - name: persistent-bhub-templates
+            mountPath: /etc/jupyterhub/templates
+          - name: persistent-bhub-statics
+            # mount to where jupyterhub static files are
+            mountPath: /usr/local/share/jupyterhub/static/persistent_bhub
+          - name: persistent-bhub-config
+            # mount to where jupyterhub_config.py is,
+            # we import the spawner class from persistent_bhub_config inside jupyterhub_config.py (hub.extraConfig)
+            mountPath: /etc/jupyterhub/persistent_bhub_config.py
+            subPath: persistent_bhub_config.py
+          - name: hub-templates
+            mountPath: /etc/jupyterhub/orc_templates
+          - name: hub-templates-gesis
+            mountPath: /etc/jupyterhub/orc_templates/gesis
+          - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
+            subPath: extra_config.py
+            name: hub-extra-config
+          - mountPath: /etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
+            subPath: extra_config.json
+            name: hub-extra-config-json
+        templatePaths:
+          - "/etc/jupyterhub/orc_templates"
+          - "/etc/jupyterhub/templates"  # from persistent_binderhub chart
+        templateVars:
+          persistency_explanation: "Have a Binder-Ready repository? With GESIS Notebooks, turn this repository into a persistent Jupyter environment, allowing you to continue your analysis from anywhere at any time."
+        authenticatePrometheus: false
+        shutdownOnLogout: true
+        extraConfig:
+          10-project-api: |
+            from persistent_bhub_config import ProjectAPIHandler
+            from extra_config import OrcAdminHandler, ORC_LOGIN_COOKIE_NAME
 
-    scheduling:
-      userScheduler:
-        enabled: false
-      podPriority:
-        enabled: false
-      userPlaceholder:
-        enabled: false
+            from jupyterhub.handlers import Template404
+            c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
+                                          (r'/api/projects/([^/]+)', ProjectAPIHandler),
+                                          # return 404 for /hub/(about|faq|terms_of_use)/
+                                          # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
+                                          (r'/about/', Template404),
+                                          (r'/faq/', Template404),
+                                          (r'/terms_of_use/', Template404),
+                                          ]
+
+            from jupyterhub.handlers.base import PrefixRedirectHandler
+            from jupyterhub.utils import url_path_join
+            import os
+            def get(self):
+                path = self.request.path
+                if path == "/about/":
+                    html = self.render_template("about.html", **{"active": "about"})
+                    self.finish(html)
+                elif path == "/terms_of_use/":
+                    html = self.render_template("terms_of_use.html", **{"active": "terms_of_use"})
+                    self.finish(html)
+                elif path == "/faq/":
+                    html = self.render_template("faq.html", **{"active": "faq"})
+                    self.finish(html)
+                elif path == "/":
+                    if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
+                        self.redirect("/hub/home")
+                    else:
+                        # user is not logged in, so link featured projects to (public) GESIS binder
+                        binder_base_url = "/binder/"
+                        html = self.render_template("orc_home.html", **{"active": "home", "binder_base_url": binder_base_url})
+                        self.finish(html)
+                else:
+                    # below is taken from original get method
+                    uri = self.request.uri
+                    # Since self.base_url will end with trailing slash.
+                    # Ensure uri will end with trailing slash when matching
+                    # with self.base_url.
+                    if not uri.endswith('/'):
+                        uri += '/'
+                    if uri.startswith(self.base_url):
+                        path = self.request.uri[len(self.base_url):]
+                    else:
+                        path = self.request.path
+                    if not path:
+                        # default / -> /hub/ redirect
+                        # avoiding extra hop through /hub
+                        path = '/'
+                    self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
+            PrefixRedirectHandler.get = get
+          02-orc: |
+            from extra_config import template_vars
+            c.JupyterHub.template_vars.update(template_vars)
+          03-orc: |
+            from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler
+            from oauthenticator.generic import GenericOAuthenticator
+            GenericOAuthenticator.default_logout_handler = KeycloakLogoutHandler
+            GenericOAuthenticator.default_login_handler = KeycloakLoginHandler
+            GenericOAuthenticator.callback_handler = KeycloakOAuthCallbackHandler
+            def get_handlers(self, app):
+                return [
+                    (r'/oauth_login', self.login_handler),
+                    (r'/oauth_callback', self.callback_handler),
+                ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
+            GenericOAuthenticator.get_handlers = get_handlers
+      proxy:
+        https:
+          type: offload
+        networkPolicy:
+          # z2jh chart has a default ingress rule which allows inbound traffic
+          # to port 8000 (HTTP port) from pods with label "hub.jupyter.org/network-access-proxy-HTTP" and
+          # to port 8001 (API port) from pods with label "hub.jupyter.org/network-access-proxy-API",
+          # and only hub pod has these labels
+          # so only the hub pod can talk to the proxy's API and HTTP ports
+          # z2jh chart has a default egress rule: allow all outbound traffic for proxy
+          enabled: true
+        service:
+          type: NodePort
+
+      auth:
+        # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+        type: custom
+        custom:
+          className: oauthenticator.generic.GenericOAuthenticator
+          config:
+            auto_login: true
+            userdata_method: GET
+            userdata_params: {'state': 'state'}
+            username_key: preferred_username
+        admin:
+          users:
+            - kenan.erdogan@gesis.org
+            - arnim.bleier@gesis.org
+        state:
+          enabled: true
+
+      singleuser:
+        networkPolicy:
+          enabled: true
+          # z2jh chart has a default ingress rule which allows inbound traffic
+          # only to port 8888
+          # from pods with label "hub.jupyter.org/network-access-singleuser",
+          # hub and proxy pods have this label
+          #ingress: []
+          # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
+          #egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
+          egress:
+            # These egress rules are copied from mybinder.org-deploy repo
+            # (https://github.com/jupyterhub/mybinder.org-deploy/blob/master/mybinder/templates/netpol.yaml)
+            # We also allow outbound traffic to mongodb and mysql
+            # allow DNS resolution in the cluster
+            # it would be nicer to be able to pin this to only the kube-dns service,
+            # but we can only seem to select *pods* not *services* as the destination
+            - ports:
+                - port: 53
+                  protocol: TCP
+                - port: 53
+                  protocol: UDP
+              to:
+                - ipBlock:
+                    cidr: 10.0.0.0/8  # we need this range for kubernetes services
+                # we changed the Pod network CIDR to 10.244.0.0/16 for calico
+                #- ipBlock:
+                #    # TODO do we really need this for allowing DNS in cluster
+                #    cidr: 192.168.0.0/16  # Calico by default uses 192.168.0.0/16 as the Pod network CIDR
+            # allow access to the world,
+            # but not the cluster
+            # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
+            # By default, Calico uses 192.168.0.0/16 as the Pod network CIDR
+            # For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16
+            # For Cilium to work correctly, you must pass --pod-network-cidr=10.217.0.0/16 to kubeadm init.
+            # 10.244.0.0/16 and 10.217.0.0/16 must be covered by 10.0.0.0/8
+            - ports:
+                # TCP is the default protocol
+                - port: 80
+                - port: 443
+                - port: 9418 # git
+                - port: 873 # rsync
+                - port: 1094 # xroot
+                - port: 1095 # xroot
+                - port: 27017 # mongodb
+                - port: 3306  # mysql
+              to:
+                - ipBlock:
+                    cidr: 0.0.0.0/0  # represents all possible IP addresses
+                    # we changed the Pod network CIDR to 10.244.0.0/16 for calico
+                    except:
+                      #- 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
+                      - 169.254.169.254/32
+                      - 10.0.0.0/8
+                - ipBlock:
+                    cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
+        nodeSelector:
+          user: worker
+        storage:
+          extraVolumes:
+            - name: etc-jupyter
+              configMap:
+                name: user-etc-jupyter
+          extraVolumeMounts:
+            - name: etc-jupyter
+              mountPath: /etc/jupyter
+        # increase the start timeout of user server to 10 mins, because some repos creates big images, which makes is slow to pull
+        startTimeout: 600  # default is 300 in z2jh chart
+
+      scheduling:
+        userScheduler:
+          enabled: false
+        podPriority:
+          enabled: false
+        userPlaceholder:
+          enabled: false

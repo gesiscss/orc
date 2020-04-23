@@ -1,76 +1,77 @@
 projectName: gesis-hub-prod
 
-binderhub:
-  resources:
-    requests:
-      cpu: "0.25"
-      memory: 1Gi
-    limits:
-      cpu: "2"
-      memory: 2Gi
+persistent_binderhub:
+  binderhub:
+    resources:
+      requests:
+        cpu: "0.25"
+        memory: 1Gi
+      limits:
+        cpu: "2"
+        memory: 2Gi
 
-  config:
-    BinderHub:
-      hub_url: https://notebooks.gesis.org
-      image_prefix: gesiscss/binder-
+    config:
+      BinderHub:
+        hub_url: https://notebooks.gesis.org
+        image_prefix: gesiscss/binder-
 
-  service:
-    annotations:
-      prometheus.io/path: '/services/binder/metrics'
-    nodePort: 30083
+    service:
+      annotations:
+        prometheus.io/path: '/services/binder/metrics'
+      nodePort: 30083
 
-  jupyterhub:
-    hub:
-      # below is already default of z2jh chart
-      #service:
-      #  annotations:
-      #    prometheus.io/path: "/hub/metrics"
-      services:
-        binder:
-          url: http://194.95.75.9:30083  # base worker
-          oauth_redirect_uri: "https://notebooks.gesis.org/services/binder/oauth_callback"
-          oauth_client_id: "binder-oauth-client"
-      resources:
-        requests:
-          cpu: "0.25"
-          memory: 1Gi
-        limits:
-          cpu: "2"
-          memory: 2Gi
-      extraEnv:
-        OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
-        OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-        OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
-
-    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-    auth:
-      custom:
-        config:
-          login_service: "GESIS Login"  # to customize the label on the login button
-          token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-          userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
-
-    proxy:
-      service:
-        nodePorts:
-          http: 30084
-          https: 30080
-      chp:
+    jupyterhub:
+      hub:
+        # below is already default of z2jh chart
+        #service:
+        #  annotations:
+        #    prometheus.io/path: "/hub/metrics"
+        services:
+          binder:
+            url: http://194.95.75.9:30083  # base worker
+            oauth_redirect_uri: "https://notebooks.gesis.org/services/binder/oauth_callback"
+            oauth_client_id: "binder-oauth-client"
         resources:
           requests:
-            cpu: "0.5"
-            memory: 512Mi
-          limits:
-            cpu: "1"
+            cpu: "0.25"
             memory: 1Gi
+          limits:
+            cpu: "2"
+            memory: 2Gi
+        extraEnv:
+          OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
+          OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+          OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
 
-    singleuser:
-      storage:
-        # has no effect when using nfs: this is a min limit not a max
-        capacity: 10Gi
-      cpu:
-        guarantee: 0.1
-        limit: 2
-      memory:
-        guarantee: 1G
-        limit: 32G
+      # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+      auth:
+        custom:
+          config:
+            login_service: "GESIS Login"  # to customize the label on the login button
+            token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+            userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+
+      proxy:
+        service:
+          nodePorts:
+            http: 30084
+            https: 30080
+        chp:
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+      singleuser:
+        storage:
+          # has no effect when using nfs: this is a min limit not a max
+          capacity: 10Gi
+        cpu:
+          guarantee: 0.1
+          limit: 2
+        memory:
+          guarantee: 1G
+          limit: 32G

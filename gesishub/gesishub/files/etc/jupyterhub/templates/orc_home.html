@@ -86,8 +86,9 @@
     </div>
   {% endblock how_it_works %}
 
-  {% block binder_questions %}
-  {% endblock binder_questions %}
+  {% block extra_main_content %}
+  {% include "featured_projects.html" %}
+  {% endblock extra_main_content %}
 
 {% block script %}
 <script src="{{ static_nginx }}vendor/typed.js-2.0.6/lib/typed.min.js"></script>

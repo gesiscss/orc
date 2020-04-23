@@ -39,7 +39,7 @@
     {% endblock meta_social %}
 
     {% block stylesheet %}
-    <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ static_url("components/bootstrap/dist/css/bootstrap.min.css") }}" type="text/css"/>
     <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
     {% endblock %}
     <link href="{{ static_nginx }}notebooks.css?v={{ static_version }}" rel="stylesheet" />

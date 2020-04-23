@@ -1,0 +1,45 @@
+    <div class="row form-group"></div>
+    {#<div class="row form-group page-header">#}
+    <div class="row form-group featured-projects">
+        <div class="col-lg-12">
+            {#    <div class="col-lg-10 col-lg-offset-1">#}
+            <h3>Featured Projects</h3>
+        </div>
+    </div>
+
+    <div class="row form-group text-left display-flex featured-projects">
+        {% for example in featured_projects %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 project-example">
+            <div class="thumbnail">
+                <div class="caption project-caption">
+                    <h4><a href="{{ example.repo_link }}" target='_blank'><b>{{ example.headline }}</b></a>
+                        <br>
+                        {% if example.who %}
+                        <b>By:</b> <i>{{ example.who|safe }}</i>
+                        {% endif %}
+                        <br>
+                        {% if example.where %}
+                        <small>{{ example.where|safe }}</small>
+                        {% endif %}
+                    </h4>
+                    <p>{{ example.description|safe }}</p>
+                    <div>
+                        <div class="project-language">
+                            {% if example.language %}
+                            <b>Language:</b> {{ example.language }}
+                            {% endif %}
+                        </div>
+                        <div class="project-badge">
+                            <a href="{{ binder_base_url }}{{ example.binder_link }}">
+                                <img src="{{ static_nginx }}images/badge_logo.svg?v={{ static_version }}" alt="Launch Binder">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row form-group see-all-projects">
+        <a href="{{ gallery_url }}">See all projects >></a>
+    </div>

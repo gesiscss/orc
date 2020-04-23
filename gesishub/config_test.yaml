@@ -1,118 +1,119 @@
 projectName: gesis-hub-staging
 
-binderhub:
-  resources:
-    requests:
-      cpu: "0.25"
-      memory: 512Mi
-    limits:
-      cpu: "1"
-      memory: 1Gi
+persistent_binderhub:
+  binderhub:
+    resources:
+      requests:
+        cpu: "0.25"
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
 
-  config:
-    BinderHub:
-      debug: true
-      hub_url: https://notebooks-test.gesis.org
-      image_prefix: gesiscss/binder-staging-
+    config:
+      BinderHub:
+        debug: true
+        hub_url: https://notebooks-test.gesis.org
+        image_prefix: gesiscss/binder-staging-
 
-  service:
-    annotations:
-      prometheus.io/scrape: 'false'
-    nodePort: 30183
+    service:
+      annotations:
+        prometheus.io/scrape: 'false'
+      nodePort: 30183
 
-  jupyterhub:
-    debug:
-      enabled: true
+    jupyterhub:
+      debug:
+        enabled: true
 
-    hub:
-      service:
-        annotations:
-          prometheus.io/scrape: 'false'
-      services:
-        binder:
-          url: http://194.95.75.9:30183  # base worker
-          oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
-          oauth_client_id: "binder-oauth-client-test"
-      extraConfig:
-        03-orc: |
-          c.GitHubOAuthenticator.auto_login = True
-          from jupyterhub.handlers import LogoutHandler, LoginHandler
-          from oauthenticator.github import GitHubOAuthenticator
-          from oauthenticator.oauth2 import OAuthCallbackHandler
-          from extra_config import ORC_LOGIN_COOKIE_NAME, ORC_LOGIN_COOKIE_EXPIRES_DAYS
-          class MyLogoutHandler(LogoutHandler):
-              def clear_login_cookie(self, name=None):
-                  super().clear_login_cookie(name)
-                  self.clear_cookie(ORC_LOGIN_COOKIE_NAME, path="/")
-              async def render_logout_page(self):
-                  site_url = 'https://{}'.format(self.request.host)
-                  self.redirect(site_url, permanent=False)
-          class MyLoginHandler(LoginHandler):
-              def set_login_cookie(self, user):
-                  super().set_login_cookie(user)
-                  self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
-          class MyOAuthCallbackHandler(OAuthCallbackHandler):
-              def set_login_cookie(self, user):
-                  super().set_login_cookie(user)
-                  self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
-          GitHubOAuthenticator.default_logout_handler = MyLogoutHandler
-          GitHubOAuthenticator.default_login_handler = MyLoginHandler
-          GitHubOAuthenticator.callback_handler = MyOAuthCallbackHandler
-          def get_handlers(self, app):
-              return [
-                  (r'/oauth_login', self.login_handler),
-                  (r'/oauth_callback', self.callback_handler),
-              ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
-          GitHubOAuthenticator.get_handlers = get_handlers
-      resources:
-        requests:
-          cpu: "0.1"
-          memory: 512Mi
-        limits:
-          cpu: "1"
-          memory: 1Gi
-      extraEnv:
-        OAUTH2_AUTHORIZE_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
-        OAUTH2_TOKEN_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
-        OAUTH_CALLBACK_URL: https://notebooks-test.gesis.org/hub/oauth_callback
-
-    # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-    auth:
-      #custom:
-      #  config:
-      #    login_service: "GESIS Test Login"  # to customize the label on the login button
-      #    token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
-      #    userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
-      type: github
-      custom: {}
-      github:
-        callbackUrl: "https://notebooks-test.gesis.org/hub/oauth_callback"
-      scopes:
-        - "read:user"
-      admin:
-        users: ['bitnik', 'arnim']
-
-    proxy:
-      service:
-        nodePorts:
-          http: 30184
-          https: 30180
-      chp:
+      hub:
+        service:
+          annotations:
+            prometheus.io/scrape: 'false'
+        services:
+          binder:
+            url: http://194.95.75.9:30183  # base worker
+            oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
+            oauth_client_id: "binder-oauth-client-test"
+        extraConfig:
+          03-orc: |
+            c.GitHubOAuthenticator.auto_login = True
+            from jupyterhub.handlers import LogoutHandler, LoginHandler
+            from oauthenticator.github import GitHubOAuthenticator
+            from oauthenticator.oauth2 import OAuthCallbackHandler
+            from extra_config import ORC_LOGIN_COOKIE_NAME, ORC_LOGIN_COOKIE_EXPIRES_DAYS
+            class MyLogoutHandler(LogoutHandler):
+                def clear_login_cookie(self, name=None):
+                    super().clear_login_cookie(name)
+                    self.clear_cookie(ORC_LOGIN_COOKIE_NAME, path="/")
+                async def render_logout_page(self):
+                    site_url = 'https://{}'.format(self.request.host)
+                    self.redirect(site_url, permanent=False)
+            class MyLoginHandler(LoginHandler):
+                def set_login_cookie(self, user):
+                    super().set_login_cookie(user)
+                    self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+            class MyOAuthCallbackHandler(OAuthCallbackHandler):
+                def set_login_cookie(self, user):
+                    super().set_login_cookie(user)
+                    self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
+            GitHubOAuthenticator.default_logout_handler = MyLogoutHandler
+            GitHubOAuthenticator.default_login_handler = MyLoginHandler
+            GitHubOAuthenticator.callback_handler = MyOAuthCallbackHandler
+            def get_handlers(self, app):
+                return [
+                    (r'/oauth_login', self.login_handler),
+                    (r'/oauth_callback', self.callback_handler),
+                ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
+            GitHubOAuthenticator.get_handlers = get_handlers
         resources:
           requests:
             cpu: "0.1"
-            memory: 256Mi
-          limits:
-            cpu: "0.5"
             memory: 512Mi
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        extraEnv:
+          OAUTH2_AUTHORIZE_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
+          OAUTH2_TOKEN_URL: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+          OAUTH_CALLBACK_URL: https://notebooks-test.gesis.org/hub/oauth_callback
 
-    singleuser:
-      storage:
-        # has no effect when using nfs: this is a min limit not a max
-        capacity: 5Gi
-      cpu:
-        guarantee: 0.1
-        limit: 1
-      memory:
-        guarantee: 256M
-        limit: 4G
+      # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+      auth:
+        #custom:
+        #  config:
+        #    login_service: "GESIS Test Login"  # to customize the label on the login button
+        #    token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+        #    userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+        type: github
+        custom: {}
+        github:
+          callbackUrl: "https://notebooks-test.gesis.org/hub/oauth_callback"
+        scopes:
+          - "read:user"
+        admin:
+          users: ['bitnik', 'arnim']
+
+      proxy:
+        service:
+          nodePorts:
+            http: 30184
+            https: 30180
+        chp:
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: 256Mi
+            limits:
+              cpu: "0.5"
+              memory: 512Mi
+
+      singleuser:
+        storage:
+          # has no effect when using nfs: this is a min limit not a max
+          capacity: 5Gi
+        cpu:
+          guarantee: 0.1
+          limit: 1
+        memory:
+          guarantee: 256M
+          limit: 4G
