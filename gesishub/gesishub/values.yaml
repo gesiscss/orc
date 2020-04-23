@@ -49,7 +49,7 @@ binderhub:
       auth_enabled: true
       base_url: /services/binder/
       use_registry: true
-      build_image: jupyter/repo2docker:0.11.0-44.g65d2713
+      build_image: jupyter/repo2docker:0.11.0-52.g175b930
       build_node_selector:
         user: worker
       per_repo_quota: 100
