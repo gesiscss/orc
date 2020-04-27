@@ -91,7 +91,7 @@
               },
               "Question 5": {
                 "Question": "I have a question or have found a bug. Where can I open up an Issue?",
-                "Answer": "For questions regarding Jupyter or the Binder import, join the <a href='https://gitter.im/jupyterhub/binder' target='_blank'>Binder-Chat</a>, read the <a href='https://mybinder.readthedocs.io/en/latest/' target='_blank'>docs</a> or see the <a href='https://github.com/jupyterhub/binderhub' target='_blank'>code</a>. Please open an issue on our <a href='https://github.com/gesiscss/orc/issues' target='_blank'>GitHub repository</a> for questions regarding GESIS Notebooks. We are looking forward to hearing from you.<br>If possible, please include:<ul><li>a short description</li><li>steps necessary to reproduce the problem</li><li>a screenshot of the issue</li>",
+                "Answer": "For questions regarding Jupyter or the Binder import, join the <a href='https://discourse.jupyter.org/c/binder' target='_blank'>Binder-Chat</a>, read the <a href='https://mybinder.readthedocs.io/en/latest/' target='_blank'>docs</a> or see the <a href='https://github.com/jupyterhub/binderhub' target='_blank'>code</a>. Please open an issue on our <a href='https://github.com/gesiscss/orc/issues' target='_blank'>GitHub repository</a> for questions regarding GESIS Notebooks. We are looking forward to hearing from you.<br>If possible, please include:<ul><li>a short description</li><li>steps necessary to reproduce the problem</li><li>a screenshot of the issue</li>",
                 "ID": "5"
               },
               "Question 6": {
@@ -109,7 +109,7 @@
                 "Answer": "<ol><li>Launch <em>gh/gesiscss/data_science_image</em> and start a terminal</li><li>Run <em>zip -r ~/myprojects.zip /projects/*</em> in the terminal</li><li>Go to the Notebook dashboard, select <em>myprojects.zip</em> file and download</li></ol>",
                 "ID": "8"
               }
-            }
+            }v
           ]
         }
       },
