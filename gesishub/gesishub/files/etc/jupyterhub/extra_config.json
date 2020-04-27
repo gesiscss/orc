@@ -109,7 +109,7 @@
                 "Answer": "<ol><li>Launch <em>gh/gesiscss/data_science_image</em> and start a terminal</li><li>Run <em>zip -r ~/myprojects.zip /projects/*</em> in the terminal</li><li>Go to the Notebook dashboard, select <em>myprojects.zip</em> file and download</li></ol>",
                 "ID": "8"
               }
-            }v
+            }
           ]
         }
       },
