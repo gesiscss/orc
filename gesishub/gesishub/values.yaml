@@ -50,6 +50,8 @@ persistent_binderhub:
 
         template_path: /etc/binderhub/templates
 
+    annotations:
+      rollme: "rollme"
     extraVolumes:
       - name: binder-templates
         configMap:
@@ -115,6 +117,14 @@ persistent_binderhub:
           base: worker  # where database is
         db:
           type: postgres
+        annotations:
+          # auto restart hub pod if any of the configmap files changes
+          #checksum/config-map: {{ include (print $.Template.BasePath "/hub-configmap.yaml") . | sha256sum }}
+          # the config above doesnt work, because templating is not allowed in values.yaml,,
+          # so we have a default string "rollme", and in CI we calculate sha256sum of files folder
+          # and update this config with helm upgrade ... --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=<sha256sum>
+          # https://helm.sh/docs/intro/using_helm/
+          rollme: "rollme"
         extraVolumes:
           # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
           - name: persistent-bhub-templates
