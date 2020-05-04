@@ -71,16 +71,17 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             c.run('helm repo update')
             c.run('helm dependency update gesisbinder/gesisbinder')
             # TODO do we really need this?
-            #  bhub has only templates in configmaps and templates are not cached,
-            #  so changed must be reflected without pod restart
+            # bhub has only templates in configmaps and templates are not cached,
+            # so changed must be reflected without pod restart
             sha256sum_bh = c.run('find gesishub/gesishub/files/etc/binderhub/ -type f -exec sha256sum {} \; | sha256sum')
-            c.run('helm upgrade bhub{-test} gesisbinder/gesisbinder '
-                  '--namespace=bhub{-test}-ns '
-                  '--cleanup-on-fail --force --debug '
-                  '-f gesisbinder/config{_test}.yaml '
-                  '-f gesisbinder/_secret{_test}.yaml'.format(**format_dict) +
-                  ' --set persistent_binderhub.binderhub.annotations.rollme=' +
-                  sha256sum_bh.stdout.split()[0])
+            command = 'helm upgrade bhub{-test} gesisbinder/gesisbinder ' \
+                      '--namespace=bhub{-test}-ns ' \
+                      '--cleanup-on-fail --force --debug ' \
+                      '-f gesisbinder/config{_test}.yaml ' \
+                      '-f gesisbinder/_secret{_test}.yaml'.format(**format_dict) + \
+                      ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_bh.stdout.split()[0]
+            c.run('echo "######## {}"'.format(command))
+            c.run(command)
         if 'bhubupgrade' in mode and not staging:
             c.run('kubectl apply -f gesisbinder/bot/_secret_cron_job.yaml -n bhub-ns')
             c.run('kubectl apply -f gesisbinder/bot/cron_job.yaml -n bhub-ns')
@@ -90,14 +91,15 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
             # here bhub also uses binder-extra-config-json configmap, not only templates
             sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
-            c.run('helm upgrade jhub{-test} gesishub/gesishub '
-                  '--namespace=jhub{-test}-ns '
-                  '--cleanup-on-fail --force --debug '
-                  '-f gesishub/config{_test}.yaml '
-                  '-f gesishub/_secret{_test}.yaml'.format(**format_dict) +
-                  ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] +
-                  ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_jbh.stdout.split()[0]
-                  )
+            command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
+                      '--namespace=jhub{-test}-ns ' \
+                      '--cleanup-on-fail --force --debug ' \
+                      '-f gesishub/config{_test}.yaml ' \
+                      '-f gesishub/_secret{_test}.yaml'.format(**format_dict) + \
+                      ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] + \
+                      ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_jbh.stdout.split()[0]
+            c.run('echo "######## {}"'.format(command))
+            c.run(command)
         if 'prometheus' in mode and not staging:
             c.run('helm upgrade prometheus stable/prometheus --version=9.7.4 '
                   '-f monitoring/prometheus_config.yaml '
