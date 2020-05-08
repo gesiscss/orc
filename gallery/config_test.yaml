@@ -37,7 +37,7 @@ spec:
         base: worker  # where database is
       containers:
       - name: gallery-test
-        image: gesiscss/binder-gallery:d62fdcf
+        image: gesiscss/binder-gallery:d4ef156
         command: ["gunicorn"]
         args: ["-b", "0.0.0.0:5000", "-w", "4", "binder_gallery:app"]
         ports:
