@@ -70,10 +70,11 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'bhubns' in mode or 'bhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm dependency update gesisbinder/gesisbinder')
-            # TODO do we really need this?
-            # bhub has only templates in configmaps and templates are not cached,
-            # so changed must be reflected without pod restart
-            sha256sum_bh = c.run('find gesishub/gesishub/files/etc/binderhub/ -type f -exec sha256sum {} \; | sha256sum')
+            # if any static file or template file is changed, binder pod must be restarted in order to reflect changes
+            # nginx servers static files for custom binder templates and when they are changed pod must be restarted to get a new static_version
+            sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
+            sha256sum_bh = c.run('find gesishub/gesishub/files/etc/binderhub/templates/ -type f -exec sha256sum {} \; | sha256sum')
+            sha256sum_bh = c.run('echo "{}" | sha256sum'.format(sha256sum_bh.stdout + sha256sum_nginx.stdout))
             command = 'helm upgrade bhub{-test} gesisbinder/gesisbinder ' \
                       '--namespace=bhub{-test}-ns ' \
                       '--cleanup-on-fail --force --debug ' \
@@ -88,9 +89,14 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'jhubns' in mode or 'jhubtestns' in mode:
             c.run('helm repo update')
             c.run('helm dependency update gesishub/gesishub')
+            # if any configmap file or static file or template file is changed, hub pod must be restarted in order to reflect changes
+            # nginx servers static files for custom binder templates and when they are changed pod must be restarted to get a new static_version
+            sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
+            sha256sum_jh = c.run('echo "{}" | sha256sum'.format(sha256sum_jh.stdout + sha256sum_nginx.stdout))
             # here bhub also uses binder-extra-config-json configmap, not only templates
             sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
+            sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
             command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
                       '--namespace=jhub{-test}-ns ' \
                       '--cleanup-on-fail --force --debug ' \

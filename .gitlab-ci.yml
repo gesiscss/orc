@@ -72,10 +72,10 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/'; then
+      if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-jhubtestns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/'; then
+      if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
@@ -116,10 +116,10 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'gallery/cron_job.yaml|gallery/_secret_config.py'; then
         mode+="-galleryarchives"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/'; then
+      if git diff HEAD~ --name-only | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-jhubns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/config.yaml|gesisbinder/_secret.yaml|gesisbinder/gesisbinder/'; then
+      if git diff HEAD~ --name-only | egrep 'gesisbinder/config.yaml|gesisbinder/_secret.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-bhubns"
       fi;
       if git diff HEAD~ --name-only | egrep 'gesisbinder/bot/'; then
