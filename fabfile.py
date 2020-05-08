@@ -94,7 +94,8 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jh = c.run('echo "{}" | sha256sum'.format(sha256sum_jh.stdout + sha256sum_nginx.stdout))
-            # here bhub also uses binder-extra-config-json configmap, not only templates
+            # compared to gesid binder, here bhub also uses binder-extra-config-json configmap, not only templates
+            # so restart the binder pod depending on the same condition as for hub pod
             sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
             command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
