@@ -61,6 +61,15 @@
         "description": "Materials for the GESIS DataDay 2020",
         "binder_link": "v2/gh/gesiscss/gesis_dataday_20/master?urlpath=lab",
         "language": "R"
+      },
+      {
+        "headline": "Introduction to Topic Models",
+        "repo_link": "https://github.com/gesiscss/stmdemo",
+        "who": "Arnim Bleier",
+        "where": "CSS, GESIS",
+        "description": "These notebooks provide an introduction to unsupervised Methods in Natural Language Processing (NLP) in R with an emphasis on Topic Modeling.",
+        "binder_link": "v2/gh/gesiscss/stmdemo/master?filepath=lda.ipynb",
+        "language": "R"
       }
     ],
     "faq": [
