@@ -109,5 +109,3 @@ binderhub:
 
 imageCleaner:
   enabled: true
-  # interval (in seconds) between cleaning processes
-  interval: 7200  # every 2 hours
