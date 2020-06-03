@@ -39,6 +39,7 @@ def clean_images():
     while True:
         start_time = time()
 
+        # prune only unused and untagged images
         prune_output = client.images.prune(filters={"dangling": True})
         logging.info(f"After prune: {prune_output}")
 
@@ -48,66 +49,92 @@ def clean_images():
         else:
             # start cleaning when high_limit% of disk is used
             for days in range(days_limit, -1, -1):
-                logging.info(f"Start deleting images not used in last {days} days. Free disk space: {available}%")
+                logging.info(f"Starting to remove images which are not used in last {days} days. current available disk space: {available}%")
 
                 # get launches on GESIS Binder in last x days
                 from_dt = (datetime.now() - timedelta(days=days)).isoformat()
                 url = f'https://notebooks.gesis.org/gallery/api/v1.0/launches/{from_dt}/'
                 launches = []
-                # because of pagination the api gives 100 results per page so for analysis you have to take data in all pages
-                next_page = 1
-                while next_page is not None:
-                    api_url = url + str('?page=') + str(next_page)
-                    r = requests.get(api_url)
-                    response = r.json()
-                    # check the limit of queries per second/minute,
-                    message = response.get("message", "")
-                    if message not in ["2 per 1 second", "100 per 1 minute"]:
-                        launches.extend(response['launches'])
-                        next_page = response['next_page']
-                    else:
-                        sleep(1)
+                # get launches only on GESIS
+                origins = ["notebooks.gesis.org", "gesis.mybinder.org"]
+                for origin in origins:
+                    # because of pagination the api gives 100 results per page
+                    # so for analysis you have to take data in all pages
+                    next_page = 1
+                    api_request_retry = 1
+                    while next_page is not None:
+                        api_url = url + f'?page={next_page}&origin={origin}'
+                        r = requests.get(api_url)
+                        response = r.json()
+                        if r.status_code == 429:
+                            # check the limit of queries per second/minute
+                            logging.info(f'Gallery API: status code 429: {response["messsage"]}')
+                            sleep(1)
+                        elif r.status_code == 200:
+                            launches.extend(response['launches'])
+                            next_page = response['next_page']
+                            api_request_retry = 1
+                        elif api_request_retry <= 3:
+                            message = response.get("message", "")
+                            logging.warning(f"Gallery API: not responding (page {next_page}, attempt {api_request_retry}): {r.status_code}: {message}")
+                            sleep(api_request_retry)
+                            api_request_retry += 1
+                        else:
+                            message = response.get("message", "")
+                            logging.error(f"Gallery API: failed to get launches (page {next_page}): {r.status_code}: {message}")
+                            break
+
                 _launches = []
                 for l in launches:
-                    # get launches on GESIS only
-                    if l["origin"] not in ["notebooks.gesis.org", "gesis.mybinder.org"]:
-                        continue
-                    if l["provider"] in ["Git", "GitLab"]:
-                        spec = l["spec"].rsplit("/", 1)[0]
-                        spec = unquote(spec)
-                    elif l["provider"] in ["Zenodo", "Figshare"]:
-                        spec = l["spec"]
+                    if l["provider"] in ['GitHub', 'Gist']:
+                        namespace = l["spec"].rsplit("/", 1)[0]
+                    elif l["provider"] in ["Git", "GitLab"]:
+                        # for Git, quoted_namespace is actually the repo url
+                        quoted_namespace = l["spec"].rsplit("/", 1)[0]
+                        namespace = unquote(quoted_namespace)
                     else:
-                        spec = l["spec"].rsplit("/", 1)[0]
-                    if spec.endswith(".git"):
-                        spec = spec.split(".git")[0]
-                    _launches.append((spec, l["provider"].lower()))
+                        # FIXME
+                        namespace = l["spec"]
+                    if namespace.endswith(".git"):
+                        namespace = namespace[:-(len(".git"))]
+                    _launches.append((namespace, l["provider"].lower()))
                 launches = _launches
-                logging.info(f"Number of launches on GESIS: {len(launches)}")
+                # logging.info(f"Number of launches on GESIS in last {days} days: {len(launches)}")
 
                 deleted = 0
                 images = client.images.list()
+                # sort images according to size in descending order
                 images.sort(key=lambda i: i.attrs['Size'], reverse=True)
                 for image in images:
-                    if not image.tags:
-                        # TODO why does this exist?
-                        continue
-                    tag = image.tags[0]
-                    if not tag.startswith(image_prefix):
+                    if image.tags:
+                        # ex tag: 'gesiscss/binder-serhatcevikel-2dbdm-5f2019-e7b363:a5c8f288aecebb097d8d525138c2b7b031fd0f3d'
+                        tag = image.tags[0]
+                        if not tag.startswith(image_prefix):
+                            # delete images only which are built by binder
+                            # NOTE: GESIS Hub and Binder have same image prefix
+                            continue
+                    else:
+                        # ignore untagged images for now, prune will delete them if they are not used
                         continue
 
+                    logging.info(f"Image {tag} with labels: {image.labels}")
                     # image.labels["repo2docker.repo"] gives us repo url
                     # image.labels["repo2docker.version"] gives us repo2docker version
                     # image.labels["repo2docker.ref"] gives us resolved ref (image tag)
+                    recently_used = bool([True for namespace, provider in launches
+                                          if namespace and
+                                          namespace in image.labels["repo2docker.repo"] and
+                                          provider in image.labels["repo2docker.repo"]])
                     # delete dockerfile repos always, because they dont have r2d labels (unless maintainer adds them)
-                    if "repo2docker.repo" not in image.labels or \
-                        not bool([True for spec, provider in launches
-                                  if spec in image.labels["repo2docker.repo"] and provider in image.labels["repo2docker.repo"]]):
-                        logging.info(f"Deleting {tag} with labels: {image.labels}")
+                    if "repo2docker.repo" not in image.labels or not recently_used:
                         try:
+                            # if days == 0:
+                            #     # force delete
+                            #     client.images.remove(tag, force=True)
+                            # dont force, dont delete an image which is currently used in a container
                             client.images.remove(tag)
                             # client.images.remove(image=image.id, force=True)
-                            # logging.info(f'Removed {name}')
+                            logging.info(f'Removed {tag}')
                             # Delay between deletions.
                             # A sleep here avoids monopolizing the Docker API with deletions.
                             sleep(delay)
@@ -129,21 +156,23 @@ def clean_images():
                             available = get_available_disk_space(path_to_check)
                             if available >= (100 - low_limit):
                                 # cleaning is done when there is enough free disk space
-                                logging.info(f"While deleting images not used in last {days} days, "
-                                             f"reached to enough free disk space ({available}%). Stop deleting.")
+                                logging.info(f"{days} days: while removing images, "
+                                             f"reached to enough free disk space ({available}%). "
+                                             f"Stop cleaning.")
                                 break
                     else:
-                        logging.info(f"Skipping {tag} with labels: {image.labels}")
+                        logging.info(f"Skipping {tag}: used in last {days} days")
 
-                # prune dangling images after deleting for each day
+                # prune dangling (unused and untagged) images after deleting for each day
                 client.images.prune(filters={"dangling": True})
-                logging.info(f"Deleted {deleted} images. Free disk space after deleting {days} days: {available}%")
+                logging.info(f"{days} days: removed {deleted} images: available disk space: {available}%")
                 # check available disk space before checking next day
                 available = get_available_disk_space(path_to_check)
                 if available >= (100 - low_limit):
                     # cleaning is done when there is enough free disk space
-                    logging.info(f"After deleting images not used in last {days} days, "
-                                 f"there is enough free disk space ({available}%). Stop deleting.")
+                    logging.info(f"{days} days: after removing images, "
+                                 f"there is enough free disk space ({available}%). "
+                                 f"Stop cleaning.")
                     break
         logging.info(f"Duration: {timedelta(seconds=time()-start_time)}")
         sleep(interval)
