@@ -37,7 +37,6 @@ def clean_images():
     logging.info(f"Cleaning images on {path_to_check}")
     client = docker.from_env()
     while True:
-        start_time = time()
 
         # # prune only unused and untagged images
         # prune_output = client.images.prune(filters={"dangling": True})
@@ -47,6 +46,7 @@ def clean_images():
         if available > (100 - high_limit):
             logging.info(f"There is enough free disk space ({available}%).")
         else:
+            start_time = time()
             # start cleaning when high_limit% of disk is used
             for days in range(days_limit, -1, -1):
                 logging.info(f"Starting to remove images which are not used in last {days} days. current available disk space: {available}%")
@@ -174,7 +174,7 @@ def clean_images():
                                  f"there is enough free disk space ({available}%). "
                                  f"Stop cleaning.")
                     break
-        logging.info(f"Duration: {timedelta(seconds=time()-start_time)}")
+            logging.info(f"Duration: {timedelta(seconds=time()-start_time)}")
         sleep(interval)
 
 
