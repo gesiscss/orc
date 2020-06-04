@@ -63,8 +63,8 @@ def clean_images():
                     next_page = 1
                     api_request_retry = 1
                     while next_page is not None:
-                        api_url = url + f'?page={next_page}&origin={origin}'
-                        r = requests.get(api_url)
+                        payload = {'page': str(next_page), 'origin': origin}
+                        r = requests.get(url, params=payload)
                         response = r.json()
                         if r.status_code == 429:
                             # check the limit of queries per second/minute
