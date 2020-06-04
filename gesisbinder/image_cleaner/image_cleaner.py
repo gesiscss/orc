@@ -39,9 +39,9 @@ def clean_images():
     while True:
         start_time = time()
 
-        # prune only unused and untagged images
-        prune_output = client.images.prune(filters={"dangling": True})
-        logging.info(f"After prune: {prune_output}")
+        # # prune only unused and untagged images
+        # prune_output = client.images.prune(filters={"dangling": True})
+        # logging.info(f"After prune: {prune_output}")
 
         available = get_available_disk_space(path_to_check)
         if available > (100 - high_limit):
