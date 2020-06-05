@@ -80,7 +80,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       '--cleanup-on-fail --debug ' \
                       '-f gesisbinder/config{_test}.yaml ' \
                       '-f gesisbinder/_secret{_test}.yaml'.format(**format_dict) + \
-                      ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_bh.stdout.split()[0]
+                      ' --set binderhub.annotations.rollme=' + sha256sum_bh.stdout.split()[0]
             c.run('echo "######## {}"'.format(command))
             c.run(command)
         if 'bhubupgrade' in mode and not staging:
