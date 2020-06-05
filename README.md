@@ -28,15 +28,15 @@ All services in the cluster has type `NodePort`.
 
 ### [GESIS Hub](/gesishub)
 
-JupyterHub 1.1.0 runs under https://notebooks.gesis.org/hub/.
+[Persistent BinderHub](https://github.com/gesiscss/persistent_binderhub) runs under https://notebooks.gesis.org/hub/.
 
-Single user server image: https://github.com/gesiscss/data_science_image
+Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images. 
 
 ### [GESIS Binder](/gesisbinder)
 
 BinderHub runs under https://notebooks.gesis.org/binder/.
 
-Uses Docker Hub Registry (https://hub.docker.com/u/gesiscss/) to store built images.
+GESIS Hub and Binder uses same docker images (they uses same repo2docker version).
 
 ### [Gallery](/gallery)
 
