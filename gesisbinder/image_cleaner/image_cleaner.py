@@ -58,7 +58,7 @@ def clean_images():
                 # get launches only on GESIS
                 origins = ["notebooks.gesis.org", "gesis.mybinder.org"]
                 for origin in origins:
-                    # because of pagination the api gives 100 results per page
+                    # because of pagination the api gives 500 results per page
                     # so for analysis you have to take data in all pages
                     next_page = 1
                     api_request_retry = 1
