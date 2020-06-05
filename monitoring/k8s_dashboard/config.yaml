@@ -1,0 +1,27 @@
+# https://github.com/kubernetes/dashboard/blob/master/aio/deploy/helm-chart/kubernetes-dashboard/values.yaml
+
+#extraArgs:
+#  - --tls-cert-file=/_secret_dashboard.crt
+#  - --tls-key-file=/_secret_dashboard.key
+
+resources:
+  limits:
+    memory: 1Gi
+
+## Metrics Scraper
+## Container to scrape, store, and retrieve a window of time from the Metrics Server.
+## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
+metricsScraper:
+  enabled: true
+
+## Optional Metrics Server sub-chart
+## Enable this is you don't already have metrics-server enabled on your cluster and
+## want to use it with dashboard metrics-scraper
+## refs:
+##  - https://hub.helm.sh/charts/stable/metrics-server
+##  - https://github.com/kubernetes-sigs/metrics-server
+metrics-server:
+  enabled: true
+  args:
+    - --kubelet-preferred-address-types=InternalIP
+    - --kubelet-insecure-tls
