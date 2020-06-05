@@ -6,9 +6,9 @@ For more information about ORC project: https://notebooks.gesis.org/about/
 
 This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 18.04.
 And kubernetes cluster (ORC cluster) is created with [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/)
-(v1.17.3).
-[calico](https://github.com/projectcalico/calico/tree/v3.11.2) is used as network provider.
-Docker version 19.03.5 is installed on servers.
+(v1.18.3).
+[calico](https://github.com/projectcalico/calico/tree/v3.14.1) is used as network provider.
+Docker version 19.03.8 is installed on servers.
 
 All docker images of this project can be found in https://hub.docker.com/u/gesiscss/.
 
