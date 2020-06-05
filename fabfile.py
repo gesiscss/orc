@@ -77,7 +77,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             sha256sum_bh = c.run('echo "{}" | sha256sum'.format(sha256sum_bh.stdout + sha256sum_nginx.stdout))
             command = 'helm upgrade bhub{-test} gesisbinder/gesisbinder ' \
                       '--namespace=bhub{-test}-ns ' \
-                      '--cleanup-on-fail --force --debug ' \
+                      '--cleanup-on-fail --debug ' \
                       '-f gesisbinder/config{_test}.yaml ' \
                       '-f gesisbinder/_secret{_test}.yaml'.format(**format_dict) + \
                       ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_bh.stdout.split()[0]
@@ -100,7 +100,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
             command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
                       '--namespace=jhub{-test}-ns ' \
-                      '--cleanup-on-fail --force --debug ' \
+                      '--cleanup-on-fail --debug ' \
                       '-f gesishub/config{_test}.yaml ' \
                       '-f gesishub/_secret{_test}.yaml'.format(**format_dict) + \
                       ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] + \
@@ -110,12 +110,12 @@ def deploy(c, password, staging=False, ref='master', mode=''):
         if 'prometheus' in mode and not staging:
             c.run('helm upgrade prometheus stable/prometheus --version=9.7.4 '
                   '-f monitoring/prometheus_config.yaml '
-                  '--cleanup-on-fail --force --debug')
+                  '--cleanup-on-fail --debug')
         if 'grafana' in mode and not staging:
             c.run('helm upgrade grafana stable/grafana --version=4.3.0 '
                   '-f monitoring/grafana_config.yaml '
                   '-f monitoring/_secret_grafana.yaml '
-                  '--cleanup-on-fail --force --debug')
+                  '--cleanup-on-fail --debug')
 
 
 @task
