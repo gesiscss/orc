@@ -72,7 +72,7 @@ persistent_binderhub:
         subPath: extra_config.json
 
     extraConfig:
-      00-tempalte-variables:  |
+      00-template-variables:  |
         import json
         with open('/etc/binderhub/extra_config.json') as extra_config_file:
             template_vars = json.load(extra_config_file)["template_vars"]

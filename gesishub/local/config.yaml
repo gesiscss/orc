@@ -15,7 +15,7 @@ binderhub:
   extraConfig:
     # update value of `static_nginx` to "/static_local/"
     # because it has default value of "/static/", at that uri tornado has the default statichandler
-    00-tempalte-variables:  |
+    00-template-variables:  |
       import json
       with open('/etc/binderhub/extra_config.json') as extra_config_file:
           template_vars = json.load(extra_config_file)["template_vars"]
