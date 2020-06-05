@@ -92,6 +92,32 @@ server {
     #    alias /var/www/prod/static/dnt-policy.txt;
     #}
 
+    # binder gallery
+    location /gallery/ {
+        proxy_pass http://gallery;
+        include snippets/flask.conf;
+    }
+
+    # Managing literal requests to the BinderHub
+    location /binder/ {
+        # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
+        # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
+        proxy_buffering off;
+        proxy_pass http://bhub;
+        include snippets/headers.conf;
+        proxy_set_header X-Scheme $scheme;
+    }
+    # For JupyterHub of binder
+    location /binder/jupyter/ {
+        proxy_pass http://bjhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
+    # overwrite binder logo with ORC logo
+    #location = /binder/static/favicon.ico {
+    #    alias /static/images/logo/logo.png;
+    #}
+
     # Managing literal requests to the JupyterHub
     location / {
         # maintenance page
