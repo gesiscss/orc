@@ -42,7 +42,7 @@ persistent_binderhub:
         #    config:
         #      quota: 200
       BinderHub:
-        build_image: jupyter/repo2docker:0.11.0-84.gad949cf
+        build_image: jupyter/repo2docker:0.11.0-87.g8d85a51
         build_node_selector:
           user: worker
         per_repo_quota: 100
