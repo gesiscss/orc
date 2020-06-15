@@ -63,13 +63,13 @@
         "language": "R"
       },
       {
-        "headline": "Introduction to Topic Models",
-        "repo_link": "https://github.com/gesiscss/stmdemo",
-        "who": "Arnim Bleier",
+        "headline": "Homophilic Networks",
+        "repo_link": "https://github.com/gesiscss/homophilic_networks",
+        "who": "Fariba Karimi",
         "where": "CSS, GESIS",
-        "description": "These notebooks provide an introduction to unsupervised Methods in Natural Language Processing (NLP) in R with an emphasis on Topic Modeling.",
-        "binder_link": "v2/gh/gesiscss/stmdemo/master?filepath=lda.ipynb",
-        "language": "R"
+        "description": "Generate social networks from preferential attachment and homophily and explore parameter effects.",
+        "binder_link": "v2/gh/gesiscss/homophilic_networks/master?filepath=generating_homophilic_networks.ipynb",
+        "language": "Python"
       }
     ],
     "faq": [
