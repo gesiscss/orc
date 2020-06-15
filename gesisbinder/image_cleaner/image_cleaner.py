@@ -62,7 +62,7 @@ def clean_images():
                         response = r.json()
                         if r.status_code == 429:
                             # check the limit of queries per second/minute
-                            logging.info(f'Gallery API: status code 429: {response["messsage"]}')
+                            logging.info(f'Gallery API: status code 429: {response}')
                             sleep(1)
                         elif r.status_code == 200:
                             launches.extend(response['launches'])
