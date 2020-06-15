@@ -35,13 +35,7 @@ def clean_images():
     # r2d_version = response.json()["builder"]
 
     logging.info(f"Cleaning images on {path_to_check}")
-    client = docker.from_env()
     while True:
-
-        # # prune only unused and untagged images
-        # prune_output = client.images.prune(filters={"dangling": True})
-        # logging.info(f"After prune: {prune_output}")
-
         available = get_available_disk_space(path_to_check)
         if available > (100 - high_limit):
             logging.info(f"There is enough free disk space ({available}%).")
@@ -102,6 +96,7 @@ def clean_images():
                 # logging.info(f"Number of launches on GESIS in last {days} days: {len(launches)}")
 
                 deleted = 0
+                client = docker.from_env()
                 images = client.images.list()
                 # sort images according to size in descending order
                 images.sort(key=lambda i: i.attrs['Size'], reverse=True)
