@@ -305,15 +305,13 @@ imageCleaner:
   path: /var/lib/docker
   # delete an image at most every 5 seconds
   delay: 5
-  # kubelet Garbage Collection: image-gc-high-threshold, the percent of disk usage which triggers image garbage collection. Default is 85%
-  # (https://kubernetes.io/docs/concepts/cluster-administration/kubelet-garbage-collection/#user-configuration)
-  # start cleaning when available disk space is <= 20%
+  # start cleaning when available disk space is <= 10%
   # until it increases to/above 30%
-  highLimit: 80
+  highLimit: 90
   lowLimit: 70
   # cull images on the host docker
   dockerSocket: /var/run/docker.sock
   # dockerLibDir: /var/lib/docker
-  # we clean ~10% -> ~200GB on ssd disk
+  # we clean ~20% -> ~400GB on ssd disk
   dockerLibDir: /ssd/docker
 

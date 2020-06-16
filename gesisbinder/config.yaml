@@ -108,4 +108,10 @@ binderhub:
         limit: 8G
 
 imageCleaner:
-  enabled: true
+  # dont use our image cleaner, let "kubelet Garbage Collection" do it
+  # https://kubernetes.io/docs/concepts/cluster-administration/kubelet-garbage-collection/
+  # https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/images/image_gc_manager.go
+  # it starts the image garbage collection when the percent of disk usage is 85%,
+  # until it is 80%. These are default values, and can be configured.
+  # The garbage collection will delete least recently used images until the low threshold has been met.
+  enabled: false
