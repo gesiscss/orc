@@ -33,7 +33,9 @@ binderhub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
       image_prefix: gesiscss/binder-
   extraConfig:
-    01-badge-base-url: |
+    00-template-variables:  |
+      production = True
+    02-badge-base-url: |
       def badge_base_url(handler):
           launch_host = (
               handler.request.headers.get('X-Binder-Launch-Host', '') or

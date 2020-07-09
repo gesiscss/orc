@@ -15,7 +15,7 @@ binderhub:
   extraConfig:
     # update value of `static_nginx` to "/static_local/"
     # because it has default value of "/static/", at that uri tornado has the default statichandler
-    00-template-variables:  |
+    01-template-variables:  |
       import json
       with open('/etc/binderhub/extra_config.json') as extra_config_file:
           template_vars = json.load(extra_config_file)["template_vars"]
@@ -25,7 +25,8 @@ binderhub:
                             'logout_url': '/hub/logout',
 
                             #'help_url': 'https://www.gesis.org/en/help/',
-                            "static_version": uuid.uuid4().hex
+                            "static_version": uuid.uuid4().hex,
+                            "production": False,
                             })
       c.BinderHub.template_variables.update(template_vars)
 
@@ -135,9 +136,9 @@ binderhub:
           PrefixRedirectHandler.get = get
         # update value of `static_nginx` to "/static_local/"
         # because it has default value of "/static/", at that uri tornado has the default statichandler
-        02-orc: |
+        021-orc: |
           from extra_config import template_vars
-          template_vars.update({"static_nginx": "/static_local/"})
+          template_vars.update({"static_nginx": "/static_local/", "production": False})
 
           c.JupyterHub.template_vars.update(template_vars)
           #c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})

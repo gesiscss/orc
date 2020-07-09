@@ -14,6 +14,9 @@ persistent_binderhub:
       BinderHub:
         hub_url: https://notebooks.gesis.org
         image_prefix: gesiscss/binder-
+    extraConfig:
+      00-template-variables:  |
+        production = True
 
     service:
       annotations:
@@ -31,6 +34,9 @@ persistent_binderhub:
             url: http://194.95.75.9:30083  # base worker
             oauth_redirect_uri: "https://notebooks.gesis.org/services/binder/oauth_callback"
             oauth_client_id: "binder-oauth-client"
+        extraConfig:
+          020-orc: |
+            production = True
         resources:
           requests:
             cpu: "0.25"

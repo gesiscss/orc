@@ -26,6 +26,14 @@
     <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
     <script src="{{ static_nginx }}vendor/respond.min.js"></script>
   <![endif]-->
+
+  {% block etracker %}
+  {% if production %}
+  {% with et_pagename="/GESISHub:binder/", et_areas="/GESISHub" %}
+      {% include "gesis/etracker.html" %}
+  {% endwith %}
+  {% endif %}
+  {% endblock etracker %}
 </head>
 <body>
   {% block body %}

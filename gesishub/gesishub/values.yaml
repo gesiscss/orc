@@ -72,7 +72,7 @@ persistent_binderhub:
         subPath: extra_config.json
 
     extraConfig:
-      00-template-variables:  |
+      01-template-variables:  |
         import json
         with open('/etc/binderhub/extra_config.json') as extra_config_file:
             template_vars = json.load(extra_config_file)["template_vars"]
@@ -80,7 +80,8 @@ persistent_binderhub:
         template_vars.update({'user': None,
                               'logout_url': '/hub/logout',
                               #'help_url': 'https://www.gesis.org/en/help/',
-                              "static_version": uuid.uuid4().hex
+                              "static_version": uuid.uuid4().hex,
+                              "production": production,
                               })
         c.BinderHub.template_variables.update(template_vars)
 
@@ -232,8 +233,9 @@ persistent_binderhub:
                         path = '/'
                     self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
             PrefixRedirectHandler.get = get
-          02-orc: |
+          021-orc: |
             from extra_config import template_vars
+            template_vars.update({"production": production})
             c.JupyterHub.template_vars.update(template_vars)
           03-orc: |
             from extra_config import KeycloakLogoutHandler, KeycloakLoginHandler, KeycloakOAuthCallbackHandler

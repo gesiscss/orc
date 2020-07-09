@@ -17,6 +17,14 @@
 <link href="{{ static_nginx }}styles/about.css?v={{ static_version }}" rel="stylesheet" />
 {% endblock extra_css %}
 
+  {% block etracker %}
+  {% if production %}
+  {% with et_pagename="/GESISHub:about/", et_areas="/GESISHub" %}
+      {% include "gesis/etracker.html" %}
+  {% endwith %}
+  {% endif %}
+  {% endblock etracker %}
+
 {% block main %}
 <div id="main-container" class="container">
 {#<div class="row form-group text-center">#}

@@ -79,7 +79,7 @@ binderhub:
       mountPath: /etc/binderhub/templates/gesis
 
   extraConfig:
-    00-template-variables:  |
+    01-template-variables:  |
       import uuid
       template_vars = {
           "version": "beta",
@@ -99,6 +99,8 @@ binderhub:
 
           "static_version": uuid.uuid4().hex,
           "user": None,
+
+          "production": production,
       }
       c.BinderHub.template_variables.update(template_vars)
     11-eventlog: |

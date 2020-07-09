@@ -27,6 +27,14 @@
 {% block require_script %}
 {% endblock require_script %}
 
+  {% block etracker %}
+  {% if production %}
+  {% with et_pagename="/GESISHub:home/", et_areas="/GESISHub" %}
+      {% include "gesis/etracker.html" %}
+  {% endwith %}
+  {% endif %}
+  {% endblock etracker %}
+
 {% block projects_form %}
 <div class="row text-center project-text">
   {#    <div class="col-lg-1 col-md-1"></div>#}
