@@ -108,7 +108,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             c.run('echo "######## {}"'.format(command))
             c.run(command)
         if 'prometheus' in mode and not staging:
-            c.run('helm upgrade prometheus stable/prometheus --version=9.7.4 '
+            c.run('helm upgrade prometheus stable/prometheus --version=11.0.2 '
                   '-f monitoring/prometheus_config.yaml '
                   '--cleanup-on-fail --debug')
         if 'grafana' in mode and not staging:
