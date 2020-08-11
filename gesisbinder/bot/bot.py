@@ -1,5 +1,5 @@
 """
-Derived from henchbot.py script: https://github.com/henchbot/mybinder.org-upgrades/blob/master/henchbot.py
+Derived from henchbot.py script: https://github.com/henchbot/mybinder.org-upgrades/blob/master/src/mybinder-upgrades/henchbot.py
 """
 
 from yaml import safe_load as load
@@ -142,7 +142,7 @@ class Bot:
             subprocess.check_call(['git', 'add', f])
 
         if repo == 'repo2docker':
-            commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+            commit_message = 'repo2docker: https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:],
                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
@@ -193,7 +193,7 @@ class Bot:
         Formats a text body for the PR
         """
         if repo == 'repo2docker':
-            compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+            compare_url = 'https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
                                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:],
                                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
