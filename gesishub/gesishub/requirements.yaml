@@ -1,4 +1,4 @@
 dependencies:
  - name: persistent_binderhub
-   version: 0.2.0-n181
+   version: 0.2.0-n217
    repository: https://gesiscss.github.io/persistent_binderhub/
