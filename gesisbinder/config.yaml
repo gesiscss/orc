@@ -34,6 +34,7 @@ binderhub:
       image_prefix: gesiscss/binder-
   extraConfig:
     00-template-variables:  |
+
       production = True
     02-badge-base-url: |
       def badge_base_url(handler):
