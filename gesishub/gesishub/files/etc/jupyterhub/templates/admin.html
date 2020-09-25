@@ -2,8 +2,7 @@
 
 {% block thead %}
 {{ th("User (%i)" % users|length, 'name') }}
-{{ th("Name", 'displayname') }}
-{{ th("Project", 'project') }}
+{{ th("Last used project", 'project') }}
 {{ th("Last Activity", 'last_activity') }}
 {{ th("Created", 'created') }}
 {{ th("Running (%i)" % running|length, 'running', colspan=2) }}
@@ -18,16 +17,18 @@
 {%- if spawner.name -%}
 /{{ spawner.name }}
 {%- endif -%}
+<br>
+{{user.dn}}
+<br>
 </td>
 
-<td class="max-20-col name-col col-sm-1">{{user.dn}}</td>
-
-<td class="max-20-col project-col col-sm-1">
+<td class="max-20-col project-col col-sm-2">
 {#{% if spawner.repo_url %}<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }}){% endif %}#}
 {% set projects = user.spawner.get_state_field('projects') %}
 {% if projects %}
     {% set last_used_project = projects[-1] %}
     <a href="{{ last_used_project['repo_url'] }}">{{ last_used_project['repo_url'] }}</a><br>({{ last_used_project['image'] }})
+    <br>
 {% endif %}
 </td>
 
