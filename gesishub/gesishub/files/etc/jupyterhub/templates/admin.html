@@ -24,7 +24,7 @@
 
 <td class="max-20-col project-col col-sm-1">
 {#{% if spawner.repo_url %}<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }}){% endif %}#}
-{% set projects = spawner.get_state_field('projects') %}
+{% set projects = user.spawner.get_state_field('projects') %}
 {% if projects %}
     {% set last_used_project = projects[-1] %}
     <a href="{{ last_used_project['repo_url'] }}">{{ last_used_project['repo_url'] }}</a><br>({{ last_used_project['image'] }})
