@@ -11,14 +11,15 @@
 {% block user_row scoped %}
 
 <td class="max-20-col col-sm-2">{{user.name}}
-{%- if spawner.name == '' -%}
-{% if user.admin %}(admin){% endif %}
-{%- endif -%}
 {%- if spawner.name -%}
 /{{ spawner.name }}
 {%- endif -%}
 <br>
 {{user.dn}}
+<br>
+{%- if spawner.name == '' -%}
+{% if user.admin %}(admin){% endif %}
+{%- endif -%}
 <br>
 </td>
 
