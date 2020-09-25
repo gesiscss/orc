@@ -22,7 +22,7 @@
 
 /* admin interface */
 .max-20-col {
-	max-width: 20ch;
+	max-width: 25ch;
 	overflow: overlay;
     /*overflow: hidden;*/
     /*text-overflow: ellipsis;*/
