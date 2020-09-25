@@ -1,4 +1,4 @@
-# chart version version 11.0.2: https://github.com/helm/charts/tree/663bd1f7484877f4fcfa7ae9a9139cb198d7e659/stable/prometheus
+# chart version version 11.12.1: https://github.com/helm/charts/tree/495ecb8573f2008e02fedf331c01a99f0d41bcca/stable/prometheus
 alertmanager:
   # TODO
   enabled: false
