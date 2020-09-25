@@ -3,7 +3,7 @@
 {% block thead %}
 {{ th("User (%i)" % users|length, 'name') }}
 {{ th("Name", 'displayname') }}
-{{ th("Admin", 'admin') }}
+{{ th("Project", 'project') }}
 {{ th("Last Activity", 'last_activity') }}
 {{ th("Created", 'created') }}
 {{ th("Running (%i)" % running|length, 'running', colspan=2) }}
@@ -12,6 +12,9 @@
 {% block user_row scoped %}
 
 <td class="email-col col-sm-2">{{user.name}}
+{%- if spawner.name == '' -%}
+{% if user.admin %}(admin){% endif %}
+{%- endif -%}
 {%- if spawner.name -%}
 /{{ spawner.name }}
 {%- endif -%}
@@ -19,10 +22,8 @@
 
 <td class="name-col col-sm-1">{{user.dn}}</td>
 
-<td class="admin-col col-sm-1">
-{%- if spawner.name == '' -%}
-{% if user.admin %}admin{% endif %}
-{%- endif -%}
+<td class="email-col project-col col-sm-1">
+<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }})
 </td>
 
 <td class="time-col col-sm-2">
@@ -75,11 +76,11 @@ access server
 $("table").parent('div').addClass('table-responsive');
 $("th").each(function() {
     var sort_value = $(this).data("sort");
-    if (sort_value === "admin" || sort_value === "last_activity" || sort_value === "created") {
+    if (sort_value === "project" || sort_value === "last_activity" || sort_value === "created") {
         $(this).addClass("hidden-xs hidden-sm hidden-md");
     }
 });
-$("td.admin-col").addClass("hidden-xs hidden-sm hidden-md");
+$("td.project-col").addClass("hidden-xs hidden-sm hidden-md");
 $("td.time-col").addClass("hidden-xs hidden-sm hidden-md");
 </script>
 {% endblock %}
