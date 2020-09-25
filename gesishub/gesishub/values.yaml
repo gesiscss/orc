@@ -235,7 +235,6 @@ persistent_binderhub:
             PrefixRedirectHandler.get = get
           021-orc: |
             from extra_config import template_vars
-
             template_vars.update({"production": production})
             c.JupyterHub.template_vars.update(template_vars)
           03-orc: |

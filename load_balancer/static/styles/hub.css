@@ -21,8 +21,8 @@
 }
 
 /* admin interface */
-.email-col {
-	max-width: 25ch;
+.max-20-col {
+	max-width: 20ch;
 	overflow: overlay;
     /*overflow: hidden;*/
     /*text-overflow: ellipsis;*/

@@ -11,7 +11,7 @@
 
 {% block user_row scoped %}
 
-<td class="email-col col-sm-2">{{user.name}}
+<td class="max-20-col col-sm-2">{{user.name}}
 {%- if spawner.name == '' -%}
 {% if user.admin %}(admin){% endif %}
 {%- endif -%}
@@ -20,10 +20,15 @@
 {%- endif -%}
 </td>
 
-<td class="name-col col-sm-1">{{user.dn}}</td>
+<td class="max-20-col name-col col-sm-1">{{user.dn}}</td>
 
-<td class="email-col project-col col-sm-1">
-<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }})
+<td class="max-20-col project-col col-sm-1">
+{#{% if spawner.repo_url %}<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }}){% endif %}#}
+{% set projects = spawner.get_state_field('projects') %}
+{% if projects %}
+    {% set last_used_project = projects[-1] %}
+    <a href="{{ last_used_project['repo_url'] }}">{{ last_used_project['repo_url'] }}</a><br>({{ last_used_project['image'] }})
+{% endif %}
 </td>
 
 <td class="time-col col-sm-2">
