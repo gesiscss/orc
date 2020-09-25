@@ -10,6 +10,7 @@
 
 {% block user_row scoped %}
 
+{% set projects = user.spawner.get_state_field('projects') %}
 <td class="max-20-col col-sm-2">{{user.name}}
 {%- if spawner.name -%}
 /{{ spawner.name }}
@@ -18,14 +19,14 @@
 {{user.dn}}
 <br>
 {%- if spawner.name == '' -%}
-{% if user.admin %}(admin){% endif %}
+{% if user.admin %}(admin)<br>{% endif %}
 {%- endif -%}
+projects: {{ projects|length }}
 <br>
 </td>
 
 <td class="max-20-col project-col col-sm-2">
 {#{% if spawner.repo_url %}<a href="{{ spawner.repo_url }}">{{ spawner.repo_url }}</a><br>({{ spawner.image }}){% endif %}#}
-{% set projects = user.spawner.get_state_field('projects') %}
 {% if projects %}
     {% set last_used_project = projects[-1] %}
     <a href="{{ last_used_project['repo_url'] }}">{{ last_used_project['repo_url'] }}</a><br>({{ last_used_project['image'] }})
@@ -89,5 +90,15 @@ $("th").each(function() {
 });
 $("td.project-col").addClass("hidden-xs hidden-sm hidden-md");
 $("td.time-col").addClass("hidden-xs hidden-sm hidden-md");
+</script>
+<script type="text/javascript">
+$( document ).ready(function() {
+    $("<div><p><ul>" +
+        "<li>Persistent BinderHub health: <a href='https://notebooks.gesis.org/services/binder/health'>https://notebooks.gesis.org/services/binder/health</a></li>" +
+        "<li>BinderHub health: <a href='https://notebooks.gesis.org/binder/health'>https://notebooks.gesis.org/binder/health</a></li>" +
+        "<li>Federation active hosts: <a href='https://mybinder.org/active_hosts'>https://mybinder.org/active_hosts</a></li>" +
+        "<li>Federation table: <a href='https://mybinder-sre.readthedocs.io/en/latest/operation_guide/federation.html'>https://mybinder-sre.readthedocs.io/en/latest/operation_guide/federation.html</a></li>" +
+        "</ul></p></div>").insertBefore("table.table.table-striped");
+});
 </script>
 {% endblock %}
