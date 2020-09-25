@@ -47,6 +47,8 @@ persistent_binderhub:
           user: worker
         per_repo_quota: 100
         per_repo_quota_higher: 200
+        build_memory_limit: "8G"
+        build_memory_request: "1G"
 
         template_path: /etc/binderhub/templates
 
