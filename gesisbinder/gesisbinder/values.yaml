@@ -48,6 +48,10 @@ binderhub:
       #  - pattern: ^gesiscss/.*
       #    config:
       #      quota: 200
+    GitRepoProvider:
+      banned_specs:
+        - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
+        - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
     BinderHub:
       pod_quota: 200
       base_url: /binder/
