@@ -110,7 +110,7 @@ binderhub:
     singleuser:
       cpu:
         guarantee: 0.1
-        limit: 2
+        limit: 1
       memory:
         guarantee: 1G
         limit: 8G
