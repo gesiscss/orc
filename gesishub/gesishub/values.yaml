@@ -355,6 +355,7 @@ persistent_binderhub:
         # increase the start timeout of user server to 10 mins, because some repos creates big images, which makes is slow to pull
         startTimeout: 600  # default is 300 in z2jh chart
 
+      # we dont need this because we have only 1 node for user pods
       scheduling:
         userScheduler:
           enabled: false

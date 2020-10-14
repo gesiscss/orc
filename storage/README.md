@@ -8,7 +8,7 @@ that's why we have `quota.py`
 (see https://github.com/kubernetes-incubator/external-storage/issues/855). 
 This started to work after we moved the nfs pod to another node (user:worker).
 
-`backup` is a daily job to backup GESIS hub, GESIS binder and gallery databases and 
-user, grafana and prometheus persistent volumes.
+`backup` is a daily job to backup GESIS Hub, GESIS Binder and Gallery databases and 
+user and grafana persistent volumes.
 
 `pv.yaml` is to create a `hostPath` type PV for nfs provisioner. There nfs creates its shares.

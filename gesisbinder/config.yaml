@@ -33,8 +33,7 @@ binderhub:
       hub_url: https://notebooks.gesis.org/binder/jupyter/
       image_prefix: gesiscss/binder-
   extraConfig:
-    00-template-variables:  |
-
+    00-template-variables: |
       production = True
     02-badge-base-url: |
       def badge_base_url(handler):
@@ -67,6 +66,12 @@ binderhub:
           # for now. Should be fixed in https://github.com/googleapis/google-cloud-python/pull/6293
           return [JSONCloudLoggingHandler(client, name='binderhub-events-text')]
       c.EventLog.handlers_maker = _make_eventsink_handler
+    # we dont need to set build_namespace, because we install it with helm and
+    # helm sets metadata.namespace which is passed to c.BinderHub.build_namespace:
+    # https://github.com/jupyterhub/binderhub/blob/cd25b41ac60a369d44203aaeb0fa0e0925888ef5/helm-chart/binderhub/templates/deployment.yaml#L87-L90
+    # https://github.com/jupyterhub/binderhub/blob/cd25b41ac60a369d44203aaeb0fa0e0925888ef5/helm-chart/images/binderhub/binderhub_config.py#L83-L84
+    #03-build-namespace: |
+    #  c.BinderHub.build_namespace = "bhub-ns"
 
   service:
     annotations:

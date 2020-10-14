@@ -292,6 +292,7 @@ binderhub:
           - name: etc-jupyter-templates
             mountPath: /etc/jupyter/templates
 
+    # we dont need this because we have only 1 node for user pods
     scheduling:
       userScheduler:
         enabled: false
