@@ -283,6 +283,7 @@ persistent_binderhub:
           users:
             - kenan.erdogan@gesis.org
             - arnim.bleier@gesis.org
+            - mridul.seth@gesis.org
         state:
           enabled: true
 
