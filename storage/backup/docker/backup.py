@@ -189,7 +189,7 @@ spec:
                     f'{timedelta(seconds=time()-done_config_files)}\n\n')
 
         # Delete backup folder of last month
-        if day == '16':
+        if day == '10':
             logger.info('## delete backup data of last month')
             if month == '01':
                 previous_year_path = join(environ['BACKUP_FOLDER'], str(int(year) - 1))
