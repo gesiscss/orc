@@ -152,7 +152,7 @@ deploy_nginx:
   script:
     - |
       mode="fetch_co"
-      if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
+      if git diff HEAD~ --name-only | egrep 'load_balancer/sites-available/default|load_balancer/sites-available/gesis_mybinder|load_balancer/sites-available/orc|load_balancer/snippets'; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
       fi;

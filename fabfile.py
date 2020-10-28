@@ -21,7 +21,9 @@ def nginx(c, password, branch_name, ref='master', mode=''):
     if "config" in mode:
         c.run('echo "######## Copying config files"')
         c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(nginx_folder), password=password)
-        c.sudo("cp -R {}sites-available/* /etc/nginx/sites-available/".format(nginx_folder), password=password)
+        c.sudo("cp {}sites-available/default /etc/nginx/sites-available/".format(nginx_folder), password=password)
+        c.sudo("cp {}sites-available/gesis_mybinder /etc/nginx/sites-available/".format(nginx_folder), password=password)
+        c.sudo("cp {}sites-available/orc /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.run('echo "######## Testing config files"')
         c.sudo("nginx -t", password=password)
         c.run('echo "######## Reloading nginx"')
