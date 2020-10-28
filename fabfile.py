@@ -109,6 +109,10 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_jbh.stdout.split()[0]
             c.run('echo "######## {}"'.format(command))
             c.run(command)
+        if 'backupjob' in mode and not staging:
+            c.run('kubectl apply -f storage/backup/_secret.yaml')
+            c.run('kubectl apply -f storage/backup/rbac.yaml')
+            c.run('kubectl apply -f storage/backup/cron_job.yaml')
         if 'prometheus' in mode and not staging:
             c.run('helm upgrade prometheus stable/prometheus --version=11.12.1 '
                   '-f monitoring/prometheus_config.yaml '

@@ -125,7 +125,8 @@ deploy_prod:
       if git diff HEAD~ --name-only | egrep 'gesisbinder/bot/'; then
         mode+="-bhubupgrade"
       fi;
-      # TODO add nfs-backup cronjob (storage/backup) or better to update it manually?
+      if git diff HEAD~ --name-only | egrep 'storage/backup/cron_job.yaml|storage/backup/_secret.yaml|storage/backup/rbac.yaml'; then
+        mode+="-backupjob"
       if git diff HEAD~ --name-only | egrep 'monitoring/prometheus_config.yaml'; then
         mode+="-prometheus"
       fi;
