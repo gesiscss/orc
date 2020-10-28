@@ -180,4 +180,3 @@ server {
 
     include snippets/_secret.conf;
 }
-
