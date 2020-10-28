@@ -127,6 +127,7 @@ deploy_prod:
       fi;
       if git diff HEAD~ --name-only | egrep 'storage/backup/cron_job.yaml|storage/backup/_secret.yaml|storage/backup/rbac.yaml'; then
         mode+="-backupjob"
+      fi;
       if git diff HEAD~ --name-only | egrep 'monitoring/prometheus_config.yaml'; then
         mode+="-prometheus"
       fi;
