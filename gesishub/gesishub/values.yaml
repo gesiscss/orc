@@ -56,7 +56,7 @@ persistent_binderhub:
 
         template_path: /etc/binderhub/templates
 
-    annotations:
+    podAnnotations:
       rollme: "rollme"
     extraVolumes:
       - name: binder-templates

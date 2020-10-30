@@ -82,7 +82,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       '--cleanup-on-fail --debug ' \
                       '-f gesisbinder/config{_test}.yaml ' \
                       '-f gesisbinder/_secret{_test}.yaml'.format(**format_dict) + \
-                      ' --set binderhub.annotations.rollme=' + sha256sum_bh.stdout.split()[0]
+                      ' --set binderhub.podAnnotations.rollme=' + sha256sum_bh.stdout.split()[0]
             c.run('echo "######## {}"'.format(command))
             c.run(command)
         if 'bhubupgrade' in mode and not staging:
@@ -96,7 +96,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jh = c.run('echo "{}" | sha256sum'.format(sha256sum_jh.stdout + sha256sum_nginx.stdout))
-            # compared to gesid binder, here bhub also uses binder-extra-config-json configmap, not only templates
+            # compared to gesis binder, here bhub also uses binder-extra-config-json configmap, not only templates
             # so restart the binder pod depending on the same condition as for hub pod
             sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
             sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
@@ -106,7 +106,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
                       '-f gesishub/config{_test}.yaml ' \
                       '-f gesishub/_secret{_test}.yaml'.format(**format_dict) + \
                       ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] + \
-                      ' --set persistent_binderhub.binderhub.annotations.rollme=' + sha256sum_jbh.stdout.split()[0]
+                      ' --set persistent_binderhub.binderhub.podAnnotations.rollme=' + sha256sum_jbh.stdout.split()[0]
             c.run('echo "######## {}"'.format(command))
             c.run(command)
         if 'backupjob' in mode and not staging:

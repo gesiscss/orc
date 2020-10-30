@@ -69,7 +69,7 @@ binderhub:
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
 
-  annotations:
+  podAnnotations:
     rollme: "rollme"
   extraVolumes:
     - name: binder-templates
