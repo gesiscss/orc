@@ -73,8 +73,3 @@ binderhub:
       memory:
         guarantee: 256M
         limit: 512M
-
-# no need to enable this. prod image_prefix (gesiscss/binder-) covers
-# staging image_prefix (gesiscss/binder-staging-)
-imageCleaner:
-  enabled: false

@@ -300,27 +300,3 @@ binderhub:
         enabled: false
       userPlaceholder:
         enabled: false
-
-imageCleaner:
-  enabled: false
-  image:
-    name: gesiscss/orc-image-cleaner
-    tag: dc975e2
-  # start deleting images which are not used in x days
-  days: 7
-  # interval (in seconds) between cleaning processes
-  interval: 300
-  # path to check available disk space
-  path: /var/lib/docker
-  # delete an image at most every 5 seconds
-  delay: 5
-  # start cleaning when available disk space is <= 10%
-  # until it increases to/above 30%
-  highLimit: 90
-  lowLimit: 70
-  # cull images on the host docker
-  dockerSocket: /var/run/docker.sock
-  # dockerLibDir: /var/lib/docker
-  # we clean ~20% -> ~400GB on ssd disk
-  dockerLibDir: /ssd/docker
-
