@@ -1,14 +1,11 @@
 elasticsearch:
   enabled: true
 
-kibana:
-  enabled: true
-
 logstash:
   enabled: true
 
-filebeat:
-  enabled: false
+kibana:
+  enabled: true
 
-fluentd-elasticsearch:
+filebeat:
   enabled: false
