@@ -1,75 +1,73 @@
 elasticsearch:
-  # https://github.com/elastic/helm-charts/tree/7.5.2/elasticsearch
+  # https://github.com/elastic/helm-charts/tree/7.9.3/elasticsearch
   enabled: true
+  image: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      cpu: "4000m"
+      memory: "8Gi"
   replicas: 2
-  # https://www.elastic.co/guide/en/elasticsearch/reference/6.7/discovery-settings.html#minimum_master_nodes
-  # (number of master-eligible nodes (2) / 2) + 1
-  minimumMasterNodes: 2
   volumeClaimTemplate:
     resources:
       requests:
         storage: 90Gi
 
-
-kibana:
-  # https://github.com/elastic/helm-charts/tree/7.5.2/kibana
-  enabled: true
-
-  #service:
-  #  type: NodePort
-  #  nodePort: 30070
-  #kibanaConfig:
-  #  kibana.yml: |
-  #    ## Custom config properties below
-  #    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
-  #    server:
-  #      basePath: "/kibana"
-  #      rewriteBasePath: true
-
 logstash:
-  # https://github.com/elastic/helm-charts/tree/7.5.2/logstash
-  enabled: false
+  # https://github.com/elastic/helm-charts/blob/7.9.3/logstash
+  enabled: true
+  image: "docker.elastic.co/logstash/logstash-oss"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "1536Mi"
+    limits:
+      cpu: "2000m"
+      memory: "3172Mi"
   replicas: 2
+
   volumeClaimTemplate:
-    accessModes: [ "ReadWriteOnce" ]
     resources:
       requests:
         storage: 30Gi
-  # https://github.com/elastic/helm-charts/blob/7.5.2/logstash/examples/elasticsearch/values.yaml
+
+  # connect to elasticsearch
+  # https://github.com/elastic/helm-charts/tree/7.9.3/logstash/examples/elasticsearch
   persistence:
     enabled: true
-
   logstashConfig:
     logstash.yml: |
       http.host: 0.0.0.0
-      xpack.monitoring.enabled: false
+    # xpack.monitoring.enabled: false
   logstashPipeline:
     uptime.conf: |
       input { exec { command => "uptime" interval => 30 } }
       output { elasticsearch { hosts => ["http://elasticsearch-master:9200"] index => "logstash" } }
-  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
-  # FIXME Templatable string
-#  extraVolumes: "- name: customvarlibdockercontainers
-#  hostPath:
-#    path: /ssd/docker/containers"
-#  extraVolumeMounts: "- name: customvarlibdockercontainers
-#  mountPath: /ssd/docker/containers
-#  readOnly: true"
 
-fluentd-elasticsearch:
-  # https://github.com/kiwigrid/helm-charts/tree/04b2c2f5f9e40bd947e6ec7d180b7b5806078ae4/charts/fluentd-elasticsearch
+  # we have to mount this for user:worker,
+  # there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
+  extraVolumes: |-
+   - name: customvarlibdockercontainers
+     hostPath:
+       path: /ssd/docker/containers
+  extraVolumeMounts: |-
+   - name: customvarlibdockercontainers
+     mountPath: /ssd/docker/containers
+     readOnly: true
+
+kibana:
+  # https://github.com/elastic/helm-charts/tree/7.9.3/kibana
   enabled: true
-  elasticsearch:
-    host: 'elasticsearch-master'  # elasticsearch client service name
-    # better use default prefix "logstash"
-    # Kibana-dashboards.json also uses it
-    #logstash_prefix: 'orc-logstash'
-  # we have to mount this for main worker, there we have docker data dir not in default path (/var/lib/docker) but under /ssd/docker
-  extraVolumes:
-    - name: customvarlibdockercontainers
-      hostPath:
-        path: /ssd/docker/containers
-  extraVolumeMounts:
-    - name: customvarlibdockercontainers
-      mountPath: /ssd/docker/containers
-      readOnly: true
+  image: "docker.elastic.co/kibana/kibana-oss"
+  #elasticsearchHosts: "http://oss-master:9200"
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+  nodeSelector:
+    base: worker
