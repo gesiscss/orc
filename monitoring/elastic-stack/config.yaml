@@ -75,7 +75,8 @@ kibana:
 filebeat:
   # https://github.com/elastic/helm-charts/tree/7.9.3/filebeat
   image: docker.elastic.co/beats/filebeat-oss
-  hostNetworking: true
+  # https://github.com/elastic/helm-charts/tree/7.9.3/filebeat#why-is-filebeat-hostname-field-set-to-kubernetes-pod-name
+  hostNetworking: false
 
   resources:
     requests:
