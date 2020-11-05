@@ -8,4 +8,4 @@ kibana:
   enabled: true
 
 filebeat:
-  enabled: false
+  enabled: true
