@@ -114,11 +114,19 @@ def deploy(c, password, staging=False, ref='master', mode=''):
             c.run('kubectl apply -f storage/backup/rbac.yaml')
             c.run('kubectl apply -f storage/backup/cron_job.yaml')
         if 'prometheus' in mode and not staging:
-            c.run('helm upgrade prometheus stable/prometheus --version=11.12.1 '
+            with open('monitoring/prometheus_config.yaml') as f:
+                first_line = f.readline()
+                chart_version = first_line.strip().split(" ")[-1]
+            c.run('echo "######## prometheus chart version {}"'.format(chart_version))
+            c.run('helm upgrade prometheus prometheus-community/prometheus --version='+chart_version+' '
                   '-f monitoring/prometheus_config.yaml '
                   '--cleanup-on-fail --debug')
         if 'grafana' in mode and not staging:
-            c.run('helm upgrade grafana stable/grafana --version=5.5.7 '
+            with open('monitoring/grafana_config.yaml') as f:
+                first_line = f.readline()
+                chart_version = first_line.strip().split(" ")[-1]
+            c.run('echo "######## grafana chart version {}"'.format(chart_version))
+            c.run('helm upgrade grafana grafana/grafana --version='+chart_version+' '
                   '-f monitoring/grafana_config.yaml '
                   '-f monitoring/_secret_grafana.yaml '
                   '--cleanup-on-fail --debug')

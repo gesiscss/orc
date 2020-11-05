@@ -1,4 +1,6 @@
-# chart version 5.5.7: https://github.com/helm/charts/tree/a68c16bb54c4db32828bd348227b73cef2a593c2/stable/grafana
+# chart version 6.1.2
+# WARNING: the above chart version is read by fabfile.py, so upgrade chart version above whenever you upgrade the grafana helm chart
+# https://github.com/grafana/helm-charts/tree/grafana-6.1.2
 
 service:
   type: NodePort
