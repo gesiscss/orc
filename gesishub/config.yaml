@@ -31,7 +31,7 @@ persistent_binderhub:
         #    prometheus.io/path: "/hub/metrics"
         services:
           binder:
-            url: http://194.95.75.9:30083  # base worker
+            url: http://194.95.75.12:30083  # base worker
             oauth_redirect_uri: "https://notebooks.gesis.org/services/binder/oauth_callback"
             oauth_client_id: "binder-oauth-client"
         extraConfig:
