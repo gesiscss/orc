@@ -121,20 +121,21 @@ server {
     }
 
     # Managing literal requests to the BinderHub
-    #location /binder/ {
+    location /binder/ {
         # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
         # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
-    #    proxy_buffering off;
-    #    proxy_pass http://bhub;
-    #    include snippets/headers.conf;
-    #    proxy_set_header X-Scheme $scheme;
-    #}
+        proxy_buffering off;
+        proxy_pass http://bhub;
+        include snippets/headers.conf;
+        proxy_set_header X-Scheme $scheme;
+    }
+
     # For JupyterHub of binder
-    #location /binder/jupyter/ {
-    #    proxy_pass http://bjhub;
-    #    include snippets/headers.conf;
-    #    include snippets/websocket_headers.conf;
-    #}
+    location /binder/jupyter/ {
+        proxy_pass http://bjhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
     # overwrite binder logo with ORC logo
     #location = /binder/static/favicon.ico {
     #    alias /static/images/logo/logo.png;
@@ -145,14 +146,14 @@ server {
     # Managing literal requests to the JupyterHub
     location / {
         ## maintenance page
-        error_page 503 /static/maintenance.html;
-        return 503;
+        #error_page 503 /static/maintenance.html;
+        #return 503;
 
-        #proxy_buffering off;
-        #proxy_pass http://jhub;
-        #include snippets/headers.conf;
-        #include snippets/websocket_headers.conf;
-        #proxy_set_header X-Scheme $scheme;
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        proxy_set_header X-Scheme $scheme;
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
     #    proxy_buffering off;
