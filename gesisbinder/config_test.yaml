@@ -26,10 +26,47 @@ binderhub:
     BinderHub:
       debug: true
       hub_url: https://notebooks-test.gesis.org/binder/jupyter/
-      image_prefix: gesiscss/binder-staging-
+      image_prefix: gesiscss/binder-test-
   extraConfig:
     00-template-variables:  |
       production = False
+    11-eventlog: |
+      from datetime import datetime
+      import jsonschema
+      import requests
+      from tornado.log import app_log
+      from time import sleep
+      def emit(self, schema_name, version, event):
+          capsule = {
+              'timestamp': datetime.utcnow().isoformat() + 'Z',
+              'schema': schema_name,
+              'version': version
+          }
+          capsule.update(event)
+      
+          # token of binder user in gallery
+          headers = {'Authorization': f'Bearer {os.environ["GESIS_API_TOKEN"]}'}
+          api_url = os.environ["GESIS_API_URL"]
+
+          # emit function is called after .launch, so we can wait before retry
+          # this delay shouldn't effect the user
+          retries = 3
+          delay = 4
+          try:
+              for i in range(retries):
+                  r = requests.post(api_url, data=capsule, headers=headers)
+                  if r.status_code != 201 and i < 2:
+                      sleep(delay)
+                      delay *= 2
+                  else:
+                      break
+              if r.status_code != 201:
+                  app_log.error(f"Error: Event stream failed after {retries} retries for {capsule} with status code {r.status_code}")
+          except Exception as e:
+              app_log.error(f"Error: Event stream failed for {capsule}: {e}")
+
+      from binderhub.events import EventLog
+      EventLog.emit = emit
 
   service:
     annotations:
@@ -78,3 +115,4 @@ binderhub:
 # staging image_prefix (gesiscss/binder-staging-)
 imageCleaner:
   enabled: false
+

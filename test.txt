@@ -1,0 +1,1903 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    binderhub_config.py: |
+      from collections.abc import Mapping
+      import os
+      from functools import lru_cache
+      from urllib.parse import urlparse
+      import yaml
+
+      c.BinderHub.hub_api_token = os.environ['JUPYTERHUB_API_TOKEN']
+
+
+      def _merge_dictionaries(a, b):
+          """Merge two dictionaries recursively.
+
+          Simplified From https://stackoverflow.com/a/7205107
+          """
+          merged = a.copy()
+          for key in b:
+              if key in a:
+                  if isinstance(a[key], Mapping) and isinstance(b[key], Mapping):
+                      merged[key] = _merge_dictionaries(a[key], b[key])
+                  else:
+                      merged[key] = b[key]
+              else:
+                  merged[key] = b[key]
+          return merged
+
+      # memoize so we only load config once
+      @lru_cache()
+      def _load_values():
+          """Load configuration from disk
+
+          Memoized to only load once
+          """
+          cfg = {}
+          for source in ('config', 'secret'):
+              path = f"/etc/binderhub/{source}/values.yaml"
+              if os.path.exists(path):
+                  print(f"Loading {path}")
+                  with open(path) as f:
+                      values = yaml.safe_load(f)
+                  cfg = _merge_dictionaries(cfg, values)
+              else:
+                  print(f"No config at {path}")
+          return cfg
+
+      def get_value(key, default=None):
+          """
+          Find an item in values.yaml of a given name & return it
+
+          get_value("a.b.c") returns values['a']['b']['c']
+          """
+          # start at the top
+          value = _load_values()
+          # resolve path in yaml
+          for level in key.split('.'):
+              if not isinstance(value, dict):
+                  # a parent is a scalar or null,
+                  # can't resolve full path
+                  return default
+              if level not in value:
+                  return default
+              else:
+                  value = value[level]
+          return value
+
+      # load config from values.yaml
+      for section, sub_cfg in get_value('config', {}).items():
+          c[section].update(sub_cfg)
+
+      if get_value('dind.enabled', False) and get_value('dind.hostSocketDir'):
+          c.BinderHub.build_docker_host = 'unix://{}/docker.sock'.format(
+              get_value('dind.hostSocketDir')
+          )
+
+      cors = get_value('cors', {})
+      allow_origin = cors.get('allowOrigin')
+      if allow_origin:
+          c.BinderHub.tornado_settings.update({
+              'headers': {
+                  'Access-Control-Allow-Origin': allow_origin,
+              }
+          })
+
+      if os.getenv('BUILD_NAMESPACE'):
+          c.BinderHub.build_namespace = os.environ['BUILD_NAMESPACE']
+
+      if c.BinderHub.auth_enabled:
+          hub_url = urlparse(c.BinderHub.hub_url)
+          c.HubOAuth.hub_host = '{}://{}'.format(hub_url.scheme, hub_url.netloc)
+          if 'base_url' in c.BinderHub:
+              c.HubOAuth.base_url = c.BinderHub.base_url
+
+      # load extra config snippets
+      for key, snippet in sorted((get_value('extraConfig') or {}).items()):
+          print("Loading extra config: {}".format(key))
+          exec(snippet)
+    values.yaml: |
+      config:
+        BinderHub:
+          base_url: /binder/
+          build_image: jupyter/repo2docker:0.11.0-184.g30ef220
+          build_memory_limit: 8G
+          build_memory_request: 1G
+          build_node_selector:
+            user: worker
+          debug: true
+          hub_url: https://notebooks-test.gesis.org/binder/jupyter/
+          image_prefix: gesiscss/binder-test-
+          per_repo_quota: 100
+          per_repo_quota_higher: 200
+          pod_quota: 200
+          template_path: /etc/binderhub/templates
+          use_registry: true
+        GitHubRepoProvider:
+          banned_specs:
+          - ^ines/spacy-binder.*
+          - ^soft4voip/rak.*
+          - ^hmharshit/cn-ait.*
+          - ^shishirchoudharygic/mltraining.*
+          - ^hmharshit/mltraining.*
+          high_quota_specs:
+          - ^gesiscss/.*
+        GitRepoProvider:
+          banned_specs:
+          - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
+          - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
+      cors:
+        allowOrigin: '*'
+      dind:
+        daemonset:
+          extraArgs: []
+          image:
+            name: docker
+            tag: 19.03.5-dind
+        enabled: false
+        hostLibDir: /var/lib/dind
+        hostSocketDir: /var/run/dind
+        initContainers: []
+        resources: {}
+        storageDriver: overlay2
+      extraConfig:
+        00-template-variables: |
+          production = False
+        01-template-variables: |
+          import uuid
+          template_vars = {
+              "version": "beta",
+              "home_url": "/",
+              "gesishub_url": "/hub/",
+              "gesisbinder_url": "/binder/",
+              "about_url": "/about/",
+              "tou_url": "/terms_of_use/",
+              "imprint_url": "https://www.gesis.org/en/institute/imprint/",
+              "data_protection_url": "https://www.gesis.org/en/institute/data-protection/",
+              "gesis_url": "https://www.gesis.org/en/home/",
+              "gallery_url": "/gallery/",
+              "faq_url": "/faq/",
+
+              "active": "binder",
+              "static_nginx": "/static/",
+
+              "static_version": uuid.uuid4().hex,
+              "user": None,
+
+              "production": production,
+          }
+          c.BinderHub.template_variables.update(template_vars)
+        11-eventlog: |
+          from datetime import datetime
+          import jsonschema
+          import requests
+          from tornado.log import app_log
+          from time import sleep
+          def emit(self, schema_name, version, event):
+              """
+              Emit event with given schema / version in a capsule.
+              """
+              if not self.handlers_maker:
+                  # If we don't have a handler setup, ignore everything
+                  return
+
+              if (schema_name, version) not in self.schemas:
+                  raise ValueError(f'Schema {schema_name} version {version} not registered')
+              schema = self.schemas[(schema_name, version)]
+              jsonschema.validate(event, schema)
+
+              capsule = {
+                  'timestamp': datetime.utcnow().isoformat() + 'Z',
+                  'schema': schema_name,
+                  'version': version
+              }
+              capsule.update(event)
+              self.log.info(capsule)
+
+              # token of binder user in gallery
+              headers = {'Authorization': f'Bearer {os.environ["GESIS_API_TOKEN"]}'}
+              api_url = os.environ["GESIS_API_URL"]
+
+              # emit function is called after .launch, so we can wait before retry
+              # this delay shouldn't effect the user
+              retries = 3
+              delay = 4
+              try:
+                  for i in range(retries):
+                      r = requests.post(api_url, data=capsule, headers=headers)
+                      if r.status_code != 201 and i < 2:
+                          sleep(delay)
+                          delay *= 2
+                      else:
+                          break
+                  if r.status_code != 201:
+                      app_log.error(f"Error: Event stream failed after {retries} retries for {capsule} with status code {r.status_code}")
+              except Exception as e:
+                  app_log.error(f"Error: Event stream failed for {capsule}: {e}")
+
+          from binderhub.events import EventLog
+          EventLog.emit = emit
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app.kubernetes.io/managed-by: Helm
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:binderhub_config.py: {}
+          f:values.yaml: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/managed-by: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T15:05:11Z"
+    name: binder-config
+    namespace: bhub-test-ns
+    resourceVersion: "279639"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/binder-config
+    uid: 7d02c11d-f6ad-4ee2-aecd-ff2ee9318ae4
+- apiVersion: v1
+  data:
+    about.html: |
+      {% extends "templates/about.html" %}
+
+      {% block head %}
+      {# Social media previews #}
+      <meta property="og:title" content="GESIS Binder">
+      <meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
+      <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+      <meta property="og:image:width" content="800">
+      <meta property="og:image:height" content="800">
+      <meta property="og:image:alt" content="GESIS Notebooks Logo" />
+      <meta name="twitter:card" content="summary">
+
+      <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+      {% endblock head %}
+    error.html: |
+      {% extends "templates/error.html" %}
+
+      {% block head %}
+      <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+      {% endblock head %}
+
+      {% block logo %}
+      {% endblock logo %}
+    index.html: |
+      {% extends "templates/index.html" %}
+
+      {% block head %}
+      <meta id="base-url" data-url="{{base_url}}">
+      <meta id="badge-base-url" data-url="{{badge_base_url}}">
+      {# Social media previews #}
+      <meta property="og:title" content="GESIS Binder">
+      <meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
+      <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+      <meta property="og:image:width" content="800">
+      <meta property="og:image:height" content="800">
+      <meta property="og:image:alt" content="GESIS Notebooks Logo" />
+      <meta name="twitter:card" content="summary">
+
+      <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+      <script src="{{static_url("dist/bundle.js")}}"></script>
+      {% endblock head %}
+    loading.html: |
+      {% extends "templates/loading.html" %}
+
+      {% block head %}
+      {#<meta name="robots" content="noindex, nofollow">#}
+      <meta id="base-url" data-url="{{base_url}}">
+      <meta id="badge-base-url" data-url="{{badge_base_url}}">
+
+      {# Social media previews #}
+      <meta property="og:title" content="{{social_desc}}">
+      <meta property="og:description" content="Click to run this interactive environment. From the Binder Project: Reproducible, sharable, open, interactive computing environments.">
+      <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+      <meta property="og:image:width" content="800">
+      <meta property="og:image:height" content="800">
+      <meta property="og:image:alt" content="GESIS Notebooks Logo" />
+      <meta name="twitter:card" content="summary">
+
+      <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+      <link href="{{static_url("loading.css")}}" rel="stylesheet">
+      <script src="{{static_url("dist/bundle.js")}}"></script>
+      {% endblock head %}
+
+      {% block logo %}
+      {% endblock logo %}
+
+      {% block main %}
+      <div id="main" class="container">
+        {{ super() }}
+      </div>
+      {% endblock main %}
+    page.html: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>{% block title %}Binder{% endblock %}</title>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags #}
+        <meta name="description" content="Reproducible, sharable, open, interactive computing environments.">
+
+        {% block head %}
+        {# Social media previews #}
+        <meta property="og:title" content="GESIS Binder">
+        <meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
+        <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+        <meta property="og:image:width" content="800">
+        <meta property="og:image:height" content="800">
+        <meta property="og:image:alt" content="GESIS Notebooks Logo" />
+        <meta name="twitter:card" content="summary">
+
+        <link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
+        {% endblock head %}
+        <link id="favicon" rel="shortcut icon" type="image/png" href="{{ static_nginx }}images/logo/logo.png?v={{ static_version }}" />
+
+        <link href="{{ static_nginx }}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="{{ static_nginx }}vendor/jquery-3.2.1.min.js"></script>
+        <link href="{{ static_nginx }}styles/notebooks.css?v={{ static_version }}" rel="stylesheet" />
+        <link href="{{ static_nginx }}styles/binder.css?v={{ static_version }}" rel="stylesheet" />
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="{{ static_nginx }}vendor/html5shiv.min.js"></script>
+          <script src="{{ static_nginx }}vendor/respond.min.js"></script>
+        <![endif]-->
+
+        {% block etracker %}
+        {% if production %}
+        {% with et_pagename="/GESISBinder:binder/", et_areas="/GESISBinder" %}
+            {% include "gesis/etracker.html" %}
+        {% endwith %}
+        {% endif %}
+        {% endblock etracker %}
+      </head>
+      <body>
+        {% block body %}
+
+        {% include "gesis/header.html" %}
+        {% include "gesis/nav.html" %}
+
+        {% if banner %}
+        <div id="banner-container">
+          {{ banner | safe }}
+        </div>
+        {% endif %}
+
+        {% block logo %}
+        <div class="container">
+          <div class="row">
+            <div id="logo-container">
+              <img id="logo" src={% block logo_image %}"{{static_url("logo.svg")}}"{% endblock logo_image %} width="390px"  />
+            </div>
+          </div>
+        </div>
+        {% endblock logo %}
+
+        {% block main %}
+        {% endblock main %}
+
+        {% block footer %}
+        <div id="questions-footer" class="container">
+          <div class="row text-center">
+            <h3>questions?<br />join the <a href="https://discourse.jupyter.org/c/binder">Binder discussion</a>, read the <a href="https://mybinder.readthedocs.io/en/latest/">Binder docs</a>{#, see the <a href="https://github.com/jupyterhub/binderhub">code</a>#}</h3>
+          </div>
+        </div>
+        {% endblock footer %}
+
+        {% include "gesis/footer.html" %}
+        <script src="{{ static_nginx }}scripts/gesis_nav.js?v={{ static_version }}"></script>
+
+        {% if google_analytics_code %}
+        <script>
+          // Only load GA if DNT is not set
+          if (navigator.doNotTrack != "1" && // Most Firefox & Chrome
+            window.doNotTrack != "1" && // IE & Safari
+            navigator.msDoNotTrack != "1" // Old IE
+        ) {
+          console.log("Loading Google Analytics, since Do Not Track is off");
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', '{{ google_analytics_code }}', '{{ google_analytics_domain }}',
+            {'storage': 'none'});
+          ga('set', 'anonymizeIp', true);
+          ga('send', 'pageview');
+        }
+        </script>
+        {% endif %}
+        {% if extra_footer_scripts %}
+        {% for script in extra_footer_scripts|dictsort %}
+        <script>
+          {{ script[1]|safe }}
+        </script>
+        {% endfor %}
+        {% endif %}
+        {% endblock body %}
+      </body>
+      </html>
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app: binder
+      app.kubernetes.io/managed-by: Helm
+      component: etc-binderhub
+      heritage: Helm
+      release: bhub-test
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:about.html: {}
+          f:error.html: {}
+          f:index.html: {}
+          f:loading.html: {}
+          f:page.html: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:component: {}
+            f:heritage: {}
+            f:release: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T14:48:11Z"
+    name: binder-templates
+    namespace: bhub-test-ns
+    resourceVersion: "276610"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/binder-templates
+    uid: da638632-9bb7-42f9-a399-a18c2f8ef448
+- apiVersion: v1
+  data:
+    etracker.html: |-
+      {% set etracker_prefix = "NOTEBOOKS" %}
+      <!-- Copyright (c) 2000-2020 etracker GmbH. All rights reserved. -->
+      <!-- This material may not be reproduced, displayed, modified or distributed -->
+      <!-- without the express prior written permission of the copyright holder. -->
+      <!-- etracker tracklet 5.0 -->
+      <script type="text/javascript">
+      var et_pagename = encodeURIComponent("{{ etracker_prefix }}{{ et_pagename }}");
+      var et_areas = encodeURIComponent("{{ etracker_prefix }}{{ et_areas }}");
+      // var et_tval = 0;
+      // var et_tsale = 0;
+      // var et_tonr = "";
+      // var et_basket = "";
+      </script>
+      <script id="_etLoader" type="text/javascript" charset="UTF-8" data-block-cookies="true" data-respect-dnt="true" data-secure-code="qPKGYV" src="//static.etracker.com/code/e.js"></script>
+      <!-- etracker tracklet 5.0 end -->
+    footer.html: |
+      <footer class="footer">
+          <div class="container footer-container">
+            <span class="footer-span">
+                <img src="{{ static_nginx }}images/leibniz_logo_en_white.svg?v={{ static_version }}" width="78" height="54" alt="Leibniz Logo"/>
+            </span>
+              <span class="footer-span-no-padding">
+                <a class="footer-link" href="{{ imprint_url }}">Imprint</a> |
+            </span>
+              <span class="footer-span-no-padding">
+                <a class="footer-link" href="{{ data_protection_url }}">Data protection</a> |
+            </span>
+              <span class="footer-span">
+                <a class="footer-link" href="{{ tou_url }}">Terms of Use</a>
+            </span>
+              <span class="footer-span">
+                &copy; GESIS
+            </span>
+          </div>
+      </footer>
+    header.html: |
+      <header>
+          <div role="navigation" class="navbar navbar-default navbar-static-top">
+              <div>
+                  <div id="header-container" class="container">
+                      <div class="navbar-header">
+                          <a class="navbar-brand" href="{{ gesis_url }}">
+                              <img src="{{ static_nginx }}images/gs_home_logo_en.svg?v={{ static_version }}" class="hidden-sm hidden-xs" width="200" height="37">
+                              <img src="{{ static_nginx }}images/gs_small_logo_de.svg?v={{ static_version }}" class="visible-sm visible-xs">
+                          </a>
+                          <div class="pull-right visible-xs hidden-sm hidden-md hidden-lg">
+                              <ul class="nav nav-pills pull-left ">
+                                  {% if active == 'home' %}
+                                  <li>
+                                      <a class="header-icon-link" href="{{ login_url }}">
+                                          <button class="navbar-toggle navbar-link">
+                                              <b aria-hidden="true" class="visible-xs glyphicon glyphicon glyphicon-log-in"></b>
+                                          </button>
+                                      </a>
+                                  </li>
+                                  {% elif active == 'hub' and user %}
+                                  <li>
+                                      <a class="header-icon-link" href="{{ logout_url }}">
+                                          <button class="navbar-toggle navbar-link">
+                                              <b aria-hidden="true" class="visible-xs glyphicon glyphicon glyphicon-log-out"></b>
+                                          </button>
+                                      </a>
+                                  </li>
+                                  {% endif %}
+                                  <li>
+                                      <a class="header-icon-link" href="{{ about_url }}">
+                                          <button class="navbar-toggle navbar-link">
+                                              <b aria-hidden="true" class="visible-xs glyphicon glyphicon-question-sign"></b>
+                                          </button>
+                                      </a>
+                                  </li>
+                              </ul>
+                          </div>
+                      </div>
+                      <div class="navbar-header pull-right hidden-xs">
+                          <ul class="nav navbar-nav pull-left">
+                              {% if active == 'home' %}
+                              <li>
+                                  <a href="{{ login_url }}">
+                                      <span class="top-menu-item hidden-xs">
+                                    <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-in"></span>
+                                    Login
+                                </span>
+                                  </a>
+                              </li>
+                              {% elif active == 'hub' and user %}
+                              <li>
+                                  <a href="{{ logout_url }}">
+                                      <span class="top-menu-item hidden-xs">
+                                    <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-out"></span>
+                                    Logout
+                                </span>
+                                  </a>
+                              </li>
+                              {% endif %}
+                              <li>
+                                  <a href="{{ about_url }}">
+                                      <span class="top-menu-item hidden-xs">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-question-sign"></span>
+                                    About
+                                </span>
+                                  </a>
+                              </li>
+                          </ul>
+                      </div>
+                      {#<div id="header_banner" class="col-xs-12 hidden-xs hidden-sm">#}
+                      <div id="header_banner">
+                          <a href="{{ home_url }}">
+                              <img src="{{ static_nginx }}images/logo/logo_text_2.png?v={{ static_version }}"
+                                   class="img-responsive" alt="To GESIS Notebooks Homepage" title="To GESIS Notebooks Homepage">
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </header>
+    nav.html: |
+      <div id="nav-container" class="container">
+          <div class="row">
+              <nav class="navbar navbar-default">
+                  <div class="nav-main-container container-fluid">
+                      <div>
+                          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                                  aria-expanded="false" aria-controls="navbar">
+                              <span class="sr-only">Toggle navigation</span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                              <span class="icon-bar"></span>
+                          </button>
+                      </div>
+                      <div id="navbar" class="navbar-collapse collapse">
+                          <ul class="nav navbar-nav" id="navbar-list">
+                              {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
+                              {% if active == 'hub' and user and not status_code %}  {# not status_code -> no 400 or 500 errors #}
+                              <li><a href="{{ home_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>
+      {#                        <li><a href="{{ base_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>#}
+                              {% if user.admin %}
+                              <li><a href="{{ base_url }}admin_orc" >Admin</a></li>
+                              {% endif %}
+                              {% else %}
+                              <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
+                              {% endif %}
+                              <li><a href="{{ gesisbinder_url }}" {% if active == 'binder' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Binder</a></li>
+                              <li><a href="{{ gallery_url }}" {% if active == 'gallery' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Gallery</a></li>
+                              <li><a href="{{ faq_url }}" {% if active == 'faq' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>FAQ</a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </nav>
+          </div>
+      </div>
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app: binder
+      app.kubernetes.io/managed-by: Helm
+      component: etc-binderhub
+      heritage: Helm
+      release: bhub-test
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:etracker.html: {}
+          f:footer.html: {}
+          f:header.html: {}
+          f:nav.html: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:component: {}
+            f:heritage: {}
+            f:release: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T14:48:11Z"
+    name: binder-templates-gesis
+    namespace: bhub-test-ns
+    resourceVersion: "276611"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/binder-templates-gesis
+    uid: 994ae2de-9f97-424c-9394-d64311c419a6
+- apiVersion: v1
+  data:
+    cull_idle_servers.py: |
+      #!/usr/bin/env python3
+      # Imported from https://github.com/jupyterhub/jupyterhub/blob/6b1046697/examples/cull-idle/cull_idle_servers.py
+      """script to monitor and cull idle single-user servers
+
+      Caveats:
+
+      last_activity is not updated with high frequency,
+      so cull timeout should be greater than the sum of:
+
+      - single-user websocket ping interval (default: 30s)
+      - JupyterHub.last_activity_interval (default: 5 minutes)
+
+      You can run this as a service managed by JupyterHub with this in your config::
+
+
+          c.JupyterHub.services = [
+              {
+                  'name': 'cull-idle',
+                  'admin': True,
+                  'command': 'python cull_idle_servers.py --timeout=3600'.split(),
+              }
+          ]
+
+      Or run it manually by generating an API token and storing it in `JUPYTERHUB_API_TOKEN`:
+
+          export JUPYTERHUB_API_TOKEN=`jupyterhub token`
+          python cull_idle_servers.py [--timeout=900] [--url=http://127.0.0.1:8081/hub/api]
+      """
+
+      from datetime import datetime, timezone
+      from functools import partial
+      import json
+      import os
+
+      try:
+          from urllib.parse import quote
+      except ImportError:
+          from urllib import quote
+
+      import dateutil.parser
+
+      from tornado.gen import coroutine, multi
+      from tornado.locks import Semaphore
+      from tornado.log import app_log
+      from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+      from tornado.ioloop import IOLoop, PeriodicCallback
+      from tornado.options import define, options, parse_command_line
+
+
+      def parse_date(date_string):
+          """Parse a timestamp
+
+          If it doesn't have a timezone, assume utc
+
+          Returned datetime object will always be timezone-aware
+          """
+          dt = dateutil.parser.parse(date_string)
+          if not dt.tzinfo:
+              # assume naïve timestamps are UTC
+              dt = dt.replace(tzinfo=timezone.utc)
+          return dt
+
+
+      def format_td(td):
+          """
+          Nicely format a timedelta object
+
+          as HH:MM:SS
+          """
+          if td is None:
+              return "unknown"
+          if isinstance(td, str):
+              return td
+          seconds = int(td.total_seconds())
+          h = seconds // 3600
+          seconds = seconds % 3600
+          m = seconds // 60
+          seconds = seconds % 60
+          return f"{h:02}:{m:02}:{seconds:02}"
+
+
+      @coroutine
+      def cull_idle(
+          url,
+          api_token,
+          inactive_limit,
+          cull_users=False,
+          remove_named_servers=False,
+          max_age=0,
+          concurrency=10,
+      ):
+          """Shutdown idle single-user servers
+
+          If cull_users, inactive *users* will be deleted as well.
+          """
+          auth_header = {
+              'Authorization': 'token %s' % api_token,
+          }
+          req = HTTPRequest(
+              url=url + '/users',
+              headers=auth_header,
+          )
+          now = datetime.now(timezone.utc)
+          client = AsyncHTTPClient()
+
+          if concurrency:
+              semaphore = Semaphore(concurrency)
+              @coroutine
+              def fetch(req):
+                  """client.fetch wrapped in a semaphore to limit concurrency"""
+                  yield semaphore.acquire()
+                  try:
+                      return (yield client.fetch(req))
+                  finally:
+                      yield semaphore.release()
+          else:
+              fetch = client.fetch
+
+          resp = yield fetch(req)
+          users = json.loads(resp.body.decode('utf8', 'replace'))
+          futures = []
+
+          @coroutine
+          def handle_server(user, server_name, server):
+              """Handle (maybe) culling a single server
+
+              Returns True if server is now stopped (user removable),
+              False otherwise.
+              """
+              log_name = user['name']
+              if server_name:
+                  log_name = '%s/%s' % (user['name'], server_name)
+              if server.get('pending'):
+                  app_log.warning(
+                      "Not culling server %s with pending %s",
+                      log_name, server['pending'])
+                  return False
+
+              if server.get('started'):
+                  age = now - parse_date(server['started'])
+              else:
+                  # started may be undefined on jupyterhub < 0.9
+                  age = None
+
+              # check last activity
+              # last_activity can be None in 0.9
+              if server['last_activity']:
+                  inactive = now - parse_date(server['last_activity'])
+              else:
+                  # no activity yet, use start date
+                  # last_activity may be None with jupyterhub 0.9,
+                  # which introduces the 'started' field which is never None
+                  # for running servers
+                  inactive = age
+
+              should_cull = (inactive is not None and
+                             inactive.total_seconds() >= inactive_limit)
+              if should_cull:
+                  app_log.info(
+                      "Culling server %s (inactive for %s)",
+                      log_name, format_td(inactive))
+
+              if max_age and not should_cull:
+                  # only check started if max_age is specified
+                  # so that we can still be compatible with jupyterhub 0.8
+                  # which doesn't define the 'started' field
+                  if age is not None and age.total_seconds() >= max_age:
+                      app_log.info(
+                          "Culling server %s (age: %s, inactive for %s)",
+                          log_name, format_td(age), format_td(inactive))
+                      should_cull = True
+
+              if not should_cull:
+                  app_log.debug(
+                      "Not culling server %s (age: %s, inactive for %s)",
+                      log_name, format_td(age), format_td(inactive))
+                  return False
+
+              body = None
+              if server_name:
+                  # culling a named server
+                  # A named server can be stopped and kept available to the user
+                  # for starting again or stopped and removed. To remove the named
+                  # server we have to pass an additional option in the body of our
+                  # DELETE request.
+                  delete_url = url + "/users/%s/servers/%s" % (
+                      quote(user['name']),
+                      quote(server['name']),
+                  )
+                  if remove_named_servers:
+                      body = json.dumps({"remove": True})
+              else:
+                  delete_url = url + '/users/%s/server' % quote(user['name'])
+
+              req = HTTPRequest(
+                  url=delete_url,
+                  method='DELETE',
+                  headers=auth_header,
+                  body=body,
+                  allow_nonstandard_methods=True,
+              )
+              resp = yield fetch(req)
+              if resp.code == 202:
+                  app_log.warning(
+                      "Server %s is slow to stop",
+                      log_name,
+                  )
+                  # return False to prevent culling user with pending shutdowns
+                  return False
+              return True
+
+          @coroutine
+          def handle_user(user):
+              """Handle one user.
+
+              Create a list of their servers, and async exec them.  Wait for
+              that to be done, and if all servers are stopped, possibly cull
+              the user.
+              """
+              # shutdown servers first.
+              # Hub doesn't allow deleting users with running servers.
+              # named servers contain the 'servers' dict
+              if 'servers' in user:
+                  servers = user['servers']
+              # Otherwise, server data is intermingled in with the user
+              # model
+              else:
+                  servers = {}
+                  if user['server']:
+                      servers[''] = {
+                          'started': user.get('started'),
+                          'last_activity': user['last_activity'],
+                          'pending': user['pending'],
+                          'url': user['server'],
+                      }
+              server_futures = [
+                  handle_server(user, server_name, server)
+                  for server_name, server in servers.items()
+              ]
+              results = yield multi(server_futures)
+              if not cull_users:
+                  return
+              # some servers are still running, cannot cull users
+              still_alive = len(results) - sum(results)
+              if still_alive:
+                  app_log.debug(
+                      "Not culling user %s with %i servers still alive",
+                      user['name'], still_alive)
+                  return False
+
+              should_cull = False
+              if user.get('created'):
+                  age = now - parse_date(user['created'])
+              else:
+                  # created may be undefined on jupyterhub < 0.9
+                  age = None
+
+              # check last activity
+              # last_activity can be None in 0.9
+              if user['last_activity']:
+                  inactive = now - parse_date(user['last_activity'])
+              else:
+                  # no activity yet, use start date
+                  # last_activity may be None with jupyterhub 0.9,
+                  # which introduces the 'created' field which is never None
+                  inactive = age
+
+              should_cull = (inactive is not None and
+                             inactive.total_seconds() >= inactive_limit)
+              if should_cull:
+                  app_log.info(
+                      "Culling user %s (inactive for %s)",
+                      user['name'], inactive)
+
+              if max_age and not should_cull:
+                  # only check created if max_age is specified
+                  # so that we can still be compatible with jupyterhub 0.8
+                  # which doesn't define the 'started' field
+                  if age is not None and age.total_seconds() >= max_age:
+                      app_log.info(
+                          "Culling user %s (age: %s, inactive for %s)",
+                          user['name'], format_td(age), format_td(inactive))
+                      should_cull = True
+
+              if not should_cull:
+                  app_log.debug(
+                      "Not culling user %s (created: %s, last active: %s)",
+                      user['name'], format_td(age), format_td(inactive))
+                  return False
+
+              req = HTTPRequest(
+                  url=url + '/users/%s' % user['name'],
+                  method='DELETE',
+                  headers=auth_header,
+              )
+              yield fetch(req)
+              return True
+
+          for user in users:
+              futures.append((user['name'], handle_user(user)))
+
+          for (name, f) in futures:
+              try:
+                  result = yield f
+              except Exception:
+                  app_log.exception("Error processing %s", name)
+              else:
+                  if result:
+                      app_log.debug("Finished culling %s", name)
+
+
+      if __name__ == '__main__':
+          define(
+              'url',
+              default=os.environ.get('JUPYTERHUB_API_URL'),
+              help="The JupyterHub API URL",
+          )
+          define('timeout', default=600, help="The idle timeout (in seconds)")
+          define('cull_every', default=0,
+                 help="The interval (in seconds) for checking for idle servers to cull")
+          define('max_age', default=0,
+                 help="The maximum age (in seconds) of servers that should be culled even if they are active")
+          define('cull_users', default=False,
+                 help="""Cull users in addition to servers.
+                      This is for use in temporary-user cases such as BinderHub.""",
+                 )
+          define('remove_named_servers', default=False,
+                 help="""Remove named servers in addition to stopping them.
+                      This is useful for a BinderHub that uses authentication and named servers.""",
+                 )
+          define('concurrency', default=10,
+                 help="""Limit the number of concurrent requests made to the Hub.
+
+                      Deleting a lot of users at the same time can slow down the Hub,
+                      so limit the number of API requests we have outstanding at any given time.
+                      """
+                 )
+
+          parse_command_line()
+          if not options.cull_every:
+              options.cull_every = options.timeout // 2
+          api_token = os.environ['JUPYTERHUB_API_TOKEN']
+
+          try:
+              AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+          except ImportError as e:
+              app_log.warning(
+                  "Could not load pycurl: %s\n"
+                  "pycurl is recommended if you have a large number of users.",
+                  e)
+
+          loop = IOLoop.current()
+          cull = partial(
+              cull_idle,
+              url=options.url,
+              api_token=api_token,
+              inactive_limit=options.timeout,
+              cull_users=options.cull_users,
+              remove_named_servers=options.remove_named_servers,
+              max_age=options.max_age,
+              concurrency=options.concurrency,
+          )
+          # schedule first cull immediately
+          # because PeriodicCallback doesn't start until the end of the first interval
+          loop.add_callback(cull)
+          # schedule periodic cull
+          pc = PeriodicCallback(cull, 1e3 * options.cull_every)
+          pc.start()
+          try:
+              loop.start()
+          except KeyboardInterrupt:
+              pass
+    jupyterhub_config.py: "import os\nimport re\nimport sys\n\nfrom tornado.httpclient
+      import AsyncHTTPClient\nfrom kubernetes import client\nfrom jupyterhub.utils
+      import url_path_join\n\n# Make sure that modules placed in the same directory
+      as the jupyterhub config are added to the pythonpath\nconfiguration_directory
+      = os.path.dirname(os.path.realpath(__file__))\nsys.path.insert(0, configuration_directory)\n\nfrom
+      z2jh import get_config, set_config_if_not_none\n\n# Configure JupyterHub to
+      use the curl backend for making HTTP requests,\n# rather than the pure-python
+      implementations. The default one starts\n# being too slow to make a large number
+      of requests to the proxy API\n# at the rate required.\nAsyncHTTPClient.configure(\"tornado.curl_httpclient.CurlAsyncHTTPClient\")\n\nc.JupyterHub.spawner_class
+      = 'kubespawner.KubeSpawner'\n\n# Connect to a proxy running in a different pod\nc.ConfigurableHTTPProxy.api_url
+      = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))\nc.ConfigurableHTTPProxy.should_start
+      = False\n\n# Do not shut down user pods when hub is restarted\nc.JupyterHub.cleanup_servers
+      = False\n\n# Check that the proxy has routes appropriately setup\nc.JupyterHub.last_activity_interval
+      = 60\n\n# Don't wait at all before redirecting a spawning user to the progress
+      page\nc.JupyterHub.tornado_settings = {\n    'slow_spawn_timeout': 0,\n}\n\n\ndef
+      camelCaseify(s):\n    \"\"\"convert snake_case to camelCase\n\n    For the common
+      case where some_value is set from someValue\n    so we don't have to specify
+      the name twice.\n    \"\"\"\n    return re.sub(r\"_([a-z])\", lambda m: m.group(1).upper(),
+      s)\n\n\n# configure the hub db connection\ndb_type = get_config('hub.db.type')\nif
+      db_type == 'sqlite-pvc':\n    c.JupyterHub.db_url = \"sqlite:///jupyterhub.sqlite\"\nelif
+      db_type == \"sqlite-memory\":\n    c.JupyterHub.db_url = \"sqlite://\"\nelse:\n
+      \   set_config_if_not_none(c.JupyterHub, \"db_url\", \"hub.db.url\")\n    \n\nfor
+      trait, cfg_key in (\n    # Max number of servers that can be spawning at any
+      one time\n    ('concurrent_spawn_limit', None),\n    # Max number of servers
+      to be running at one time\n    ('active_server_limit', None),\n    # base url
+      prefix\n    ('base_url', None),\n    ('allow_named_servers', None),\n    ('named_server_limit_per_user',
+      None),\n    ('authenticate_prometheus', None),\n    ('redirect_to_server', None),\n
+      \   ('shutdown_on_logout', None),\n    ('template_paths', None),\n    ('template_vars',
+      None),\n):\n    if cfg_key is None:\n        cfg_key = camelCaseify(trait)\n
+      \   set_config_if_not_none(c.JupyterHub, trait, 'hub.' + cfg_key)\n\nc.JupyterHub.ip
+      = os.environ['PROXY_PUBLIC_SERVICE_HOST']\nc.JupyterHub.port = int(os.environ['PROXY_PUBLIC_SERVICE_PORT'])\n\n#
+      the hub should listen on all interfaces, so the proxy can access it\nc.JupyterHub.hub_ip
+      = '0.0.0.0'\n\n# implement common labels\n# this duplicates the jupyterhub.commonLabels
+      helper\ncommon_labels = c.KubeSpawner.common_labels = {}\ncommon_labels['app']
+      = get_config(\n    \"nameOverride\",\n    default=get_config(\"Chart.Name\",
+      \"jupyterhub\"),\n)\ncommon_labels['heritage'] = \"jupyterhub\"\nchart_name
+      = get_config('Chart.Name')\nchart_version = get_config('Chart.Version')\nif
+      chart_name and chart_version:\n    common_labels['chart'] = \"{}-{}\".format(\n
+      \       chart_name, chart_version.replace('+', '_'),\n    )\nrelease = get_config('Release.Name')\nif
+      release:\n    common_labels['release'] = release\n\nc.KubeSpawner.namespace
+      = os.environ.get('POD_NAMESPACE', 'default')\n\n# Max number of consecutive
+      failures before the Hub restarts itself\n# requires jupyterhub 0.9.2\nset_config_if_not_none(\n
+      \   c.Spawner,\n    'consecutive_failure_limit',\n    'hub.consecutiveFailureLimit',\n)\n\nfor
+      trait, cfg_key in (\n    ('start_timeout', None),\n    ('image_pull_policy',
+      'image.pullPolicy'),\n    ('events_enabled', 'events'),\n    ('extra_labels',
+      None),\n    ('extra_annotations', None),\n    ('uid', None),\n    ('fs_gid',
+      None),\n    ('service_account', 'serviceAccountName'),\n    ('storage_extra_labels',
+      'storage.extraLabels'),\n    ('tolerations', 'extraTolerations'),\n    ('node_selector',
+      None),\n    ('node_affinity_required', 'extraNodeAffinity.required'),\n    ('node_affinity_preferred',
+      'extraNodeAffinity.preferred'),\n    ('pod_affinity_required', 'extraPodAffinity.required'),\n
+      \   ('pod_affinity_preferred', 'extraPodAffinity.preferred'),\n    ('pod_anti_affinity_required',
+      'extraPodAntiAffinity.required'),\n    ('pod_anti_affinity_preferred', 'extraPodAntiAffinity.preferred'),\n
+      \   ('lifecycle_hooks', None),\n    ('init_containers', None),\n    ('extra_containers',
+      None),\n    ('mem_limit', 'memory.limit'),\n    ('mem_guarantee', 'memory.guarantee'),\n
+      \   ('cpu_limit', 'cpu.limit'),\n    ('cpu_guarantee', 'cpu.guarantee'),\n    ('extra_resource_limits',
+      'extraResource.limits'),\n    ('extra_resource_guarantees', 'extraResource.guarantees'),\n
+      \   ('environment', 'extraEnv'),\n    ('profile_list', None),\n    ('extra_pod_config',
+      None),\n):\n    if cfg_key is None:\n        cfg_key = camelCaseify(trait)\n
+      \   set_config_if_not_none(c.KubeSpawner, trait, 'singleuser.' + cfg_key)\n\nimage
+      = get_config(\"singleuser.image.name\")\nif image:\n    tag = get_config(\"singleuser.image.tag\")\n
+      \   if tag:\n        image = \"{}:{}\".format(image, tag)\n\n    c.KubeSpawner.image
+      = image\n\nif get_config('singleuser.imagePullSecret.enabled'):\n    c.KubeSpawner.image_pull_secrets
+      = 'singleuser-image-credentials'\n\n# scheduling:\nif get_config('scheduling.userScheduler.enabled'):\n
+      \   c.KubeSpawner.scheduler_name = os.environ['HELM_RELEASE_NAME'] + \"-user-scheduler\"\nif
+      get_config('scheduling.podPriority.enabled'):\n    c.KubeSpawner.priority_class_name
+      = os.environ['HELM_RELEASE_NAME'] + \"-default-priority\"\n\n# add node-purpose
+      affinity\nmatch_node_purpose = get_config('scheduling.userPods.nodeAffinity.matchNodePurpose')\nif
+      match_node_purpose:\n    node_selector = dict(\n        matchExpressions=[\n
+      \           dict(\n                key=\"hub.jupyter.org/node-purpose\",\n                operator=\"In\",\n
+      \               values=[\"user\"],\n            )\n        ],\n    )\n    if
+      match_node_purpose == 'prefer':\n        c.KubeSpawner.node_affinity_preferred.append(\n
+      \           dict(\n                weight=100,\n                preference=node_selector,\n
+      \           ),\n        )\n    elif match_node_purpose == 'require':\n        c.KubeSpawner.node_affinity_required.append(node_selector)\n
+      \   elif match_node_purpose == 'ignore':\n        pass\n    else:\n        raise
+      ValueError(\"Unrecognized value for matchNodePurpose: %r\" % match_node_purpose)\n\n#
+      add dedicated-node toleration\nfor key in (\n    'hub.jupyter.org/dedicated',\n
+      \   # workaround GKE not supporting / in initial node taints\n    'hub.jupyter.org_dedicated',\n):\n
+      \   c.KubeSpawner.tolerations.append(\n        dict(\n            key=key,\n
+      \           operator='Equal',\n            value='user',\n            effect='NoSchedule',\n
+      \       )\n    )\n\n# Configure dynamically provisioning pvc\nstorage_type =
+      get_config('singleuser.storage.type')\n\nif storage_type == 'dynamic':\n    pvc_name_template
+      = get_config('singleuser.storage.dynamic.pvcNameTemplate')\n    c.KubeSpawner.pvc_name_template
+      = pvc_name_template\n    volume_name_template = get_config('singleuser.storage.dynamic.volumeNameTemplate')\n
+      \   c.KubeSpawner.storage_pvc_ensure = True\n    set_config_if_not_none(c.KubeSpawner,
+      'storage_class', 'singleuser.storage.dynamic.storageClass')\n    set_config_if_not_none(c.KubeSpawner,
+      'storage_access_modes', 'singleuser.storage.dynamic.storageAccessModes')\n    set_config_if_not_none(c.KubeSpawner,
+      'storage_capacity', 'singleuser.storage.capacity')\n\n    # Add volumes to singleuser
+      pods\n    c.KubeSpawner.volumes = [\n        {\n            'name': volume_name_template,\n
+      \           'persistentVolumeClaim': {\n                'claimName': pvc_name_template\n
+      \           }\n        }\n    ]\n    c.KubeSpawner.volume_mounts = [\n        {\n
+      \           'mountPath': get_config('singleuser.storage.homeMountPath'),\n            'name':
+      volume_name_template\n        }\n    ]\nelif storage_type == 'static':\n    pvc_claim_name
+      = get_config('singleuser.storage.static.pvcName')\n    c.KubeSpawner.volumes
+      = [{\n        'name': 'home',\n        'persistentVolumeClaim': {\n            'claimName':
+      pvc_claim_name\n        }\n    }]\n\n    c.KubeSpawner.volume_mounts = [{\n
+      \       'mountPath': get_config('singleuser.storage.homeMountPath'),\n        'name':
+      'home',\n        'subPath': get_config('singleuser.storage.static.subPath')\n
+      \   }]\n\nc.KubeSpawner.volumes.extend(get_config('singleuser.storage.extraVolumes',
+      []))\nc.KubeSpawner.volume_mounts.extend(get_config('singleuser.storage.extraVolumeMounts',
+      []))\n\n# Gives spawned containers access to the API of the hub\nc.JupyterHub.hub_connect_ip
+      = os.environ['HUB_SERVICE_HOST']\nc.JupyterHub.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])\n\n#
+      Allow switching authenticators easily\nauth_type = get_config('auth.type')\nemail_domain
+      = 'local'\n\ncommon_oauth_traits = (\n        ('client_id', None),\n        ('client_secret',
+      None),\n        ('oauth_callback_url', 'callbackUrl'),\n)\n\nif auth_type ==
+      'google':\n    c.JupyterHub.authenticator_class = 'oauthenticator.GoogleOAuthenticator'\n
+      \   for trait, cfg_key in common_oauth_traits + (\n        ('hosted_domain',
+      None),\n        ('login_service', None),\n    ):\n        if cfg_key is None:\n
+      \           cfg_key = camelCaseify(trait)\n        set_config_if_not_none(c.GoogleOAuthenticator,
+      trait, 'auth.google.' + cfg_key)\n    email_domain = get_config('auth.google.hostedDomain')\nelif
+      auth_type == 'github':\n    c.JupyterHub.authenticator_class = 'oauthenticator.github.GitHubOAuthenticator'\n
+      \   for trait, cfg_key in common_oauth_traits + (\n        ('github_organization_whitelist',
+      'orgWhitelist'),\n    ):\n        if cfg_key is None:\n            cfg_key =
+      camelCaseify(trait)\n        set_config_if_not_none(c.GitHubOAuthenticator,
+      trait, 'auth.github.' + cfg_key)\nelif auth_type == 'cilogon':\n    c.JupyterHub.authenticator_class
+      = 'oauthenticator.CILogonOAuthenticator'\n    for trait, cfg_key in common_oauth_traits:\n
+      \       if cfg_key is None:\n            cfg_key = camelCaseify(trait)\n        set_config_if_not_none(c.CILogonOAuthenticator,
+      trait, 'auth.cilogon.' + cfg_key)\nelif auth_type == 'gitlab':\n    c.JupyterHub.authenticator_class
+      = 'oauthenticator.gitlab.GitLabOAuthenticator'\n    for trait, cfg_key in common_oauth_traits
+      + (\n        ('gitlab_group_whitelist', None),\n        ('gitlab_project_id_whitelist',
+      None),\n        ('gitlab_url', None),\n    ):\n        if cfg_key is None:\n
+      \           cfg_key = camelCaseify(trait)\n        set_config_if_not_none(c.GitLabOAuthenticator,
+      trait, 'auth.gitlab.' + cfg_key)\nelif auth_type == 'azuread':\n    c.JupyterHub.authenticator_class
+      = 'oauthenticator.azuread.AzureAdOAuthenticator'\n    for trait, cfg_key in
+      common_oauth_traits + (\n        ('tenant_id', None),\n        ('username_claim',
+      None),\n    ):\n        if cfg_key is None:\n            cfg_key = camelCaseify(trait)\n\n
+      \       set_config_if_not_none(c.AzureAdOAuthenticator, trait, 'auth.azuread.'
+      + cfg_key)\nelif auth_type == 'mediawiki':\n    c.JupyterHub.authenticator_class
+      = 'oauthenticator.mediawiki.MWOAuthenticator'\n    for trait, cfg_key in common_oauth_traits
+      + (\n        ('index_url', None),\n    ):\n        if cfg_key is None:\n            cfg_key
+      = camelCaseify(trait)\n        set_config_if_not_none(c.MWOAuthenticator, trait,
+      'auth.mediawiki.' + cfg_key)\nelif auth_type == 'globus':\n    c.JupyterHub.authenticator_class
+      = 'oauthenticator.globus.GlobusOAuthenticator'\n    for trait, cfg_key in common_oauth_traits
+      + (\n        ('identity_provider', None),\n    ):\n        if cfg_key is None:\n
+      \           cfg_key = camelCaseify(trait)\n        set_config_if_not_none(c.GlobusOAuthenticator,
+      trait, 'auth.globus.' + cfg_key)\nelif auth_type == 'hmac':\n    c.JupyterHub.authenticator_class
+      = 'hmacauthenticator.HMACAuthenticator'\n    c.HMACAuthenticator.secret_key
+      = bytes.fromhex(get_config('auth.hmac.secretKey'))\nelif auth_type == 'dummy':\n
+      \   c.JupyterHub.authenticator_class = 'dummyauthenticator.DummyAuthenticator'\n
+      \   set_config_if_not_none(c.DummyAuthenticator, 'password', 'auth.dummy.password')\nelif
+      auth_type == 'tmp':\n    c.JupyterHub.authenticator_class = 'tmpauthenticator.TmpAuthenticator'\nelif
+      auth_type == 'lti':\n    c.JupyterHub.authenticator_class = 'ltiauthenticator.LTIAuthenticator'\n
+      \   set_config_if_not_none(c.LTIAuthenticator, 'consumers', 'auth.lti.consumers')\nelif
+      auth_type == 'ldap':\n    c.JupyterHub.authenticator_class = 'ldapauthenticator.LDAPAuthenticator'\n
+      \   c.LDAPAuthenticator.server_address = get_config('auth.ldap.server.address')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'server_port', 'auth.ldap.server.port')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'use_ssl', 'auth.ldap.server.ssl')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'allowed_groups', 'auth.ldap.allowedGroups')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'bind_dn_template', 'auth.ldap.dn.templates')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn', 'auth.ldap.dn.lookup')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_filter', 'auth.ldap.dn.search.filter')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_user', 'auth.ldap.dn.search.user')\n
+      \   set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_password',
+      'auth.ldap.dn.search.password')\n    set_config_if_not_none(c.LDAPAuthenticator,
+      'lookup_dn_user_dn_attribute', 'auth.ldap.dn.user.dnAttribute')\n    set_config_if_not_none(c.LDAPAuthenticator,
+      'escape_userdn', 'auth.ldap.dn.user.escape')\n    set_config_if_not_none(c.LDAPAuthenticator,
+      'valid_username_regex', 'auth.ldap.dn.user.validRegex')\n    set_config_if_not_none(c.LDAPAuthenticator,
+      'user_search_base', 'auth.ldap.dn.user.searchBase')\n    set_config_if_not_none(c.LDAPAuthenticator,
+      'user_attribute', 'auth.ldap.dn.user.attribute')\nelif auth_type == 'custom':\n
+      \   # full_class_name looks like \"myauthenticator.MyAuthenticator\".\n    #
+      To create a docker image with this class availabe, you can just have the\n    #
+      following Dockerfile:\n    #   FROM jupyterhub/k8s-hub:v0.4\n    #   RUN pip3
+      install myauthenticator\n    full_class_name = get_config('auth.custom.className')\n
+      \   c.JupyterHub.authenticator_class = full_class_name\n    auth_class_name
+      = full_class_name.rsplit('.', 1)[-1]\n    auth_config = c[auth_class_name]\n
+      \   auth_config.update(get_config('auth.custom.config') or {})\nelse:\n    raise
+      ValueError(\"Unhandled auth type: %r\" % auth_type)\n\nset_config_if_not_none(c.OAuthenticator,
+      'scope', 'auth.scopes')\n\nset_config_if_not_none(c.Authenticator, 'enable_auth_state',
+      'auth.state.enabled')\n\n# Enable admins to access user servers\nset_config_if_not_none(c.JupyterHub,
+      'admin_access', 'auth.admin.access')\nset_config_if_not_none(c.Authenticator,
+      'admin_users', 'auth.admin.users')\nset_config_if_not_none(c.Authenticator,
+      'whitelist', 'auth.whitelist.users')\n\nc.JupyterHub.services = []\n\nif get_config('cull.enabled',
+      False):\n    cull_cmd = [\n        'python3',\n        '/etc/jupyterhub/cull_idle_servers.py',\n
+      \   ]\n    base_url = c.JupyterHub.get('base_url', '/')\n    cull_cmd.append(\n
+      \       '--url=http://127.0.0.1:8081' + url_path_join(base_url, 'hub/api')\n
+      \   )\n\n    cull_timeout = get_config('cull.timeout')\n    if cull_timeout:\n
+      \       cull_cmd.append('--timeout=%s' % cull_timeout)\n\n    cull_every = get_config('cull.every')\n
+      \   if cull_every:\n        cull_cmd.append('--cull-every=%s' % cull_every)\n\n
+      \   cull_concurrency = get_config('cull.concurrency')\n    if cull_concurrency:\n
+      \       cull_cmd.append('--concurrency=%s' % cull_concurrency)\n\n    if get_config('cull.users'):\n
+      \       cull_cmd.append('--cull-users')\n\n    if get_config('cull.removeNamedServers'):\n
+      \       cull_cmd.append('--remove-named-servers')\n\n    cull_max_age = get_config('cull.maxAge')\n
+      \   if cull_max_age:\n        cull_cmd.append('--max-age=%s' % cull_max_age)\n\n
+      \   c.JupyterHub.services.append({\n        'name': 'cull-idle',\n        'admin':
+      True,\n        'command': cull_cmd,\n    })\n\nfor name, service in get_config('hub.services',
+      {}).items():\n    # jupyterhub.services is a list of dicts, but\n    # in the
+      helm chart it is a dict of dicts for easier merged-config\n    service.setdefault('name',
+      name)\n    # handle camelCase->snake_case of api_token\n    api_token = service.pop('apiToken',
+      None)\n    if api_token:\n        service['api_token'] = api_token\n    c.JupyterHub.services.append(service)\n\n\nset_config_if_not_none(c.Spawner,
+      'cmd', 'singleuser.cmd')\nset_config_if_not_none(c.Spawner, 'default_url', 'singleuser.defaultUrl')\n\ncloud_metadata
+      = get_config('singleuser.cloudMetadata', {})\n\nif not cloud_metadata.get('enabled',
+      False):\n    # Use iptables to block access to cloud metadata by default\n    network_tools_image_name
+      = get_config('singleuser.networkTools.image.name')\n    network_tools_image_tag
+      = get_config('singleuser.networkTools.image.tag')\n    ip_block_container =
+      client.V1Container(\n        name=\"block-cloud-metadata\",\n        image=f\"{network_tools_image_name}:{network_tools_image_tag}\",\n
+      \       command=[\n            'iptables',\n            '-A', 'OUTPUT',\n            '-d',
+      cloud_metadata.get('ip', '169.254.169.254'),\n            '-j', 'DROP'\n        ],\n
+      \       security_context=client.V1SecurityContext(\n            privileged=True,\n
+      \           run_as_user=0,\n            capabilities=client.V1Capabilities(add=['NET_ADMIN'])\n
+      \       )\n    )\n\n    c.KubeSpawner.init_containers.append(ip_block_container)\n\n\nif
+      get_config('debug.enabled', False):\n    c.JupyterHub.log_level = 'DEBUG'\n
+      \   c.Spawner.debug = True\n\n\nextra_config = get_config('hub.extraConfig',
+      {})\nif isinstance(extra_config, str):\n    from textwrap import indent, dedent\n
+      \   msg = dedent(\n    \"\"\"\n    hub.extraConfig should be a dict of strings,\n
+      \   but found a single string instead.\n\n    extraConfig as a single string
+      is deprecated\n    as of the jupyterhub chart version 0.6.\n\n    The keys can
+      be anything identifying the\n    block of extra configuration.\n\n    Try this
+      instead:\n\n        hub:\n          extraConfig:\n            myConfig: |\n
+      \             {}\n\n    This configuration will still be loaded,\n    but you
+      are encouraged to adopt the nested form\n    which enables easier merging of
+      multiple extra configurations.\n    \"\"\"\n    )\n    print(\n        msg.format(\n
+      \           indent(extra_config, ' ' * 10).lstrip()\n        ),\n        file=sys.stderr\n
+      \   )\n    extra_config = {'deprecated string': extra_config}\n\nfor key, config_py
+      in sorted(extra_config.items()):\n    print(\"Loading extra config: %s\" % key)\n
+      \   exec(config_py)\n"
+    values.yaml: |
+      Chart:
+        Name: jupyterhub
+        Version: 0.9.0
+      Release:
+        Name: bhub-test
+        Namespace: bhub-test-ns
+        Service: Helm
+      auth:
+        admin:
+          access: true
+        custom:
+          className: nullauthenticator.NullAuthenticator
+        dummy: {}
+        ldap:
+          dn:
+            search: {}
+            user: {}
+          user: {}
+        state:
+          enabled: false
+        type: custom
+        whitelist: {}
+      cull:
+        concurrency: 10
+        enabled: true
+        every: 660
+        maxAge: 21600
+        removeNamedServers: false
+        timeout: 600
+        users: true
+      custom:
+        binderauth_enabled: false
+        cors:
+          allowOrigin: '*'
+      debug:
+        enabled: true
+      hub:
+        allowNamedServers: false
+        annotations: {}
+        authenticatePrometheus: false
+        baseUrl: /binder/jupyter/
+        concurrentSpawnLimit: 64
+        consecutiveFailureLimit: 5
+        db:
+          password: "123456"
+          pvc:
+            accessModes:
+            - ReadWriteOnce
+            annotations: {}
+            selector: {}
+            storage: 1Gi
+          type: postgres
+          url: postgresql+psycopg2://orc:123456@194.95.75.15:5432/gesisbinder_test
+        deploymentStrategy:
+          type: Recreate
+        extraConfig:
+          00-binder: |
+            from tornado import web
+
+            # get custom config from values.custom
+            import z2jh
+            cors = z2jh.get_config('custom.cors', {})
+            auth_enabled = z2jh.get_config('custom.binderauth_enabled', False)
+
+            # image & token are set via spawn options
+            from kubespawner import KubeSpawner
+
+            class BinderSpawner(KubeSpawner):
+                def get_args(self):
+                    if auth_enabled:
+                        args = super().get_args()
+                    else:
+                        args = [
+                            '--ip=0.0.0.0',
+                            '--port=%i' % self.port,
+                            '--NotebookApp.base_url=%s' % self.server.base_url,
+                            '--NotebookApp.token=%s' % self.user_options['token'],
+                            '--NotebookApp.trust_xheaders=True',
+                        ]
+                        allow_origin = cors.get('allowOrigin')
+                        if allow_origin:
+                            args.append('--NotebookApp.allow_origin=' + allow_origin)
+                        args += self.args
+                    return args
+
+                def start(self):
+                    if not auth_enabled:
+                        if 'token' not in self.user_options:
+                            raise web.HTTPError(400, "token required")
+                        if 'image' not in self.user_options:
+                            raise web.HTTPError(400, "image required")
+                    if 'image' in self.user_options:
+                        self.image = self.user_options['image']
+                    return super().start()
+
+                def get_env(self):
+                    env = super().get_env()
+                    if 'repo_url' in self.user_options:
+                        env['BINDER_REPO_URL'] = self.user_options['repo_url']
+                    for key in (
+                            'binder_ref_url',
+                            'binder_launch_host',
+                            'binder_persistent_request',
+                            'binder_request'):
+                        if key in self.user_options:
+                            env[key.upper()] = self.user_options[key]
+                    return env
+
+            c.JupyterHub.spawner_class = BinderSpawner
+          02-orc: |
+            c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
+        extraContainers: []
+        extraVolumeMounts: []
+        extraVolumes: []
+        fsGid: 1000
+        image:
+          name: jupyterhub/k8s-hub
+          tag: 0.9.0
+        imagePullSecret:
+          enabled: false
+        initContainers: []
+        labels: {}
+        livenessProbe:
+          enabled: false
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        networkPolicy:
+          egress:
+          - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+          enabled: true
+          ingress: []
+        nodeSelector:
+          base: worker
+        pdb:
+          enabled: true
+          minAvailable: 0
+        readinessProbe:
+          enabled: true
+          initialDelaySeconds: 0
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: "0.1"
+            memory: 512Mi
+        service:
+          annotations:
+            prometheus.io/scrape: "false"
+          ports: {}
+          type: ClusterIP
+        services:
+          binder:
+            admin: true
+        templatePaths: []
+        templateVars: {}
+        uid: 1000
+      scheduling:
+        corePods:
+          nodeAffinity:
+            matchNodePurpose: prefer
+        podPriority:
+          defaultPriority: 0
+          enabled: false
+          globalDefault: false
+          userPlaceholderPriority: -10
+        userPlaceholder:
+          enabled: false
+          replicas: 0
+        userPods:
+          nodeAffinity:
+            matchNodePurpose: prefer
+        userScheduler:
+          enabled: false
+          image:
+            name: gcr.io/google_containers/kube-scheduler-amd64
+            tag: v1.13.12
+          logLevel: 4
+          nodeSelector: {}
+          pdb:
+            enabled: true
+            minAvailable: 1
+          policy: {}
+          replicas: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+      singleuser:
+        cloudMetadata:
+          enabled: false
+          ip: 169.254.169.254
+        cmd: jupyter-notebook
+        cpu:
+          guarantee: 0.1
+          limit: 0.5
+        events: false
+        extraAnnotations: {}
+        extraContainers: []
+        extraEnv: {}
+        extraLabels:
+          hub.jupyter.org/network-access-hub: "true"
+        extraNodeAffinity:
+          preferred: []
+          required: []
+        extraPodAffinity:
+          preferred: []
+          required: []
+        extraPodAntiAffinity:
+          preferred: []
+          required: []
+        extraPodConfig: {}
+        extraResource:
+          guarantees: {}
+          limits: {}
+        extraTolerations: []
+        fsGid: 100
+        image:
+          name: jupyterhub/k8s-singleuser-sample
+          pullPolicy: IfNotPresent
+          tag: 0.9.0
+        imagePullSecret:
+          enabled: false
+        initContainers: []
+        lifecycleHooks: {}
+        memory:
+          guarantee: 256M
+          limit: 512M
+        networkPolicy:
+          egress:
+          - ports:
+            - port: 53
+              protocol: TCP
+            - port: 53
+              protocol: UDP
+            to:
+            - ipBlock:
+                cidr: 10.0.0.0/8
+          - ports:
+            - port: 80
+            - port: 443
+            - port: 9418
+            - port: 873
+            - port: 1094
+            - port: 1095
+            - port: 27017
+            - port: 3306
+            to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+                except:
+                - 169.254.169.254/32
+                - 10.0.0.0/8
+            - ipBlock:
+                cidr: 10.6.13.139/32
+          enabled: true
+          ingress: []
+        networkTools:
+          image:
+            name: jupyterhub/k8s-network-tools
+            tag: 0.9.0
+        nodeSelector:
+          user: worker
+        startTimeout: 300
+        storage:
+          capacity: 10Gi
+          dynamic:
+            pvcNameTemplate: claim-{username}{servername}
+            storageAccessModes:
+            - ReadWriteOnce
+            volumeNameTemplate: volume-{username}{servername}
+          extraLabels: {}
+          extraVolumeMounts:
+          - mountPath: /etc/jupyter
+            name: etc-jupyter
+          - mountPath: /etc/jupyter/templates
+            name: etc-jupyter-templates
+          extraVolumes:
+          - configMap:
+              name: user-etc-jupyter
+            name: etc-jupyter
+          - configMap:
+              name: user-etc-jupyter-templates
+            name: etc-jupyter-templates
+          homeMountPath: /home/jovyan
+          static:
+            subPath: '{username}'
+          type: none
+        uid: 1000
+    z2jh.py: |
+      """
+      Utility methods for use in jupyterhub_config.py and dynamic subconfigs.
+
+      Methods here can be imported by extraConfig in values.yaml
+      """
+      from collections import Mapping
+      from functools import lru_cache
+      import os
+
+      import yaml
+
+
+      # memoize so we only load config once
+      @lru_cache()
+      def _load_config():
+          """Load configuration from disk
+
+          Memoized to only load once
+          """
+          cfg = {}
+          for source in ('config', 'secret'):
+              path = f"/etc/jupyterhub/{source}/values.yaml"
+              if os.path.exists(path):
+                  print(f"Loading {path}")
+                  with open(path) as f:
+                      values = yaml.safe_load(f)
+                  cfg = _merge_dictionaries(cfg, values)
+              else:
+                  print(f"No config at {path}")
+          return cfg
+
+
+      def _merge_dictionaries(a, b):
+          """Merge two dictionaries recursively.
+
+          Simplified From https://stackoverflow.com/a/7205107
+          """
+          merged = a.copy()
+          for key in b:
+              if key in a:
+                  if isinstance(a[key], Mapping) and isinstance(b[key], Mapping):
+                      merged[key] = _merge_dictionaries(a[key], b[key])
+                  else:
+                      merged[key] = b[key]
+              else:
+                  merged[key] = b[key]
+          return merged
+
+
+      def get_config(key, default=None):
+          """
+          Find a config item of a given name & return it
+
+          Parses everything as YAML, so lists and dicts are available too
+
+          get_config("a.b.c") returns config['a']['b']['c']
+          """
+          value = _load_config()
+          # resolve path in yaml
+          for level in key.split('.'):
+              if not isinstance(value, dict):
+                  # a parent is a scalar or null,
+                  # can't resolve full path
+                  return default
+              if level not in value:
+                  return default
+              else:
+                  value = value[level]
+          return value
+
+
+      def set_config_if_not_none(cparent, name, key):
+          """
+          Find a config item of a given name, set the corresponding Jupyter
+          configuration item if not None
+          """
+          data = get_config(key)
+          if data is not None:
+              setattr(cparent, name, data)
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app: jupyterhub
+      app.kubernetes.io/managed-by: Helm
+      chart: jupyterhub-0.9.0
+      component: hub
+      heritage: Helm
+      release: bhub-test
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:cull_idle_servers.py: {}
+          f:jupyterhub_config.py: {}
+          f:values.yaml: {}
+          f:z2jh.py: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:chart: {}
+            f:component: {}
+            f:heritage: {}
+            f:release: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T15:09:36Z"
+    name: hub-config
+    namespace: bhub-test-ns
+    resourceVersion: "280478"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/hub-config
+    uid: 11ade4de-835c-45eb-805e-431e275673d8
+- apiVersion: v1
+  data:
+    jupyter_notebook_config.json: '{"MappingKernelManager":{"cull_connected":true,"cull_idle_timeout":600,"cull_interval":60},"NotebookApp":{"allow_origin":"*","shutdown_no_activity_timeout":600,"tornado_settings":{"trust_xheaders":true}}}'
+    jupyter_notebook_config.py: |
+      import notebook
+      import os
+
+      from distutils.version import LooseVersion as V
+
+
+      c.NotebookApp.extra_template_paths.append('/etc/jupyter/templates')
+
+
+      # For old notebook versions we have to explicitly enable the translation
+      # extension
+      if V(notebook.__version__) < V('5.1.0'):
+          c.NotebookApp.jinja_environment_options = {'extensions': ['jinja2.ext.i18n']}
+
+
+      binder_launch_host = os.environ.get('BINDER_LAUNCH_HOST', '')
+      binder_request = os.environ.get('BINDER_REQUEST', '')
+      binder_persistent_request = os.environ.get('BINDER_PERSISTENT_REQUEST', '')
+
+      repo_url = os.environ.get('BINDER_REPO_URL', '')
+
+      jitsi_url = ''
+
+      c.NotebookApp.jinja_template_vars.update({
+          'binder_url': binder_launch_host+binder_request,
+          'persistent_binder_url': binder_launch_host+binder_persistent_request,
+          'repo_url': repo_url,
+          'ref_url': os.environ.get('BINDER_REF_URL', ''),
+          'jitsi_url': jitsi_url,
+      })
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app: jupyterhub
+      app.kubernetes.io/managed-by: Helm
+      component: etc-jupyter
+      heritage: Helm
+      release: bhub-test
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:jupyter_notebook_config.json: {}
+          f:jupyter_notebook_config.py: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:component: {}
+            f:heritage: {}
+            f:release: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T14:48:11Z"
+    name: user-etc-jupyter
+    namespace: bhub-test-ns
+    resourceVersion: "276609"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/user-etc-jupyter
+    uid: c6e18b58-7b1d-4416-98e8-53efcb0b3780
+- apiVersion: v1
+  data:
+    login.html: |
+      {% extends "templates/login.html" %}
+
+      {% block header_buttons %}
+      {% block login_widget %}
+      {% endblock %}
+      <span class="flex-spacer"></span>
+      {{super()}}
+      {% endblock header_buttons %}
+
+      {% block site %}
+      <div id="ipython-main-app" class="container">
+        <h1>Binder inaccessible</h1>
+        <h2>
+          You can get a new Binder for this repo by clicking <a href="{{binder_url}}">here</a>.
+        </h2>
+        <p>
+          The shareable URL for this repo is: <tt>{{binder_url}}</tt>
+        </p>
+
+        <h4>Is this a Binder that you created?</h4>
+        <p>
+          If so, your authentication cookie for this Binder has been deleted or expired.
+          You can launch a new Binder for this repo by clicking <a href="{{binder_url}}">here</a>.
+        </p>
+
+        <h4>Did someone give you this Binder link?</h4>
+        <p>
+          If so, the link is outdated or incorrect.
+          Recheck the link for typos or ask the person who gave you the link for an updated link.
+          A shareable Binder link should look like <tt>{{binder_url}}</tt>.
+      </div>
+      {% endblock site %}
+    page.html: |
+      {% extends "templates/page.html" %}
+
+      {% block header_buttons %}
+
+      {% block login_widget %}
+      {% endblock %}
+
+      {% if jitsi_url %}
+        <span>
+          <a id="visit-repo-link" href="{{ jitsi_url }}" class="btn btn-default btn-sm navbar-btn" target="_blank"
+             style="margin-right: 2px; margin-left: 4px;">Join this repo's Video Chat</a>
+        </span>
+      {% endif %}
+
+      {% if ref_url %}
+        <span>
+          <a id="visit-repo-link" href="{{ ref_url }}" class="btn btn-default btn-sm navbar-btn" target="_blank"
+             style="margin-right: 2px; margin-left: 4px;">Visit repo</a>
+        </span>
+      {% endif %}
+
+      {% if persistent_binder_url  %}
+        <span>
+          <button id="copy-binder-link" title="Copy binder link to clipboard" class="btn btn-default btn-sm navbar-btn"
+                  style="margin-right: 0; margin-left: 2px;"
+                  data-url="{{ persistent_binder_url }}" onclick="copy_link_into_clipboard(this);">
+            Copy Binder link
+          </button>
+        </span>
+      {% endif %}
+
+      {% endblock header_buttons %}
+
+      {% block script %}
+      {% if persistent_binder_url  %}
+      <script type='text/javascript'>
+          function copy_link_into_clipboard(b) {
+              var $temp = $("<input>");
+              $(b).parent().append($temp);
+              $temp.val($(b).data('url')).select();
+              document.execCommand("copy");
+              $temp.remove();
+          }
+      </script>
+      {% endif %}
+      {% endblock %}
+    tree.html: |
+      {% extends "templates/tree.html" %}
+
+      {% block headercontainer %}
+        <span class="flex-spacer"></span>
+      {% endblock %}
+
+      {% block header_buttons %}
+        {{super()}}
+        {% if shutdown_button %}
+          <span id="shutdown_widget">
+            <button id="shutdown" class="btn btn-sm navbar-btn"
+                    title="{% trans %}Stop the Jupyter server{% endtrans %}">
+                {% trans %}Quit{% endtrans %}
+            </button>
+          </span>
+        {% endif %}
+      {% endblock header_buttons %}
+  kind: ConfigMap
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: bhub-test
+      meta.helm.sh/release-namespace: bhub-test-ns
+    creationTimestamp: "2020-10-28T14:48:11Z"
+    labels:
+      app: jupyterhub
+      app.kubernetes.io/managed-by: Helm
+      component: etc-jupyter
+      heritage: Helm
+      release: bhub-test
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:login.html: {}
+          f:page.html: {}
+          f:tree.html: {}
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:meta.helm.sh/release-name: {}
+            f:meta.helm.sh/release-namespace: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:component: {}
+            f:heritage: {}
+            f:release: {}
+      manager: Go-http-client
+      operation: Update
+      time: "2020-10-28T14:48:11Z"
+    name: user-etc-jupyter-templates
+    namespace: bhub-test-ns
+    resourceVersion: "276606"
+    selfLink: /api/v1/namespaces/bhub-test-ns/configmaps/user-etc-jupyter-templates
+    uid: ceb5d025-f810-4a70-b543-ca87e94957b1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
