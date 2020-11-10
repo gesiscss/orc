@@ -195,7 +195,7 @@ binderhub:
         # z2jh chart has a default egress rule: allow all outbound traffic for hub
         enabled: true
       nodeSelector:
-        base: worker  # where database is
+        user: worker  # where database is
       baseUrl: /binder/jupyter/
       db:
         type: postgres
