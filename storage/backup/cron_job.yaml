@@ -45,4 +45,4 @@ spec:
                 path: /xfs/nfs
             - name: backup-volume
               hostPath:
-                path: /data6/backup
+                path: /data6/backup/nfs

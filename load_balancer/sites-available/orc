@@ -93,10 +93,10 @@ server {
     #}
 
     # binder gallery
-    location /gallery/ {
-        proxy_pass http://gallery;
-        include snippets/flask.conf;
-    }
+    #location /gallery/ {
+    #    proxy_pass http://gallery;
+    #    include snippets/flask.conf;
+    #}
 
     # Grafana UI
     location /grafana/ {
@@ -129,6 +129,7 @@ server {
         include snippets/headers.conf;
         proxy_set_header X-Scheme $scheme;
     }
+
     # For JupyterHub of binder
     location /binder/jupyter/ {
         proxy_pass http://bjhub;

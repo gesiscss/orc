@@ -43,12 +43,6 @@ build_job:
         docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
         docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/image_cleaner/'; then
-        echo "####### gesiscss/orc-image-cleaner:$CI_COMMIT_SHA_SHORT"
-        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-        docker build -t gesiscss/orc-image-cleaner:$CI_COMMIT_SHA_SHORT gesisbinder/image_cleaner/.
-        docker push gesiscss/orc-image-cleaner:$CI_COMMIT_SHA_SHORT
-      fi;
   only:
     - master
     - staging
