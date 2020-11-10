@@ -24,6 +24,8 @@ etcJupyter:
 
 persistent_binderhub:
   binderhub:
+    nodeSelector:
+      user: worker
     config:
       GitHubRepoProvider:
         # Add banned repositories to the list below
@@ -121,7 +123,7 @@ persistent_binderhub:
           # z2jh chart has a default egress rule: allow all outbound traffic for hub
           enabled: true
         nodeSelector:
-          base: worker  # where database is
+          user: worker  # where database is
         db:
           type: postgres
         annotations:
@@ -256,6 +258,8 @@ persistent_binderhub:
                 ] + [(r'/logout', self.default_logout_handler), (r'/login', self.default_login_handler)]
             GenericOAuthenticator.get_handlers = get_handlers
       proxy:
+        nodeSelector:
+          user: worker
         https:
           type: offload
         networkPolicy:
