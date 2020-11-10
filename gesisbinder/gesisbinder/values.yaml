@@ -229,53 +229,7 @@ binderhub:
         # hub and proxy pods have this label
         #ingress: []
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
-        #egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
-        egress:
-          # These egress rules are copied from mybinder.org-deploy repo
-          # (https://github.com/jupyterhub/mybinder.org-deploy/blob/master/mybinder/templates/netpol.yaml)
-          # We also allow outbound traffic to mongodb and mysql
-          # allow DNS resolution in the cluster
-          # it would be nicer to be able to pin this to only the kube-dns service,
-          # but we can only seem to select *pods* not *services* as the destination
-          - ports:
-              - port: 53
-                protocol: TCP
-              - port: 53
-                protocol: UDP
-            to:
-              - ipBlock:
-                  cidr: 10.0.0.0/8  # we need this range for kubernetes services
-              # we changed the Pod network CIDR to 10.244.0.0/16 for calico
-              #- ipBlock:
-              #    # TODO do we really need this for allowing DNS in cluster
-              #    cidr: 192.168.0.0/16  # Calico by default uses 192.168.0.0/16 as the Pod network CIDR
-          # allow access to the world,
-          # but not the cluster
-          # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
-          # By default, Calico uses 192.168.0.0/16 as the Pod network CIDR
-          # For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16
-          # For Cilium to work correctly, you must pass --pod-network-cidr=10.217.0.0/16 to kubeadm init.
-          # 10.244.0.0/16 and 10.217.0.0/16 must be covered by 10.0.0.0/8
-          - ports:
-              # TCP is the default protocol
-              - port: 80
-              - port: 443
-              - port: 9418 # git
-              - port: 873 # rsync
-              - port: 1094 # xroot
-              - port: 1095 # xroot
-              - port: 27017 # mongodb
-              - port: 3306  # mysql
-            to:
-              - ipBlock:
-                  cidr: 0.0.0.0/0  # represents all possible IP addresses
-                  # we changed the Pod network CIDR to 10.244.0.0/16 for calico
-                  except:
-                    #- 192.168.0.0/16  # Calico uses 192.168.0.0/16 as the Pod network CIDR
-                    - 169.254.169.254/32
-                    - 10.0.0.0/8
-              - ipBlock:
-                  cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
+        egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
       nodeSelector:
         user: worker
       storage:
