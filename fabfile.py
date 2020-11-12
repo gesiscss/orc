@@ -2,8 +2,8 @@ from fabric import task
 
 
 @task
-def nginx(c, password, branch_name, ref='master', mode=''):
-    c.user = 'iuser'
+def nginx(c, user, password, branch_name, ref='master', mode=''):
+    c.user = user
     c.connect_kwargs.password = password
 
     nginx_folder = '~/ilcm/orc_nginx/load_balancer/'  # on base:worker
@@ -32,7 +32,7 @@ def nginx(c, password, branch_name, ref='master', mode=''):
 
 
 @task
-def deploy(c, password, staging=False, ref='master', mode=''):
+def deploy(c, user, password, staging=False, ref='master', mode=''):
     """fab -H <master_node_ip> deploy -p <master_node_password> -r <commit_number> -m <deploy_mode> -s
     http://docs.fabfile.org/en/2.4/
     :param c: fabric.Connection
@@ -42,7 +42,7 @@ def deploy(c, password, staging=False, ref='master', mode=''):
     :param mode: Deploy mode.
     :return:
     """
-    c.user = 'iuser'
+    c.user = user
     c.connect_kwargs.password = password
 
     format_dict = {
@@ -133,12 +133,12 @@ def deploy(c, password, staging=False, ref='master', mode=''):
 
 
 @task
-def test(c, password, staging=False, ref='master', mode=''):
+def test(c, user, password, staging=False, ref='master', mode=''):
     """
     fab -H '194.95.75.10' test -s
     http://docs.fabfile.org/en/2.4/
     """
-    c.user = 'iuser'
+    c.user = user
     c.connect_kwargs.password = password
     remote_project_root = '~/ilcm/orc_staging' if staging else '~/ilcm/orc'
     with c.cd(remote_project_root):
