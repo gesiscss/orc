@@ -73,7 +73,7 @@ deploy_staging:
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
+      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
     - staging
   tags:
@@ -129,7 +129,7 @@ deploy_prod:
         mode+="-grafana"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_MASTER_NODE_IP deploy -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
+      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
   only:
     - master
 #    - tags
@@ -157,7 +157,7 @@ deploy_nginx:
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
         mode+="-static"
       fi;
-      fab -H $K8S_BASE_WORKER_IP nginx -p $K8S_BASE_WORKER_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
+      fab -H $K8S_BASE_WORKER_IP nginx -u iuser -p $K8S_BASE_WORKER_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
   only:
     - staging
     - master

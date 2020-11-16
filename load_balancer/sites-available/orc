@@ -93,10 +93,10 @@ server {
     #}
 
     # binder gallery
-    #location /gallery/ {
-    #    proxy_pass http://gallery;
-    #    include snippets/flask.conf;
-    #}
+    location /gallery/ {
+        proxy_pass http://gallery;
+        include snippets/flask.conf;
+    }
 
     # Grafana UI
     location /grafana/ {
