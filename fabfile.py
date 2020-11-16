@@ -140,7 +140,7 @@ def test(c, user, password, staging=False, ref='master', mode=''):
     """
     c.user = user
     c.connect_kwargs.password = password
-    remote_project_root = '~/ilcm/orc_staging' if staging else '~/ilcm/orc'
+    remote_project_root = '~/ilcm/orc'
     with c.cd(remote_project_root):
         c.run('pwd')
         c.run('ls -alh')
