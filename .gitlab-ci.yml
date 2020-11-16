@@ -77,7 +77,7 @@ deploy_staging:
   only:
     - staging
   tags:
-    - orc
+    - staging
   when: on_success
   environment:
     name: staging
