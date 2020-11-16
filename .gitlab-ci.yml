@@ -53,6 +53,31 @@ build_job:
   dependencies: []
   retry: 1
 
+build_job_staging:
+  stage: build
+  script:
+    - |
+      echo "####### Running build on staging"
+      echo "####### Building docker images on master node"
+      #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
+      CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
+      echo $CI_COMMIT_SHA_SHORT
+      if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
+        echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
+        docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT
+      fi;
+  only:
+    - staging
+  tags:
+    - staging
+  when: on_success
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+
 deploy_staging:
   stage: deploy
   script:
