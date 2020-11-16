@@ -73,7 +73,7 @@ deploy_staging:
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
+      fab -H $K8S_STAGING_MASTER_NODE_IP deploy -u ladmin -p $K8S_STAGING_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
     - staging
   tags:
