@@ -149,6 +149,7 @@ server {
         error_page 503 /static/maintenance.html;
         return 503;
 
+
         #proxy_buffering off;
         #proxy_pass http://jhub;
         #include snippets/headers.conf;
