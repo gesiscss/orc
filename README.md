@@ -2,6 +2,8 @@
 
 For more information about ORC project: https://notebooks.gesis.org/about/
 
+Feel free to open an issue in this repository if there are any questions or contact us at [notebooks@gesis.org](mailto:notebooks@gesis.org).
+
 ## Technical Details
 
 This ORC instance is deployed on kubernetes on bare metal machines with Ubuntu 18.04.
