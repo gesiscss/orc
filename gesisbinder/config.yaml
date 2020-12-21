@@ -92,7 +92,8 @@ binderhub:
       #  annotations:
       #    prometheus.io/scrape: 'true'
       #    prometheus.io/path: '/binder/jupyter/hub/metrics'
-
+    debug:
+      enabled: true
     proxy:
       service:
         nodePorts:
