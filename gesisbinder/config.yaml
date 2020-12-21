@@ -99,6 +99,8 @@ binderhub:
           http: 30085
           https: 30082
       chp:
+        networkPolicy:
+          enabled: true
         resources:
           requests:
             cpu: "0.5"
