@@ -210,6 +210,8 @@ binderhub:
       pdb:
         minAvailable: 0
       https:
+        # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/CHANGELOG.md#breaking-changes
+        # for z2jh 0.10.0+ https needs to be enabled.
         enabled: true
         type: offload
       chp:
