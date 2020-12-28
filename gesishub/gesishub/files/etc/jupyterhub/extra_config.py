@@ -11,6 +11,7 @@ from tornado import web
 from jupyterhub import orm, __version__
 from jupyterhub.handlers import BaseHandler, LogoutHandler, LoginHandler
 from jupyterhub.utils import admin_only
+from jupyterhub.pagination import Pagination
 from oauthenticator.oauth2 import OAuthCallbackHandler
 
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
@@ -23,6 +24,9 @@ class OrcAdminHandler(BaseHandler):
     @web.authenticated
     @admin_only
     async def get(self):
+        pagination = Pagination(url=self.request.uri, config=self.config)
+        page, per_page, offset = pagination.get_page_args(self)
+
         available = {'name', 'admin', 'running', 'last_activity'}
         default_sort = ['last_activity']
         mapping = {'running': orm.Spawner.server_id}
@@ -63,7 +67,13 @@ class OrcAdminHandler(BaseHandler):
         # get User.col.desc() order objects
         ordered = [getattr(c, o)() for c, o in zip(cols, orders)]
 
-        users = self.db.query(orm.User).outerjoin(orm.Spawner).order_by(*ordered)
+        users = (
+            self.db.query(orm.User)
+            .outerjoin(orm.Spawner)
+            .order_by(*ordered)
+            .limit(per_page)
+            .offset(offset)
+        )
         users = [self._user_from_orm(u) for u in users]
 
         running = []
@@ -73,6 +83,8 @@ class OrcAdminHandler(BaseHandler):
             auth_state = auth_state or {}
             oauth_user = auth_state.get('oauth_user', {})
             setattr(u, 'dn', oauth_user.get('name', ''))
+
+        pagination.total = self.db.query(orm.User.id).count()
 
         html = self.render_template(
             'admin.html',
@@ -84,6 +96,7 @@ class OrcAdminHandler(BaseHandler):
             allow_named_servers=self.allow_named_servers,
             named_server_limit_per_user=self.named_server_limit_per_user,
             server_version='{} {}'.format(__version__, self.version_hash),
+            pagination=pagination,
         )
         self.finish(html)
 
