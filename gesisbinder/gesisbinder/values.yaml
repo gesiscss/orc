@@ -56,7 +56,7 @@ binderhub:
       pod_quota: 200
       base_url: /binder/
       use_registry: true
-      build_image: jupyter/repo2docker:0.11.0-193.g560b1d9
+      build_image: jupyter/repo2docker:0.11.0-195.g2f1914d
       build_node_selector:
         user: worker
       per_repo_quota: 100
