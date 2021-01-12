@@ -213,7 +213,7 @@ deploy_nginx_staging:
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
         mode+="-static"
       fi;
-      fab -H $K8S_STAGING_BASE_NODE_IP nginx -u ladmin -p $K8S_BASE_NODE_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
+      fab -H $K8S_STAGING_BASE_NODE_IP nginx -u ladmin -p $K8S_STAGING_BASE_NODE_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
   only:
     - staging
   tags:
