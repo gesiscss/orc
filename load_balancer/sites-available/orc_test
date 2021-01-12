@@ -49,7 +49,6 @@ server {
 
 
 # HTTPS server for notebooks-test.gesis.org
-# add comment to test deploy automation
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;

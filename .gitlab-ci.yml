@@ -205,6 +205,7 @@ deploy_nginx_staging:
     - |
       mode="fetch_co"
       # egrep: -v, --invert-match select non-matching lines
+      echo git diff HEAD~ --name-only
       if git diff HEAD~ --name-only | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
