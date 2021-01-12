@@ -160,7 +160,7 @@ deploy_prod:
         mode+="-grafana"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
+      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r staging -m $mode
   only:
     - master
 #    - tags
