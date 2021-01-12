@@ -183,6 +183,7 @@ deploy_nginx:
       if git diff HEAD~ --name-only | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
+        mode+="-testnginx"
       fi;
       if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
@@ -206,9 +207,10 @@ deploy_nginx_staging:
       mode="fetch_co"
       # egrep: -v, --invert-match select non-matching lines
       git diff HEAD~ --name-only
-      if git diff HEAD~ --name-only | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
+      if git diff HEAD~ --name-only | egrep load_balancer/sites-available/orc_test; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
-        mode+="-config"
+        mode+="-stagingconfig"
+        mode+="-testnginx"
       fi;
       if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"

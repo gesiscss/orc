@@ -14,7 +14,7 @@ def nginx(c, user, password, branch_name, ref='master', mode=''):
 
     mode = mode.split('-')
     if "static" in mode:
-        c.run('echo "######## Replacing static files"')
+        c.run('echo "######## Replacing static files on notebooks.gesis.org deployment"')
         branch_name = "prod" if branch_name == "master" else "staging"
         c.sudo("rm -rf /var/www/{}/static".format(branch_name), password=password)
         c.sudo("cp -R {}static /var/www/{}/".format(nginx_folder, branch_name), password=password)
@@ -24,7 +24,10 @@ def nginx(c, user, password, branch_name, ref='master', mode=''):
         c.sudo("cp {}sites-available/default /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/gesis_mybinder /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/orc /etc/nginx/sites-available/".format(nginx_folder), password=password)
+    if "stagingconfig" in mode:
+        c.run('echo "######## Copying config files on notebooks-test.gesis.org deployment"')
         c.sudo("cp {}sites-available/orc_test /etc/nginx/sites-available/".format(nginx_folder), password=password)
+    if "testnginx" in mode:
         c.run('echo "######## Testing config files"')
         c.sudo("nginx -t", password=password)
         c.run('echo "######## Reloading nginx"')

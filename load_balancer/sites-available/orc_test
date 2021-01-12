@@ -49,7 +49,7 @@ server {
 
 
 # HTTPS server for notebooks-test.gesis.org
-# test
+# test config
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
