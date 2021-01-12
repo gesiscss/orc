@@ -37,6 +37,8 @@ upstream prometheus {
 }
 
 
+
+
 # HTTP server to redirect notebooks-test.gesis.org 80 traffic to SSL/HTTPS
 server {
     listen 80;
@@ -49,7 +51,6 @@ server {
 
 
 # HTTPS server for notebooks-test.gesis.org
-# test config
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
@@ -130,6 +131,10 @@ server {
     location /gallery/ {
         proxy_pass http://gallery;
         include snippets/flask.conf;
+    }
+    location /prod/ {
+        proxy_pass https://notebooks.gesis.org;
+        include snippets/headers.conf;
     }
 
     include snippets/ignore_fonts.conf;
