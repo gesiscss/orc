@@ -34,7 +34,7 @@ persistent_binderhub:
             prometheus.io/scrape: 'false'
         services:
           binder:
-            url: http://194.95.75.9:30183  # base worker
+            url: http://194.95.75.15:30183  # base worker
             oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
             oauth_client_id: "binder-oauth-client-test"
         extraConfig:
@@ -84,19 +84,19 @@ persistent_binderhub:
 
       # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
       auth:
-        #custom:
-        #  config:
-        #    login_service: "GESIS Test Login"  # to customize the label on the login button
-        #    token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
-        #    userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
-        type: github
-        custom: {}
-        github:
-          callbackUrl: "https://notebooks-test.gesis.org/hub/oauth_callback"
-        scopes:
-          - "read:user"
-        admin:
-          users: ['bitnik', 'arnim']
+        custom:
+          config:
+            login_service: "GESIS Test Login"  # to customize the label on the login button
+            token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
+            userdata_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+        #type: github
+        #custom: {}
+        #github:
+        #  callbackUrl: "https://notebooks-test.gesis.org/hub/oauth_callback"
+        #scopes:
+        #  - "read:user"
+        #admin:
+        #  users: ['bitnik', 'arnim', 'mriduls']
 
       proxy:
         service:

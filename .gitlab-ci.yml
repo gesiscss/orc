@@ -45,7 +45,6 @@ build_job:
       fi;
   only:
     - master
-    - staging
   tags:
     - orc
   when: on_success
@@ -53,15 +52,46 @@ build_job:
   dependencies: []
   retry: 1
 
+build_job_staging:
+  stage: build
+  script:
+    - |
+      echo "####### Running build on staging"
+      echo "####### Building docker images on master node"
+      #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
+      CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
+      echo $CI_COMMIT_SHA_SHORT
+      if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
+        echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
+        docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+        docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
+        docker push gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT
+      fi;
+  only:
+    - staging
+  tags:
+    - staging
+  when: on_success
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+
 deploy_staging:
   stage: deploy
   script:
     - |
+      echo "####### First sync github"
+      URL="https://gesisnotebooks:"
+      URL+=$GH_TOKEN
+      URL+="@github.com/gesiscss/orc"
+      git push $URL $CI_COMMIT_SHA:staging
+
       echo "####### Running staging deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
-        mode+="-gallerytestconf"
+       mode+="-gallerytestconf"
       fi;
       if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
@@ -73,11 +103,11 @@ deploy_staging:
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
+      fab -H $K8S_STAGING_MASTER_NODE_IP deploy -u ladmin -p $K8S_STAGING_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
     - staging
   tags:
-    - orc
+    - staging
   when: on_success
   environment:
     name: staging
@@ -153,6 +183,7 @@ deploy_nginx:
       if git diff HEAD~ --name-only | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
+        mode+="-testnginx"
       fi;
       if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
@@ -160,10 +191,37 @@ deploy_nginx:
       fi;
       fab -H $K8S_BASE_WORKER_IP nginx -u iuser -p $K8S_BASE_WORKER_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
   only:
-    - staging
     - master
   tags:
     - orc
+  when: on_success
+#  when: manual
+  allow_failure: false
+  dependencies: []
+  retry: 1
+
+deploy_nginx_staging:
+  stage: deploy
+  script:
+    - |
+      mode="fetch_co"
+      # egrep: -v, --invert-match select non-matching lines
+      git diff HEAD~ --name-only
+      if git diff HEAD~ --name-only | egrep load_balancer/sites-available/orc_test; then
+        echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
+        mode+="-stagingconfig"
+        mode+="-testnginx"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
+        echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
+        mode+="-static"
+      fi;
+      echo $CI_COMMIT_REF_NAME
+      fab -H $K8S_STAGING_BASE_NODE_IP nginx -u ladmin -p $K8S_STAGING_BASE_NODE_PASSWORD -b $CI_COMMIT_REF_NAME -r $CI_COMMIT_SHA -m $mode
+  only:
+    - staging
+  tags:
+    - staging
   when: on_success
 #  when: manual
   allow_failure: false

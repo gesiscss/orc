@@ -7,30 +7,36 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-# https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
-# If you set the type field to NodePort, the Kubernetes master will allocate a port from a range specified by
-# --service-node-port-range flag (default: 30000-32767),
-# and each Node will proxy that port (the same port number on every Node) into your Service.
-# => That's why we add all nodes into upstream
-upstream gallery-test {
-  server 194.95.75.9:30179;
-  server 194.95.75.12:30179;
+
+upstream pbhub {
+  server 194.95.75.15:30092 max_fails=0;
 }
 
-upstream jhub-test {
-  server 194.95.75.9:30180 max_fails=0;
-  server 194.95.75.12:30180 max_fails=0;
+upstream gesishub {
+  server 194.95.75.15:30180 max_fails=0;
 }
 
-upstream bhub-test {
-  server 194.95.75.9:30181 max_fails=0;
-  server 194.95.75.12:30181 max_fails=0;
+upstream bhub {
+  server 194.95.75.15:30181 max_fails=0;
 }
 
-upstream bjhub-test {
-  server 194.95.75.9:30182 max_fails=0;
-  server 194.95.75.12:30182 max_fails=0;
+upstream bjhub {
+  server 194.95.75.15:30182 max_fails=0;
 }
+
+upstream gallery {
+  server 194.95.75.15:30179 max_fails=0;
+}
+
+upstream grafana {
+  server 194.95.75.15:30075;
+}
+
+upstream prometheus {
+  server 194.95.75.15:30073;
+}
+
+
 
 
 # HTTP server to redirect notebooks-test.gesis.org 80 traffic to SSL/HTTPS
@@ -43,55 +49,27 @@ server {
     return 301 https://$host$request_uri;
 }
 
+
 # HTTPS server for notebooks-test.gesis.org
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     server_name notebooks-test.gesis.org;
+    #access_log off;  # turn off access log
     ssl_certificate /etc/letsencrypt/live/notebooks-test.gesis.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/notebooks-test.gesis.org/privkey.pem;
     include snippets/ssl.conf;
 
     include snippets/optimization.conf;
-    access_log off;  # turn off access log
+    #access_log off;  # turn off access log
     # log staging logs into access-test.log file
     # access_log /var/log/nginx/access-test.log combined;
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
-    # binder gallery
-    location /gallery/ {
-        proxy_pass http://gallery-test;
-        include snippets/flask.conf;
-    }
-
-    # Managing literal requests to the BinderHub
-    location /binder/ {
-        # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
-        # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
-        proxy_buffering off;
-        proxy_pass http://bhub-test;
-        include snippets/headers.conf;
-        proxy_set_header X-Scheme $scheme;
-    }
-    # For JupyterHub of binder
-    location /binder/jupyter/ {
-        proxy_pass http://bjhub-test;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-    }
-    # overwrite binder logo with ORC logo
-    #location = /binder/static/favicon.ico {
-    #    alias /static/images/logo/logo.png;
-    #}
-
-    ## don't show bhub index and loading pages. instead redirect user to jhub home
-    #location ~ ^/services/binder/($|v2/.*) {
-    #    return 302 /hub/;
-    #}
 
     # redirect from old location
-    rewrite ^/jupyter/(.*)$ /$1 permanent;
+    #rewrite ^/jupyter/(.*)$ /$1 permanent;
     # Managing literal requests to the JupyterHub
     location / {
         ## maintenance page
@@ -99,34 +77,64 @@ server {
         #return 503;
 
         proxy_buffering off;
-        proxy_pass http://jhub-test;
+        proxy_pass http://gesishub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
         proxy_set_header X-Scheme $scheme;
     }
+    location /pbhub/ {
+        proxy_buffering off;
+        proxy_pass http://pbhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        proxy_set_header X-Scheme $scheme;
+    }
+    # Grafana UI
+    location /grafana/ {
+        proxy_pass http://grafana/;
+        include snippets/headers.conf;
+    }
+    # Prometheus
+    location /prometheus/ {
+        auth_basic "Administrator's Area";
+        auth_basic_user_file /etc/letsencrypt/.htpasswd_prometheus;
+        # https://github.com/prometheus/prometheus/issues/2193
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://prometheus/;
+        include snippets/headers.conf;
 
-    include snippets/ignore_fonts.conf;
-
-    ## Private Koeln
-    #allow 10.6.0.0/16;
-    ## Private Mannheim
-    #allow 10.2.0.0/16;
-    ## Public DMZ Koeln
-    #allow 193.175.238.0/24;
-    ## Private DMZ Koeln
-    #allow 194.95.75.0/27;
-    #deny all;
-
+        #sub_filter_types text/html;
+        sub_filter_once off;
+        sub_filter '="/' '="/prometheus/';
+        sub_filter 'var PATH_PREFIX = "";' 'var PATH_PREFIX = "/prometheus";';
+        rewrite ^/prometheus/?$ /prometheus/graph redirect;
+        rewrite ^/prometheus/(.*)$ /$1 break;
+    }
+    location /binder/ {
+        # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
+        # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
+        proxy_buffering off;
+        proxy_pass http://bhub;
+        include snippets/headers.conf;
+        proxy_set_header X-Scheme $scheme;
+    }
     location /static/ {
         access_log off;
-        root /var/www/staging;
+        root /var/www/test;
+    }
+    # For JupyterHub of binder
+    location /binder/jupyter/ {
+        proxy_pass http://bjhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+    }
+    location /gallery/ {
+        proxy_pass http://gallery;
+        include snippets/flask.conf;
+    }
+    location /prod {
+        rewrite ^/prod(.*)$ https://notebooks.gesis.org/$1 redirect;
     }
 
-    location = /robots.txt {
-       add_header Content-Type text/plain;
-       return 200 "User-agent: *\nDisallow: /\n";
-    }
-
-    include snippets/_secret.conf;
+    include snippets/ignore_fonts.conf;
 }
-
