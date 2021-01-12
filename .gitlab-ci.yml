@@ -81,22 +81,28 @@ deploy_staging:
   stage: deploy
   script:
     - |
+      echo "####### First sync github"
+      URL="https://gesisnotebooks:"
+      URL+=$GH_TOKEN
+      URL+="@github.com/gesiscss/orc"
+      git push $URL $CI_COMMIT_SHA:staging
+
       echo "####### Running staging deploy"
       mode="fetch_co"
       #pip3 install fabric==2.4.*
-      #if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
-      #  mode+="-gallerytestconf"
-      #fi;
-      #if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
-      #   mode+="-gallerytestapp"
-      # fi;
-      # if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
-      #   mode+="-jhubtestns"
-      # fi;
-      # if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
-      #   mode+="-bhubtestns"
-      # fi;
-      # echo "####### mode: $mode"
+      if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
+       mode+="-gallerytestconf"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
+        mode+="-gallerytestapp"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+        mode+="-jhubtestns"
+      fi;
+      if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+        mode+="-bhubtestns"
+      fi;
+      echo "####### mode: $mode"
       fab -H $K8S_STAGING_MASTER_NODE_IP test -u ladmin -p $K8S_STAGING_MASTER_NODE_PASSWORD
     #   fab -H $K8S_STAGING_MASTER_NODE_IP deploy -u ladmin -p $K8S_STAGING_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
