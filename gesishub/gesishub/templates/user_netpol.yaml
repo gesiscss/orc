@@ -59,6 +59,7 @@ spec:
         - port: 1095 # xroot
         - port: 27017 # mongodb
         - port: 3306  # mysql
+        - port: 16286 # Wolfram Engine on-demand licensing
       to:
       - ipBlock:
           cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
