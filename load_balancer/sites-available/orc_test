@@ -132,9 +132,8 @@ server {
         proxy_pass http://gallery;
         include snippets/flask.conf;
     }
-    location /prod/ {
-        proxy_pass https://notebooks.gesis.org;
-        include snippets/headers.conf;
+    location /prod {
+        rewrite ^/prod(.*)$ https://notebooks.gesis.org/$1 redirect;
     }
 
     include snippets/ignore_fonts.conf;
