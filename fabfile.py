@@ -24,6 +24,7 @@ def nginx(c, user, password, branch_name, ref='master', mode=''):
         c.sudo("cp {}sites-available/default /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/gesis_mybinder /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/orc /etc/nginx/sites-available/".format(nginx_folder), password=password)
+        # add ORC_test/pbhub for notebooks-test.gesis.org
         c.run('echo "######## Testing config files"')
         c.sudo("nginx -t", password=password)
         c.run('echo "######## Reloading nginx"')
