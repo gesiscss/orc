@@ -306,7 +306,7 @@ class Bot:
         Get the latest BinderHub SHA from mybinder.org
         """
         # Load master requirements
-        url_requirements = f"{MYBINDER_REPO_RAW_URL}master/mybinder/requirements.yaml"
+        url_requirements = f"{MYBINDER_REPO_RAW_URL}master/mybinder/Chart.yaml"
         requirements = load(requests.get(url_requirements).text)
         binderhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'binderhub'][0]
         bhub_latest = binderhub_dep['version'].strip()
