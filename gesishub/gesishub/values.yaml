@@ -35,6 +35,8 @@ persistent_binderhub:
           - ^hmharshit/cn-ait.*
           - ^shishirchoudharygic/mltraining.*
           - ^hmharshit/mltraining.*
+          - ^FDesnoyer/MathExp.*
+          - ^GuitarsAI/.*
         high_quota_specs:
           - ^gesiscss/.*
         #spec_config:
