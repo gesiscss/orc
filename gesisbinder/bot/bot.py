@@ -33,6 +33,24 @@ MYBINDER_REPO_URL = f"https://github.com/jupyterhub/mybinder.org-deploy/"
 MYBINDER_REPO_RAW_URL = f"https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy/"
 
 
+# https://github.com/henchbot/mybinder.org-upgrades/commit/5222ba1466c6005221fdc9e641b32910b381b7a3
+def normalize_r2d_tags(old, new):
+    if 'dirty' in old or ".g" in old:
+        # it is a version string from which we can get a SHA
+        old = old.split('.dirty')[0].split('.')[-1][1:]
+    else:
+        # it is (probably) a tag, use it direcctly
+        old = old
+
+    if 'dirty' in new or ".g" in new:
+        # it is a version string from which we can get a SHA
+        new = new.split('.dirty')[0].split('.')[-1][1:]
+    else:
+        # it is (probably) a tag, use it direcctly
+        new = new
+    return old, new
+
+
 class Bot:
     """
     Class for a bot that determines whether an upgrade is necessary
@@ -142,9 +160,8 @@ class Bot:
             subprocess.check_call(['git', 'add', f])
 
         if repo == 'repo2docker':
-            commit_message = 'repo2docker: https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
-                self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:],
-                self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
+            old, new = normalize_r2d_tags(self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'])
+            commit_message = 'repo2docker: https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(old, new)
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                 self.bhub_live,
@@ -193,9 +210,8 @@ class Bot:
         Formats a text body for the PR
         """
         if repo == 'repo2docker':
-            compare_url = 'https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
-                                self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:],
-                                self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
+            old, new = normalize_r2d_tags(self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'])
+            compare_url = 'https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(old, new)
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                                 self.bhub_live,
