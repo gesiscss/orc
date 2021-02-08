@@ -207,10 +207,6 @@ binderhub:
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
     proxy:
-      # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
-      # replicas: 1
-      pdb:
-        minAvailable: 0
       https:
         # https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/master/CHANGELOG.md#breaking-changes
         # for z2jh 0.10.0+ https needs to be enabled.
@@ -225,6 +221,11 @@ binderhub:
           # so only the hub pod can talk to the proxy's API and HTTP ports
           # z2jh chart has a default egress rule: allow all outbound traffic for proxy
           enabled: true
+        # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
+        # replicas: 1
+        # PDB relocated to proxy.chp.pdb https://github.com/jupyterhub/zero-to-jupyterhub-k8s/pull/1938
+        pdb:
+          minAvailable: 0
       service:
         type: NodePort
     singleuser:
