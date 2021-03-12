@@ -188,19 +188,30 @@ spec:
         logger.info(f'## Done nfs shares ({success} PVs, failed {fail}): '
                     f'{timedelta(seconds=time()-done_config_files)}\n\n')
 
+        # Rolling 21 day back up.
+        today = datetime.now().date()
+        delete_day = datetime.now().date() - timedelta(days=21)
+        logger.info(f'## Rolling 21 day delete, deleting {delete_day.__str__()}')
+        delete_day_path = join(delete_day.year, delete_day.month, delete_day.day)
+        if exists(delete_day_path):
+            shutil.rmtree(delete_day_path, ignore_errors=True)
+            logger.info(f'### Deleted backup for {delete_day.__str__()}')
+
+
+
         # Delete backup folder of last month
-        if day == '10':
-            logger.info('## delete backup data of last month')
-            if month == '01':
-                previous_year_path = join(environ['BACKUP_FOLDER'], str(int(year) - 1))
-                previous_month_path = join(previous_year_path, '12')
-                # previous_month_path = join(previous_year_path, '{}'.format(str(10or11 + int(month))))
-            else:
-                previous_month_path = join(year_path, '{:02}'.format(int(month) - 1))
-            if exists(previous_month_path):
-                logger.info(f'### deleting {previous_month_path}')
-                shutil.rmtree(previous_month_path, ignore_errors=True)
-            logger.info('## Done: delete backup data of last month')
+        # if day == '10':
+        #     logger.info('## delete backup data of last month')
+        #     if month == '01':
+        #         previous_year_path = join(environ['BACKUP_FOLDER'], str(int(year) - 1))
+        #         previous_month_path = join(previous_year_path, '12')
+        #         # previous_month_path = join(previous_year_path, '{}'.format(str(10or11 + int(month))))
+        #     else:
+        #         previous_month_path = join(year_path, '{:02}'.format(int(month) - 1))
+        #     if exists(previous_month_path):
+        #         logger.info(f'### deleting {previous_month_path}')
+        #         shutil.rmtree(previous_month_path, ignore_errors=True)
+        #     logger.info('## Done: delete backup data of last month')
 
     logger.info(f'Backup was successful: duration: {timedelta(seconds=time()-start_time)}')
 
