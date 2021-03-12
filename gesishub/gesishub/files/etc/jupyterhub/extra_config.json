@@ -147,7 +147,12 @@
                 "Question": "How can I make my Notebooks binder-ready?",
                 "Answer": "For more information about making a Notebook binder-ready, take a look at the <a href='https://mybinder.readthedocs.io/en/latest/index.html#how-to-guides-and-tutorials' target='_blank'>binder user guide</a>.",
                 "ID": "104"
-              }
+              },
+              "Question 5": {
+                "Question": "How can I create a direct launch link for my notebooks?",
+                "Answer": "Just like <a href='https://mybinder.org'>mybinder.org</a>, you can create a direct launch link for a notebook repository. To launch the notebook without persistence (no login required) you can create a URL like https://notebooks.gesis.org/binder/v2/gh/github_account_name/repository_name/HEAD with appropriate 'github_account_name' and 'repository_name'. To launch this with persistence (login required) you can construct a URL with https://notebooks.gesis.org/services/binder/v2/gh/github_account_name/repository_name/HEAD.",
+                "ID": "105"
+              },
             }
           ]
         }
