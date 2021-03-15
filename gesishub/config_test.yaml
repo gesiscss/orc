@@ -39,7 +39,8 @@ persistent_binderhub:
             oauth_client_id: "binder-oauth-client-test"
         config:
           GenericOAuthenticator:
-            login_service: "GESIS Test Login"  # to customize the label on the login button
+            login_service: keycloak
+            # login_service: "GESIS Test Login"  # to customize the label on the login button
             oauth_callback_url: https://notebooks-test.gesis.org/hub/oauth_callback
             authorize_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/auth
             token_url: https://login-test.gesis.org/realms/gesis/protocol/openid-connect/token
