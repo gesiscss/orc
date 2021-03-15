@@ -134,23 +134,6 @@ persistent_binderhub:
           # and update this config with helm upgrade ... --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=<sha256sum>
           # https://helm.sh/docs/intro/using_helm/
           rollme: "rollme"
-        config:
-          Authenticator:
-            admin_users: [arnim.bleier@gesis.org, mridul.seth@gesis.org]
-            enable_auth_state: true
-          GenericOAuthenticator:
-            auto_login: true
-            login_service: "GESIS Login"
-            oauth_callback_url: https://notebooks.gesis.org/hub/oauth_callback
-            authorize_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
-            token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-            userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
-            username_key: preferred_username
-            userdata_method: GET
-            userdata_params:
-              state: state
-            JupyterHub:
-              authenticator_class: oauthenticator.generic.GenericOAuthenticator
         extraVolumes:
           # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
           - name: persistent-bhub-templates
@@ -290,19 +273,22 @@ persistent_binderhub:
         service:
           type: NodePort
 
-      # auth:
-      #   # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-      #   type: custom
-      #   custom:
-      #     className: oauthenticator.generic.GenericOAuthenticator
-      #     config:
-      #       auto_login: true
-      #       userdata_method: GET
-      #   admin:
-      #     users:
-      #       - 
-      #   state:
-      #     enabled: true
+      auth:
+        # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
+        type: custom
+        custom:
+          className: oauthenticator.generic.GenericOAuthenticator
+          config:
+            auto_login: true
+            userdata_method: GET
+            userdata_params: {'state': 'state'}
+            username_key: preferred_username
+        admin:
+          users:
+            - arnim.bleier@gesis.org
+            - mridul.seth@gesis.org
+        state:
+          enabled: true
 
       singleuser:
         networkPolicy:
