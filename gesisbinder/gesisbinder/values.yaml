@@ -170,7 +170,16 @@ binderhub:
     allowOrigin: '*'
 
   dind:
-    enabled: false
+    enabled: true
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: 1Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    hostLibDir: /var/lib/dind/bhub
+    hostSocketDir: /var/run/dind/bhub
 
   imageCleaner:
     enabled: false
