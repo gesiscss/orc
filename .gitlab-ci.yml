@@ -5,6 +5,8 @@
 
 #after_script:
 #  - rm secrets
+variables:
+  GIT_STRATEGY: clone
 
 stages:
 #  - test
