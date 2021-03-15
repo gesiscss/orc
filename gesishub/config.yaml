@@ -44,18 +44,18 @@ persistent_binderhub:
           limits:
             cpu: "2"
             memory: 2Gi
-        extraEnv:
-          OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
-          OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-          OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
+        # extraEnv:
+        #   OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
+        #   OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+        #   OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
 
       # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-      auth:
-        custom:
-          config:
-            login_service: "GESIS Login"  # to customize the label on the login button
-            token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-            userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+      # auth:
+      #   custom:
+      #     config:
+      #       login_service: "GESIS Login"  # to customize the label on the login button
+      #       token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+      #       userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
 
       proxy:
         service:
