@@ -142,7 +142,8 @@ persistent_binderhub:
           GenericOAuthenticator:
             auto_login: true
             userdata_method: GET
-            userdata_params: {'state': 'state'}
+            userdata_params:
+              state: state
             username_key: preferred_username
           JupyterHub:
             authenticator_class: oauthenticator.generic.GenericOAuthenticator
