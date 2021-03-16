@@ -237,6 +237,7 @@ persistent_binderhub:
                 elif path == "/faq/":
                     self.log.warning('trying to render faq')
                     html = self.render_template("faq.html", **{"active": "faq"})
+                    self.log.warning(html)
                     self.finish(html)
                 elif path == "/":
                     if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
