@@ -86,7 +86,7 @@ class OrcAdminHandler(BaseHandler):
 
         pagination.total = self.db.query(orm.User.id).count()
 
-        html = self.render_template(
+        html = await self.render_template(
             'admin.html',
             current_user=self.current_user,
             admin_access=self.settings.get('admin_access', False),

@@ -207,13 +207,13 @@ persistent_binderhub:
             def get(self):
                 path = self.request.path
                 if path == "/about/":
-                    html = self.render_template("about.html", **{"active": "about"})
+                    html = self.render_template("about.html", sync=True, **{"active": "about"})
                     self.finish(html)
                 elif path == "/terms_of_use/":
-                    html = self.render_template("terms_of_use.html", **{"active": "terms_of_use"})
+                    html = self.render_template("terms_of_use.html", sync=True, **{"active": "terms_of_use"})
                     self.finish(html)
                 elif path == "/faq/":
-                    html = self.render_template("faq.html", **{"active": "faq"})
+                    html = self.render_template("faq.html", sync=True, **{"active": "faq"})
                     self.finish(html)
                 elif path == "/":
                     if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
@@ -221,7 +221,7 @@ persistent_binderhub:
                     else:
                         # user is not logged in, so link featured projects to (public) GESIS binder
                         binder_base_url = "/binder/"
-                        html = self.render_template("orc_home.html", **{"active": "home", "binder_base_url": binder_base_url})
+                        html = self.render_template("orc_home.html", sync=True, **{"active": "home", "binder_base_url": binder_base_url})
                         self.finish(html)
                 else:
                     # below is taken from original get method
