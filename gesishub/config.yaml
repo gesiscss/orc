@@ -34,6 +34,15 @@ persistent_binderhub:
             url: http://194.95.75.9:30083  # base worker
             oauth_redirect_uri: "https://notebooks.gesis.org/services/binder/oauth_callback"
             oauth_client_id: "binder-oauth-client"
+        # https://zero-to-jupyterhub.readthedocs.io/en/latest/administrator/authentication.html#genericoauthenticator-openid-connect
+        config:
+          GenericOAuthenticator:
+            login_service: "GESIS Login"  # to customize the label on the login button
+            oauth_callback_url: https://notebooks.gesis.org/hub/oauth_callback
+            authorize_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
+            token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
+            userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
+
         extraConfig:
           020-orc: |
             production = True
@@ -44,18 +53,6 @@ persistent_binderhub:
           limits:
             cpu: "2"
             memory: 2Gi
-        extraEnv:
-          OAUTH2_AUTHORIZE_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/auth
-          OAUTH2_TOKEN_URL: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-          OAUTH_CALLBACK_URL: https://notebooks.gesis.org/hub/oauth_callback
-
-      # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-      auth:
-        custom:
-          config:
-            login_service: "GESIS Login"  # to customize the label on the login button
-            token_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/token
-            userdata_url: https://login.gesis.org/realms/gesis/protocol/openid-connect/userinfo
 
       proxy:
         service:

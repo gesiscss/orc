@@ -126,6 +126,21 @@ persistent_binderhub:
           base: worker  # where database is
         db:
           type: postgres
+
+        # https://zero-to-jupyterhub.readthedocs.io/en/latest/administrator/authentication.html#genericoauthenticator-openid-connect
+        config:
+          Authenticator:
+            admin_users: ['arnim.bleier@gesis.org', 'mridul.seth@gesis.org']
+            enable_auth_state: true
+          GenericOAuthenticator:
+            auto_login: true
+            userdata_method: GET
+            userdata_params:
+              state: state
+            username_key: preferred_username
+          JupyterHub:
+            authenticator_class: oauthenticator.generic.GenericOAuthenticator
+
         annotations:
           # auto restart hub pod if any of the configmap files changes
           #checksum/config-map: {{ include (print $.Template.BasePath "/hub-configmap.yaml") . | sha256sum }}
@@ -272,23 +287,6 @@ persistent_binderhub:
             enabled: true
         service:
           type: NodePort
-
-      auth:
-        # https://zero-to-jupyterhub.readthedocs.io/en/latest/authentication.html#openid-connect
-        type: custom
-        custom:
-          className: oauthenticator.generic.GenericOAuthenticator
-          config:
-            auto_login: true
-            userdata_method: GET
-            userdata_params: {'state': 'state'}
-            username_key: preferred_username
-        admin:
-          users:
-            - arnim.bleier@gesis.org
-            - mridul.seth@gesis.org
-        state:
-          enabled: true
 
       singleuser:
         networkPolicy:
