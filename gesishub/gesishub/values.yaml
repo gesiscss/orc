@@ -236,7 +236,7 @@ persistent_binderhub:
                     self.finish(html)
                 elif path == "/faq/":
                     self.log.warning('trying to render faq')
-                    html = self.render_template("faq.html", **{"active": "faq"})
+                    html = self.render_template("faq.html", sync=True, **{"active": "faq"})
                     self.log.warning(html)
                     self.finish(html)
                 elif path == "/":
