@@ -195,7 +195,7 @@ def backup():
     delete_day_path = join(environ['BACKUP_FOLDER'],
         str(delete_day.year),
         '{:02d}'.format(delete_day.month),
-        '{:02d}'.format(delete_day.date))
+        '{:02d}'.format(delete_day.day))
     print(delete_day_path, exists(delete_day_path))
     if exists(delete_day_path):
         shutil.rmtree(delete_day_path, ignore_errors=True)
