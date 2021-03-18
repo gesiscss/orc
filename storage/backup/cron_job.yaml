@@ -14,7 +14,7 @@ spec:
         metadata:
           name: nfs-backup
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           serviceAccount: nfs-backup
           nodeSelector:
             # because of hostPath PVs
