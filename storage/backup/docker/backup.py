@@ -28,26 +28,26 @@ def archive(backup_path, pv_dir_name, pvc_name):
 def backup():
     start_time = time()
 
-#     # create backup directories
-#     year, month, day = str(datetime.now().date()).split('-')
-#     year_path = join(environ['BACKUP_FOLDER'], year)
-#     mkdir_p(year_path)
-#     month_path = join(year_path, month)
-#     mkdir_p(month_path)
-#     day_path = join(month_path, day)
-#     mkdir(day_path)
+    # create backup directories
+    year, month, day = str(datetime.now().date()).split('-')
+    year_path = join(environ['BACKUP_FOLDER'], year)
+    mkdir_p(year_path)
+    month_path = join(year_path, month)
+    mkdir_p(month_path)
+    day_path = join(month_path, day)
+    mkdir_p(day_path)
 
-#     # setup logging
-#     logger = logging.getLogger("backup")
-#     file_handler = logging.FileHandler(join(day_path, 'backup.log'))
-#     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#     file_handler.setFormatter(formatter)
-#     # file_handler.setLevel(logging.INFO)
-#     logger.addHandler(file_handler)
-#     stream_handler = logging.StreamHandler()
-#     stream_handler.setFormatter(formatter)
-#     logger.addHandler(stream_handler)
-#     logger.setLevel(logging.INFO)
+    # setup logging
+    logger = logging.getLogger("backup")
+    file_handler = logging.FileHandler(join(day_path, 'backup.log'))
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    # file_handler.setLevel(logging.INFO)
+    logger.addHandler(file_handler)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    logger.setLevel(logging.INFO)
 
 #     # dump all production databases
 #     databases = ['gesishub', 'gesisbinder', 'gallery']
