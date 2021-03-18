@@ -191,10 +191,12 @@ def backup():
         # Rolling 21 day back up.
     delete_day = datetime.now().date() - timedelta(days=21)
     logger.info(f'## Rolling 21 day delete, deleting {delete_day.__str__()}')
+    # Path follows YYYY/MM/DD format.
     delete_day_path = join(environ['BACKUP_FOLDER'],
         str(delete_day.year),
-        str(delete_day.month),
-        str(delete_day.day))
+        '{:02d}'.format(delete_day.month),
+        '{:02d}'.format(delete_day.date))
+    print(delete_day_path, exists(delete_day_path))
     if exists(delete_day_path):
         shutil.rmtree(delete_day_path, ignore_errors=True)
         logger.info(f'### Deleted backup for {delete_day.__str__()}')
