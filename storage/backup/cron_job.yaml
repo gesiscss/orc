@@ -14,14 +14,14 @@ spec:
         metadata:
           name: nfs-backup
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           serviceAccount: nfs-backup
           nodeSelector:
             # because of hostPath PVs
             user: worker
           containers:
           - name: nfs-backup
-            image: gesiscss/nfs-backup-orc:8550f0c
+            image: gesiscss/nfs-backup-orc:280ab4f
             env:
               - name: SSHPASS
                 valueFrom:
@@ -33,7 +33,7 @@ spec:
               - name: BACKUP_FOLDER
                 value: "/backup"
               - name: MAX_WORKERS
-                value: "25"
+                value: "30"
             volumeMounts:
               - name: export-volume
                 mountPath: /export
