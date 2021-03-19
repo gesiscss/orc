@@ -22,11 +22,11 @@
   {% block binder_header %}
     <div id="header" class="text-center">
         {#      <h3>Turn a Git repo into a collection of interactive notebooks</h3>#}
-        <div id="explanation">
+        <h3 id="explanation">
             {% block persistency_explanation %}
             {{ persistency_explanation|safe }}
             {% endblock persistency_explanation %}
-        </div>
+        </h3>
     </div>
   {% endblock binder_header %}
 
