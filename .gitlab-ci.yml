@@ -6,6 +6,11 @@
 #after_script:
 #  - rm secrets
 
+# Workaround for `$` in GitLab variables
+# https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45173#note_291163703
+variables:
+  STAGING_MASTER_NODE_PASSWORD: $K8S_STAGING_MASTER_NODE_PASSWORD
+
 stages:
 #  - test
   - build
@@ -103,7 +108,7 @@ deploy_staging:
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
-      fab -H $K8S_STAGING_MASTER_NODE_IP deploy -u ladmin -p $K8S_STAGING_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
+      fab -H $K8S_STAGING_MASTER_NODE_IP deploy -u ladmin -p $STAGING_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode -s
   only:
     - staging
   tags:
