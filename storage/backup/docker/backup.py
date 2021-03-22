@@ -35,7 +35,7 @@ def backup():
     month_path = join(year_path, month)
     mkdir_p(month_path)
     day_path = join(month_path, day)
-    mkdir_p(day_path)
+    mkdir(day_path)
 
     # setup logging
     logger = logging.getLogger("backup")
@@ -189,7 +189,7 @@ spec:
                         logger.exception(pv_dir_name)
                     else:
                         success += 1
-                        logger.info(filename, pvs_left)
+                        logger.info(filename)
 
                     del jobs[job]
                     break  # to add a new job, if there is any
