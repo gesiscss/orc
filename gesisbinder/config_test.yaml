@@ -26,7 +26,7 @@ binderhub:
     BinderHub:
       debug: true
       hub_url: https://notebooks-test.gesis.org/binder/jupyter/
-      image_prefix: gesiscss/binder-test-
+      image_prefix: registry.hub.docker.com/gesiscss/binder-test-
   extraConfig:
     00-template-variables:  |
       production = False
