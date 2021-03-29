@@ -60,7 +60,8 @@ binderhub:
       use_registry: true
       build_image: jupyter/repo2docker:2021.03.0-9.g1d07b64
       build_node_selector:
-        user: worker
+        # user: worker
+        userbinder: worker
       per_repo_quota: 100
       per_repo_quota_higher: 200
       build_memory_limit: "8G"
@@ -239,7 +240,8 @@ binderhub:
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
         egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
       nodeSelector:
-        user: worker
+        # user: worker
+        userbinder: worker
       storage:
         extraVolumes:
           - name: etc-jupyter
