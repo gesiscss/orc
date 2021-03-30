@@ -35,7 +35,34 @@
   {% endblock projects_form %}
 
   {% block how_it_works %}
-  {% include "how_it_works.html" %}
+  <!-- {% include "how_it_works.html" %} -->
+  <div id="how-it-works">
+  <h3 class="text-center">How it works</h3>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-orange">1</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Build repositories like <a href="http://mybinder.org/">MyBinder.org</a></span><br>Enter your repository information in the <a href="https://mybinder.readthedocs.io/en/latest/introduction.html">Binder</a> form.
+      We build and launch your <a href="https://notebooks.gesis.org/gallery/">binder-ready</a> repository so that you can interact with it just like on <a href="https://binderhub.readthedocs.io/en/latest/known-deployments.html">any other</a> Binder deployment.
+      Once a repository has been launched it will be added to the list of your projects.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1 col-md-offset-2 point-container">
+      <span class="point point-red">2</span>
+    </div>
+    <div class="col-md-7 front">
+      <span class="front-em">Persist /projects like a <a href="https://github.com/jupyter/docker-stacks/issues/358#issuecomment-288844834">Jovyan</a> </span><br>You are not just a visitor, but a true resident on <a href="">Jupyter</a>.
+      Your projects have a persistent $HOME directory whose contents are mirrored at /projects. Use the buttons in the table to launch, stop or delete an existing project.
+      The <a href="https://notebooks.gesis.org/services/binder/v2/gh/gesiscss/data_science_image/HEAD">data science</a>  image can be your place to begin. To update a project-image use the Binder form and for files use git.
+      You can launch one project at a time and have up to 5 projects in total.
+    </div>
+  </div>
+</div>
+
   {% endblock how_it_works %}
 
   {% block extra_main_content %}
