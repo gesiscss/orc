@@ -134,7 +134,7 @@ server {
         include snippets/websocket_headers.conf;
     }
     location /launches/ {
-        proxy_pass http://gallery;
+        proxy_pass http://launches;
         #include snippets/flask.conf;
     }
     location /prod {
