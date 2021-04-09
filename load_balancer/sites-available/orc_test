@@ -36,7 +36,7 @@ upstream prometheus {
   server 194.95.75.15:30073;
 }
 
-upstream launches {
+upstream binderlaunches {
   server 194.95.75.15:30079;
 }
 
@@ -133,8 +133,8 @@ server {
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
     }
-    location /launches/ {
-        proxy_pass http://launches;
+    location /binderlaunches/ {
+        proxy_pass http://binderlaunches;
         #include snippets/flask.conf;
     }
     location /prod {
