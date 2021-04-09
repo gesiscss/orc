@@ -24,9 +24,9 @@ upstream bjhub {
   server 194.95.75.15:30182 max_fails=0;
 }
 
-upstream gallery {
-  server 194.95.75.15:30179 max_fails=0;
-}
+#upstream gallery {
+#  server 194.95.75.15:30179 max_fails=0;
+#}
 
 upstream grafana {
   server 194.95.75.15:30075;
@@ -35,6 +35,11 @@ upstream grafana {
 upstream prometheus {
   server 194.95.75.15:30073;
 }
+
+upstream launches {
+  server 194.95.75.15:30079;
+}
+
 
 
 
@@ -128,9 +133,9 @@ server {
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
     }
-    location /gallery/ {
+    location /launches/ {
         proxy_pass http://gallery;
-        include snippets/flask.conf;
+        #include snippets/flask.conf;
     }
     location /prod {
         rewrite ^/prod(.*)$ https://notebooks.gesis.org/$1 redirect;
