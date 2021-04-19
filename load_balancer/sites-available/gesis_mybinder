@@ -8,7 +8,7 @@ map $http_origin $allowed_origin {
 
 upstream gesisbinder {
   server 194.95.75.9:30081 max_fails=0;
-  server 194.95.75.12:30081 max_fails=0;
+  server 194.95.75.20:30081 max_fails=0;
 }
 
 # HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
