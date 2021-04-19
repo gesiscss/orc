@@ -33,7 +33,7 @@ spec:
               - name: BACKUP_FOLDER
                 value: "/backup"
               - name: MAX_WORKERS
-                value: "35"
+                value: "20"
             volumeMounts:
               - name: export-volume
                 mountPath: /export
