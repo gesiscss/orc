@@ -97,9 +97,9 @@ server {
      }
 
      # binder launches
-     location /binderlaunches/ {
-         proxy_pass http://binderlaunches;
-     }
+     #location /binderlaunches/ {
+     #    proxy_pass http://binderlaunches;
+     #}
 
      # Grafana UI
      location /grafana/ {
@@ -138,7 +138,7 @@ server {
          proxy_pass http://bjhub;
          include snippets/headers.conf;
          include snippets/websocket_headers.conf;
-
+    }
     # DNT policy
     #location = /.well-known/dnt-policy.txt {
     #    alias /var/www/prod/static/dnt-policy.txt;
