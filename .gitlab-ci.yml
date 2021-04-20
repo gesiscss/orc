@@ -88,7 +88,7 @@ deploy_staging:
     - |
       echo "####### Running staging deploy"
       mode="fetch_co"
-      #pip3 install fabric==2.4.*
+      pip3 install fabric==2.4.*
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
        mode+="-gallerytestconf"
       fi;
@@ -124,7 +124,7 @@ deploy_prod:
       echo "####### Running deploy"
       echo $USER
       mode="fetch_co"
-      #pip3 install fabric==2.4.*
+      pip3 install fabric==2.4.*
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config.py'; then
         mode+="-galleryconf"
       fi;
