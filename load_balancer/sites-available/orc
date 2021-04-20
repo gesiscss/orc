@@ -24,16 +24,19 @@ upstream gallery {
   # least_conn;
   # server 194.95.75.9:30079 weight=3;
   server 194.95.75.9:30079;
+  server 194.95.75.12:30079;
   server 194.95.75.20:30079;
 }
 
 upstream grafana {
   server 194.95.75.9:30075;
+  server 194.95.75.12:30075;
   server 194.95.75.20:30075;
 }
 
 upstream prometheus {
   server 194.95.75.9:30073;
+  server 194.95.75.12:30073;
   server 194.95.75.20:30073;
 }
 
@@ -43,11 +46,13 @@ upstream prometheus {
 # https://medium.com/urbanclap-engineering/nginx-debugging-and-major-issues-solved-b33eed3b8624
 upstream jhub {
   server 194.95.75.9:30080 max_fails=0;
+  server 194.95.75.12:30080 max_fails=0;
   server 194.95.75.20:30080 max_fails=0;
 }
 
 upstream bhub {
   server 194.95.75.9:30081 max_fails=0;
+  server 194.95.75.12:30081 max_fails=0;
   server 194.95.75.20:30081 max_fails=0;
 }
 
@@ -148,15 +153,15 @@ server {
     # Managing literal requests to the JupyterHub
     location / {
         ## maintenance page
-        error_page 503 /static/maintenance.html;
-        return 503;
+        #error_page 503 /static/maintenance.html;
+        #return 503;
 
 
-        #proxy_buffering off;
-        #proxy_pass http://jhub;
-        #include snippets/headers.conf;
-        #include snippets/websocket_headers.conf;
-        #proxy_set_header X-Scheme $scheme;
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        proxy_set_header X-Scheme $scheme;
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
     #    proxy_buffering off;
