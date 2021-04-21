@@ -74,7 +74,7 @@ persistent_binderhub:
           capacity: 10Gi
         cpu:
           guarantee: 0.1
-          limit: 2
+          limit: 3
         memory:
           guarantee: 1G
           limit: 32G
