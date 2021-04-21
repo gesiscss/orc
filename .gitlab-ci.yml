@@ -38,15 +38,6 @@ build_job:
   stage: build
   script:
     - |
-      # test out gitlab CI variable for finding files in multiple commits
-      echo $CI_COMMIT_SHA
-      echo $CI_COMMIT_BEFORE_SHA
-      
-      echo $CHANGED_FILES
-      if $CHANGED_FILES | egrep '.gitlab-ci.yml'; then
-        echo "works"
-      fi;
-
       echo "####### Running build"
       echo "####### Building docker images on master node"
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
@@ -76,7 +67,7 @@ build_job_staging:
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
       CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
       echo $CI_COMMIT_SHA_SHORT
-      if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
+      if $CHANGED_FILES | egrep 'storage/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
         docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
@@ -99,16 +90,16 @@ deploy_staging:
       echo "####### Running staging deploy"
       mode="fetch_co"
       pip3 install fabric==2.4.0 invoke==1.2.0
-      if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
+      if $CHANGED_FILES | egrep 'gallery/_secret_config_test.py'; then
        mode+="-gallerytestconf"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
+      if $CHANGED_FILES | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+      if $CHANGED_FILES | egrep 'gesishub/config_test.yaml|gesishub/_secret_test.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-jhubtestns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+      if $CHANGED_FILES | egrep 'gesisbinder/config_test.yaml|gesisbinder/_secret_test.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-bhubtestns"
       fi;
       echo "####### mode: $mode"
@@ -135,31 +126,31 @@ deploy_prod:
       echo $USER
       mode="fetch_co"
       pip3 install fabric==2.4.0 invoke==1.2.0
-      if git diff HEAD~ --name-only | egrep 'gallery/_secret_config.py'; then
+      if $CHANGED_FILES | egrep 'gallery/_secret_config.py'; then
         mode+="-galleryconf"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gallery/config.yaml'; then
+      if $CHANGED_FILES | egrep 'gallery/config.yaml'; then
         mode+="-galleryapp"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gallery/cron_job.yaml|gallery/_secret_config.py'; then
+      if $CHANGED_FILES | egrep 'gallery/cron_job.yaml|gallery/_secret_config.py'; then
         mode+="-galleryarchives"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+      if $CHANGED_FILES | egrep 'gesishub/config.yaml|gesishub/_secret.yaml|gesishub/gesishub/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-jhubns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/config.yaml|gesisbinder/_secret.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
+      if $CHANGED_FILES | egrep 'gesisbinder/config.yaml|gesisbinder/_secret.yaml|gesisbinder/gesisbinder/|load_balancer/static/images/|load_balancer/static/styles/|load_balancer/static/scripts/'; then
         mode+="-bhubns"
       fi;
-      if git diff HEAD~ --name-only | egrep 'gesisbinder/bot/'; then
+      if $CHANGED_FILES | egrep 'gesisbinder/bot/'; then
         mode+="-bhubupgrade"
       fi;
-      if git diff HEAD~ --name-only | egrep 'storage/backup/cron_job.yaml|storage/backup/_secret.yaml|storage/backup/rbac.yaml'; then
+      if $CHANGED_FILES | egrep 'storage/backup/cron_job.yaml|storage/backup/_secret.yaml|storage/backup/rbac.yaml'; then
         mode+="-backupjob"
       fi;
-      if git diff HEAD~ --name-only | egrep 'monitoring/prometheus_config.yaml'; then
+      if $CHANGED_FILES | egrep 'monitoring/prometheus_config.yaml'; then
         mode+="-prometheus"
       fi;
-      if git diff HEAD~ --name-only | egrep 'monitoring/_secret_grafana.yaml|monitoring/grafana_config.yaml'; then
+      if $CHANGED_FILES | egrep 'monitoring/_secret_grafana.yaml|monitoring/grafana_config.yaml'; then
         mode+="-grafana"
       fi;
       echo "####### mode: $mode"
@@ -183,12 +174,12 @@ deploy_nginx:
     - |
       mode="fetch_co"
       # egrep: -v, --invert-match select non-matching lines
-      if git diff HEAD~ --name-only | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
+      if $CHANGED_FILES | egrep -v load_balancer/sites-available/orc_test | egrep 'load_balancer/sites-available|load_balancer/snippets'; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-config"
         mode+="-testnginx"
       fi;
-      if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
+      if $CHANGED_FILES | egrep 'load_balancer/static'; then
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
         mode+="-static"
       fi;
@@ -209,13 +200,13 @@ deploy_nginx_staging:
     - |
       mode="fetch_co"
       # egrep: -v, --invert-match select non-matching lines
-      git diff HEAD~ --name-only
-      if git diff HEAD~ --name-only | egrep load_balancer/sites-available/orc_test; then
+      $CHANGED_FILES
+      if $CHANGED_FILES | egrep load_balancer/sites-available/orc_test; then
         echo "####### Reloading nginx ($CI_COMMIT_REF_NAME)"
         mode+="-stagingconfig"
         mode+="-testnginx"
       fi;
-      if git diff HEAD~ --name-only | egrep 'load_balancer/static'; then
+      if $CHANGED_FILES | egrep 'load_balancer/static'; then
         echo "####### Updating static files ($CI_COMMIT_REF_NAME)"
         mode+="-static"
       fi;
