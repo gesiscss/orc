@@ -61,9 +61,9 @@ upstream bjhub {
   server 194.95.75.12:30082 max_fails=0;
 }
 
-#upstream binderlaunches {
-#  server 194.95.75.12:31000 max_fails=0;
-#}
+upstream binderlaunches {
+  server 194.95.75.12:31000 max_fails=0;
+}
 
 # HTTP server to redirect notebooks.gesis.org 80 traffic to SSL/HTTPS
 server {
@@ -102,9 +102,9 @@ server {
      }
 
      # binder launches
-     #location /binderlaunches/ {
-     #    proxy_pass http://binderlaunches;
-     #}
+     location /binderlaunches/ {
+         proxy_pass http://binderlaunches;
+     }
 
      # Grafana UI
      location /grafana/ {
