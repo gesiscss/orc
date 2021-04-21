@@ -10,7 +10,6 @@
 # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45173#note_291163703
 variables:
   STAGING_MASTER_NODE_PASSWORD: $K8S_STAGING_MASTER_NODE_PASSWORD
-  CHANGED_FILES: git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA
 
 stages:
 #  - test
@@ -41,15 +40,14 @@ build_job:
       # test out gitlab CI variable for finding files in multiple commits
       echo $CI_COMMIT_SHA
       echo $CI_COMMIT_BEFORE_SHA
-      git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA
+      CHANGED_FILES="git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA"
       echo $CHANGED_FILES
-      
       echo "####### Running build"
       echo "####### Building docker images on master node"
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
       CI_COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
       echo $CI_COMMIT_SHA_SHORT
-      if git diff HEAD~ --name-only | egrep 'storage/backup/docker/'; then
+      if $CHANGED_FILES | egrep 'storage/backup/docker/'; then
         echo "####### gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT"
         docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
         docker build -t gesiscss/nfs-backup-orc:$CI_COMMIT_SHA_SHORT storage/backup/docker/.
