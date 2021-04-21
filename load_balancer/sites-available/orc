@@ -144,6 +144,7 @@ server {
          include snippets/headers.conf;
          include snippets/websocket_headers.conf;
     }
+
     # DNT policy
     #location = /.well-known/dnt-policy.txt {
     #    alias /var/www/prod/static/dnt-policy.txt;
