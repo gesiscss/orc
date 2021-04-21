@@ -10,6 +10,7 @@
 # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45173#note_291163703
 variables:
   STAGING_MASTER_NODE_PASSWORD: $K8S_STAGING_MASTER_NODE_PASSWORD
+  CHANGED_FILES: "git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA"
 
 stages:
 #  - test
@@ -40,12 +41,12 @@ build_job:
       # test out gitlab CI variable for finding files in multiple commits
       echo $CI_COMMIT_SHA
       echo $CI_COMMIT_BEFORE_SHA
-      CHANGED_FILES="git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA"
+      
       echo $CHANGED_FILES
       if $CHANGED_FILES | egrep '.gitlab-ci.yml'; then
         echo "works"
       fi;
-      
+
       echo "####### Running build"
       echo "####### Building docker images on master node"
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
