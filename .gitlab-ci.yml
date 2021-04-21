@@ -37,6 +37,11 @@ build_job:
   stage: build
   script:
     - |
+      # test out gitlab CI variable for finding files in multiple commits
+      echo $CI_COMMIT_SHA
+      echo $CI_COMMIT_BEFORE_SHA
+      git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA
+
       echo "####### Running build"
       echo "####### Building docker images on master node"
       #CI_COMMIT_SHA_8=${CI_COMMIT_SHA:0:8}
