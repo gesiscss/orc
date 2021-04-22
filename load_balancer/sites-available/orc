@@ -95,56 +95,6 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
-    # binder gallery
-     location /gallery/ {
-         proxy_pass http://gallery;
-         include snippets/flask.conf;
-     }
-
-     # binder launches
-     location /binderlaunches/ {
-         proxy_pass http://binderlaunches;
-     }
-
-     # Grafana UI
-     location /grafana/ {
-         proxy_pass http://grafana/;
-         include snippets/headers.conf;
-     }
-     # Prometheus
-     location /prometheus/ {
-         auth_basic "Administrator's Area";
-         auth_basic_user_file /etc/letsencrypt/.htpasswd_prometheus;
-         # https://github.com/prometheus/prometheus/issues/2193
-         proxy_set_header Accept-Encoding "";
-         proxy_pass http://prometheus/;
-         include snippets/headers.conf;
-
-         #sub_filter_types text/html;
-         sub_filter_once off;
-         sub_filter '="/' '="/prometheus/';
-         sub_filter 'var PATH_PREFIX = "";' 'var PATH_PREFIX = "/prometheus";';
-         rewrite ^/prometheus/?$ /prometheus/graph redirect;
-         rewrite ^/prometheus/(.*)$ /$1 break;
-     }
-
-     # Managing literal requests to the BinderHub
-     location /binder/ {
-         # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
-         # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
-         proxy_buffering off;
-         proxy_pass http://bhub;
-         include snippets/headers.conf;
-         proxy_set_header X-Scheme $scheme;
-     }
-
-     # For JupyterHub of binder
-     location /binder/jupyter/ {
-         proxy_pass http://bjhub;
-         include snippets/headers.conf;
-         include snippets/websocket_headers.conf;
-    }
-
     # DNT policy
     #location = /.well-known/dnt-policy.txt {
     #    alias /var/www/prod/static/dnt-policy.txt;
@@ -154,15 +104,9 @@ server {
     # Managing literal requests to the JupyterHub
     location / {
         ## maintenance page
-        #error_page 503 /static/maintenance.html;
-        #return 503;
+        error_page 503 /static/maintenance.html;
+        return 503;
 
-
-        proxy_buffering off;
-        proxy_pass http://jhub;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        proxy_set_header X-Scheme $scheme;
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
     #    proxy_buffering off;
