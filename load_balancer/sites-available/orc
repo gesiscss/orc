@@ -47,13 +47,11 @@ upstream prometheus {
 upstream jhub {
   server 194.95.75.9:30080 max_fails=0;
   server 194.95.75.12:30080 max_fails=0;
-  server 194.95.75.20:30080 max_fails=0;
 }
 
 upstream bhub {
   server 194.95.75.9:30081 max_fails=0;
   server 194.95.75.12:30081 max_fails=0;
-  server 194.95.75.20:30081 max_fails=0;
 }
 
 upstream bjhub {
@@ -104,8 +102,14 @@ server {
     # Managing literal requests to the JupyterHub
     location / {
         ## maintenance page
-        error_page 503 /static/maintenance.html;
-        return 503;
+        #error_page 503 /static/maintenance.html;
+        #return 503;
+
+        proxy_buffering off;
+        proxy_pass http://jhub;
+        include snippets/headers.conf;
+        include snippets/websocket_headers.conf;
+        proxy_set_header X-Scheme $scheme;
 
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
