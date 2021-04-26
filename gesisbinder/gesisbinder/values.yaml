@@ -55,13 +55,13 @@ binderhub:
         - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
         - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
     BinderHub:
-      pod_quota: 30
+      pod_quota: 0
       base_url: /binder/
       use_registry: true
       build_image: jupyter/repo2docker:2021.03.0-15.g73ab48a
       build_node_selector:
-        # user: worker
-        userbinder: worker
+        user: worker
+        # userbinder: worker
       per_repo_quota: 100
       per_repo_quota_higher: 200
       build_memory_limit: "8G"
@@ -240,8 +240,8 @@ binderhub:
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
         egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
       nodeSelector:
-        # user: worker
-        userbinder: worker
+        user: worker
+        # userbinder: worker
       storage:
         extraVolumes:
           - name: etc-jupyter

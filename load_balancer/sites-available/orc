@@ -25,19 +25,16 @@ upstream gallery {
   # server 194.95.75.9:30079 weight=3;
   server 194.95.75.9:30079;
   server 194.95.75.12:30079;
-  server 194.95.75.20:30079;
 }
 
 upstream grafana {
   server 194.95.75.9:30075;
   server 194.95.75.12:30075;
-  server 194.95.75.20:30075;
 }
 
 upstream prometheus {
   server 194.95.75.9:30073;
   server 194.95.75.12:30073;
-  server 194.95.75.20:30073;
 }
 
 # max_fails=0 => health checks are disabled for this server
@@ -59,9 +56,9 @@ upstream bjhub {
   server 194.95.75.12:30082 max_fails=0;
 }
 
-upstream binderlaunches {
-  server 194.95.75.12:31000 max_fails=0;
-}
+#upstream binderlaunches {
+#  server 194.95.75.12:31000 max_fails=0;
+#}
 
 # HTTP server to redirect notebooks.gesis.org 80 traffic to SSL/HTTPS
 server {
@@ -93,6 +90,56 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
+    # binder gallery
+    # location /gallery/ {
+    #     proxy_pass http://gallery;
+    #     include snippets/flask.conf;
+    # }
+
+     # binder launches
+     #location /binderlaunches/ {
+     #    proxy_pass http://binderlaunches;
+     #}
+
+     # Grafana UI
+     location /grafana/ {
+         proxy_pass http://grafana/;
+         include snippets/headers.conf;
+     }
+     # Prometheus
+     location /prometheus/ {
+         auth_basic "Administrator's Area";
+         auth_basic_user_file /etc/letsencrypt/.htpasswd_prometheus;
+         # https://github.com/prometheus/prometheus/issues/2193
+         proxy_set_header Accept-Encoding "";
+         proxy_pass http://prometheus/;
+         include snippets/headers.conf;
+
+         #sub_filter_types text/html;
+         sub_filter_once off;
+         sub_filter '="/' '="/prometheus/';
+         sub_filter 'var PATH_PREFIX = "";' 'var PATH_PREFIX = "/prometheus";';
+         rewrite ^/prometheus/?$ /prometheus/graph redirect;
+         rewrite ^/prometheus/(.*)$ /$1 break;
+     }
+
+     # Managing literal requests to the BinderHub
+     location /binder/ {
+         # http://www.tornadoweb.org/en/stable/guide/running.html#running-behind-a-load-balancer
+         # https://serverfault.com/questions/263022/http-streaming-server-behind-nginx
+         proxy_buffering off;
+         proxy_pass http://bhub;
+         include snippets/headers.conf;
+         proxy_set_header X-Scheme $scheme;
+     }
+
+     # For JupyterHub of binder
+     location /binder/jupyter/ {
+         proxy_pass http://bjhub;
+         include snippets/headers.conf;
+         include snippets/websocket_headers.conf;
+    }
+
     # DNT policy
     #location = /.well-known/dnt-policy.txt {
     #    alias /var/www/prod/static/dnt-policy.txt;
@@ -105,12 +152,12 @@ server {
         #error_page 503 /static/maintenance.html;
         #return 503;
 
+
         proxy_buffering off;
         proxy_pass http://jhub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
         proxy_set_header X-Scheme $scheme;
-
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
     #    proxy_buffering off;
