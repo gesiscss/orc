@@ -89,11 +89,11 @@
                 "Answer": "The service is free for social scientists. In the future GESIS may include a premium offer with additional features.",
                 "ID": "2"
               },
-              // "Question 3": {
-              //   "Question": "What languages/environments can be on the service? Can I use my preferred R, Julia or Python environment?",
-              //   "Answer": "You can select any language/environment available from our gallery of more than 5000 <a href='/gallery/' target='_blank'>binder-ready projects</a>. The gallery contains projects from the <a href='https://archive.analytics.mybinder.org' target='_blank'>MyBinder.org Events Archive</a>.",
-              //   "ID": "3"
-              // },
+              "Question 3": {
+                "Question": "What languages/environments can be on the service? Can I use my preferred R, Julia or Python environment?",
+                "Answer": "You can select any language/environment available from our gallery of more than 5000 <a href='/gallery/' target='_blank'>binder-ready projects</a>. The gallery contains projects from the <a href='https://archive.analytics.mybinder.org' target='_blank'>MyBinder.org Events Archive</a>.",
+                "ID": "3"
+              },
               "Question 4": {
                 "Question": "What are the service's restrictions?",
                 "Answer": "For the anonymous use of via Binder, the service has a limit of: <br> <ul><li>4 GB memory</li><li>2 CPU cores</li><li>10 minutes inactivity timeout</li></ul> For authenticated users, the service has a limit of: <br> <ul><li>32 GB memory</li><li>2 CPU cores</li><li>40 minutes inactivity timeout</li><li>a maximum of 10 GB of persistent disk space</li></ul> Usage rights are limited to academic activities and governed by our <a href='/terms_of_use/' target='_blank'>Terms of Use</a>.",
