@@ -100,16 +100,13 @@ binderhub:
           "imprint_url": "https://www.gesis.org/en/institute/imprint/",
           "data_protection_url": "https://www.gesis.org/en/institute/data-protection/",
           "gesis_url": "https://www.gesis.org/en/home/",
-          "status_url": "http://gesisnotebooks.github.io/status/",
+          "status_url": "https://gesisnotebooks.betteruptime.com",
           "gallery_url": "/gallery/",
           "faq_url": "/faq/",
-
           "active": "binder",
           "static_nginx": "/static/",
-
           "static_version": uuid.uuid4().hex,
           "user": None,
-
           "production": production,
       }
       c.BinderHub.template_variables.update(template_vars)
