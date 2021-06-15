@@ -5,10 +5,11 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
-  successfulJobsHistoryLimit: 5
-  failedJobsHistoryLimit: 70
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 10
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 300
       template:
         metadata:
           name: update-gesisbinder
