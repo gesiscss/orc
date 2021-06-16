@@ -14,7 +14,7 @@ spec:
         metadata:
           name: update-gesisbinder
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           containers:
           - name: update-gesisbinder
             image: python:3.7.4-stretch
