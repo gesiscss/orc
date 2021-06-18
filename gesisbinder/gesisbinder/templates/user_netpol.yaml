@@ -62,7 +62,7 @@ spec:
         - port: 16286 # Wolfram Engine on-demand licensing
       to:
       - ipBlock:
-          cidr: 10.6.13.139/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
+          cidr: 10.6.13.55/32  # mongodb - https://github.com/gesiscss/btw17_sample_scripts
       - ipBlock:
           cidr: 0.0.0.0/0  # represents all possible IP addresses
           # we changed the Pod network CIDR to 10.244.0.0/16 for calico
