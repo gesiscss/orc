@@ -1,8 +1,7 @@
 projectName: gesis-binder-prod
 
 binderhub:
-  debug:
-    enabled: true
+  debug: true
   resources:
     requests:
       cpu: "0.25"
