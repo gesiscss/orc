@@ -1,6 +1,8 @@
 projectName: gesis-binder-prod
 
 binderhub:
+  debug:
+    enabled: true
   resources:
     requests:
       cpu: "0.25"
@@ -79,6 +81,8 @@ binderhub:
     nodePort: 30081
 
   jupyterhub:
+    debug:
+      enabled: true
     hub:
       resources:
         requests:
