@@ -73,6 +73,7 @@ binderhub:
     # https://github.com/jupyterhub/binderhub/blob/cd25b41ac60a369d44203aaeb0fa0e0925888ef5/helm-chart/images/binderhub/binderhub_config.py#L83-L84
     #03-build-namespace: |
     #  c.BinderHub.build_namespace = "bhub-ns"
+    c.BinderHub.debug = True
 
   service:
     annotations:
