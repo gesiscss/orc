@@ -17,7 +17,7 @@ GL_BOT_EMAIL = os.environ['GL_BOT_EMAIL'].strip()
 GL_BOT_TOKEN = os.environ['GL_BOT_TOKEN'].strip()
 
 # https://docs.gitlab.com/ee/api/#personal-access-tokens
-GL_API_AUTHORIZATION_HEADER = {"Private-Token": GL_BOT_TOKEN}
+GL_API_AUTHORIZATION_HEADER = {"PRIVATE-TOKEN": GL_BOT_TOKEN}
 GL_API_URL = f"https://git.gesis.org/api/v4/"
 GL_ORG_NAME = os.environ.get("GL_ORG_NAME", "ilcm")
 GL_REPO_NAME = os.environ.get("GL_REPO_NAME", "orc")
@@ -169,7 +169,8 @@ class Bot:
 
         subprocess.check_call(['git', 'config', 'user.name', GL_BOT_NAME])
         subprocess.check_call(['git', 'config', 'user.email', GL_BOT_EMAIL])
-        subprocess.check_call(['git', 'commit', '-m', commit_message])
+        # subprocess.check_call(['git', 'commit', '-m', commit_message])
+        logging.info(subprocess.check_output(['git', 'commit', '-m', commit_message]))
         if self.check_branch_exists():
             # there is an open PR for this repo, so update it
             subprocess.check_call(['git', 'push', '-f', GL_REPO_URL, self.branch_name])
