@@ -170,7 +170,10 @@ class Bot:
         subprocess.check_call(['git', 'config', 'user.name', GL_BOT_NAME])
         subprocess.check_call(['git', 'config', 'user.email', GL_BOT_EMAIL])
         # subprocess.check_call(['git', 'commit', '-m', commit_message])
-        logging.info(subprocess.check_output(['git', 'commit', '-m', commit_message]))
+        try:
+            out = subprocess.check_output(['git', 'commit', '-m', commit_message])
+        except subprocess.CalledProcessError as e:
+            logging.info("Exception on process, rc=", e.returncode, "output=", e.output)
         if self.check_branch_exists():
             # there is an open PR for this repo, so update it
             subprocess.check_call(['git', 'push', '-f', GL_REPO_URL, self.branch_name])
