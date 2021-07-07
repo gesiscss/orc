@@ -300,7 +300,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_live}/helm-chart/binderhub/Chart.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_live}/helm-chart/binderhub/requirements.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         logging.info(requirements, url_binderhub_requirements)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
