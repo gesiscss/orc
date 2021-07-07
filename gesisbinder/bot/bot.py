@@ -300,7 +300,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_live}/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_live}/helm-chart/binderhub/Chart.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_live = jupyterhub_dep['version'].strip()
@@ -332,7 +332,7 @@ class Bot:
         """
         Get the live JupyterHub SHA from BinderHub repo
         """
-        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_latest}/helm-chart/binderhub/requirements.yaml"
+        url_binderhub_requirements = f"{BHUB_RAW_URL}{self.bhub_latest}/helm-chart/binderhub/Chart.yaml"
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements['dependencies'] if ii['name'] == 'jupyterhub'][0]
         jhub_latest = jupyterhub_dep['version'].strip()
