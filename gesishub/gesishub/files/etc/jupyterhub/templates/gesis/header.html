@@ -51,6 +51,14 @@
                         </li>
                         {% elif active == 'hub' and user %}
                         <li>
+                            <a href="#">
+                                <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon glyphicon-user"></span>
+                              {{ user.name }}
+                          </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ logout_url }}">
                                 <span class="top-menu-item hidden-xs">
                               <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-out"></span>
