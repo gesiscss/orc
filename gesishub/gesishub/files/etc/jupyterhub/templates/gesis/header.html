@@ -67,7 +67,7 @@
                             </a>
                         </li>
                         {% endif %}
-                        {% if active == 'hub' and user and spawner.active %}
+                        {% if active == 'hub' and user and user.spawner.active %}
                         <li>
                             <a href="{{ gesishub_url }}/user/{{ user.name }}">
                                 <span class="top-menu-item hidden-xs">
