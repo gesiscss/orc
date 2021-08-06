@@ -67,6 +67,16 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% if active == 'hub' and user and spawner.active %}
+                        <li>
+                            <a href="{{ gesishub_url }}/user/{{ user.name }}">
+                                <span class="top-menu-item hidden-xs">
+                              <span aria-hidden="true" class="glyphicon glyphicon glyphicon-log-out"></span>
+                              My Server
+                          </span>
+                            </a>
+                        </li>
+                        {% endif %}
                         <li>
                             <a href="{{ about_url }}">
                                 <span class="top-menu-item hidden-xs">
