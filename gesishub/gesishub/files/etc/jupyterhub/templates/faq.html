@@ -40,12 +40,12 @@
       {% for questions in section['Section']['Questions'] %}
         {% for question in questions.items() %}
           <div class="panel panel-default questions-panel-default">
-              <div id="{{question[1].get('ID')}}" class="panel-heading topic-question noselect">
+              <div id="{{'q' ~ question[1].get('ID')}}" class="panel-heading topic-question noselect">
                   <h3 class="panel-title noselect">
                       <a class="accordion-toggle noselect" data-toggle="collapse" data-parent="#accordion{{question[1].get('ID')}}" href="#{{question[1].get('ID')}}"><strong>{{question[1].get('Question')}}</strong></a>
                   </h3>
               </div>
-              <div class="panel-collapse collapse">
+              <div id="{{question[1].get('ID')}}" class="panel-collapse collapse">
                   <div class="panel-body questions-panel-body">
                     <p>
                       {{question[1].get('Answer')|safe}}
