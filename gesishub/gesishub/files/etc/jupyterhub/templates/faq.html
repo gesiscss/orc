@@ -65,6 +65,7 @@
 {% block extra_js %}
   <script type="text/javascript">
    var url = document.location.toString();
+   console.log(url);
    if ( url.match('#q') ) {
     $('#'+url.split('#q')[1]).collapse('show');
    };
