@@ -62,7 +62,9 @@
 </div>
 {% endblock main %}
 
-{% block extra_js %}
+{% block script %}
+{{ super() }}
+
   <script type="text/javascript">
     function auto_show() {
       var url = document.location.toString();
@@ -82,4 +84,4 @@
    //   $(this).siblings('.panel-heading').removeClass('active');
    // });
   </script>
-{% endblock extra_js %}
+{% endblock script %}
