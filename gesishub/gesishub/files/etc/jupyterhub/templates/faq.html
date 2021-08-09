@@ -40,7 +40,7 @@
       {% for questions in section['Section']['Questions'] %}
         {% for question in questions.items() %}
           <div class="panel panel-default questions-panel-default">
-              <div class="panel-heading topic-question noselect">
+              <div id="{{'q' ~ question[1].get('ID')}}" class="panel-heading topic-question noselect">
                   <h3 class="panel-title noselect">
                       <a class="accordion-toggle noselect" data-toggle="collapse" data-parent="#accordion{{question[1].get('ID')}}" href="#{{question[1].get('ID')}}"><strong>{{question[1].get('Question')}}</strong></a>
                   </h3>
@@ -62,14 +62,12 @@
 </div>
 {% endblock main %}
 
-{% block extra_js %}
+{% block script %}
+{{ super() }}
   <script type="text/javascript">
-    $('.panel-collapse').on('show.bs.collapse', function () {
-     $(this).siblings('.panel-heading').addClass('active');
-   });
-
-   $('.panel-collapse').on('hide.bs.collapse', function () {
-     $(this).siblings('.panel-heading').removeClass('active');
-   });
+    var url = document.location.toString();
+    if ( url.match('#q') ) {
+      $('#'+url.split('#q')[1]).collapse('show');
+    };
   </script>
-{% endblock extra_js %}
+{% endblock script %}
