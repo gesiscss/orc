@@ -71,5 +71,9 @@
    $('.panel-collapse').on('hide.bs.collapse', function () {
      $(this).siblings('.panel-heading').removeClass('active');
    });
+   var url = document.location.toString();
+   if ( url.match('#') ) {
+    $('#'+url.split('#')[1]).collapse('show');
+   };
   </script>
 {% endblock extra_js %}
