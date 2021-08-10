@@ -20,7 +20,7 @@ def nginx(c, user, password, branch_name, ref='master', mode=''):
         c.sudo("cp -R {}static /var/www/{}/".format(nginx_folder, branch_name), password=password)
     if "config" in mode:
         c.run('echo "######## Copying config files"')
-        c.sudo("rm /etc/nginx/snippets/*", password=password)
+        c.sudo("rm -r /etc/nginx/snippets/*", password=password)
         c.sudo("cp -R {}snippets/* /etc/nginx/snippets/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/default /etc/nginx/sites-available/".format(nginx_folder), password=password)
         c.sudo("cp {}sites-available/gesis_mybinder /etc/nginx/sites-available/".format(nginx_folder), password=password)
