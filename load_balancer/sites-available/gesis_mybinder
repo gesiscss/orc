@@ -36,7 +36,6 @@ server {
     #include snippets/optimization.conf;
     access_log off;  # turn off access log
 
-
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location / {
