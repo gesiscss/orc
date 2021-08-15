@@ -47,6 +47,9 @@ persistent_binderhub:
         banned_specs:
           - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
           - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
+          - ^(git|https?)%3A%2F%2Fnotabug.org%2FulslcuRux3Y%2F.*
+          - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
+
       BinderHub:
         build_image: jupyter/repo2docker:2021.03.0-70.g43891a6
         build_node_selector:
