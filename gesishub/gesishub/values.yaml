@@ -189,7 +189,7 @@ persistent_binderhub:
           - name: persistent-bhub-config
             # mount to where jupyterhub_config.py is,
             # we import the spawner class from persistent_bhub_config inside jupyterhub_config.py (hub.extraConfig)
-            mountPath: /etc/jupyterhub/persistent_bhub_config.py
+            mountPath: /usr/local/etc/jupyterhub/persistent_bhub_config.py
             subPath: persistent_bhub_config.py
           - name: hub-templates
             mountPath: /etc/jupyterhub/orc_templates
