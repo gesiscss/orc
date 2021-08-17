@@ -76,13 +76,13 @@ persistent_binderhub:
       - name: binder-templates-gesis
         mountPath: /etc/binderhub/templates/gesis
       - name: binder-extra-config-json
-        mountPath: /etc/binderhub/extra_config.json
+        mountPath: /usr/local/etc/binderhub/extra_config.json
         subPath: extra_config.json
 
     extraConfig:
       01-template-variables:  |
         import json
-        with open('/etc/binderhub/extra_config.json') as extra_config_file:
+        with open('/usr/local/etc/binderhub/extra_config.json') as extra_config_file:
             template_vars = json.load(extra_config_file)["template_vars"]
         import uuid
         template_vars.update({'user': None,
@@ -195,10 +195,10 @@ persistent_binderhub:
             mountPath: /etc/jupyterhub/orc_templates
           - name: hub-templates-gesis
             mountPath: /etc/jupyterhub/orc_templates/gesis
-          - mountPath: /etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
+          - mountPath: /usr/local/etc/jupyterhub/extra_config.py  # mount where jupyterhub_config.py is, we import it there.
             subPath: extra_config.py
             name: hub-extra-config
-          - mountPath: /etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
+          - mountPath: /usr/local/etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
             subPath: extra_config.json
             name: hub-extra-config-json
         templatePaths:
