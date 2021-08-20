@@ -253,6 +253,7 @@ class Bot:
                 logging.info(f"{repo}:{self.commit_info[repo]['live']}-->{self.commit_info[repo]['latest']}")
                 self.set_gitlab_project_id(GL_REPO_NAME)
                 existing_pr = self.check_existing_prs(repo)
+                logging.info(f'existing_pr: {existing_pr}')
                 if existing_pr is None:
                     # there is a PR with same update, it is not merged yet
                     continue
@@ -265,8 +266,9 @@ class Bot:
                 subprocess.check_call(['git', 'checkout', '-b', self.branch_name])
 
                 files_changed = self.edit_files(repo)
-                self.add_commit_push(files_changed, repo)
+                logging.info(f'files_changed: {files_changed}')
 
+                self.add_commit_push(files_changed, repo)
                 os.chdir('..')
                 shutil.rmtree(GL_REPO_NAME)
 
