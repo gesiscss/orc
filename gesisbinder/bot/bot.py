@@ -9,6 +9,7 @@ import os
 import shutil
 import time
 import logging
+import re
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
@@ -109,16 +110,21 @@ class Bot:
         """
         Update the SHA to latest for r2d
         """
+        # https://github.com/henchbot/mybinder.org-upgrades/pull/12
+        pattern_base = r'([^\s]+/)?jupyter(hub)?/repo2docker:'
         fnames = ['gesisbinder/gesisbinder/values.yaml',
                   'gesishub/gesishub/values.yaml']
         for fname in fnames:
             with open(fname, 'r', encoding='utf8') as f:
                 values_yaml = f.read()
 
-            updated_yaml = values_yaml.replace(
-                "jupyter/repo2docker:{}".format(self.commit_info[repo]['live']),
-                "jupyter/repo2docker:{}".format(self.commit_info[repo]['latest'])
-            )
+            # updated_yaml = values_yaml.replace(
+            #     "jupyter/repo2docker:{}".format(self.commit_info[repo]['live']),
+            #     "jupyter/repo2docker:{}".format(self.commit_info[repo]['latest'])
+            # )
+            updated_yaml = re.sub(
+                pattern_base + re.escape(self.commit_info[upgrade]['live']),
+                self.commit_info[upgrade]['repo_latest'], values_yaml)
 
             with open(fname, 'w', encoding='utf8') as f:
                 f.write(updated_yaml)
