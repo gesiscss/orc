@@ -51,7 +51,7 @@ persistent_binderhub:
           - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
 
       BinderHub:
-        build_image: jupyter/repo2docker:2021.08.0-2.g6e2a6af
+        build_image: quay.io/jupyterhub/repo2docker:2021.08.0-2.g6e2a6af
         build_node_selector:
           user: worker
         per_repo_quota: 100
