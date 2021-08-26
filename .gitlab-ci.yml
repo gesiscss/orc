@@ -87,6 +87,12 @@ deploy_staging:
   stage: deploy
   script:
     - |
+      echo "####### First sync github"
+      URL="https://gesisnotebooks:"
+      URL+=$GH_TOKEN
+      URL+="@github.com/gesiscss/orc"
+      git push $URL $CI_COMMIT_SHA:staging
+
       echo "####### Running staging deploy"
       mode="fetch_co"
       pip3 install fabric==2.4.0 invoke==1.2.0
@@ -122,6 +128,12 @@ deploy_prod:
 #    untracked: true
   script:
     - |
+      echo "####### First sync github"
+      URL="https://gesisnotebooks:"
+      URL+=$GH_TOKEN
+      URL+="@github.com/gesiscss/orc"
+      git push $URL $CI_COMMIT_SHA:master
+
       echo "####### Running deploy"
       echo $USER
       mode="fetch_co"
