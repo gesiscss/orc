@@ -56,6 +56,7 @@ binderhub:
         - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
         - ^(git|https?)%3A%2F%2Fnotabug.org%2FulslcuRux3Y%2F.*
         - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
+        - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
     BinderHub:
       pod_quota: 40
       base_url: /binder/
