@@ -325,7 +325,7 @@ class Bot:
         helm_chart = load(helm_chart.text)
         r2d_latest = helm_chart['binderhub']['config']['BinderHub']['build_image'].split(':')[-1]
         self.commit_info['repo2docker']['latest'] = r2d_latest
-        self.commit_info['repo2docker']['repo_latest'] = f'quay.io/jupyterhub/repo2docker:{r2d_latest_tag}'
+        self.commit_info['repo2docker']['repo_latest'] = f'quay.io/jupyterhub/repo2docker:{r2d_latest}'
 
     def get_binderhub_latest(self):
         """
