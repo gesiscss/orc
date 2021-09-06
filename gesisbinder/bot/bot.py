@@ -123,8 +123,8 @@ class Bot:
             #     "jupyter/repo2docker:{}".format(self.commit_info[repo]['latest'])
             # )
             updated_yaml = re.sub(
-                pattern_base + re.escape(self.commit_info[upgrade]['live']),
-                self.commit_info[upgrade]['repo_latest'], values_yaml)
+                pattern_base + re.escape(self.commit_info[repo]['live']),
+                self.commit_info[repo]['latest'], values_yaml)
 
             with open(fname, 'w', encoding='utf8') as f:
                 f.write(updated_yaml)
