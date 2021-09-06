@@ -124,7 +124,7 @@ class Bot:
             # )
             updated_yaml = re.sub(
                 pattern_base + re.escape(self.commit_info[repo]['live']),
-                self.commit_info[repo]['latest'], values_yaml)
+                self.commit_info[repo]['repo_latest'], values_yaml)
 
             with open(fname, 'w', encoding='utf8') as f:
                 f.write(updated_yaml)
@@ -325,6 +325,7 @@ class Bot:
         helm_chart = load(helm_chart.text)
         r2d_latest = helm_chart['binderhub']['config']['BinderHub']['build_image'].split(':')[-1]
         self.commit_info['repo2docker']['latest'] = r2d_latest
+        self.commit_info['repo2docker']['repo_latest'] = f'quay.io/jupyterhub/repo2docker:{r2d_latest_tag}'
 
     def get_binderhub_latest(self):
         """
