@@ -14,7 +14,7 @@ persistent_binderhub:
       BinderHub:
         debug: true
         hub_url: https://notebooks-test.gesis.org
-        image_prefix: gesiscss/binder-staging-
+        image_prefix: gesiscss/binder-test-r2d-g5b5b759-
     extraConfig:
       00-template-variables:  |
         production = False

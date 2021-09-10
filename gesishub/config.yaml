@@ -13,7 +13,7 @@ persistent_binderhub:
     config:
       BinderHub:
         hub_url: https://notebooks.gesis.org
-        image_prefix: gesiscss/binder-
+        image_prefix: gesiscss/binder-r2d-g5b5b759-
     extraConfig:
       00-template-variables:  |
         production = True
