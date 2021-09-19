@@ -74,6 +74,7 @@ binderhub:
       # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
+      cors_allow_origin: '*'
 
   podAnnotations:
     rollme: "rollme"
@@ -167,9 +168,6 @@ binderhub:
   service:
     type: NodePort
 
-  cors: &cors
-    allowOrigin: '*'
-
   dind:
     enabled: false
 
@@ -177,8 +175,6 @@ binderhub:
     enabled: false
 
   jupyterhub:
-    custom:
-      cors: *cors
     cull:
       # cull every 11 minutes so it is out of phase
       # with the proxy check-routes interval of five minutes
@@ -204,6 +200,9 @@ binderhub:
       db:
         type: postgres
       authenticatePrometheus: false
+      config:
+        BinderSpawner:
+          cors_allow_origin: '*'
       extraConfig:
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
