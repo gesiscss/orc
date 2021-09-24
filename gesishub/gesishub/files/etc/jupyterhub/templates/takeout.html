@@ -5,15 +5,15 @@
 <div id="main-container" class="container">
 	<p class="h2">
 	Hello {{ user.name }}!
-	{{ takeout_url }}
 	</p>
 	<p class="lead">
 		You can download a tarball (.tar.xz) of all of your data on GESIS Notebooks. This can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data.
 	</p>
 	<button onclick="document.getElementById('link').click()" class="btn btn-lg btn-primary">Takeout Data</button>
-	<a id="link" href="https://github.com/binder-examples/requirements/archive/refs/heads/master.zip" download hidden></a>
+	<a id="link" href="https://github.com/binder-examples/requirements/archive/refs/heads/master.zip/{{ takeout_url }}" download hidden></a>
+	<br>
 	<p class="lead">
-		If you are on linux/MacOS you can untar the downloaded file with: <mark>tar -xzvf test.tar.xz</mark>
+		If you are on linux/MacOS you can untar the downloaded file with: <mark>tar -xzvf test.tar.xz</mark>. <br>
 		For windows users you can use WSL to untar or use a software like <a href="https://www.7-zip.org">7-zip</a> to extract the data from the compressed file.
 	</p>
 	<p class="lead">
