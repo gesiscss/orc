@@ -3,12 +3,22 @@
 {% block main %}
 
 <div id="main-container" class="container">
-	<p>
-	Hello {{ user.name }}! You can download a tarball of all of your data on GESIS Notebooks. This can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data.
+	<p class="h2">
+	Hello {{ user.name }}!
 	{{ takeout_url }}
+	</p>
+	<p class="lead">
+		You can download a tarball (.tar.xz) of all of your data on GESIS Notebooks. This can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data.
 	</p>
 	<button onclick="document.getElementById('link').click()" class="btn btn-lg btn-primary">Takeout Data</button>
 	<a id="link" href="https://github.com/binder-examples/requirements/archive/refs/heads/master.zip" download hidden></a>
+	<p class="lead">
+		If you are on linux/MacOS you can untar the downloaded file with: <mark>tar -xzvf test.tar.xz</mark>
+		For windows users you can use WSL to untar or use a software like <a href="https://www.7-zip.org">7-zip</a> to extract the data from the compressed file.
+	</p>
+	<p class="lead">
+		You can contact us at <a href="mailto:notebooks@gesis.org">notebooks@gesis.org</a> if you any further questions.
+	</p>
 
 </div>
 {% endblock %}
