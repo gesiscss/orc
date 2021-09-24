@@ -5,6 +5,7 @@
 <div id="main-container" class="container">
 	<p>
 	Hello {{ user.name }}! You can download a tarball of all of your data on GESIS Notebooks. This can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data.
+	{{ takeout_url }}
 	</p>
 	<button onclick="document.getElementById('link').click()" class="btn btn-lg btn-primary">Takeout Data</button>
 	<a id="link" href="https://github.com/binder-examples/requirements/archive/refs/heads/master.zip" download hidden></a>
