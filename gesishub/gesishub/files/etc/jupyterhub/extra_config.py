@@ -17,7 +17,7 @@ from oauthenticator.oauth2 import OAuthCallbackHandler
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
-RANDOM_HASHES = {"mridul.seth@gesi.org": "random1234"}
+RANDOM_HASHES = {"mridul.seth@gesis.org": "random1234"}
 
 class TakeoutData(BaseHandler):
     @web.authenticated
