@@ -18,6 +18,20 @@ ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
 
+class TakeoutData(BaseHandler):
+    @web.authenticated
+    async def get(self):
+        html = await self.render_template(
+            'takeout.html',
+            current_user=self.current_user,
+            admin_access=self.settings.get('admin_access', False),
+            allow_named_servers=self.allow_named_servers,
+            named_server_limit_per_user=self.named_server_limit_per_user,
+            server_version='{} {}'.format(__version__, self.version_hash),
+        )
+        self.finish(html)
+
+
 class OrcAdminHandler(BaseHandler):
     """Render the admin page."""
 
