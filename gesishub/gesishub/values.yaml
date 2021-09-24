@@ -215,7 +215,7 @@ persistent_binderhub:
 
             from jupyterhub.handlers import Template404
             c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
-                                            (r'/takeout', TakeoutData)
+                                            (r'/takeout', TakeoutData),
                                           (r'/api/projects/([^/]+)', ProjectAPIHandler),
                                           # return 404 for /hub/(about|faq|terms_of_use)/
                                           # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
