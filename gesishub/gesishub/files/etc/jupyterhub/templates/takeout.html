@@ -1,10 +1,13 @@
 {% extends "page.html" %}
 
-
 {% block main %}
 
 <div id="main-container" class="container">
-	<p> Hello {{ user.name }}!</p>
-	<button class="btn btn-lg btn-primary">Takeout Data</button>
+	<p>
+	Hello {{ user.name }}! You can download a tarball of all of your data on GESIS Notebooks. This can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data.
+	</p>
+	<form method="get" action="test.tar.xz">
+		<button type="submit" class="btn btn-lg btn-primary">Takeout Data</button>
+	</form>
 </div>
 {% endblock %}
