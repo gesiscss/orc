@@ -40,7 +40,9 @@ upstream binderlaunches {
   server 194.95.75.15:30079;
 }
 
-
+upstream usertakeout {
+  server 194.95.75.15:31079;
+}
 
 
 
@@ -139,6 +141,10 @@ server {
     }
     location /prod {
         rewrite ^/prod(.*)$ https://notebooks.gesis.org/$1 redirect;
+    }
+
+    location /usertakeout/ {
+        proxy_pass http://usertakeout;
     }
 
     include snippets/ignore_fonts.conf;
