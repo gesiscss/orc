@@ -54,11 +54,14 @@ binderhub:
       banned_specs:
         - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
         - ^https%3A%2F%2Fjovian.ml%2Fapi%2Fgit%2F.*
+        - ^(git|https?)%3A%2F%2Fnotabug.org%2FulslcuRux3Y%2F.*
+        - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
+        - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
     BinderHub:
       pod_quota: 200
       base_url: /binder/
       use_registry: true
-      build_image: jupyter/repo2docker:2021.01.0-46.g7430cba
+      build_image: quay.io/jupyterhub/repo2docker:2021.08.0-21.g3eef69f
       build_node_selector:
         # user: worker
         userbinder: worker
@@ -71,6 +74,7 @@ binderhub:
       # look at configmap for static files here https://discourse.jupyter.org/t/customizing-jupyterhub-on-kubernetes/1769/4?u=bitniks
       #extra_static_path: /etc/binderhub/custom/gesisbinder/static
       #extra_static_url_prefix: /extra_static/
+      cors_allow_origin: '*'
 
   podAnnotations:
     rollme: "rollme"
@@ -100,7 +104,7 @@ binderhub:
           "imprint_url": "https://www.gesis.org/en/institute/imprint/",
           "data_protection_url": "https://www.gesis.org/en/institute/data-protection/",
           "gesis_url": "https://www.gesis.org/en/home/",
-          "status_url": "http://gesisnotebooks.github.io/status/",
+          "status_url": "https://gesisnotebooks.betteruptime.com",
           "gallery_url": "/gallery/",
           "faq_url": "/faq/",
 
@@ -167,8 +171,6 @@ binderhub:
   service:
     type: NodePort
 
-  cors: &cors
-    allowOrigin: '*'
 
   dind:
     enabled: true
@@ -186,8 +188,6 @@ binderhub:
     enabled: false
 
   jupyterhub:
-    custom:
-      cors: *cors
     cull:
       # cull every 11 minutes so it is out of phase
       # with the proxy check-routes interval of five minutes
@@ -213,6 +213,9 @@ binderhub:
       db:
         type: postgres
       authenticatePrometheus: false
+      config:
+        BinderSpawner:
+          cors_allow_origin: '*'
       extraConfig:
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
