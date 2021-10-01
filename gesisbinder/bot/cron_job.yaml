@@ -19,7 +19,7 @@ spec:
           - name: update-gesisbinder
             image: python:3.7.4-stretch
             command: ["/bin/sh"]
-            args: ["-c", "cd ~ && git clone https://github.com/gesiscss/orc.git orc_repo && pip install -r orc_repo/gesisbinder/bot/requirements.txt --quiet && python orc_repo/gesisbinder/bot/bot.py"]
+            args: ["-c", "cd ~ && git config --global http.sslVerify false && git clone https://github.com/gesiscss/orc.git orc_repo && pip install -r orc_repo/gesisbinder/bot/requirements.txt --quiet && python orc_repo/gesisbinder/bot/bot.py"]
             env:
               - name: GL_BOT_TOKEN
                 valueFrom:
