@@ -7,7 +7,8 @@ import json
 from os.path import join
 from urllib.parse import urlencode
 from tornado import web
-
+import uuid
+import os
 from jupyterhub import orm, __version__
 from jupyterhub.handlers import BaseHandler, LogoutHandler, LoginHandler
 from jupyterhub.utils import admin_only
@@ -17,7 +18,10 @@ from oauthenticator.oauth2 import OAuthCallbackHandler
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
-from user_id import uuid_user_claims
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(current_dir, 'user_id.json')) as user_id_file:
+    uuid_user_claims = json.load(user_id_file)
 
 class TakeoutData(BaseHandler):
     @web.authenticated
@@ -164,9 +168,6 @@ class KeycloakOAuthCallbackHandler(OAuthCallbackHandler):
         self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
 
 
-import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-import uuid
 with open(os.path.join(current_dir, 'extra_config.json')) as extra_config_file:
     template_vars = json.load(extra_config_file)["template_vars"]
 template_vars.update({
