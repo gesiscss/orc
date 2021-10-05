@@ -70,5 +70,5 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  extra_config.py: |-
+  user_id.json: |-
     {{- .Files.Get "files/etc/jupyterhub/user_id.json" | nindent 4 }}
