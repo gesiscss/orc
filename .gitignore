@@ -23,3 +23,5 @@ monitoring/elastic-stack/elastic-stack/charts
 gesisbinder/gesisbinder/requirements.lock
 gesishub/gesishub/requirements.lock
 monitoring/elastic-stack/elastic-stack/requirements.lock
+.DS_Store
+.ipynb_checkpoints/

@@ -71,4 +71,4 @@ metadata:
     release: {{ .Release.Name }}
 data:
   user_id.json: |-
-    {{- .Files.Get "files/etc/jupyterhub/user_id.json" | nindent 4 }}
+    {{- .Files.Get "files/etc/jupyterhub/_secret_user_id.json" | nindent 4 }}

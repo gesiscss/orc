@@ -20,7 +20,7 @@ ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(current_dir, 'user_id.json')) as user_id_file:
+with open(os.path.join(current_dir, '_secret_user_id.json')) as user_id_file:
     uuid_user_claims = json.load(user_id_file)
 
 class TakeoutData(BaseHandler):

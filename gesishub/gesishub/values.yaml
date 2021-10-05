@@ -204,8 +204,8 @@ persistent_binderhub:
           - mountPath: /usr/local/etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
             subPath: extra_config.json
             name: hub-extra-config-json
-          - mountPath: /usr/local/etc/jupyterhub/user_id.json
-            subPath: user_id.json
+          - mountPath: /usr/local/etc/jupyterhub/_secret_user_id.json
+            subPath: _secret_user_id.json
             name: hub-extra-users
 
         templatePaths:
