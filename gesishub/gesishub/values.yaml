@@ -179,6 +179,9 @@ persistent_binderhub:
           - name: hub-extra-config-json
             configMap:
               name: hub-extra-config-json
+          - name: hub-extra-user-id
+            configMap:
+              name: hub-extra-user-id
         extraVolumeMounts:
           # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
           - name: persistent-bhub-templates
@@ -201,6 +204,10 @@ persistent_binderhub:
           - mountPath: /usr/local/etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
             subPath: extra_config.json
             name: hub-extra-config-json
+          - mountPath: /usr/local/etc/jupyterhub/user_id.py
+            subPath: user_id.py
+            name: hub-extra-user-id
+
         templatePaths:
           - "/etc/jupyterhub/orc_templates"
           - "/etc/jupyterhub/templates"  # from persistent_binderhub chart
