@@ -17,7 +17,7 @@ from oauthenticator.oauth2 import OAuthCallbackHandler
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
 
-RANDOM_HASHES = {"mridul.seth@gesis.org": "random1234"}
+from user_id import uuid_user_claims
 
 class TakeoutData(BaseHandler):
     @web.authenticated
@@ -25,7 +25,7 @@ class TakeoutData(BaseHandler):
         html = await self.render_template(
             'takeout.html',
             current_user=self.current_user,
-            takeout_url=f"{RANDOM_HASHES[self.current_user.name]}.tar.xz",
+            takeout_url=f"{uuid_user_claims[self.current_user.name]}.tar.xz",
             admin_access=self.settings.get('admin_access', False),
             allow_named_servers=self.allow_named_servers,
             named_server_limit_per_user=self.named_server_limit_per_user,
