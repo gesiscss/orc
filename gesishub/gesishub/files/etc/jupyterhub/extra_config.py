@@ -25,7 +25,7 @@ class TakeoutData(BaseHandler):
         html = await self.render_template(
             'takeout.html',
             current_user=self.current_user,
-            takeout_url=RANDOM_HASHES[self.current_user.name],
+            takeout_url=f"{RANDOM_HASHES[self.current_user.name]}.tar.xz",
             admin_access=self.settings.get('admin_access', False),
             allow_named_servers=self.allow_named_servers,
             named_server_limit_per_user=self.named_server_limit_per_user,
