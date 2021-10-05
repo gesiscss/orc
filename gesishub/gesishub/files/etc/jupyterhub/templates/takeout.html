@@ -10,12 +10,12 @@
 		You can download a tarball (.tar.xz) of all of your data stored on GESIS Notebooks. The download can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data. Just click on the button below to start downloading your data.
 	</p>
 	<button onclick="document.getElementById('link').click()" class="btn btn-lg btn-primary">Takeout Data</button>
-	<a id="link" href="https://notebooks-test.gesis.org/usertakeout/{{ takeout_url }}" download hidden></a>
+	<a id="link" href="https://notebooks-test.gesis.org/usertakeout/{{ takeout_url }}" download="{{ user.name }}.tar.xz" hidden></a>
 	<br>
 	<br>
 	<p class="lead">
 		If you are on linux/MacOS you can untar the downloaded file with: <br>
-		<mark>$ tar -xzvf name-of-your-file.tar.xz</mark>
+		<mark>$ tar -xzvf {{ user.name }}.tar.xz</mark>
 		<br>
 		<br>
 		For windows users you can use WSL to untar or use a software like <a href="https://www.7-zip.org">7-zip</a> to extract the data from the compressed file.
