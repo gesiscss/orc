@@ -16,8 +16,9 @@ async def user_data_takeout(user_id: str):
     # add a post notification to telegram bot
     payload = {
         "chat_id": data["chat_id"],
-        "text": "This is a test from takeout API.",
+        "text": f"{user_id} initiated export of data using the takeout API",
         "disable_notification": "true",
     }
-    requests.post(data["url"], data=json.dumps(payload))
+    headers = {'Content-type': 'application/json'}
+    requests.post(data["url"], data=json.dumps(payload), headers=headers)
     return FileResponse(f"data6/databackup/{user_id}")
