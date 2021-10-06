@@ -27,7 +27,7 @@ server:
     # has no effect when using nfs: this is a min limit not a max
     size: 96Gi
 #    existingClaim:
-  retention: 30d
+  retention: 60d
 
 #kubeStateMetrics:
 #  nodeSelector:
