@@ -8,7 +8,7 @@ service:
   nodePort: 30075
 
 nodeSelector:
- base: worker
+  base: worker
 
 resources:
   requests:
