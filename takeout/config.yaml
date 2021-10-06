@@ -35,7 +35,7 @@ spec:
         app: takeout
     spec:
       nodeSelector:
-        base: worker  # where database is
+        user: worker  # where backup is
       containers:
       - name: takeout
         image: gesiscss/binder-takeout:latest
