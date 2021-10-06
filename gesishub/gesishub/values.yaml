@@ -176,6 +176,9 @@ persistent_binderhub:
           - name: hub-extra-config-json
             configMap:
               name: hub-extra-config-json
+          - name: hub-extra-users
+            configMap:
+              name: hub-extra-users
         extraVolumeMounts:
           # the first 3 are taken from persistent_binderhub chart, because extraVolumes is a list
           - name: persistent-bhub-templates
@@ -198,6 +201,10 @@ persistent_binderhub:
           - mountPath: /usr/local/etc/jupyterhub/extra_config.json  # mount where jupyterhub_config.py is, we import it there.
             subPath: extra_config.json
             name: hub-extra-config-json
+          - mountPath: /usr/local/etc/jupyterhub/_secret_user_id.json
+            subPath: _secret_user_id.json
+            name: hub-extra-users
+
         templatePaths:
           - "/etc/jupyterhub/orc_templates"
           - "/etc/jupyterhub/templates"  # from persistent_binderhub chart
@@ -208,10 +215,11 @@ persistent_binderhub:
         extraConfig:
           10-project-api: |
             from persistent_bhub_config import ProjectAPIHandler
-            from extra_config import OrcAdminHandler, ORC_LOGIN_COOKIE_NAME
+            from extra_config import OrcAdminHandler, ORC_LOGIN_COOKIE_NAME, TakeoutData
 
             from jupyterhub.handlers import Template404
             c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
+                                            (r'/takeout', TakeoutData),
                                           (r'/api/projects/([^/]+)', ProjectAPIHandler),
                                           # return 404 for /hub/(about|faq|terms_of_use)/
                                           # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler

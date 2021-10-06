@@ -56,9 +56,9 @@ upstream bjhub {
   server 194.95.75.12:30082 max_fails=0;
 }
 
-#upstream binderlaunches {
-#  server 194.95.75.12:31000 max_fails=0;
-#}
+upstream usertakeout {
+  server 194.95.75.12:31079;
+}
 
 # HTTP server to redirect notebooks.gesis.org 80 traffic to SSL/HTTPS
 server {
@@ -181,6 +181,10 @@ server {
     }
     location = /sitemap.xml {
         root /var/www/prod/static/;
+    }
+
+    location /usertakeout/ {
+        proxy_pass http://usertakeout;
     }
 
     include snippets/_secret.conf;

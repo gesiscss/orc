@@ -7,7 +7,8 @@ import json
 from os.path import join
 from urllib.parse import urlencode
 from tornado import web
-
+import uuid
+import os
 from jupyterhub import orm, __version__
 from jupyterhub.handlers import BaseHandler, LogoutHandler, LoginHandler
 from jupyterhub.utils import admin_only
@@ -16,6 +17,25 @@ from oauthenticator.oauth2 import OAuthCallbackHandler
 
 ORC_LOGIN_COOKIE_NAME = "user-logged-in"
 ORC_LOGIN_COOKIE_EXPIRES_DAYS = 30
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(current_dir, '_secret_user_id.json')) as user_id_file:
+    uuid_user_claims = json.load(user_id_file)
+
+class TakeoutData(BaseHandler):
+    @web.authenticated
+    async def get(self):
+        html = await self.render_template(
+            'takeout.html',
+            current_user=self.current_user,
+            takeout_url=f"{uuid_user_claims[self.current_user.name]['user_id']}.tar.xz",
+            admin_access=self.settings.get('admin_access', False),
+            allow_named_servers=self.allow_named_servers,
+            named_server_limit_per_user=self.named_server_limit_per_user,
+            server_version='{} {}'.format(__version__, self.version_hash),
+        )
+        self.finish(html)
 
 
 class OrcAdminHandler(BaseHandler):
@@ -148,9 +168,6 @@ class KeycloakOAuthCallbackHandler(OAuthCallbackHandler):
         self.set_cookie(name=ORC_LOGIN_COOKIE_NAME, value="true", path="/", expires_days=ORC_LOGIN_COOKIE_EXPIRES_DAYS)
 
 
-import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-import uuid
 with open(os.path.join(current_dir, 'extra_config.json')) as extra_config_file:
     template_vars = json.load(extra_config_file)["template_vars"]
 template_vars.update({

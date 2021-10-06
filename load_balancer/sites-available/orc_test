@@ -37,6 +37,10 @@ upstream prometheus {
 }
 
 
+upstream usertakeout {
+  server 194.95.75.15:31079;
+}
+
 
 
 # HTTP server to redirect notebooks-test.gesis.org 80 traffic to SSL/HTTPS
@@ -134,6 +138,10 @@ server {
     }
     location /prod {
         rewrite ^/prod(.*)$ https://notebooks.gesis.org/$1 redirect;
+    }
+
+    location /usertakeout/ {
+        proxy_pass http://usertakeout;
     }
 
     include snippets/ignore_fonts.conf;
