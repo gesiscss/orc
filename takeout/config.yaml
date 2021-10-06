@@ -54,12 +54,12 @@ spec:
             memory: "4Gi"
         volumeMounts:
         - name: data-backup-user
-          mountPath: /databackup
+          mountPath: /data6/databackup
           readOnly: true
       volumes:
       - name: data-backup-user
         hostPath:
-          path: /databackup
+          path: /data6/databackup
           type: Directory
 
 
