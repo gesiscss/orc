@@ -9,8 +9,8 @@ pushgateway:
   enabled: false
 
 server:
-#  nodeSelector:
-#    base: worker
+ nodeSelector:
+   base: worker
   service:
     type: NodePort
     nodePort: 30073
