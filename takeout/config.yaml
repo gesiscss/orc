@@ -44,7 +44,6 @@ spec:
         ports:
         - containerPort: 5000
           protocol: TCP
-
         resources:
           requests:
             cpu: "1"
