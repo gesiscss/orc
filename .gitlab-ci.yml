@@ -165,6 +165,9 @@ deploy_prod:
       if $CHANGED_FILES | egrep 'monitoring/_secret_grafana.yaml|monitoring/grafana_config.yaml'; then
         mode+="-grafana"
       fi;
+      if $CHANGED_FILES | egrep 'takeout/config.yaml'; then
+        mode+="-takeout"
+      fi;
       echo "####### mode: $mode"
       fab -H $K8S_MASTER_NODE_IP deploy -u iuser -p $K8S_MASTER_NODE_PASSWORD -r $CI_COMMIT_SHA -m $mode
   only:

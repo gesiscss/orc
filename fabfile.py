@@ -135,6 +135,8 @@ def deploy(c, user, password, staging=False, ref='master', mode=''):
                   '-f monitoring/grafana_config.yaml '
                   '-f monitoring/_secret_grafana.yaml '
                   '--cleanup-on-fail --debug')
+        if 'takeout' in mode and not staging:
+            c.run('kubectl apply -f takeout/config.yaml')
 
 
 @task
