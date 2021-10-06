@@ -21,8 +21,8 @@ server:
       cpu: "1"
       memory: 8Gi
     limits:
-      cpu: "2"
-      memory: 16Gi
+      cpu: "4"
+      memory: 32Gi
   persistentVolume:
     # has no effect when using nfs: this is a min limit not a max
     size: 96Gi
