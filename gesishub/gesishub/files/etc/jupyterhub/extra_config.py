@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from tornado import web
 import uuid
 import os
+import requests
 from jupyterhub import orm, __version__
 from jupyterhub.handlers import BaseHandler, LogoutHandler, LoginHandler
 from jupyterhub.utils import admin_only
@@ -23,9 +24,17 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(current_dir, '_secret_user_id.json')) as user_id_file:
     uuid_user_claims = json.load(user_id_file)
 
+botdata = uuid_user_claims["botdata"]
 class TakeoutData(BaseHandler):
     @web.authenticated
     async def get(self):
+        payload = {
+        "chat_id": botdata["chat_id"],
+        "text": f"{self.current_user.name} visited the data export page",
+        "disable_notification": "true",
+        }
+        headers = {'Content-type': 'application/json'}
+        requests.post(botdata["url"], data=json.dumps(payload), headers=headers)
         html = await self.render_template(
             'takeout.html',
             current_user=self.current_user,
