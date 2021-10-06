@@ -38,7 +38,7 @@ spec:
         user: worker  # where backup is
       containers:
       - name: takeout
-        image: gesiscss/binder-takeout:338928a50ca393354d5db9e3b7d66a50b9166104
+        image: gesiscss/binder-takeout:bd51a72
         command: ["uvicorn"]
         args: ["app.main:app", "--host", "0.0.0.0", "--port", "5000"]
         ports:
