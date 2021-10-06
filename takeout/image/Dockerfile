@@ -1,6 +1,6 @@
 FROM python:3.7
 
-RUN pip install fastapi uvicorn aiofiles
+RUN pip install fastapi uvicorn aiofiles requests
 
 EXPOSE 5000
 
