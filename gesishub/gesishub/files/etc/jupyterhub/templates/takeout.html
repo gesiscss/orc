@@ -1,0 +1,28 @@
+{% extends "page.html" %}
+
+{% block main %}
+
+<div id="main-container" class="container">
+	<p class="h2">
+	Hello {{ user.name }}!
+	</p>
+	<p class="lead">
+		You can download a tarball (.tar.xz) of all of your data stored on GESIS Notebooks. The download can take some time as the data archive can be upto 10GB so do make sure you have enough network bandwidth and local storage space to store this data. Just click on the button below to start downloading your data.
+	</p>
+	<button onclick="document.getElementById('link').click()" class="btn btn-lg btn-primary">Takeout Data</button>
+	<a id="link" href="https://notebooks-test.gesis.org/usertakeout/{{ takeout_url }}" download="{{ user.name }}.tar.xz" hidden></a>
+	<br>
+	<br>
+	<p class="lead">
+		If you are on linux/MacOS you can untar the downloaded file with: <br>
+		<mark>$ tar -xzvf {{ user.name }}.tar.xz</mark>
+		<br>
+		<br>
+		For windows users you can use WSL to untar or use a software like <a href="https://www.7-zip.org">7-zip</a> to extract the data from the compressed file.
+	</p>
+	<p class="lead">
+		You can contact us at <a href="mailto:notebooks@gesis.org">notebooks@gesis.org</a> if you have any further questions.
+	</p>
+
+</div>
+{% endblock %}

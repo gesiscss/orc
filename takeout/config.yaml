@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: takeout
+  labels:
+    app: takeout
+spec:
+  type: NodePort
+  selector:
+    app: takeout
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 31079
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: takeout
+  labels:
+    app: takeout
+spec:
+  # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#revision-history-limit
+  revisionHistoryLimit: 3  # default is 10
+  replicas: 1
+  selector:
+    matchLabels:
+      app: takeout
+  template:
+    metadata:
+      name: takeout
+      labels:
+        app: takeout
+    spec:
+      nodeSelector:
+        user: worker  # where backup is
+      containers:
+      - name: takeout
+        image: gesiscss/binder-takeout:latest
+        command: ["uvicorn"]
+        args: ["app.main:app", "--host", "0.0.0.0", "--port", "5000"]
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+
+        resources:
+          requests:
+            cpu: "1"
+            memory: "256Mi"
+          limits:
+            cpu: "4"
+            memory: "4Gi"
+        volumeMounts:
+        - name: data-backup-user
+          mountPath: /databackup
+          readOnly: true
+      volumes:
+      - name: data-backup-user
+        hostPath:
+          path: /databackup
+          type: Directory
+
+
+
