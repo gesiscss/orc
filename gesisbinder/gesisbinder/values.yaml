@@ -27,6 +27,7 @@ etcJupyter:
 eventsArchiver:
   serviceAccountKey: ""
 
+
 binderhub:
   pdb:
     minAvailable: 1
