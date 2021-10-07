@@ -7,7 +7,6 @@ alertmanager:
   enabled: false
 pushgateway:
   enabled: false
-
 server:
  # nodeSelector:
  #   base: worker
