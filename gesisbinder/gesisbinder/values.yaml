@@ -30,7 +30,7 @@ eventsArchiver:
 
 binderhub:
   pdb:
-    minAvailable: 1
+    maxUnavailable: 1
   replicas: 2
   config:
     GitHubRepoProvider:
