@@ -212,7 +212,7 @@ persistent_binderhub:
           - "/etc/jupyterhub/orc_templates"
           - "/etc/jupyterhub/templates"  # from persistent_binderhub chart
         templateVars:
-          persistency_explanation: "The persistent side of GESIS Notebooks will be shut down on 20th December 2021. You can still use GESIS Binder with your Binderised projects."
+          persistency_explanation: "The persistent side of GESIS Notebooks will temporarily shut down on 20th December 2021. You can still use GESIS Binder with your Binderised projects."
         authenticatePrometheus: false
         shutdownOnLogout: true
         extraConfig:
