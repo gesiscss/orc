@@ -44,10 +44,7 @@
            class="img-responsive center-block" id="gesis-notebooks-img">
   </div>
   <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
-      <h3>
-          <span id="typed"></span>
-      </h3>
-      <a href="{{ login_url }}" class="btn btn-lg btn-warning orc-button" role="button">Try it now >></a>
+      <a href="{{ login_url }}" class="btn btn-lg btn-warning orc-button" role="button">Download your data >></a>
   </div>
 </div>
 {% endblock projects_form %}
@@ -97,28 +94,3 @@
   {% block extra_main_content %}
   {% include "featured_projects.html" %}
   {% endblock extra_main_content %}
-
-{% block script %}
-<script src="{{ static_nginx }}vendor/typed.js-2.0.6/lib/typed.min.js"></script>
-
-<script>
-    var typed = new Typed('#typed',
-        {
-            strings: ["Open Methodology", "Open Source", "Open Science",
-                "Open Research Computing for the Social Sciences"],
-            typeSpeed: 64,
-            smartBackspace: true,
-            // startDelay: 0,
-            backDelay: 1000,
-            backSpeed: 64,
-            // loop: true,
-            // loopCount: 3,
-            contentType: null,
-            // fadeOut: true
-            // call when done callback function
-            onComplete: function () {
-                $("span.typed-cursor").hide();
-            }
-        });
-</script>
-{% endblock %}
