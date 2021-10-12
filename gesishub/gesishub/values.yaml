@@ -271,6 +271,7 @@ persistent_binderhub:
                         path = '/'
                     self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
             PrefixRedirectHandler.get = get
+            c.JupyterHub.default_url = "/takeout"
           021-orc: |
             from extra_config import template_vars
             template_vars.update({"production": production})
