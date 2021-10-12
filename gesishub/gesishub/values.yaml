@@ -247,7 +247,7 @@ persistent_binderhub:
                     self.finish(html)
                 elif path == "/":
                     if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
-                        self.redirect("/hub/home")
+                        self.redirect("/hub/takeout")
                     else:
                         # user is not logged in, so link featured projects to (public) GESIS binder
                         binder_base_url = "/binder/"
