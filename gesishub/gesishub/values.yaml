@@ -221,8 +221,11 @@ persistent_binderhub:
             from extra_config import OrcAdminHandler, ORC_LOGIN_COOKIE_NAME, TakeoutData
 
             from jupyterhub.handlers import Template404
-            c.JupyterHub.extra_handlers = [(r'/takeout', TakeoutData),
+            c.JupyterHub.extra_handlers = [(r'/admin_orc', OrcAdminHandler),
+                                            (r'/takeout', TakeoutData),
                                           (r'/api/projects/([^/]+)', ProjectAPIHandler),
+                                          # return 404 for /hub/(about|faq|terms_of_use)/
+                                          # /(about|faq|terms_of_use)/ pages are served in custom PrefixRedirectHandler
                                           (r'/about/', Template404),
                                           (r'/faq/', Template404),
                                           (r'/terms_of_use/', Template404),
@@ -242,7 +245,7 @@ persistent_binderhub:
                 elif path == "/faq/":
                     html = self.render_template("faq.html", sync=True, **{"active": "faq"})
                     self.finish(html)
-                elif path == "/" or path == "/hub/home/:
+                elif path == "/":
                     if self.get_cookie(ORC_LOGIN_COOKIE_NAME):
                         self.redirect("/hub/takeout")
                     else:
