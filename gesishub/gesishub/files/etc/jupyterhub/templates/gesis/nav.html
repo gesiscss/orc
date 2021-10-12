@@ -13,15 +13,8 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav" id="navbar-list">
-                        {# NOTE id="navbar-active-a" class="gs_active_sub" --> used to highlight a menu element, check gesis_nav.js #}
-                        {% if active == 'hub' and user and not status_code %}  {# not status_code -> no 400 or 500 errors #}
-                        <li><a href="{{ home_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>
-{#                        <li><a href="{{ base_url }}" id="navbar-active-a" class="gs_active_sub">Home</a></li>#}
                         {% if user.admin %}
                         <li><a href="{{ base_url }}admin_orc" >Admin</a></li>
-                        {% endif %}
-                        {% else %}
-                        <li><a href="{{ home_url }}" {% if active == 'home' %}id="navbar-active-a" class="gs_active_sub"{% endif %}>Home</a></li>
                         {% endif %}
                         {% if user %}
                         <li><a href="{{ base_url }}takeout" >Download Data</a></li>
