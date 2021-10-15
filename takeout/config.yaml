@@ -50,7 +50,7 @@ spec:
             memory: "256Mi"
           limits:
             cpu: "10"
-            memory: "8Gi"
+            memory: "32Gi"
         volumeMounts:
         - name: data-backup-user
           mountPath: /data6/databackup
