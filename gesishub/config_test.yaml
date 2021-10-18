@@ -42,9 +42,9 @@ persistent_binderhub:
             # login_service: keycloak
             login_service: "GESIS Test Login"  # to customize the label on the login button
             oauth_callback_url: https://notebooks-test.gesis.org/hub/oauth_callback
-            authorize_url: https://login2-test.gesis.org/auth/realms/master/protocol/openid-connect/auth
-            token_url: https://login2-test.gesis.org/auth/realms/master/protocol/openid-connect/token
-            userdata_url: https://login2-test.gesis.org/auth/realms/master/protocol/openid-connect/userinfo
+            authorize_url: https://login2-test.gesis.org/auth/realms/gesis/protocol/openid-connect/auth
+            token_url: https://login2-test.gesis.org/auth/realms/gesis/protocol/openid-connect/token
+            userdata_url: https://login2-test.gesis.org/auth/realms/gesis/protocol/openid-connect/userinfo
 
         extraConfig:
           020-orc: |
