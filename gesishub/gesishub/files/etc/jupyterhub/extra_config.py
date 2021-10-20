@@ -150,7 +150,7 @@ class KeycloakLogoutHandler(LogoutHandler):
             if not logout_url.startswith('https'):
                 logout_url = logout_url.replace('http', 'https', 1)
             kc_logout_url = self.request.host.replace('notebooks', 'login', 1)
-            kc_logout_url = 'https://{}/realms/gesis/protocol/openid-connect/logout'.format(kc_logout_url)
+            kc_logout_url = 'https://{}/auth/realms/gesis/protocol/openid-connect/logout'.format(kc_logout_url)
             self.redirect(kc_logout_url + '?' + urlencode({'redirect_uri': logout_url}))
         else:
             await super().get()
