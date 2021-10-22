@@ -44,6 +44,7 @@ grafana.ini:
     root_url: "https://notebooks.gesis.org/grafana/"
     http_port: 3000
 
+
 # http://docs.grafana.org/administration/provisioning/#datasources
 # http://docs.grafana.org/features/datasources/prometheus/
 datasources:
