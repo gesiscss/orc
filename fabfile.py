@@ -119,6 +119,7 @@ def deploy(c, user, password, staging=False, ref='master', mode=''):
             c.run('kubectl apply -f storage/backup/rbac.yaml')
             c.run('kubectl apply -f storage/backup/cron_job.yaml')
         if 'prometheus' in mode and not staging:
+            c.run('helm repo update')
             with open('monitoring/prometheus_config.yaml') as f:
                 first_line = f.readline()
                 chart_version = first_line.strip().split(" ")[-1]
@@ -127,6 +128,7 @@ def deploy(c, user, password, staging=False, ref='master', mode=''):
                   '-f monitoring/prometheus_config.yaml '
                   '--cleanup-on-fail --debug')
         if 'grafana' in mode and not staging:
+            c.run('helm repo update')
             with open('monitoring/grafana_config.yaml') as f:
                 first_line = f.readline()
                 chart_version = first_line.strip().split(" ")[-1]
