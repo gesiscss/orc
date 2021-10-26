@@ -3,15 +3,14 @@
         <div>
             <div id="header-container" class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand">
-                        <p>PersistentBinderHub will temperarily shut down on the 15th of December.</p>
-                    </a>
-
                     <a class="navbar-brand" href="{{ gesis_url }}">
                         <img src="{{ static_nginx }}images/gs_home_logo_en.svg?v={{ static_version }}" class="hidden-sm hidden-xs" width="200" height="37">
                         <img src="{{ static_nginx }}images/gs_small_logo_de.svg?v={{ static_version }}" class="visible-sm visible-xs">
                     </a>
 
+                    <div class="header_banner">
+                        <h4> PersistentBinderHub will temperarily shut down on the 15th of December </h4>
+                    </div>
                     <div class="pull-right visible-xs hidden-sm hidden-md hidden-lg">
                         <ul class="nav nav-pills pull-left ">
                             {% if active == 'home' %}
