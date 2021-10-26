@@ -147,7 +147,7 @@ server {
         proxy_pass http://usertakeout;
     }
 
-    location = /email.html {
+    location = /email_to_users.html {
         root /var/www/test/static/;
     }
 
