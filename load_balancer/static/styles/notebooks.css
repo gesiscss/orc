@@ -313,6 +313,20 @@ footer .container {
 
 }
 
+#header_announce {
+	padding: 0;
+	clear: both;
+	background:url(../images/gs_ms_banner_default.jpg);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-position: center center;
+	width: auto;
+	padding-top: 1.2rem;
+	padding-bottom: 0.6rem;
+	padding-left: 3.2rem;
+	vertical-align: middle;
+}
+
 footer.footer {
     padding: 1.0rem 0;
     color: #fff;
