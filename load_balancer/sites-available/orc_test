@@ -147,9 +147,5 @@ server {
         proxy_pass http://usertakeout;
     }
 
-    location = /email_to_users.html {
-        root /var/www/test/static/;
-    }
-
     include snippets/ignore_fonts.conf;
 }
