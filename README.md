@@ -44,3 +44,9 @@ GESIS Hub and Binder uses same docker images (they uses same repo2docker version
 
 Gallery of popular repos launched on [GESIS Binder](https://notebooks.gesis.org/binder/)
 and featured projects: https://notebooks.gesis.org/gallery/
+
+---
+
+Funded by the German Research Foundation (DFG).
+FKZ/project number:
+[324867496](https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&).
