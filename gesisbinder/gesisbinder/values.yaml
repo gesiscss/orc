@@ -38,6 +38,7 @@ binderhub:
       # They should be strings that will match "^<org-name>/<repo-name>.*"
       banned_specs:
         # e.g. '^org/repo.*'
+        - ^gesiscss/gesis_dataday_20.*
         - ^ines/spacy-binder.*
         - ^soft4voip/rak.*
         - ^hmharshit/cn-ait.*
