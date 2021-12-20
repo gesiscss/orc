@@ -154,8 +154,8 @@ server {
     location = /sitemap.xml {
         root /var/www/staging/static/;
     }
-    location = /faq {
-        index static/faq.html;
+    location = /faq.html {
+        root /var/www/staging/static/;
     }
 
     location = /terms.html {
