@@ -217,6 +217,44 @@ binderhub:
         BinderSpawner:
           cors_allow_origin: '*'
       extraConfig:
+        01-pages: |
+          from jupyterhub.handlers.base import PrefixRedirectHandler
+          from jupyterhub.utils import url_path_join
+          import os
+          def get(self):
+              path = self.request.path
+              if path == "/about/":
+                  html = self.render_template("about.html", sync=True, **{"active": "about"})
+                  self.finish(html)
+              elif path == "/terms_of_use/":
+                  html = self.render_template("terms_of_use.html", sync=True,**{"active": "terms_of_use"})
+                  self.finish(html)
+              elif path == "/faq/":
+                  html = self.render_template("faq.html", sync=True, **{"active": "faq"})
+                  self.finish(html)
+              elif path == "/":
+                  # user is not logged in, so link featured projects to (public) GESIS binder
+                  binder_base_url = "/binder/"
+                  html = self.render_template("page.html", sync=True, **{"active": "home", "binder_base_url": binder_base_url})
+                  self.finish(html)
+              else:
+                  # below is taken from original get method
+                  uri = self.request.uri
+                  # Since self.base_url will end with trailing slash.
+                  # Ensure uri will end with trailing slash when matching
+                  # with self.base_url.
+                  if not uri.endswith('/'):
+                      uri += '/'
+                  if uri.startswith(self.base_url):
+                      path = self.request.uri[len(self.base_url):]
+                  else:
+                      path = self.request.path
+                  if not path:
+                      # default / -> /hub/ redirect
+                      # avoiding extra hop through /hub
+                      path = '/'
+                  self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
+          PrefixRedirectHandler.get = get
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
     proxy:
