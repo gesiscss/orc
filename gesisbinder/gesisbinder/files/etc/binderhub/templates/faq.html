@@ -1,0 +1,87 @@
+{% extends "page.html" %}
+
+{% block title %}FAQ{% endblock %}
+{% block meta_description %}{% endblock %}
+
+{% block meta_social %}
+<meta property="og:title" content="GESIS Notebooks">
+<meta property="og:description" content="Open Research Computing for the Social Sciences.">
+<meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="GESIS Notebooks Logo"/>
+<meta name="twitter:card" content="summary">
+{% endblock meta_social %}
+
+{% block extra_css %}
+<link href="{{ static_nginx }}styles/faq.css?v={{ static_version }}" rel="stylesheet" />
+{% endblock extra_css %}
+
+  {% block etracker %}
+  {% if production %}
+  {% with et_pagename="/GESISHub:faq/", et_areas="/GESISHub" %}
+      {% include "gesis/etracker.html" %}
+  {% endwith %}
+  {% endif %}
+  {% endblock etracker %}
+
+{% block main %}
+<div id="main-container" class="container">
+<div class="row faq">
+    <div id="header" class="text-center">
+        <div id="explanation">
+            Frequently Asked Questions
+        </div>
+    </div>
+    {% for section in faq%}
+    <h3>{{section["Section"].get("Name")}}</h3>
+
+    <div class="panel-group" id="accordion">
+      {% for questions in section['Section']['Questions'] %}
+        {% for question in questions.items() %}
+          <div class="panel panel-default questions-panel-default">
+              <div id="{{'q' ~ question[1].get('ID')}}" class="panel-heading topic-question noselect">
+                  <h3 class="panel-title noselect">
+                      <a class="accordion-toggle noselect" data-toggle="collapse" data-parent="#accordion{{question[1].get('ID')}}" href="#{{question[1].get('ID')}}"><strong>{{question[1].get('Question')}}</strong></a>
+                  </h3>
+              </div>
+              <div id="{{question[1].get('ID')}}" class="panel-collapse collapse">
+                  <div class="panel-body questions-panel-body">
+                    <p>
+                      {{question[1].get('Answer')|safe}}
+                    </p>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+
+  {% endfor%}
+  </div>
+</div>
+{% endblock main %}
+
+{% block script %}
+{{ super() }}
+
+  <script type="text/javascript">
+    function auto_show() {
+      var url = document.location.toString();
+      console.log(url);
+      if ( url.match('#q') ) {
+        $('#'+url.split('#q')[1]).collapse('show');
+      }
+    };
+    auto_show();
+   
+   
+   //  $('.panel-collapse').on('show.bs.collapse', function () {
+   //   $(this).siblings('.panel-heading').addClass('active');
+   // });
+
+   // $('.panel-collapse').on('hide.bs.collapse', function () {
+   //   $(this).siblings('.panel-heading').removeClass('active');
+   // });
+  </script>
+{% endblock script %}
