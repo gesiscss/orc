@@ -82,12 +82,12 @@ server {
         ## maintenance page
         #error_page 503 /static/maintenance.html;
         #return 503;
-
-        proxy_buffering off;
-        proxy_pass http://bhub;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        proxy_set_header X-Scheme $scheme;
+        return 301 /binder/
+        # proxy_buffering off;
+        # proxy_pass http://bhub;
+        # include snippets/headers.conf;
+        # include snippets/websocket_headers.conf;
+        # proxy_set_header X-Scheme $scheme;
     }
     location /pbhub/ {
         proxy_buffering off;
