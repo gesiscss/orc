@@ -149,10 +149,13 @@ server {
     location = /robots.txt {
        # https://www.robotstxt.org/robotstxt.html
        #return 200 "User-agent: *\nDisallow:\nSitemap: https://notebooks.gesis.org/sitemap.xml\n";
-       root /var/www/prod/static/;
+       root /var/www/staging/static/;
     }
     location = /sitemap.xml {
-        root /var/www/prod/static/;
+        root /var/www/staging/static/;
+    }
+    location = /faq.html {
+        root /var/www/staging/static/;
     }
     include snippets/ignore_fonts.conf;
 }
