@@ -155,7 +155,11 @@ server {
         root /var/www/staging/static/;
     }
     location = /faq {
-        index /var/www/staging/static/faq.html;
+        index static/faq.html;
+    }
+
+    location = /terms.html {
+        root /var/www/staging/static/;
     }
     include snippets/ignore_fonts.conf;
 }
