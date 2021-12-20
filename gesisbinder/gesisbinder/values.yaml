@@ -254,6 +254,7 @@ binderhub:
                       # avoiding extra hop through /hub
                       path = '/'
                   self.redirect(url_path_join(self.hub.base_url, path), permanent=False)
+
           PrefixRedirectHandler.get = get
         02-orc: |
           c.KubeSpawner.extra_pod_config.update({'restart_policy': 'Never'})
