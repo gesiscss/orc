@@ -154,7 +154,7 @@ server {
 
 
         proxy_buffering off;
-        proxy_pass http://bhub;
+        proxy_pass http://jhub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
         proxy_set_header X-Scheme $scheme;
