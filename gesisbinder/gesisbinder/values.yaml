@@ -224,7 +224,7 @@ binderhub:
           def get(self):
               path = self.request.path
               self.log.info(path)
-              if path == "/about/":
+              if path == "binder/jupyter/about/":
                   html = self.render_template("about.html", sync=True, **{"active": "about"})
                   self.finish(html)
               elif path == "/terms_of_use/":
