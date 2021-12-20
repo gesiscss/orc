@@ -1,14 +1,117 @@
-{% extends "templates/about.html" %}
+{% extends "page.html" %}
 
-{% block head %}
-{# Social media previews #}
-<meta property="og:title" content="GESIS Binder">
-<meta property="og:description" content="Reproducible, sharable, open, interactive computing environments.">
+{% block title %}About{% endblock %}
+{% block meta_description %}{% endblock %}
+
+{% block meta_social %}
+<meta property="og:title" content="GESIS Notebooks">
+<meta property="og:description" content="Open Research Computing for the Social Sciences.">
 <meta property="og:image" content="https://notebooks.gesis.org/static/images/logo/logo_big_square.png?v={{ static_version }}">
 <meta property="og:image:width" content="800">
 <meta property="og:image:height" content="800">
-<meta property="og:image:alt" content="GESIS Notebooks Logo" />
+<meta property="og:image:alt" content="GESIS Notebooks Logo"/>
 <meta name="twitter:card" content="summary">
+{% endblock meta_social %}
 
-<link href="{{static_url("dist/styles.css")}}" rel="stylesheet">
-{% endblock head %}
+{% block extra_css %}
+<link href="{{ static_nginx }}styles/about.css?v={{ static_version }}" rel="stylesheet" />
+{% endblock extra_css %}
+
+  {% block etracker %}
+  {% if production %}
+  {% with et_pagename="/GESISHub:about/", et_areas="/GESISHub" %}
+      {% include "gesis/etracker.html" %}
+  {% endwith %}
+  {% endif %}
+  {% endblock etracker %}
+
+{% block main %}
+<div id="main-container" class="container">
+{#<div class="row form-group text-center">#}
+{#<div class="row form-group"></div>#}
+<div class="row-side-margins row about-main-row" >
+    {#https://www.gesis.org/en/research/external-funding-projects/overview-external-funding-projects/a-virtual-research-infrastructure-for-large-scale-qualitative-data/#}
+    <h2 class="title">About </h2>
+    <p class="description">
+        GESIS Notebooks is a free and hosted service for running Jupyter Notebooks requiring no installation.
+        We aim to enable you to get started quickly with your research ideas,
+        prototyping your data science projects, or learning to program languages such as
+        <a href="http://www.r-project.org/">R</a>, <a href="http://www.python.org/">Python</a> or <a href="http://julialang.org/">Julia</a> .
+    </p>
+
+    <h3 class="title">Why does Open Research Computing matter? </h3>
+    <p class="description">
+        “Openness” is regarded by many researchers as the to most important property to any scientific endeavor.
+        However, achieving openness has proven to be non-trivial and comes with many problems, in particular when
+        large data-sets and complex analysis workflows are involved.
+        This poses for infrastructure providers like GESIS
+        <a href="http://nbn-resolving.de/urn:nbn:de:0168-ssoar-54950-5">an important question</a>: How can we help to overcome these problems?
+    </p>
+
+    <p class="description">
+        We, the GESIS Notebooks team, want to promote Open Science by offering easy-to-use technical solutions for
+        documenting and sharing computational workflows for data-intensive research designs.
+        To this end, we created the service <strong>GESIS Notebooks - Open Research Computing for the Social Sciences</strong>.
+    </p>
+
+    <p class="description">
+        It is our hope that the <strong>GESIS Notebooks</strong> service helps in
+    </p>
+    <ul class="description">
+        <li>creating incentives for scholars to make their work more easily reproducible,</li>
+        <li>promoting standards to ensure interoperability of Open Science repositories,</li>
+        <li>offering training material for scholars based on Open Science practices.</li>
+    </ul>
+    <p class="description">
+        We are convinced that progress in these areas will lead to a significant strengthening of
+        the emerging field of CSS and the paradigm of reproducible research.
+    </p>
+</div>
+
+{% include "team.html" %}
+
+
+<div class="row form-group row-side-margins">
+        <p class="description"><strong>Supported by</strong></p>
+    <div class="sponsored">
+        <div class="col">
+            <a href="https://gepris.dfg.de/gepris/projekt/324867496?context=projekt&task=showDetail&id=324867496&" target="_blank"><img src="{{ static_nginx }}images/DFG_CLAIM_163X60px.gif?v={{ static_version }}" class="img-responsive center-block" ></a>
+        </div>
+        <div class="col">
+            <img src="{{ static_nginx }}images/gesis-logo.png?v={{ static_version }}" class="img-responsive center-block gesis-logo">
+        </div>
+    </div>
+</div>
+
+{#TODO add partner leipniz#}
+
+<div class="row form-group"></div>
+<div class="row row-side-margins">
+    <p class="description">
+        <strong>Powered by </strong>
+{#        TODO add versions of jhub and bhub#}
+        <a href="https://jupyterhub.readthedocs.io/en/latest/">JupyterHub</a> and
+        <a href="https://binderhub.readthedocs.io/en/latest/">BinderHub</a>
+    </p>
+</div>
+
+<div class="row row-side-margins">
+    <h3 class="title">Feedback Welcome</h3>
+        <p class="description">
+            To enable us to continuously improve the service, we, the GESIS Notebooks team,
+            would appreciate your
+            <a href="#"
+               data-name="notebooks"
+               data-domain="gesis"
+               data-tld="org"
+               onclick="window.location.href='mailto:'+this.dataset.name+'@'+this.dataset.domain+'.'+this.dataset.tld+'?subject=Feedback'; return false;"
+             target="_top">
+                feedback</a>
+            if you have suggestions for improvements. The source code of the project is freely available
+            at our <a href="https://github.com/gesiscss/orc"> GitHub Repository </a> and
+            <a href="/gallery/api/v1.0/">an API for launch events</a>
+            on GESIS Binder and on Binder Federation is available.
+        </p>
+</div>
+</div>
+{% endblock main %}
