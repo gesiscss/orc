@@ -102,6 +102,9 @@ deploy_staging:
       if git diff HEAD~ --name-only | egrep 'gallery/_secret_config_test.py'; then
        mode+="-gallerytestconf"
       fi;
+      if git diff HEAD~ --name-only | egrep 'load_balancer/static/'; then
+       mode+="-static"
+      fi;
       if git diff HEAD~ --name-only | egrep 'gallery/config_test.yaml'; then
         mode+="-gallerytestapp"
       fi;
