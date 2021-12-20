@@ -36,52 +36,10 @@
     <![endif]-->
 
     
-    <!-- <script src="/hub/static/components/requirejs/require.js?v=bd1aa102bdb0b27fbf712b32cfcd29b016c272acf3d864ee8469376eaddd032cadcf827ff17c05a8c8e20061418fe58cf79947049f5c0dff3b4f73fcc8cad8ec" type="text/javascript" charset="utf-8"></script> -->
     <script src="/static/vendor/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-    
-    
-    <script>
-      require.config({
-          
-          urlArgs: "v=20211207211853",
-          
-          baseUrl: '/hub/static/js',
-          paths: {
-            components: '../components',
-            jquery: '../components/jquery/dist/jquery.min',
-            bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
-            moment: "../components/moment/moment",
-          },
-          shim: {
-            bootstrap: {
-              deps: ["jquery"],
-              exports: "bootstrap"
-            },
-          }
-      });
-    </script>
-    
 
-    <script type="text/javascript">
-      window.jhdata = {
-        base_url: "/hub/",
-        prefix: "/",
-        
-        
-        admin_access: false,
-        
-        
-        options_form: false,
-        
-      }
-    </script>
-
-  
-  
-  
-      
-<!-- Copyright (c) 2000-2020 etracker GmbH. All rights reserved. -->
+      <!-- Copyright (c) 2000-2020 etracker GmbH. All rights reserved. -->
 <!-- This material may not be reproduced, displayed, modified or distributed -->
 <!-- without the express prior written permission of the copyright holder. -->
 <!-- etracker tracklet 5.0 -->
@@ -97,21 +55,9 @@ var et_areas = encodeURIComponent("NOTEBOOKS/GESISHub");
 <!-- etracker tracklet 5.0 end -->
   
   
-  
-
-    
-    
-
 </head>
 
 <body>
-
-<noscript>
-  <div id='noscript'>
-    JupyterHub requires JavaScript.<br>
-    Please enable it to proceed.
-  </div>
-</noscript>
 
 
 
