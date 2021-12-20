@@ -153,12 +153,12 @@ server {
         #return 503;
 
         # Redirect to binder deployment
-        # return 301 /binder/;
-        proxy_buffering off;
-        proxy_pass http://jhub;
-        include snippets/headers.conf;
-        include snippets/websocket_headers.conf;
-        proxy_set_header X-Scheme $scheme;
+        return 301 /binder/;
+        # proxy_buffering off;
+        # proxy_pass http://jhub;
+        # include snippets/headers.conf;
+        # include snippets/websocket_headers.conf;
+        # proxy_set_header X-Scheme $scheme;
     }
     #location ~ ^/(faq|about|terms_of_use|hub/static)/ {
     #    proxy_buffering off;
