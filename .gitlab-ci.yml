@@ -93,6 +93,7 @@ deploy_staging:
       git push $URL $CI_COMMIT_SHA:staging
 
       echo "#### Just some test"
+      echo $STAGING_MASTER_NODE_PASSWORD
       fab -H $K8S_STAGING_MASTER_NODE_IP test -u ladmin -p $STAGING_MASTER_NODE_PASSWORD
 
       echo "####### Running staging deploy"
