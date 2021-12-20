@@ -154,7 +154,7 @@ server {
     location = /sitemap.xml {
         root /var/www/staging/static/;
     }
-    location = /faq {
+    location = /faq/ {
         root /var/www/staging/static/;
     }
     include snippets/ignore_fonts.conf;
