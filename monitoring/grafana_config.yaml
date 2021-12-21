@@ -1,13 +1,13 @@
-# chart version 6.17.2
+# chart version 6.20.3
 # WARNING: the above chart version is read by fabfile.py, so upgrade chart version above whenever you upgrade the grafana helm chart
-# https://github.com/grafana/helm-charts/tree/grafana-6.17.2
+# https://github.com/grafana/helm-charts/tree/grafana-6.20.3
 
 service:
   type: NodePort
   port: 80  # default
   nodePort: 30075
-# nodeSelector:
-#   base: worker
+  nodeSelector:
+    base: worker
 
 resources:
   requests:

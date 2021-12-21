@@ -1,6 +1,6 @@
-# chart version version 14.11.0
+# chart version version 15.0.2
 # WARNING: the above chart version is read by fabfile.py, so upgrade chart version above whenever you upgrade the prometheus helm chart
-# https://github.com/prometheus-community/helm-charts/tree/prometheus-14.11.0
+# https://github.com/prometheus-community/helm-charts/tree/prometheus-15.0.2
 
 alertmanager:
   # TODO
@@ -10,8 +10,8 @@ pushgateway:
   enabled: false
 
 server:
- # nodeSelector:
- #   base: worker
+  nodeSelector:
+    base: worker
   service:
     type: NodePort
     nodePort: 30073
