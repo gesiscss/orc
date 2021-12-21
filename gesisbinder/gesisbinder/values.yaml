@@ -60,7 +60,7 @@ binderhub:
         - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
         - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
     BinderHub:
-      pod_quota: 40
+      pod_quota: 20
       base_url: /binder/
       use_registry: true
       build_image: quay.io/jupyterhub/repo2docker:2021.08.0-48.g4aa1d15
@@ -240,8 +240,8 @@ binderhub:
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
         egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
       nodeSelector:
-        user: worker
-        # userbinder: worker
+        #user: worker
+        userbinder: worker
       storage:
         extraVolumes:
           - name: etc-jupyter
