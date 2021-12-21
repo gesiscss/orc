@@ -60,7 +60,7 @@ binderhub:
         - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
         - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
     BinderHub:
-      pod_quota: 30
+      pod_quota: 40
       base_url: /binder/
       use_registry: true
       build_image: quay.io/jupyterhub/repo2docker:2021.08.0-48.g4aa1d15
@@ -181,8 +181,8 @@ binderhub:
       # with the proxy check-routes interval of five minutes
       every: 660
       timeout: 600
-      # maxAge is 6 hours: 6 * 3600 = 21600
-      maxAge: 21600
+      # maxAge is 1 hours: 1 * 3600 = 3600
+      maxAge: 3600
     hub:
       # NOTE: hub and proxy must have 1 pod (https://github.com/jupyterhub/jupyterhub/issues/2841#issuecomment-561848594)
       # replicas: 1
