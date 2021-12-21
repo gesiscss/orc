@@ -60,7 +60,7 @@ binderhub:
         - ^https%3A%2F%2Fframagit.org%2FCecGhesq%2Flic_mdf_nsi_1.*
         - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
     BinderHub:
-      pod_quota: 50
+      pod_quota: 30
       base_url: /binder/
       use_registry: true
       build_image: quay.io/jupyterhub/repo2docker:2021.08.0-48.g4aa1d15
