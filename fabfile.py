@@ -93,27 +93,27 @@ def deploy(c, user, password, staging=False, ref='master', mode=''):
         if 'bhubupgrade' in mode and not staging:
             c.run('kubectl apply -f gesisbinder/bot/_secret_cron_job.yaml -n bhub-ns')
             c.run('kubectl apply -f gesisbinder/bot/cron_job.yaml -n bhub-ns')
-        if 'jhubns' in mode or 'jhubtestns' in mode:
-            c.run('helm repo update')
-            c.run('helm dependency update gesishub/gesishub')
-            # if any configmap file or static file or template file is changed, hub pod must be restarted in order to reflect changes
-            # nginx servers static files for custom binder templates and when they are changed pod must be restarted to get a new static_version
-            sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
-            sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
-            sha256sum_jh = c.run('echo "{}" | sha256sum'.format(sha256sum_jh.stdout + sha256sum_nginx.stdout))
-            # compared to gesis binder, here bhub also uses binder-extra-config-json configmap, not only templates
-            # so restart the binder pod depending on the same condition as for hub pod
-            sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
-            sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
-            command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
-                      '--namespace=jhub{-test}-ns ' \
-                      '--cleanup-on-fail --debug ' \
-                      '-f gesishub/config{_test}.yaml ' \
-                      '-f gesishub/_secret{_test}.yaml'.format(**format_dict) + \
-                      ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] + \
-                      ' --set persistent_binderhub.binderhub.podAnnotations.rollme=' + sha256sum_jbh.stdout.split()[0]
-            c.run('echo "######## {}"'.format(command))
-            c.run(command)
+        # if 'jhubns' in mode or 'jhubtestns' in mode:
+        #     c.run('helm repo update')
+        #     c.run('helm dependency update gesishub/gesishub')
+        #     # if any configmap file or static file or template file is changed, hub pod must be restarted in order to reflect changes
+        #     # nginx servers static files for custom binder templates and when they are changed pod must be restarted to get a new static_version
+        #     sha256sum_nginx = c.run('find load_balancer/static/images/ load_balancer/static/styles/ load_balancer/static/scripts/ -type f -exec sha256sum {} \; | sha256sum')
+        #     sha256sum_jh = c.run('find gesishub/gesishub/files/etc/jupyterhub/ -type f -exec sha256sum {} \; | sha256sum')
+        #     sha256sum_jh = c.run('echo "{}" | sha256sum'.format(sha256sum_jh.stdout + sha256sum_nginx.stdout))
+        #     # compared to gesis binder, here bhub also uses binder-extra-config-json configmap, not only templates
+        #     # so restart the binder pod depending on the same condition as for hub pod
+        #     sha256sum_jbh = c.run('find gesishub/gesishub/files/ -type f -exec sha256sum {} \; | sha256sum')
+        #     sha256sum_jbh = c.run('echo "{}" | sha256sum'.format(sha256sum_jbh.stdout + sha256sum_nginx.stdout))
+        #     command = 'helm upgrade jhub{-test} gesishub/gesishub ' \
+        #               '--namespace=jhub{-test}-ns ' \
+        #               '--cleanup-on-fail --debug ' \
+        #               '-f gesishub/config{_test}.yaml ' \
+        #               '-f gesishub/_secret{_test}.yaml'.format(**format_dict) + \
+        #               ' --set persistent_binderhub.binderhub.jupyterhub.hub.annotations.rollme=' + sha256sum_jh.stdout.split()[0] + \
+        #               ' --set persistent_binderhub.binderhub.podAnnotations.rollme=' + sha256sum_jbh.stdout.split()[0]
+        #     c.run('echo "######## {}"'.format(command))
+        #     c.run(command)
         if 'backupjob' in mode and not staging:
             c.run('kubectl apply -f storage/backup/_secret.yaml')
             c.run('kubectl apply -f storage/backup/rbac.yaml')
