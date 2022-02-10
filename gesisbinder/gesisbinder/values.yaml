@@ -39,6 +39,8 @@ binderhub:
       banned_specs:
         # e.g. '^org/repo.*'
         - ^imhajes/.*
+        - .*/jasmt.*
+        - .*/abooz.*
         - ^gesiscss/gesis_dataday_20.*
         - ^ines/spacy-binder.*
         - ^soft4voip/rak.*
