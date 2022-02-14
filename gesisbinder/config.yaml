@@ -36,16 +36,16 @@ binderhub:
     00-template-variables: |
       production = True
     02-badge-base-url: |
-      def badge_base_url(handler):
-          launch_host = (
-              handler.request.headers.get('X-Binder-Launch-Host', '') or
-              handler.get_argument('binder_launch_host', ''))
-          if launch_host and not launch_host.endswith('/'):
-              launch_host += '/'
-          if launch_host == 'https://mybinder.org/':
-              return launch_host
-          return ''
-      c.BinderHub.badge_base_url = badge_base_url
+      # def badge_base_url(handler):
+      #     launch_host = (
+      #         handler.request.headers.get('X-Binder-Launch-Host', '') or
+      #         handler.get_argument('binder_launch_host', ''))
+      #     if launch_host and not launch_host.endswith('/'):
+      #         launch_host += '/'
+      #     if launch_host == 'https://mybinder.org/':
+      #         return launch_host
+      #     return ''
+      c.BinderHub.badge_base_url = "https://mybinder.org/"
       c.BinderHub.debug = True
 
     # send binder events to mybinder.org's StackDriver on Google Cloud
