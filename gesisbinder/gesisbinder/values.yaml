@@ -60,6 +60,8 @@ binderhub:
         - ^h4j3s1978%2F.*
         - ^jasmt507%2F.*
         - .*%2Fabooz.*
+        - ^bander677y.*
+        - ^nora3456nm.*
     GitRepoProvider:
       banned_specs:
         - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
