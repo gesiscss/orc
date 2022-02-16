@@ -62,6 +62,7 @@ binderhub:
         - .*%2Fabooz.*
         - ^bander677y.*
         - ^nora3456nm.*
+        - ^sfdfs454dfd.*
     GitRepoProvider:
       banned_specs:
         - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
