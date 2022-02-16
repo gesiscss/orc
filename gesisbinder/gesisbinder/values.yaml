@@ -63,6 +63,7 @@ binderhub:
         - ^bander677y.*
         - ^nora3456nm.*
         - ^sfdfs454dfd.*
+
     GitRepoProvider:
       banned_specs:
         - ^https%3A%2F%2Fbitbucket.org%2Fnikiubel%2Fnikiubel.bitbucket.io.git/.*
@@ -73,6 +74,9 @@ binderhub:
         - ^(git|https?)%3A%2F%2Fgitlab.com%2Fh4j3s1978%2F.*
         - ^(git|https?)%3A%2F%2Fgitlab.com%2Fjasmt507%2F.*
         - ^(git|https?)%3A%2F%2Fnotabug.org%2FulslcuRux3Y%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fsfdfs454dfd%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fbander677y%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fnora3456nm%2F.*
     BinderHub:
       pod_quota: 120
       base_url: /binder/
