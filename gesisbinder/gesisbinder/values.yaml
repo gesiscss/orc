@@ -64,6 +64,7 @@ binderhub:
         - ^nora3456nm.*
         - ^sfdfs454dfd.*
         - ^sami8978er.*
+        - ^moneer43fdr.*
 
     GitRepoProvider:
       banned_specs:
@@ -79,6 +80,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fbander677y%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fnora3456nm%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fsami8978er%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fmoneer43fdr%2F.*
 
     BinderHub:
       pod_quota: 120
