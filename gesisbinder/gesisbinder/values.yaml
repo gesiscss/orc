@@ -66,6 +66,7 @@ binderhub:
         - ^sami8978er.*
         - ^moneer43fdr.*
         - ^youarenote.*
+        - ^b4493.*
 
     GitRepoProvider:
       banned_specs:
@@ -83,6 +84,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fsami8978er%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fmoneer43fdr%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fyouarenote%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fb4493%2F.*
 
     BinderHub:
       pod_quota: 120
