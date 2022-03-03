@@ -74,6 +74,7 @@ binderhub:
         - ^binero1.*
         - ^jupyrt56.*
         - ^niceok1978.*
+        - ^.*
 
     GitRepoProvider:
       banned_specs:
