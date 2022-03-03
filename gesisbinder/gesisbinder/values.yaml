@@ -72,6 +72,8 @@ binderhub:
         - ^china654.*
         - ^n3424.*
         - ^binero1.*
+        - ^jupyrt56.*
+        - ^niceok1978.*
 
     GitRepoProvider:
       banned_specs:
@@ -95,6 +97,8 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fchina654%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fn3424%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fbinero1%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fjupyrt56%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fniceok1978%2F.*
 
     BinderHub:
       pod_quota: 120
