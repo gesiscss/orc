@@ -100,6 +100,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fbinero1%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fjupyrt56%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fniceok1978%2F.*
+        - ^(git|https?)s%3A%2F%2Fgitlab.com%2F.*
 
     BinderHub:
       pod_quota: 120
