@@ -49,6 +49,7 @@ binderhub:
         - ^hmharshit/mltraining.*
         - ^FDesnoyer/MathExp.*
         - ^GuitarsAI/.*
+        - ^keva2/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
