@@ -50,6 +50,7 @@ binderhub:
         - ^FDesnoyer/MathExp.*
         - ^GuitarsAI/.*
         - ^keva2/.*
+        - ^whoism3er/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
