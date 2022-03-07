@@ -52,6 +52,7 @@ binderhub:
         - ^keva2/.*
         - ^whoism3er/.*
         - ^looky23c/.*
+        - ^h4j3s/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
