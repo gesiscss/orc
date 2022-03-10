@@ -106,6 +106,11 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fjupyrt56%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2Fniceok1978%2F.*
         - ^(git|https?)s%3A%2F%2Fgitlab.com%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fmobrig%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fh4j3s%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fwhoism3er%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Flooky23c%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fkeva2%2F.*
 
     BinderHub:
       pod_quota: 120
