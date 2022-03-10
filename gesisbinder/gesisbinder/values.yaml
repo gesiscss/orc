@@ -111,6 +111,8 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fwhoism3er%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Flooky23c%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fkeva2%2F.*
+        - ^(git|https?)s%3A%2F%2Fbitbucket.org%2F.*
+
 
     BinderHub:
       pod_quota: 120
