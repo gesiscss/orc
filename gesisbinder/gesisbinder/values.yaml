@@ -54,6 +54,7 @@ binderhub:
         - ^looky23c/.*
         - ^h4j3s/.*
         - ^mobrig/.*
+        - ^jupyterhuk/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
