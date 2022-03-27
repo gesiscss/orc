@@ -56,6 +56,7 @@ binderhub:
         - ^mobrig/.*
         - ^jupyterhuk/.*
         - ^joy56gh/.*
+        - ^aboali2s/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
@@ -116,6 +117,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2F.*bitbucket.org%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fjupyterhuk%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fjoy56gh%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Faboali2s%2F.*
 
     BinderHub:
       pod_quota: 120
