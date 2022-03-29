@@ -63,6 +63,7 @@ binderhub:
         - ^foundmeplz/.*
         - ^ineedsomeone/.*
         - ^ghool43/.*
+        - ^reaok45/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
@@ -130,6 +131,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ffoundmeplz%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fineedsomeone%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fghool43%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Freaok45%2F.*
 
     BinderHub:
       pod_quota: 120
