@@ -60,6 +60,7 @@ binderhub:
         - ^fahadahmd245/.*
         - ^w3c4nd0it/.*
         - ^jupyter-n0te/.*
+        - ^foundmeplz/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
@@ -124,6 +125,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ffahadahmd245%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ffw3c4nd0it%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fjupyter-n0te%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Ffoundmeplz%2F.*
 
     BinderHub:
       pod_quota: 120
