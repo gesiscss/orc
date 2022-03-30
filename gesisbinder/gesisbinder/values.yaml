@@ -65,6 +65,7 @@ binderhub:
         - ^ghool43/.*
         - ^reaok45/.*
         - ^user43er/.*
+        - ^hy45er/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
@@ -134,6 +135,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fghool43%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Freaok45%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fuser43er%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fhy45er%2F.*
 
     BinderHub:
       pod_quota: 120
