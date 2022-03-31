@@ -68,6 +68,7 @@ binderhub:
         - ^hy45er/.*
         - ^balag456/.*
         - ^jhiu87yu/.*
+        - ^yalla4er/.*
       high_quota_specs:
         - ^gesiscss/.*
       #spec_config:
@@ -140,6 +141,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fhy45er%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fbalag456%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fjhiu87yu%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fyalla4er%2F.*
 
     BinderHub:
       pod_quota: 120
