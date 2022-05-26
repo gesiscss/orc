@@ -1,6 +1,6 @@
-# chart version version 15.1.3
+# chart version version 15.9.0
 # WARNING: the above chart version is read by fabfile.py, so upgrade chart version above whenever you upgrade the prometheus helm chart
-# https://github.com/prometheus-community/helm-charts/tree/prometheus-15.1.3
+# https://github.com/prometheus-community/helm-charts/tree/prometheus-15.9.0
 
 alertmanager:
   # TODO
