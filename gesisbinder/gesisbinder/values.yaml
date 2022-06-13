@@ -76,6 +76,8 @@ binderhub:
         - ^falberanda/.*
         - ^Garith923/.*
         - ^hlukiniko/.*
+        - ^tgpasarireetucing/.*
+        - ^Rhosta428/.*
 
       high_quota_specs:
         - ^gesiscss/.*
@@ -154,6 +156,8 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2FRethno168%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fwijayajuspinki%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fhlukiniko%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Ftgpasarireetucing%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2FRhosta428%2F.*
 
     BinderHub:
       pod_quota: 120
