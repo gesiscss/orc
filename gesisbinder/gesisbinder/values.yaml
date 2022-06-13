@@ -75,6 +75,7 @@ binderhub:
         - ^Rethno168/.*
         - ^falberanda/.*
         - ^Garith923/.*
+        - ^hlukiniko/.*
 
       high_quota_specs:
         - ^gesiscss/.*
@@ -152,6 +153,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ffalberanda%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2FRethno168%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fwijayajuspinki%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fhlukiniko%2F.*
 
     BinderHub:
       pod_quota: 120
