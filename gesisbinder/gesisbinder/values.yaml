@@ -78,6 +78,7 @@ binderhub:
         - ^hlukiniko/.*
         - ^tgpasarireetucing/.*
         - ^Rhosta428/.*
+        - ^maximussale1/.*
 
       high_quota_specs:
         - ^gesiscss/.*
@@ -158,6 +159,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fhlukiniko%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ftgpasarireetucing%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2FRhosta428%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fmaximussale1%2F.*
 
     BinderHub:
       pod_quota: 120
