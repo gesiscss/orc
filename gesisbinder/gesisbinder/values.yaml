@@ -79,6 +79,11 @@ binderhub:
         - ^tgpasarireetucing/.*
         - ^Rhosta428/.*
         - ^maximussale1/.*
+        - ^Intan90002/.*
+        - ^kamilairsyat08/.*
+        - ^arnienindin/.*
+        - ^sahrulega56/.*
+        - ^andriyanaade281/.*
 
       high_quota_specs:
         - ^gesiscss/.*
@@ -160,6 +165,11 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Ftgpasarireetucing%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2FRhosta428%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fmaximussale1%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2FIntan90002%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fkamilairsyat08%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Farnienindin%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fsahrulega56%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fandriyanaade281%2F.*
 
     BinderHub:
       pod_quota: 120
