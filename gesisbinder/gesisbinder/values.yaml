@@ -84,6 +84,7 @@ binderhub:
         - ^arnienindin/.*
         - ^sahrulega56/.*
         - ^andriyanaade281/.*
+        - ^ayman107.*
 
       high_quota_specs:
         - ^gesiscss/.*
@@ -170,6 +171,7 @@ binderhub:
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Farnienindin%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fsahrulega56%2F.*
         - ^(git|https?)s%3A%2F%2Fgithub.com%2Fandriyanaade281%2F.*
+        - ^(git|https?)s%3A%2F%2Fgithub.com%2Fayman107%2F.*
 
     BinderHub:
       pod_quota: 120
