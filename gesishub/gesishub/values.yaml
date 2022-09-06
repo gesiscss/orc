@@ -52,7 +52,7 @@ persistent_binderhub:
           - ^(git|https?)%3A%2F%2Fcodeberg.org%2Fforgiagether%2F.*
 
       BinderHub:
-        build_image: quay.io/jupyterhub/repo2docker:2022.02.0-75.gd415115
+        build_image: quay.io/jupyterhub/repo2docker:2022.02.0-88.g7580a30
         build_node_selector:
           user: worker
         per_repo_quota: 100
