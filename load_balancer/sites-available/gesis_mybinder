@@ -45,6 +45,7 @@ server {
         }
         add_header "Access-Control-Allow-Origin"  *;
         add_header 'Access-Control-Allow-Headers' 'cache-control';
+        add_header X-Frame-Options "SAMEORIGIN";
         # no-cache for /health and /versions
         add_header 'Cache-Control' 'no-cache';
         # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
