@@ -131,6 +131,7 @@ server {
          proxy_pass http://bhub;
          include snippets/headers.conf;
          proxy_set_header X-Scheme $scheme;
+         proxy_set_header X-Frame-Options "SAMEORIGIN";
      }
 
      # For JupyterHub of binder
