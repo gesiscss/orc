@@ -78,7 +78,7 @@ binderhub:
       pod_quota: 120
       base_url: /binder/
       use_registry: true
-      build_image: quay.io/jupyterhub/repo2docker:2022.10.0-65.gd8942c4
+      build_image: quay.io/jupyterhub/repo2docker:2022.10.0-67.gab4c4f2
       build_node_selector:
         user: worker
         # userbinder: worker
