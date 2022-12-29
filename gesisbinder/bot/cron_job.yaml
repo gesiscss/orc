@@ -1,9 +1,9 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: update-gesisbinder
 spec:
-  schedule: "*/15 * * * *"
+  schedule: "*/30 * * * *"
   # Setting a limit to 0 corresponds to keeping none of the corresponding kind of jobs after they finish.
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 10
