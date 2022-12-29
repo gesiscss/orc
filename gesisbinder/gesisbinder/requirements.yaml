@@ -1,4 +1,4 @@
 dependencies:
  - name: binderhub
-   version: 0.2.0-n988.h72e1852
+   version: 1.0.0-0.dev.git.2874.h2811d52
    repository: https://jupyterhub.github.io/helm-chart
