@@ -255,8 +255,8 @@ binderhub:
         # z2jh chart has a default egress rule which restricts outbound traffic to only JupyterHub API port
         egress: []  # no additional egress rule, this empty list also overrides the egress rule defined in values.yaml of z2jh
       nodeSelector:
-        #user: worker
-        userbinder: worker
+        user: worker
+        # userbinder: worker
       storage:
         extraVolumes:
           - name: etc-jupyter
