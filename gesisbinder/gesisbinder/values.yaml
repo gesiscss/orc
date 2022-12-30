@@ -75,7 +75,7 @@ binderhub:
         - .*%2Fabooz.*
 
     BinderHub:
-      pod_quota: 0
+      pod_quota: 120
       base_url: /binder/
       use_registry: true
       build_image: quay.io/jupyterhub/repo2docker:2022.10.0-67.gab4c4f2
