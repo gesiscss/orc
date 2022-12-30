@@ -185,7 +185,15 @@ binderhub:
     type: NodePort
 
   dind:
-    enabled: false
+    enabled: true
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: 1Gi
+      limits:
+        cpu: "8"
+        memory: 8Gi
+
 
   imageCleaner:
     enabled: false

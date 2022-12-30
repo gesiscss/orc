@@ -18,6 +18,7 @@ spec:
         operator: In
         values:
           - singleuser-server
+          - dind
     matchLabels:
       release: {{ .Release.Name }}
   policyTypes:
