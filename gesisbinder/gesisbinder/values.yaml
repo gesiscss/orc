@@ -197,7 +197,7 @@ binderhub:
 
 
   imageCleaner:
-    enabled: false
+    enabled: true
 
   jupyterhub:
     cull:
