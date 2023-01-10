@@ -80,8 +80,8 @@ binderhub:
       use_registry: true
       build_image: quay.io/jupyterhub/repo2docker:2022.10.0-89.g49162fc
       build_node_selector:
-        userbuild: worker
-        # user: worker
+        # userbuild: worker
+        user: worker
         # userbinder: worker
       per_repo_quota: 100
       per_repo_quota_higher: 200
@@ -285,8 +285,8 @@ binderhub:
     # we dont need this because we have only 1 node for user pods
     scheduling:
       userScheduler:
-        enabled: false
+        enabled: true
       podPriority:
-        enabled: false
+        enabled: true
       userPlaceholder:
-        enabled: false
+        enabled: true
