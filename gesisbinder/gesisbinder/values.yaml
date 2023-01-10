@@ -198,6 +198,8 @@ binderhub:
 
   imageCleaner:
     enabled: true
+    host:
+      enabled: false
 
   jupyterhub:
     cull:
