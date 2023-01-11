@@ -186,20 +186,22 @@ binderhub:
     type: NodePort
 
   dind:
-    enabled: true
-    resources:
-      requests:
-        cpu: "0.5"
-        memory: 1Gi
-      limits:
-        cpu: "8"
-        memory: 8Gi
+    enabled: false
+    # enabled: true
+    # resources:
+    #   requests:
+    #     cpu: "0.5"
+    #     memory: 1Gi
+    #   limits:
+    #     cpu: "8"
+    #     memory: 8Gi
 
 
   imageCleaner:
-    enabled: true
-    host:
-      enabled: false
+    enables: false
+    # enabled: true
+    # host:
+    #   enabled: false
 
   jupyterhub:
     cull:
