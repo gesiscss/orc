@@ -1,0 +1,9 @@
+# default config, return 404 for IP requests
+server {
+    listen 80 default_server;
+    listen 443 ssl default_server;
+    server_name _;
+    ssl_certificate /etc/letsencrypt/live/notebooks-test.gesis.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/notebooks-test.gesis.org/privkey.pem;
+    return 404;
+}
