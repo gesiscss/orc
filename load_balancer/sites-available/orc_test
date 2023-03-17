@@ -9,36 +9,36 @@ map $http_upgrade $connection_upgrade {
 
 
 upstream pbhub {
-  server 194.95.75.15:30092 max_fails=0;
+  server 194.95.75.20:30092 max_fails=0;
 }
 
 upstream gesishub {
-  server 194.95.75.15:30180 max_fails=0;
+  server 194.95.75.20:30180 max_fails=0;
 }
 
 upstream bhub {
-  server 194.95.75.15:30181 max_fails=0;
+  server 194.95.75.20:30181 max_fails=0;
 }
 
 upstream bjhub {
-  server 194.95.75.15:30182 max_fails=0;
+  server 194.95.75.20:30182 max_fails=0;
 }
 
 upstream gallery {
-  server 194.95.75.15:30179 max_fails=0;
+  server 194.95.75.20:30179 max_fails=0;
 }
 
 upstream grafana {
-  server 194.95.75.15:30075;
+  server 194.95.75.20:30075;
 }
 
 upstream prometheus {
-  server 194.95.75.15:30073;
+  server 194.95.75.20:30073;
 }
 
 
 upstream usertakeout {
-  server 194.95.75.15:31079;
+  server 194.95.75.20:31079;
 }
 
 
