@@ -1,0 +1,78 @@
+# http_origin holds the value of Origin request header
+# set allowed_origin to http_origin if http_origin/Origin is not empty (default)
+# set allowed_origin to "*" if http_origin/Origin is empty
+map $http_origin $allowed_origin {
+    default $http_origin;
+    "" "*";
+}
+
+upstream gesisbinder {
+  server 194.95.75.20:30081 max_fails=0;
+}
+
+# HTTP server to redirect gesis.mybinder.org 80 traffic to SSL/HTTPS
+server {
+    listen 80;
+    listen [::]:80;
+    server_name gesis.mybinder.org;
+    access_log off;  # turn off access log
+    # Tell all requests to port 80 to be 301 (permanently) redirected to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+# https://webmasters.stackexchange.com/a/60136
+# gesis.mybinder.org is a CNAME for notebooks.gesis.org
+# HTTPS server for gesis.mybinder.org
+# Redirect everything to https://notebooks.gesis.org/binder
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name gesis.mybinder.org;
+    ssl_certificate /etc/letsencrypt/live/notebooks-test.gesis.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/notebooks-test.gesis.org/privkey.pem;
+    include snippets/ssl.conf;
+
+    #include snippets/optimization.conf;
+    access_log off;  # turn off access log
+
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        limit_except GET OPTIONS {
+            deny  all;
+        }
+        add_header "Access-Control-Allow-Origin"  *;
+        add_header 'Access-Control-Allow-Headers' 'cache-control';
+        add_header X-Frame-Options "SAMEORIGIN";
+        # no-cache for /health and /versions
+        add_header 'Cache-Control' 'no-cache';
+        # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
+        # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
+        return 308 https://notebooks.gesis.org/binder$request_uri;
+    }
+
+    # remove base_url from gesis.mybinder.org domain, we use it only in notebooks.gesis.org:
+    # this fixes wrong launch urls in binder buttons
+    #rewrite ^/binder/(.*)$ /$1 redirect;  # dont do this, because $1 hold the decoded value, and it causes problems for git and gitlab launch urls
+    location /binder/ {
+        limit_except GET OPTIONS {
+            deny  all;
+        }
+        add_header "Access-Control-Allow-Origin"  *;
+        add_header 'Access-Control-Allow-Headers' 'cache-control';
+        add_header X-Frame-Options "SAMEORIGIN";
+        # no-cache for /health and /versions
+        add_header 'Cache-Control' 'no-cache';
+        # https://serverfault.com/questions/426673/nginx-redirect-subdomain-to-sub-directory
+        # https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
+        return 308 https://notebooks.gesis.org$request_uri;
+    }
+    # dont redirect build endpoint
+    location /build/ {
+        proxy_buffering off;
+        proxy_pass http://gesisbinder/binder$request_uri;
+        include snippets/headers.conf;
+        proxy_set_header X-Scheme $scheme;
+    }
+}
