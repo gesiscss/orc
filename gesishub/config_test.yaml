@@ -34,7 +34,7 @@ persistent_binderhub:
             prometheus.io/scrape: 'false'
         services:
           binder:
-            url: http://194.95.75.15:30183  # base worker
+            url: http://194.95.75.14:30085  # base worker
             oauth_redirect_uri: "https://notebooks-test.gesis.org/services/binder/oauth_callback"
             oauth_client_id: "binder-oauth-client-test"
         config:
@@ -89,8 +89,8 @@ persistent_binderhub:
       proxy:
         service:
           nodePorts:
-            http: 30184
-            https: 30180
+            http: 30085
+            https: 30082
         chp:
           resources:
             requests:
