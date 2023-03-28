@@ -13,15 +13,15 @@ upstream pbhub {
 }
 
 upstream bhub {
-  server 194.95.75.20:30181 max_fails=0;
+  server 194.95.75.20:30081 max_fails=0;
 }
 
 upstream bjhub {
-  server 194.95.75.20:30182 max_fails=0;
+  server 194.95.75.20:30082 max_fails=0;
 }
 
 upstream gallery {
-  server 194.95.75.20:30179 max_fails=0;
+  server 194.95.75.20:30079 max_fails=0;
 }
 
 upstream grafana {
