@@ -12,10 +12,6 @@ upstream pbhub {
   server 194.95.75.20:30092 max_fails=0;
 }
 
-upstream gesishub {
-  server 194.95.75.20:30180 max_fails=0;
-}
-
 upstream bhub {
   server 194.95.75.20:30181 max_fails=0;
 }
@@ -81,7 +77,7 @@ server {
         #return 503;
 
         proxy_buffering off;
-        proxy_pass http://gesishub;
+        proxy_pass http://bhub;
         include snippets/headers.conf;
         include snippets/websocket_headers.conf;
         proxy_set_header X-Scheme $scheme;
