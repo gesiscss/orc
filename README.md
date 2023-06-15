@@ -1,3 +1,5 @@
+This repository was superseded by https://github.com/gesiscss/orc2
+
 # Open Research Computing (ORC)
 
 For more information about ORC project: https://notebooks.gesis.org/about/
